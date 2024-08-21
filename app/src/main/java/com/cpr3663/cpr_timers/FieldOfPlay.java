@@ -170,14 +170,13 @@ public class FieldOfPlay extends AppCompatActivity {
         });
 
         // TEST CODE FOR DETECTING A TOUCH EVENT ON THE BUTTON
-        ConstraintLayout main = fopBinding.fieldOfPlay;
-        main.setOnTouchListener(new View.OnTouchListener() {
+        View field = fopBinding.imageFieldView;
+        field.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 // Check the motion type and if its correct then get the X and Y
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    float x = motionEvent.getX();
-                    float y = motionEvent.getY();
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    fopBinding.clickXY.setText(motionEvent.getX() + "," + motionEvent.getY());
                 }
                 // Return false to not consume the click and have it also click the button
                 return false;
