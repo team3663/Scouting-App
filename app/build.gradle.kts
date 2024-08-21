@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.cpr3663.cpr_timers"
+    namespace = "com.cpr3663.cpr_scouting_app"
     compileSdk = 34
 
     buildFeatures {
@@ -11,7 +11,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.cpr3663.cpr_timers"
+        applicationId = "com.cpr3663.cpr_scouting_app"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

@@ -1,4 +1,4 @@
-package com.cpr3663.cpr_timers;
+package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -23,7 +23,7 @@ import androidx.core.view.WindowInsetsCompat;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.cpr3663.cpr_timers.databinding.FieldOfPlayBinding;
+import com.cpr3663.cpr_scouting_app.databinding.FieldOfPlayBinding;
 
 
 public class FieldOfPlay extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package com.cpr3663.cpr_timers;
+package com.cpr3663.cpr_scouting_app;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.cpr3663.cpr_timers", appContext.getPackageName());
+        assertEquals("com.cpr3663.cpr_scouting_app", appContext.getPackageName());
     }
 }

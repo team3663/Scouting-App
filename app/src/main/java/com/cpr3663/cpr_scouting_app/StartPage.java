@@ -1,4 +1,4 @@
-package com.cpr3663.cpr_timers;
+package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -16,7 +16,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.cpr3663.cpr_timers.databinding.StartPageBinding;
+import com.cpr3663.cpr_scouting_app.databinding.StartPageBinding;
 
 public class StartPage extends AppCompatActivity {
     // =============================================================================================

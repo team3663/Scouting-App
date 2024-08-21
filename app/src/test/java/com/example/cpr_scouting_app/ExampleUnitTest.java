@@ -1,4 +1,4 @@
-package com.cpr3663.cpr_timers;
+package com.cpr3663.cpr_scouting_app;
 
 import org.junit.Test;
 

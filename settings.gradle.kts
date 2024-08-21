@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "CPR - Timers"
+rootProject.name = "CPR-Scouting-App"
 include(":app")
  
