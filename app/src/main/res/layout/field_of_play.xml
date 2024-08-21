@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/field_of_play"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FieldOfPlay">
+
+    <TextView
+        android:id="@+id/text_Time"
+        android:layout_width="140dp"
+        android:layout_height="65dp"
+        android:text="Time: 0"
+        tools:ignore="HardcodedText,MissingConstraints"
+        tools:layout_editor_absoluteX="1127dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <Button
+        android:id="@+id/but_MatchControl"
+        android:layout_width="120dp"
+        android:layout_height="65dp"
+        android:text="@string/button_start_match"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <Switch
+        android:id="@+id/switch_Defense"
+        android:layout_width="165dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="16dp"
+        android:clickable="false"
+        android:text="@string/button_play_defense"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints,UseSwitchCompatOrMaterialXml,DuplicateClickableBoundsCheck,VisualLintOverlap"
+        tools:layout_editor_absoluteX="806dp"
+        tools:textSize="20sp" />
+
+    <Switch
+        android:id="@+id/switch_Defended"
+        android:layout_width="165dp"
+        android:layout_height="65dp"
+        android:clickable="false"
+        android:text="@string/button_was_defended"
+        tools:ignore="MissingConstraints,UseSwitchCompatOrMaterialXml,DuplicateClickableBoundsCheck,VisualLintOverlap"
+        tools:layout_editor_absoluteX="501dp"
+        tools:layout_editor_absoluteY="16dp"
+        tools:textSize="20sp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

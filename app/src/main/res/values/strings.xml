@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">CPR - Timers</string>
+    <string name="button_start_match">Start Match</string>
+    <string name="button_start_teleop">Start Teleop</string>
+    <string name="button_end_match">End Match</string>
+    <string name="button_play_defense">Defense</string>
+    <string name="button_was_defended">Defended</string>
+</resources>
