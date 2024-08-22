@@ -1,28 +1,16 @@
 package com.cpr3663.cpr_scouting_app;
 
-import android.app.Activity;
-import android.app.ListActivity;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.os.Bundle;
 import android.text.Layout;
-import android.util.Pair;
-import android.view.ContextMenu;
 import android.view.Display;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -38,13 +26,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.cpr3663.cpr_scouting_app.databinding.FieldOfPlayBinding;
+import com.cpr3663.cpr_scouting_app.databinding.MatchBinding;
+import com.cpr3663.cpr_scouting_app.databinding.MatchBinding;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class FieldOfPlay extends AppCompatActivity {
+public class Match extends AppCompatActivity {
     // =============================================================================================
     // Define constants
     // =============================================================================================
@@ -116,7 +105,7 @@ public class FieldOfPlay extends AppCompatActivity {
     // =============================================================================================
     // Global variables
     // =============================================================================================
-    private FieldOfPlayBinding fopBinding;
+    private MatchBinding matchBinding;
     public static long startTime;
     private static String matchPhase = PHASE_NONE;
     // Define a button that starts the match, skips to Teleop, and ends the match early
@@ -143,17 +132,17 @@ public class FieldOfPlay extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        fopBinding = FieldOfPlayBinding.inflate(getLayoutInflater());
-        View page_root_view = fopBinding.getRoot();
+        matchBinding = MatchBinding.inflate(getLayoutInflater());
+        View page_root_view = matchBinding.getRoot();
         setContentView(page_root_view);
-        ViewCompat.setOnApplyWindowInsetsListener(fopBinding.fieldOfPlay, (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(matchBinding.match, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
         // Map the text box variable to the actual text box
-        text_Time = fopBinding.textTime;
+        text_Time = matchBinding.textTime;
         // Initialize the match timer textbox settings
         text_Time.setText("Time: " + TIMER_DEFAULT_NUM);
         text_Time.setTextSize(20F);
@@ -166,7 +155,7 @@ public class FieldOfPlay extends AppCompatActivity {
         text_Time.setBackgroundColor(Color.TRANSPARENT);
 
         // Map the button variable to the actual button
-        but_MatchControl = fopBinding.butMatchControl;
+        but_MatchControl = matchBinding.butMatchControl;
         // Initialize the match Control Button settings
         but_MatchControl.setText(getResources().getString(R.string.button_start_match));
         but_MatchControl.setTextSize(18F);
@@ -193,7 +182,7 @@ public class FieldOfPlay extends AppCompatActivity {
         });
 
         // Define a field image
-        ImageView image_Field = fopBinding.imageFieldView;
+        ImageView image_Field = matchBinding.imageFieldView;
         // Initialize the fields settings
         int image_Field_height = screen_size.x * 1297 / 2560;
         image_Field.setX(0F);
@@ -209,7 +198,7 @@ public class FieldOfPlay extends AppCompatActivity {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && matchPhase != PHASE_NONE) {
                     double x = motionEvent.getX();
                     double y = motionEvent.getY();
-                    fopBinding.textClickXY.setText(x + "," + y);
+                    matchBinding.textClickXY.setText(x + "," + y);
                     // Get current time, elapsed time, or tell the logger that the initial click happened now, so it doesn't log the second click's time instead
                     // Also make a Popup Context Menu to ask what the event was
                 }
@@ -219,7 +208,7 @@ public class FieldOfPlay extends AppCompatActivity {
         });
 
         // Map the Defense Switch to the actual switch
-        switch_Defense = fopBinding.switchDefense;
+        switch_Defense = matchBinding.switchDefense;
         // Initialize the Defense Switch settings
         switch_Defense.setText(getResources().getString(R.string.button_play_defense));
         switch_Defense.setTextSize(20F);
@@ -250,7 +239,7 @@ public class FieldOfPlay extends AppCompatActivity {
         switch_Defense.setClickable(false);
 
         // Map the Defended Switch to the actual switch
-        switch_Defended = fopBinding.switchDefended;
+        switch_Defended = matchBinding.switchDefended;
         // Initialize the Defended Switch settings
         switch_Defended.setText(getResources().getString(R.string.button_was_defended));
         switch_Defended.setTextSize(20F);
@@ -281,7 +270,7 @@ public class FieldOfPlay extends AppCompatActivity {
         switch_Defended.setClickable(false);
 
         // Define a context menu
-        RelativeLayout ContextMenu = fopBinding.ContextMenu;
+        RelativeLayout ContextMenu = matchBinding.ContextMenu;
         // Initialize the Context Menu's settings
         ContextMenu.setX(0F);
         ContextMenu.setY(screen_size.y - image_Field_height);
@@ -318,7 +307,7 @@ public class FieldOfPlay extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         if (item.getTitle() != "Cancel") {
-            fopBinding.textClickXY.setText(item.getTitle());
+            matchBinding.textClickXY.setText(item.getTitle());
         }
         return true;
     }
@@ -418,7 +407,7 @@ public class FieldOfPlay extends AppCompatActivity {
         switch_Defended.setBackgroundColor(BUTTON_COLOR_NORMAL);
 
         // Go to the next page
-        Intent GoToNextPage = new Intent(FieldOfPlay.this, StartPage.class);
+        Intent GoToNextPage = new Intent(Match.this, PreMatch.class);
         startActivity(GoToNextPage);
     }
 

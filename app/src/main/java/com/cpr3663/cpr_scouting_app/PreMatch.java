@@ -16,13 +16,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.cpr3663.cpr_scouting_app.databinding.StartPageBinding;
+import com.cpr3663.cpr_scouting_app.databinding.PreMatchBinding;
 
-public class StartPage extends AppCompatActivity {
+public class PreMatch extends AppCompatActivity {
     // =============================================================================================
     // Global variables
     // =============================================================================================
-    private StartPageBinding startpageBinding;
+    private PreMatchBinding preMatchBinding;
     // To store the inputted name
     public static String NAME_SCOUTER;
 
@@ -31,17 +31,17 @@ public class StartPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        startpageBinding = StartPageBinding.inflate(getLayoutInflater());
-        View page_root_view = startpageBinding.getRoot();
+        preMatchBinding = PreMatchBinding.inflate(getLayoutInflater());
+        View page_root_view = preMatchBinding.getRoot();
         setContentView(page_root_view);
-        ViewCompat.setOnApplyWindowInsetsListener(startpageBinding.startPage, (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(preMatchBinding.preMatch, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
         // Create a input text box
-        EditText edit_Name = startpageBinding.editName;
+        EditText edit_Name = preMatchBinding.editName;
         edit_Name.setText(NAME_SCOUTER);
         edit_Name.setTextColor(Color.BLACK);
         edit_Name.setHint("Input your Name:");
@@ -55,7 +55,7 @@ public class StartPage extends AppCompatActivity {
         edit_Name.setBackgroundColor(Color.TRANSPARENT);
 
         // Create a button for when you are done inputting info
-        Button but_SubmitPage1 = startpageBinding.butSubmitPage1;
+        Button but_SubmitPage1 = preMatchBinding.butSubmitPage1;
         but_SubmitPage1.setText("Submit");
         but_SubmitPage1.setTextSize(24F);
         but_SubmitPage1.setTextColor(Color.WHITE);
@@ -70,7 +70,7 @@ public class StartPage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 NAME_SCOUTER = String.valueOf(edit_Name.getText());
-                Intent GoToFieldOfPlay = new Intent(StartPage.this, FieldOfPlay.class);
+                Intent GoToFieldOfPlay = new Intent(PreMatch.this, Match.class);
                 startActivity(GoToFieldOfPlay);
             }
         });
