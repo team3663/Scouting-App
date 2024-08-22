@@ -7,4 +7,5 @@
     <color name="dark_red">#FF990000</color>
     <color name="dark_yellow">#FFAAAA00</color>
     <color name="dark_green">#FF007700</color>
+    <color name="cpr_bkgnd">#FF000F38</color>
 </resources>
