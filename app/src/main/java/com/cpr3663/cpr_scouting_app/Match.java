@@ -45,9 +45,9 @@ public class Match extends AppCompatActivity {
     private static final int BUTTON_COLOR_FLASH = Color.RED;
     private static final int BUTTON_COLOR_NORMAL = Color.LTGRAY;
     private static final int BUTTON_TEXT_COLOR_DISABLED = Color.GRAY;
-    private static final String PHASE_AUTO = "Auto";
-    private static final String PHASE_TELEOP = "Teleop";
-    private static final String PHASE_NONE = "";
+    public static final String PHASE_AUTO = "Auto";
+    public static final String PHASE_TELEOP = "Teleop";
+    public static final String PHASE_NONE = "";
 
     // =============================================================================================
     // Class:       AutoTimerTask
@@ -108,6 +108,7 @@ public class Match extends AppCompatActivity {
     private MatchBinding matchBinding;
     public static long startTime;
     private static String matchPhase = PHASE_NONE;
+    private static String eventPrevious;
     // Define a button that starts the match, skips to Teleop, and ends the match early
     Button but_MatchControl;
     // Define a TextView to display the match time
@@ -296,10 +297,17 @@ public class Match extends AppCompatActivity {
         // Check to make sure the game is going
         if (matchPhase != PHASE_NONE) {
             // Create a fake text file of events and their order
-            String[] events = {"Auto Pickup", "Auto Speaker Score", "Auto Speaker Miss", "Auto Amp Score", "Auto Amp Miss", "Auto Drop", "Cancel"};
+//            String[] events = {"Auto Pickup", "Auto Speaker Score", "Auto Speaker Miss", "Auto Amp Score", "Auto Amp Miss", "Auto Drop", "Cancel"};
+            // Get the events (Doesn't work yet because it isnt fully set up yet)
+            String[][] events = {{""}};
+            if (eventPrevious != null) {
+                events = AppLaunch.EventList.getNextEvents(AppLaunch.EventList.getEventId(eventPrevious));
+            } else {
+                events = AppLaunch.EventList.getEventsForPhase(matchPhase);
+            }
             // Add all the events
-            for (String event : events) {
-                menu.add(event);
+            for (String[] event : events) {
+                menu.add(event[1]);
             }
         }
     }

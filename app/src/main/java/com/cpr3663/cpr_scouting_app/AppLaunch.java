@@ -3,6 +3,7 @@ package com.cpr3663.cpr_scouting_app;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.Display;
 import android.view.View;
 
@@ -162,8 +163,9 @@ public class AppLaunch extends AppCompatActivity {
         public static final String EVENT_DEFENDED_END = "";
         public static final String EVENT_DEFENSE_START = "";
         public static final String EVENT_DEFENSE_END = "";
-        public static final String EVENT_PHASE_AUTO = "AUTO";
-        public static final String EVENT_PHASE_TELEOP = "TELEOP";
+        public static final String EVENT_PHASE_NONE = Match.PHASE_NONE;
+        public static final String EVENT_PHASE_AUTO = Match.PHASE_AUTO;
+        public static final String EVENT_PHASE_TELEOP = Match.PHASE_TELEOP;
 
         public EventInfo()
         {
@@ -175,59 +177,59 @@ public class AppLaunch extends AppCompatActivity {
         }
 
         public String[][] getEventsForPhase(String in_phase) {
-            String[][] ret = new String[20][20];
-            int index = 0;
 
             // Error check the input and only do this if they passed in a valid parameter
-            if (in_phase.equals(EVENT_PHASE_AUTO) || in_phase.equals(EVENT_PHASE_TELEOP)) {
-                for (int i = 0; i < event_list.size(); i++) {
-                    // Only build the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
-                    if ((event_list.get(i).match_phase.equals(in_phase)) && (event_list.get(i).is_FOP_Event) && (event_list.get(i).is_seq_start)) {
-                        ret[index][0] = String.valueOf(event_list.get(i).id);
-                        ret[index][1] = event_list.get(i).description;
-                        index++;
-                    }
+            if (in_phase.equals(EVENT_PHASE_NONE)) return new String[][] {{""}};
+
+            int arr_length = 0;
+            for (EventInfoRow eventInfoRow : event_list) {
+                if (eventInfoRow.match_phase.equals(in_phase) && eventInfoRow.is_FOP_Event && eventInfoRow.is_seq_start) arr_length++;
+            }
+            String[][] ret = new String[arr_length][2];
+            int index = 0;
+
+            for (EventInfoRow eventInfoRow : event_list) {
+                // Only build the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
+                if (eventInfoRow.match_phase.equals(in_phase) && eventInfoRow.is_FOP_Event && eventInfoRow.is_seq_start) {
+                    ret[index][0] = String.valueOf(eventInfoRow.id);
+                    ret[index][1] = eventInfoRow.description;
+                    index++;
                 }
             }
-
-            // Add an empty string to the end of the Array as long as we're not at the end
-            if (index < 20) {
-                ret[index][0] = "";
-                ret[index][1] = "";
-            }
-
             return ret;
         }
 
         public String[][] getNextEvents(int in_EventId) {
-            String[][] ret = new String[20][20];
-            int index = 0;
             String in_phase = "";
 
             // Find the event in the list, and get it's PHASE
-            for (int i = 0; i < event_list.size(); i++) {
-                if ((event_list.get(i).id == in_EventId)) {
-                    in_phase = event_list.get(i).match_phase;
+            for (EventInfoRow eventInfoRow : event_list) {
+                if (eventInfoRow.id == in_EventId) {
+                    in_phase = eventInfoRow.match_phase;
                     break;
                 }
             }
 
+            // Get the needed length of the array
+            int arr_length = 0;
+            for (EventInfoRow eventInfoRow : event_list) {
+                // Figure out if its valid and add one if it is
+                if (eventInfoRow.match_phase.equals(in_phase) && eventInfoRow.is_FOP_Event && eventInfoRow.is_seq_end) arr_length++;
+            }
+            if (arr_length == 0) return new String[][] {{""}};
+
+            String[][] ret = new String[arr_length][2];
+            int index = 0;
+
             // Now find all events that match the phase AND are for a FOP (field of play) AND ends a sequence
-            for (int i = 0; i < event_list.size(); i++) {
+            for (EventInfoRow eventInfoRow : event_list) {
                 // Only build the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
-                if ((event_list.get(i).match_phase.equals(in_phase)) && (event_list.get(i).is_FOP_Event) && (event_list.get(i).is_seq_end)) {
-                    ret[index][0] = String.valueOf(event_list.get(i).id);
-                    ret[index][1] = event_list.get(i).description;
+                if (eventInfoRow.match_phase.equals(in_phase) && eventInfoRow.is_FOP_Event && eventInfoRow.is_seq_end) {
+                    ret[index][0] = String.valueOf(eventInfoRow.id);
+                    ret[index][1] = eventInfoRow.description;
                     index++;
                 }
             }
-
-            // Add an empty string to the end of the Array as long as we're not at the end
-            if (index < 20) {
-                ret[index][0] = "";
-                ret[index][1] = "";
-            }
-
             return ret;
         }
 
