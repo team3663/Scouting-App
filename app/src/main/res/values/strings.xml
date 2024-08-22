@@ -5,4 +5,5 @@
     <string name="button_end_match">End Match</string>
     <string name="button_play_defense">Defense</string>
     <string name="button_was_defended">Defended</string>
+    <string name="timer_label">Time: </string>
 </resources>

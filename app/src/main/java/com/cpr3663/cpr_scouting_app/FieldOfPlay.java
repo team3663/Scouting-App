@@ -1,29 +1,47 @@
 package com.cpr3663.cpr_scouting_app;
 
+import android.app.Activity;
+import android.app.ListActivity;
+import android.content.res.Configuration;
+import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.text.Layout;
+import android.util.Pair;
+import android.view.ContextMenu;
+import android.view.Display;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.cpr3663.cpr_scouting_app.databinding.FieldOfPlayBinding;
+
 import java.util.Timer;
 import java.util.TimerTask;
-
-import com.cpr3663.cpr_scouting_app.databinding.FieldOfPlayBinding;
 
 
 public class FieldOfPlay extends AppCompatActivity {
@@ -118,6 +136,11 @@ public class FieldOfPlay extends AppCompatActivity {
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Capture screen size. Need to use WindowManager to populate a Point that holds the screen size.
+        Display myscreen = getWindowManager().getDefaultDisplay();
+        Point screen_size = new Point();
+        myscreen.getSize(screen_size);
+
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         fopBinding = FieldOfPlayBinding.inflate(getLayoutInflater());
@@ -170,15 +193,28 @@ public class FieldOfPlay extends AppCompatActivity {
         });
 
         // TEST CODE FOR DETECTING A TOUCH EVENT ON THE BUTTON
-        View field = fopBinding.imageFieldView;
-        field.setOnTouchListener(new View.OnTouchListener() {
+        // Define a field image
+        ImageView image_Field = fopBinding.imageFieldView;
+        // Initialize the fields settings
+        int image_Field_height = screen_size.x * 1297 / 2560;
+        image_Field.setX(0F);
+        image_Field.setY(screen_size.y - image_Field_height);
+        ViewGroup.LayoutParams image_Field_LP = new ViewGroup.LayoutParams(screen_size.x, image_Field_height);
+        image_Field.setLayoutParams(image_Field_LP);
+
+        // Listens for a click/touch on the screen
+        image_Field.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 // Check the motion type and if its correct then get the X and Y
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    fopBinding.clickXY.setText(motionEvent.getX() + "," + motionEvent.getY());
+                    double x = motionEvent.getX();
+                    double y = motionEvent.getY();
+                    fopBinding.textClickXY.setText(x + "," + y);
+                    // Get current time, elapsed time, or tell the logger that the initial click happened now, so it doesn't log the second click's time instead
+                    // Also make a Popup Context Menu to ask what the event was
                 }
-                // Return false to not consume the click and have it also click the button
+                // This decides if it consumes the click and stops it
                 return false;
             }
         });
@@ -244,6 +280,45 @@ public class FieldOfPlay extends AppCompatActivity {
         });
         // Do this so that you can't mess with the switch during the wrong phases
         switch_Defended.setClickable(false);
+
+        // Define a context menu
+        RelativeLayout ContextMenu = fopBinding.ContextMenu;
+        // Initialize the Context Menu's settings
+        ContextMenu.setX(0F);
+        ContextMenu.setY(screen_size.y - image_Field_height);
+        ViewGroup.LayoutParams ContextMenu_LP = new ViewGroup.LayoutParams(screen_size.x, image_Field_height);
+        ContextMenu.setLayoutParams(ContextMenu_LP);
+//        ContextMenu.setBackgroundColor(getResources().getColor(R.color.red_highlight)); // For checking it's location
+        ContextMenu.setBackgroundColor(Color.TRANSPARENT);
+        // This is required it will not run without it
+        registerForContextMenu(image_Field);
+        // So that it activates on a normal click instead of a long click
+        ContextMenu.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                image_Field.showContextMenu(motionEvent.getX(), motionEvent.getY());
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        // Create a fake text file of events and their order
+        String[] events = {"Auto Pickup", "Auto Speaker Score", "Auto Speaker Miss", "Auto Amp Score", "Auto Amp Miss", "Auto Drop", "Cancel"};
+        // Add all the events
+        for (String event : events) {
+            menu.add(event);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        if (item.getTitle() != "Cancel") {
+            fopBinding.textClickXY.setText(item.getTitle());
+        }
+        return true;
     }
 
     // =============================================================================================
@@ -290,7 +365,7 @@ public class FieldOfPlay extends AppCompatActivity {
     public void start_Teleop() {
         // Set the start Time so that the Display Time will be correct
         startTime = System.currentTimeMillis() - TIMER_AUTO_LENGTH * 1_000;
-        text_Time.setText("Time: 0:" + String.format("%02d", TIMER_AUTO_LENGTH));
+        text_Time.setText(getResources().getString(R.string.timer_label) + "0:" + String.format("%02d", TIMER_AUTO_LENGTH));
 
         // Set timer tasks
         match_Timer.schedule(teleop_timertask, TIMER_TELEOP_LENGTH * 1_000);
@@ -298,7 +373,7 @@ public class FieldOfPlay extends AppCompatActivity {
         // Set match Phase to be correct and Button text
         matchPhase = PHASE_TELEOP;
         but_MatchControl.setText(getResources().getString(R.string.button_end_match));
-        but_MatchControl.setBackgroundColor(getResources().getColor((R.color.dark_red)));
+        but_MatchControl.setBackgroundColor(getResources().getColor(R.color.dark_red));
 
         // Enable the Switches
         switch_Defense.setClickable(true);

@@ -49,25 +49,35 @@
         tools:textSize="20sp" />
 
     <ImageView
-        android:id="@+id/image_fieldView"
+        android:id="@+id/image_FieldView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:contentDescription="shows the field of play"
+        android:contentDescription="Shows the field of play"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:srcCompat="@drawable/field_image" />
+        app:srcCompat="@drawable/field_image"
+        tools:ignore="HardcodedText,MissingConstraints" />
 
     <TextView
-        android:id="@+id/clickXY"
+        android:id="@+id/text_ClickXY"
         android:layout_width="207dp"
         android:layout_height="44dp"
         android:layout_marginTop="24dp"
-        android:text=""
+        android:text="X,Y"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
+        tools:ignore="HardcodedText,MissingConstraints"
         tools:textSize="20sp" />
+
+    <RelativeLayout
+        android:id="@+id/ContextMenu"
+        android:layout_width="903dp"
+        android:layout_height="367dp"
+        tools:layout_editor_absoluteX="108dp"
+        tools:layout_editor_absoluteY="236dp"
+        tools:ignore="MissingConstraints,UselessLeaf">
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
