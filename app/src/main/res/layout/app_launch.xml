@@ -5,6 +5,7 @@
     android:id="@+id/app_launch"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/cpr_bkgnd"
     tools:context=".AppLaunch">
 
     <ImageView
@@ -19,12 +20,16 @@
 
     <TextView
         android:id="@+id/statustext"
-        android:layout_width="398dp"
-        android:layout_height="133dp"
-        android:ems="10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:ems="25"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteY="550dp" />
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
