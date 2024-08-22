@@ -1,0 +1,9 @@
+﻿Events_Id,Events_Name,Events_StartOfSeq,Events_EndOfSeq,Events_AppliesToFOP
+0,Auto_StartingNote,True,False,True
+1,Auto_Pickup,True,False,True
+2,Auto_Drop,False,True,True
+3,Auto_SpeakerScore,False,True,True
+4,Auto_SpeakerMissed,False,True,True
+5,Auto_AmpScore,False,True,True
+6,Auto_AmpMiss,False,True,True
+7,Auto_KeptNote,False,True,True

@@ -1,0 +1,17 @@
+﻿Events_Id,Events_Name,Events_StartOfSeq,Events_EndOfSeq,Events_AppliesToFOP
+50,Teleop_Pickup,True,False,True
+51,Teleop_PickupSteal,True,False,True
+52,Teleop_Drop,False,True,True
+53,Teleop_Pass,False,True,True
+54,Teleop_SpeakerScore,False,True,True
+55,Teleop_SpeakerMissed,False,True,True
+56,Teleop_AmpScore,False,True,True
+57,Teleop_AmpMissed,False,True,True
+58,Teleop_AutoNote,True,False,True
+100,End_ClimbStart,True,False,True
+101,End_ClimbSuccess,False,True,True
+102,End_ClimbFail,False,True,True
+150,Defended_Start,True,False,False
+151,Defended_End,False,True,False
+152,PlayDefense_Start,True,False,False
+153,PlayDefense_End,False,True,False
