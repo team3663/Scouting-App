@@ -73,11 +73,10 @@
 
     <RelativeLayout
         android:id="@+id/ContextMenu"
-        android:layout_width="903dp"
-        android:layout_height="367dp"
-        tools:layout_editor_absoluteX="108dp"
-        tools:layout_editor_absoluteY="236dp"
-        tools:ignore="MissingConstraints,UselessLeaf">
-    </RelativeLayout>
+        android:layout_width="1278dp"
+        android:layout_height="645dp"
+        tools:ignore="MissingConstraints,UselessLeaf"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="152dp"></RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

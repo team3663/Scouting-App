@@ -182,7 +182,7 @@ public class FieldOfPlay extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Checks the current phase and makes the button press act accordingly
-                if (matchPhase.isEmpty()) {
+                if (matchPhase == PHASE_NONE) {
                     start_Match();
                 } else if (matchPhase.equals(PHASE_AUTO)) {
                     start_Teleop();
@@ -192,7 +192,6 @@ public class FieldOfPlay extends AppCompatActivity {
             }
         });
 
-        // TEST CODE FOR DETECTING A TOUCH EVENT ON THE BUTTON
         // Define a field image
         ImageView image_Field = fopBinding.imageFieldView;
         // Initialize the fields settings
@@ -206,8 +205,8 @@ public class FieldOfPlay extends AppCompatActivity {
         image_Field.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                // Check the motion type and if its correct then get the X and Y
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                // Check the motion type and the phase and if its correct then get the X and Y
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && matchPhase != PHASE_NONE) {
                     double x = motionEvent.getX();
                     double y = motionEvent.getY();
                     fopBinding.textClickXY.setText(x + "," + y);
@@ -305,11 +304,14 @@ public class FieldOfPlay extends AppCompatActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        // Create a fake text file of events and their order
-        String[] events = {"Auto Pickup", "Auto Speaker Score", "Auto Speaker Miss", "Auto Amp Score", "Auto Amp Miss", "Auto Drop", "Cancel"};
-        // Add all the events
-        for (String event : events) {
-            menu.add(event);
+        // Check to make sure the game is going
+        if (matchPhase != PHASE_NONE) {
+            // Create a fake text file of events and their order
+            String[] events = {"Auto Pickup", "Auto Speaker Score", "Auto Speaker Miss", "Auto Amp Score", "Auto Amp Miss", "Auto Drop", "Cancel"};
+            // Add all the events
+            for (String event : events) {
+                menu.add(event);
+            }
         }
     }
 
