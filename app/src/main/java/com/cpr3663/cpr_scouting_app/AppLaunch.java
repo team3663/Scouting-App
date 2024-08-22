@@ -3,6 +3,7 @@ package com.cpr3663.cpr_scouting_app;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
@@ -19,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.TimerTask;
 
 public class AppLaunch extends AppCompatActivity {
     // =============================================================================================
@@ -297,7 +297,7 @@ public class AppLaunch extends AppCompatActivity {
             return insets;
         });
 
-        applaunchbinding.frameLayout.setBackgroundColor(R.color.cpr_bkgnd);
+        page_root_view.setBackgroundColor(R.color.cpr_bkgnd);
         LoadTeamData();
         LoadCompetitionData();
         LoadDeviceData();
@@ -313,7 +313,7 @@ public class AppLaunch extends AppCompatActivity {
         }
 
         // Go to the first page
-        Intent GoToNextPage = new Intent(AppLaunch.this, StartPage.class);
+        Intent GoToNextPage = new Intent(AppLaunch.this, PreMatch.class);
         startActivity(GoToNextPage);
     }
 

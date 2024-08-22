@@ -7,30 +7,24 @@
     android:layout_height="match_parent"
     tools:context=".AppLaunch">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="502dp"
+        android:layout_height="288dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/cpr3663"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteY="160dp" />
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="502dp"
-            android:layout_height="288dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/cpr3663"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteY="160dp" />
-
-        <TextView
-            android:id="@+id/statustext"
-            android:layout_width="398dp"
-            android:layout_height="133dp"
-            android:ems="10"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteY="550dp" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/statustext"
+        android:layout_width="398dp"
+        android:layout_height="133dp"
+        android:ems="10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteY="550dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
