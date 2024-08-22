@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="file_teams">input_data/Teams.csv</string>
+    <string name="file_competitions">input_data/Competitions.csv</string>
+    <string name="file_dnp">input_data/DNP.csv</string>
+    <string name="file_matches">input_data/Matches.csv</string>
+    <string name="file_devices">input_data/Devices.csv</string>
+    <string name="file_events_auto">input_data/Events_Auto.csv</string>
+    <string name="file_events_teleop">input_data/Events_Teleop.csv</string>
+</resources>
