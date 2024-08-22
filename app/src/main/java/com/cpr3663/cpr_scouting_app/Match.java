@@ -45,9 +45,9 @@ public class Match extends AppCompatActivity {
     private static final int BUTTON_COLOR_FLASH = Color.RED;
     private static final int BUTTON_COLOR_NORMAL = Color.LTGRAY;
     private static final int BUTTON_TEXT_COLOR_DISABLED = Color.GRAY;
-    private static final String PHASE_AUTO = "Auto";
-    private static final String PHASE_TELEOP = "Teleop";
-    private static final String PHASE_NONE = "";
+    public static final String PHASE_AUTO = "Auto";
+    public static final String PHASE_TELEOP = "Teleop";
+    public static final String PHASE_NONE = "";
 
     // =============================================================================================
     // Class:       AutoTimerTask
