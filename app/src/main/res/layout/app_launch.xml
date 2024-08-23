@@ -12,11 +12,12 @@
         android:id="@+id/imageView"
         android:layout_width="502dp"
         android:layout_height="288dp"
+        android:importantForAccessibility="no"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/cpr3663"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteY="160dp" />
+        tools:ignore="MissingConstraints,VisualLintBounds"
+        tools:layout_editor_absoluteY="350dp" />
 
     <TextView
         android:id="@+id/statustext"
@@ -30,6 +31,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/banner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="300dp"
+        android:gravity="center"
+        android:rotation="-15"
+        android:textColor="@color/cpr_green"
+        android:textSize="82sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
