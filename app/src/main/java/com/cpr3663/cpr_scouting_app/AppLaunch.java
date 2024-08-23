@@ -416,7 +416,7 @@ public class AppLaunch extends AppCompatActivity {
 
             // Look through the event rows to find a match
             for (int i = 0; i < event_list.size(); i++) {
-                if (event_list.get(i).description.equals(in_EventDescription)) {
+                if (event_list.get(i).description.equals(in_EventDescription) && event_list.get(i).match_phase.equals(Match.matchPhase)) {
                     ret = event_list.get(i).id;
                     break;
                 }

@@ -107,7 +107,7 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     private MatchBinding matchBinding;
     public static long startTime;
-    private static String matchPhase = PHASE_NONE;
+    public static String matchPhase = PHASE_NONE;
     private static int eventPrevious = -1;
     // Define a button that starts the match, skips to Teleop, and ends the match early
     Button but_MatchControl;
