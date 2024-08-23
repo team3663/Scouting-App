@@ -82,9 +82,9 @@ public class AppLaunch extends AppCompatActivity {
             private int blue3 = 0;
 
             // Contructor with a csv string
-            public MatchInfoRow(String csvRow) {
-                if (!csvRow.equals(NO_MATCH)) {
-                    String[] data = csvRow.split(",");
+            public MatchInfoRow(String in_csvRow) {
+                if (!in_csvRow.equals(NO_MATCH)) {
+                    String[] data = in_csvRow.split(",");
                     // Validate we have enough values otherwise this was a bad row and we'll get an out-of-bounds exception
                     if (data.length == 8) {
                         red1 = Integer.valueOf(data[2]);
@@ -365,12 +365,10 @@ public class AppLaunch extends AppCompatActivity {
             // Error check the input and only do this if they passed in a valid parameter
             if (in_phase.equals(Match.PHASE_AUTO) || in_phase.equals(Match.PHASE_TELEOP)) {
                 for (EventInfoRow eventInfoRow : event_list) {
-                    for (int i = 0; i < event_list.size(); i++) {
-                        // Only build the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
-                        if ((event_list.get(i).match_phase.equals(in_phase)) && (event_list.get(i).is_FOP_Event) && (event_list.get(i).is_seq_start)) {
-                            ret.add(event_list.get(i).description);
+                    // Only build the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
+                    if ((eventInfoRow.match_phase.equals(in_phase)) && (eventInfoRow.is_FOP_Event) && (eventInfoRow.is_seq_start)) {
+                        ret.add(eventInfoRow.description);
                         }
-                    }
                 }
             }
 
