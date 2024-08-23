@@ -3,8 +3,6 @@ package com.cpr3663.cpr_scouting_app;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Pair;
-import android.view.Display;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
@@ -28,7 +26,7 @@ public class AppLaunch extends AppCompatActivity {
     // =============================================================================================
     // Define constants
     // =============================================================================================
-    private static final long SPLASH_SCREEN_DELAY = 300; // delay (ms) inbetween "loading" messages
+    private static final long SPLASH_SCREEN_DELAY = 300; // delay (ms) in between "loading" messages
     private static final String NO_TEAM = "No Team Exists"; // use to check if no team exists for a given team number
     private static final String NO_MATCH = "No Match"; // use to check if no match info exists for a given match number
     private static final String NO_COMPETITION = "No Competition Name Exists"; // use to check if no competition info exists for a given competition id
@@ -43,7 +41,7 @@ public class AppLaunch extends AppCompatActivity {
     public static class MatchInfo {
         private ArrayList<MatchInfoRow> match_list;
 
-        // Contructor
+        // Constructor
         public MatchInfo() {
             match_list = new ArrayList<MatchInfoRow>();
         }
@@ -78,35 +76,35 @@ public class AppLaunch extends AppCompatActivity {
             private int blue2 = 0;
             private int blue3 = 0;
 
-            // Contructor with a csv string
+            // Constructor with a csv string
             public MatchInfoRow(String csvRow) {
                 if (!csvRow.equals(NO_MATCH)) {
                     String[] data = csvRow.split(",");
                     // Validate we have enough values otherwise this was a bad row and we'll get an out-of-bounds exception
                     if (data.length == 8) {
-                        red1 = Integer.valueOf(data[2]);
-                        red2 = Integer.valueOf(data[3]);
-                        red3 = Integer.valueOf(data[4]);
-                        blue1 = Integer.valueOf(data[5]);
-                        blue2 = Integer.valueOf(data[6]);
-                        blue3 = Integer.valueOf(data[7]);
+                        red1 = Integer.parseInt(data[2]);
+                        red2 = Integer.parseInt(data[3]);
+                        red3 = Integer.parseInt(data[4]);
+                        blue1 = Integer.parseInt(data[5]);
+                        blue2 = Integer.parseInt(data[6]);
+                        blue3 = Integer.parseInt(data[7]);
                     }
                 }
             }
 
-            // Contructor with individual data
+            // Constructor with individual data
             public MatchInfoRow(String in_red1, String in_red2, String in_red3, String in_blue1, String in_blue2, String in_blue3) {
-                red1 = Integer.valueOf(in_red1);
-                red2 = Integer.valueOf(in_red2);
-                red3 = Integer.valueOf(in_red3);
-                blue1 = Integer.valueOf(in_blue1);
-                blue2 = Integer.valueOf(in_blue2);
-                blue3 = Integer.valueOf(in_blue3);
+                red1 = Integer.parseInt(in_red1);
+                red2 = Integer.parseInt(in_red2);
+                red3 = Integer.parseInt(in_red3);
+                blue1 = Integer.parseInt(in_blue1);
+                blue2 = Integer.parseInt(in_blue2);
+                blue3 = Integer.parseInt(in_blue3);
             }
 
             // Member Function: Return a list of team numbers for this match
             public int[] getListOfTeams() {
-                return new int[]{red1, red2, red3, blue1, blue2, blue3};
+                return new int[] {red1, red2, red3, blue1, blue2, blue3};
             }
         }
     }
@@ -122,7 +120,7 @@ public class AppLaunch extends AppCompatActivity {
     public static class CompetitionInfo {
         private ArrayList<CompetitionInfoRow> competition_list;
 
-        // Contructor
+        // Constructor
         public CompetitionInfo() {
             competition_list = new ArrayList<CompetitionInfoRow>();
         }
@@ -155,9 +153,9 @@ public class AppLaunch extends AppCompatActivity {
             private int id = 0;
             private String description = "";
 
-            // Contructor with individual data
+            // Constructor with individual data
             public CompetitionInfoRow(String in_id, String in_description) {
-                id = Integer.valueOf(in_id);
+                id = Integer.parseInt(in_id);
                 description = in_description;
             }
 
@@ -220,10 +218,10 @@ public class AppLaunch extends AppCompatActivity {
             private int team_number = 0;
             private String description = "";
 
-            // Contructor with individual data
+            // Constructor with individual data
             public DeviceInfoRow(String in_device_number, String in_team_number, String in_description) {
-                device_number = Integer.valueOf(in_device_number);
-                team_number = Integer.valueOf(in_team_number);
+                device_number = Integer.parseInt(in_device_number);
+                team_number = Integer.parseInt(in_team_number);
                 description = in_description;
             }
 
@@ -303,9 +301,9 @@ public class AppLaunch extends AppCompatActivity {
             private int id = 0;
             private String description = "";
 
-            // Contructor with individual data
+            // Constructor with individual data
             public DNPInfoRow(String in_id, String in_description) {
-                id = Integer.valueOf(in_id);
+                id = Integer.parseInt(in_id);
                 description = in_description;
             }
 
@@ -352,7 +350,7 @@ public class AppLaunch extends AppCompatActivity {
 
         // Member Function: Add a row of event info into the list giving the data individually
         public void addEventRow(String in_id, String in_description, String in_phase, String in_seq_start, String in_FOP, String in_next_set) {
-            event_list.add(new EventInfoRow(Integer.valueOf(in_id), in_description, in_phase, Boolean.valueOf(in_seq_start), Boolean.valueOf(in_FOP), in_next_set));
+            event_list.add(new EventInfoRow(Integer.parseInt(in_id), in_description, in_phase, Boolean.parseBoolean(in_seq_start), Boolean.parseBoolean(in_FOP), in_next_set));
         }
 
         // Member Function: Return a list of Events (description) for a give phase of the match (only ones that start a sequence)
@@ -395,7 +393,7 @@ public class AppLaunch extends AppCompatActivity {
             for (int i = 0; i < event_list.size(); i++) {
                 for (int j = ret.size(); j < next_set_ids.length; j++) {
                     // If the event we're looking at (i) is in the list of valid next event ids (j) add it to the list
-                    if (event_list.get(i).id == Integer.valueOf(next_set_ids[j])) {
+                    if (event_list.get(i).id == Integer.parseInt(next_set_ids[j])) {
                         ret.add(event_list.get(i).description);
                     }
                 }
@@ -547,11 +545,11 @@ public class AppLaunch extends AppCompatActivity {
             while ((line = br.readLine()) != null) {
                 String[] info = line.split(",");
                 // Need to make sure there's no gaps so the team number and index align
-                for (int i = index; i < Integer.valueOf(info[0]); i++) {
+                for (int i = index; i < Integer.parseInt(info[0]); i++) {
                     TeamList.add(NO_TEAM);
                 }
                 TeamList.add(info[1]);
-                index = Integer.valueOf(info[0]) + 1;
+                index = Integer.parseInt(info[0]) + 1;
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -571,9 +569,9 @@ public class AppLaunch extends AppCompatActivity {
         String line = "";
 
         // Open the asset file holding all of the Competition information
-        // Read each line and add the compeition name into the ArrayList and use the competition id
+        // Read each line and add the competition name into the ArrayList and use the competition id
         // as the index to the array.  We need to then ensure that if there's a gap in competition
-        // numbers, we fill the Array with a "NO_COMPETITON" entry so subsequent competitions are
+        // numbers, we fill the Array with a "NO_COMPETITION" entry so subsequent competitions are
         // matched with their corresponding index into the ArrayList.  This should never happen.
         applaunchbinding.statustext.setText(getResources().getString(R.string.loading_competitions));
         try {
@@ -617,12 +615,12 @@ public class AppLaunch extends AppCompatActivity {
             while ((line = br.readLine()) != null) {
                 String[] info = line.split(",");
                 // Use only the match information that equals the competition we're in.
-                if (Integer.valueOf(info[0]) == CompetitionId) {
-                    for (int i = index; i < Integer.valueOf(info[1]); i++) {
+                if (Integer.parseInt(info[0]) == CompetitionId) {
+                    for (int i = index; i < Integer.parseInt(info[1]); i++) {
                         MatchList.addMatchRow(NO_MATCH);
                     }
                     MatchList.addMatchRow(info[2], info[3], info[4], info[5], info[6], info[7]);
-                    index = Integer.valueOf(info[1]) + 1;
+                    index = Integer.parseInt(info[1]) + 1;
                 }
             }
         } catch (FileNotFoundException e) {
@@ -686,7 +684,7 @@ public class AppLaunch extends AppCompatActivity {
             while ((line = br.readLine()) != null) {
                 String[] info = line.split(",");
                 // Only load "active" DNP reasons
-                if (Boolean.valueOf(info[2])) {
+                if (Boolean.parseBoolean(info[2])) {
                     DNPList.addDNPRow(info[0], info[1]);
                 }
             }
@@ -728,7 +726,7 @@ public class AppLaunch extends AppCompatActivity {
             throw new RuntimeException(e);
         }
 
-        // Do the same for Tele-op Events.
+        // Do the same for Teleop Events.
         applaunchbinding.statustext.setText(getResources().getString(R.string.loading_events_teleop));
 
         try {
