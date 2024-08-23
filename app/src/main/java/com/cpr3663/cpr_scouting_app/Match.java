@@ -1,16 +1,16 @@
 package com.cpr3663.cpr_scouting_app;
 
-import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.View;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.os.Bundle;
 import android.text.Layout;
+import android.view.ContextMenu;
 import android.view.Display;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -27,8 +27,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.cpr3663.cpr_scouting_app.databinding.MatchBinding;
-import com.cpr3663.cpr_scouting_app.databinding.MatchBinding;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -108,6 +108,7 @@ public class Match extends AppCompatActivity {
     private MatchBinding matchBinding;
     public static long startTime;
     private static String matchPhase = PHASE_NONE;
+    private static int eventPrevious = -1;
     // Define a button that starts the match, skips to Teleop, and ends the match early
     Button but_MatchControl;
     // Define a TextView to display the match time
@@ -294,9 +295,17 @@ public class Match extends AppCompatActivity {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         // Check to make sure the game is going
-        if (matchPhase != PHASE_NONE) {
-            // Create a fake text file of events and their order
-            String[] events = {"Auto Pickup", "Auto Speaker Score", "Auto Speaker Miss", "Auto Amp Score", "Auto Amp Miss", "Auto Drop", "Cancel"};
+        if (!matchPhase.equals(PHASE_NONE)) {
+            // Get the events
+            String[] events;
+            ArrayList<String> events_al;
+            if (eventPrevious != -1) {
+                events_al = AppLaunch.EventList.getNextEvents(eventPrevious);
+            } else {
+                events_al = AppLaunch.EventList.getEventsForPhase(matchPhase);
+            }
+            events = new String[events_al.size()];
+            events = events_al.toArray(events);
             // Add all the events
             for (String event : events) {
                 menu.add(event);
@@ -308,6 +317,8 @@ public class Match extends AppCompatActivity {
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         if (item.getTitle() != "Cancel") {
             matchBinding.textClickXY.setText(item.getTitle());
+            eventPrevious = AppLaunch.EventList.getEventId((String) item.getTitle());
+            // Log the event
         }
         return true;
     }
