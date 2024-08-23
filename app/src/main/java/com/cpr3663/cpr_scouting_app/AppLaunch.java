@@ -177,10 +177,10 @@ public class AppLaunch extends AppCompatActivity {
 
             // Error check the input and only do this if they passed in a valid parameter
             if (in_phase.equals(Match.PHASE_AUTO) || in_phase.equals(Match.PHASE_TELEOP)) {
-                for (int i = 0; i < event_list.size(); i++) {
+                for (EventInfoRow eventInfoRow : event_list) {
                     // Only build the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
-                    if ((event_list.get(i).match_phase.equals(in_phase)) && (event_list.get(i).is_FOP_Event) && (event_list.get(i).is_seq_start)) {
-                        ret.add(event_list.get(i).getDescription());
+                    if (eventInfoRow.match_phase.equals(in_phase) && eventInfoRow.is_FOP_Event && eventInfoRow.is_seq_start) {
+                        ret.add(eventInfoRow.getDescription());
                     }
                 }
             }
@@ -193,29 +193,18 @@ public class AppLaunch extends AppCompatActivity {
             String in_phase = "";
 
             // Find the event in the list, and get it's PHASE
-            for (int i = 0; i < event_list.size(); i++) {
-                if ((event_list.get(i).getId() == in_EventId)) {
-                    in_phase = event_list.get(i).match_phase;
+            for (EventInfoRow eventInfoRow : event_list) {
+                if (eventInfoRow.getId() == in_EventId) {
+                    in_phase = eventInfoRow.match_phase;
                     break;
                 }
             }
 
-            // Get the needed length of the array
-            int arr_length = 0;
-            for (EventInfoRow eventInfoRow : event_list) {
-                // Figure out if its valid and add one if it is
-                if (eventInfoRow.match_phase.equals(in_phase) && eventInfoRow.is_FOP_Event && eventInfoRow.is_seq_end) arr_length++;
-            }
-            if (arr_length == 0) return new String[][] {{""}};
-
-            String[][] ret = new String[arr_length][2];
-            int index = 0;
-
             // Now find all events that match the phase AND are for a FOP (field of play) AND ends a sequence
             for (EventInfoRow eventInfoRow : event_list) {
                 // Only build the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
-                if ((event_list.get(i).match_phase.equals(in_phase)) && (event_list.get(i).is_FOP_Event) && (event_list.get(i).is_seq_end)) {
-                    ret.add(event_list.get(i).getDescription());
+                if ((eventInfoRow.match_phase.equals(in_phase)) && (eventInfoRow.is_FOP_Event) && (eventInfoRow.is_seq_end)) {
+                    ret.add(eventInfoRow.getDescription());
                 }
             }
 
@@ -226,13 +215,12 @@ public class AppLaunch extends AppCompatActivity {
             int ret = NO_EVENT;
 
             // Look through the event rows to find a match
-            for (int i = 0; i < event_list.size(); i++) {
-                if (event_list.get(i).getDescription().equals(in_EventDescription)) {
-                    ret = event_list.get(i).getId();
+            for (EventInfoRow eventInfoRow : event_list) {
+                if (eventInfoRow.getDescription().equals(in_EventDescription)) {
+                    ret = eventInfoRow.getId();
                     break;
                 }
             }
-
             return ret;
         }
 
