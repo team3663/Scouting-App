@@ -1,7 +1,10 @@
 package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
@@ -77,9 +80,10 @@ public class AppLaunch extends AppCompatActivity {
             private int blue3 = 0;
 
             // Constructor with a csv string
-            public MatchInfoRow(String csvRow) {
-                if (!csvRow.equals(NO_MATCH)) {
-                    String[] data = csvRow.split(",");
+            public MatchInfoRow(String in_csvRow) {
+                if (!in_csvRow.equals(NO_MATCH)) {
+                    String[] data = in_csvRow.split(",");
+
                     // Validate we have enough values otherwise this was a bad row and we'll get an out-of-bounds exception
                     if (data.length == 8) {
                         red1 = Integer.parseInt(data[2]);
@@ -360,12 +364,10 @@ public class AppLaunch extends AppCompatActivity {
             // Error check the input and only do this if they passed in a valid parameter
             if (in_phase.equals(Match.PHASE_AUTO) || in_phase.equals(Match.PHASE_TELEOP)) {
                 for (EventInfoRow eventInfoRow : event_list) {
-                    for (int i = 0; i < event_list.size(); i++) {
-                        // Only build the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
-                        if ((event_list.get(i).match_phase.equals(in_phase)) && (event_list.get(i).is_FOP_Event) && (event_list.get(i).is_seq_start)) {
-                            ret.add(event_list.get(i).description);
+                    // Only build the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
+                    if ((eventInfoRow.match_phase.equals(in_phase)) && (eventInfoRow.is_FOP_Event) && (eventInfoRow.is_seq_start)) {
+                        ret.add(eventInfoRow.description);
                         }
-                    }
                 }
             }
 
@@ -490,6 +492,41 @@ public class AppLaunch extends AppCompatActivity {
 
         applaunchbinding.banner.setText(getResources().getString(R.string.banner_app_name));
 
+        // TODO: Here's how you read in app preferences (settings) and set them.
+        // TODO: need an Admin / Settings page with a button Sprocket to go to and return to previous page
+        // TODO: Either way, we need to read them in and if empty, force user to admin page to set.  AFTER we load the data
+        SharedPreferences sp = this.getSharedPreferences(getResources().getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+        int d = sp.getInt("DeviceId", -1);
+
+        SharedPreferences.Editor spe = sp.edit();
+        spe.putInt("DeviceId", 4);
+        spe.apply();
+
+        // TODO: Define the Settings Button
+        applaunchbinding.settingsButton.setImageResource(R.drawable.settings_icon);
+        applaunchbinding.settingsButton.setBackgroundColor(Color.TRANSPARENT); // Set background Color
+        applaunchbinding.settingsButton.setVisibility(View.INVISIBLE);
+        applaunchbinding.settingsButton.setClickable(false);
+
+        // Define the Start Scouting Button
+        applaunchbinding.startScoutingbutton.setText(R.string.button_start_scouting);
+        applaunchbinding.startScoutingbutton.setBackgroundColor(Color.WHITE);
+        applaunchbinding.startScoutingbutton.setTextColor(R.color.cpr_bkgnd);
+        applaunchbinding.startScoutingbutton.setVisibility(View.INVISIBLE);
+        applaunchbinding.startScoutingbutton.setClickable(false);
+        applaunchbinding.startScoutingbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Stop the timer
+                appLaunch_timer.cancel();
+                appLaunch_timer.purge();
+
+                // Go to the first page
+                Intent GoToNextPage = new Intent(AppLaunch.this, PreMatch.class);
+                startActivity(GoToNextPage);
+            }
+        });
+
         // Set a TimerTask to load the data shortly AFTER this OnCreate finishes
         appLaunch_timer.schedule(new TimerTask() {
             @Override
@@ -512,9 +549,23 @@ public class AppLaunch extends AppCompatActivity {
                     throw new RuntimeException(e);
                 }
 
-                // Go to the first page
-                Intent GoToNextPage = new Intent(AppLaunch.this, PreMatch.class);
-                startActivity(GoToNextPage);
+                // Erase the status text
+                applaunchbinding.statustext.setText("");
+
+                // Enable the start scouting button and settings button
+                applaunchbinding.startScoutingbutton.setClickable(true);
+                applaunchbinding.settingsButton.setClickable(true);
+
+                // Setting the Visibility attribute can't be set from a non-UI thread (like withing a TimerTask
+                // that runs on a separate thread.  So we need to make a Runner that will execute on the UI thread
+                // to set these.
+                AppLaunch.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        applaunchbinding.startScoutingbutton.setVisibility(View.VISIBLE);
+                        applaunchbinding.settingsButton.setVisibility(View.VISIBLE);
+                    }
+                });
             }
         }, 100);
     }
