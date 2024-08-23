@@ -362,10 +362,11 @@ public class AppLaunch extends AppCompatActivity {
             // Error check the input and only do this if they passed in a valid parameter
             if (in_phase.equals(Match.PHASE_AUTO) || in_phase.equals(Match.PHASE_TELEOP)) {
                 for (EventInfoRow eventInfoRow : event_list) {
-                for (int i = 0; i < event_list.size(); i++) {
-                    // Only build the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
-                    if ((event_list.get(i).match_phase.equals(in_phase)) && (event_list.get(i).is_FOP_Event) && (event_list.get(i).is_seq_start)) {
-                        ret.add(event_list.get(i).description);
+                    for (int i = 0; i < event_list.size(); i++) {
+                        // Only build the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
+                        if ((event_list.get(i).match_phase.equals(in_phase)) && (event_list.get(i).is_FOP_Event) && (event_list.get(i).is_seq_start)) {
+                            ret.add(event_list.get(i).description);
+                        }
                     }
                 }
             }
@@ -489,7 +490,7 @@ public class AppLaunch extends AppCompatActivity {
             return insets;
         });
 
-        applaunchbinding.banner.setText(getResources().getColor(R.string.banner_app_name));
+        applaunchbinding.banner.setText(getResources().getString(R.string.banner_app_name));
 
         // Set a TimerTask to load the data shortly AFTER this OnCreate finishes
         appLaunch_timer.schedule(new TimerTask() {
