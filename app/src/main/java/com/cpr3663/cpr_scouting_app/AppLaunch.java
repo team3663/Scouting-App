@@ -21,12 +21,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class AppLaunch extends AppCompatActivity {
     // =============================================================================================
     // Define constants
     // =============================================================================================
-    private static final long SPLASH_SCREEN_DELAY = 2_000;
+    private static final long SPLASH_SCREEN_DELAY = 300;
     private static final String NO_TEAM = "No Team Exists";
     private static final String NO_MATCH = "No Match";
     private static final String NO_COMPETITION = "No Competition Name Exists";
@@ -40,12 +42,12 @@ public class AppLaunch extends AppCompatActivity {
     // =============================================================================================
     public static class MatchInfoRow {
         // Class Members
-        protected int red1 = 0;
-        protected int red2 = 0;
-        protected int red3 = 0;
-        protected int blue1 = 0;
-        protected int blue2 = 0;
-        protected int blue3 = 0;
+        private int red1 = 0;
+        private int red2 = 0;
+        private int red3 = 0;
+        private int blue1 = 0;
+        private int blue2 = 0;
+        private int blue3 = 0;
 
         public MatchInfoRow(String csvRow)
         {
@@ -71,8 +73,7 @@ public class AppLaunch extends AppCompatActivity {
         }
 
         public int[] getListOfTeams() {
-            int[] list = { red1, red2, red3, blue1, blue2, blue3};
-            return list;
+            return new int[] {red1, red2, red3, blue1, blue2, blue3};
         }
     }
 
@@ -88,9 +89,9 @@ public class AppLaunch extends AppCompatActivity {
     // =============================================================================================
     public static class DeviceInfoRow {
         // Class Members
-        protected int device_number = 0;
-        protected int team_number = 0;
-        protected String description = "";
+        private int device_number = 0;
+        private int team_number = 0;
+        private String description = "";
 
         public DeviceInfoRow(String in_device_number, String in_team_number, String in_description)
         {
@@ -122,8 +123,8 @@ public class AppLaunch extends AppCompatActivity {
     // =============================================================================================
     public static class DNPInfoRow {
         // Class Members
-        protected int id = 0;
-        protected String description = "";
+        private int id = 0;
+        private String description = "";
 
         public DNPInfoRow(String in_id, String in_description)
         {
@@ -146,7 +147,7 @@ public class AppLaunch extends AppCompatActivity {
     // Methods:     addEventRow()
     //                  adds a row to the list of events
     //              getEventsForPhase()
-    //                  returns an array of possible initial events in the given match phase
+    //                  returns a ListArray of possible initial events in the given match phase
     //              getNextEvents(int EventId)
     //                  returns an array of possible Events that can happen after EventId
     //              getEventId(String EventDescription)
@@ -155,20 +156,15 @@ public class AppLaunch extends AppCompatActivity {
     // =============================================================================================
     public static class EventInfo {
         // Class Members
-        protected ArrayList<EventInfoRow> event_list;
+        private ArrayList<EventInfoRow> event_list;
 
         // Class constants
         public static final String EVENT_STARTING_NOTE = "";
         public static final String EVENT_DEFENDED_START = "";
         public static final String EVENT_DEFENDED_END = "";
         public static final String EVENT_DEFENSE_START = "";
-        public static final String EVENT_DEFENSE_END = "";
-        public static final String EVENT_PHASE_NONE = Match.PHASE_NONE;
-        public static final String EVENT_PHASE_AUTO = Match.PHASE_AUTO;
-        public static final String EVENT_PHASE_TELEOP = Match.PHASE_TELEOP;
 
-        public EventInfo()
-        {
+        public EventInfo() {
             event_list = new ArrayList<EventInfoRow>();
         }
 
@@ -176,36 +172,30 @@ public class AppLaunch extends AppCompatActivity {
             event_list.add(new EventInfoRow(Integer.valueOf(in_id), in_description, in_phase, Boolean.valueOf(in_FOP), Boolean.valueOf(in_seq_start), Boolean.valueOf(in_seq_end)));
         }
 
-        public String[][] getEventsForPhase(String in_phase) {
+        public ArrayList<String> getEventsForPhase(String in_phase) {
+            ArrayList<String> ret = new ArrayList<String>();
 
             // Error check the input and only do this if they passed in a valid parameter
-            if (in_phase.equals(EVENT_PHASE_NONE)) return new String[][] {{""}};
-
-            int arr_length = 0;
-            for (EventInfoRow eventInfoRow : event_list) {
-                if (eventInfoRow.match_phase.equals(in_phase) && eventInfoRow.is_FOP_Event && eventInfoRow.is_seq_start) arr_length++;
-            }
-            String[][] ret = new String[arr_length][2];
-            int index = 0;
-
-            for (EventInfoRow eventInfoRow : event_list) {
-                // Only build the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
-                if (eventInfoRow.match_phase.equals(in_phase) && eventInfoRow.is_FOP_Event && eventInfoRow.is_seq_start) {
-                    ret[index][0] = String.valueOf(eventInfoRow.id);
-                    ret[index][1] = eventInfoRow.description;
-                    index++;
+            if (in_phase.equals(Match.PHASE_AUTO) || in_phase.equals(Match.PHASE_TELEOP)) {
+                for (int i = 0; i < event_list.size(); i++) {
+                    // Only build the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
+                    if ((event_list.get(i).match_phase.equals(in_phase)) && (event_list.get(i).is_FOP_Event) && (event_list.get(i).is_seq_start)) {
+                        ret.add(event_list.get(i).getDescription());
+                    }
                 }
             }
+
             return ret;
         }
 
-        public String[][] getNextEvents(int in_EventId) {
+        public ArrayList<String> getNextEvents(int in_EventId) {
+            ArrayList<String> ret = new ArrayList<String>();
             String in_phase = "";
 
             // Find the event in the list, and get it's PHASE
-            for (EventInfoRow eventInfoRow : event_list) {
-                if (eventInfoRow.id == in_EventId) {
-                    in_phase = eventInfoRow.match_phase;
+            for (int i = 0; i < event_list.size(); i++) {
+                if ((event_list.get(i).getId() == in_EventId)) {
+                    in_phase = event_list.get(i).match_phase;
                     break;
                 }
             }
@@ -224,12 +214,11 @@ public class AppLaunch extends AppCompatActivity {
             // Now find all events that match the phase AND are for a FOP (field of play) AND ends a sequence
             for (EventInfoRow eventInfoRow : event_list) {
                 // Only build the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
-                if (eventInfoRow.match_phase.equals(in_phase) && eventInfoRow.is_FOP_Event && eventInfoRow.is_seq_end) {
-                    ret[index][0] = String.valueOf(eventInfoRow.id);
-                    ret[index][1] = eventInfoRow.description;
-                    index++;
+                if ((event_list.get(i).match_phase.equals(in_phase)) && (event_list.get(i).is_FOP_Event) && (event_list.get(i).is_seq_end)) {
+                    ret.add(event_list.get(i).getDescription());
                 }
             }
+
             return ret;
         }
 
@@ -238,8 +227,8 @@ public class AppLaunch extends AppCompatActivity {
 
             // Look through the event rows to find a match
             for (int i = 0; i < event_list.size(); i++) {
-                if (event_list.get(i).description.equals(in_EventDescription)) {
-                    ret = event_list.get(i).id;
+                if (event_list.get(i).getDescription().equals(in_EventDescription)) {
+                    ret = event_list.get(i).getId();
                     break;
                 }
             }
@@ -254,21 +243,44 @@ public class AppLaunch extends AppCompatActivity {
         // =============================================================================================
         private class EventInfoRow {
             // Class Members
-            protected int id = 0;
-            protected String match_phase = "";
-            protected String description = "";
-            protected boolean is_FOP_Event = false;
-            protected boolean is_seq_start = false;
-            protected boolean is_seq_end = false;
+            private int id = 0;
+            private String description = "";
+            private String match_phase = "";
+            private boolean is_FOP_Event = false;
+            private boolean is_seq_start = false;
+            private boolean is_seq_end = false;
 
-            public EventInfoRow(int in_id, String in_description, String in_phase, Boolean in_FOP, Boolean in_seq_start, Boolean in_seq_end)
-            {
+            public EventInfoRow(int in_id, String in_description, String in_phase, Boolean in_FOP, Boolean in_seq_start, Boolean in_seq_end) {
                 id = in_id;
                 description = in_description;
                 match_phase = in_phase;
                 is_FOP_Event = in_FOP;
                 is_seq_start = in_seq_start;
                 is_seq_end = in_seq_end;
+            }
+
+            public int getId() {
+                return id;
+            }
+
+            public String getDescription() {
+                return description;
+            }
+
+            public String getMatch_phase() {
+                return match_phase;
+            }
+
+            public boolean isIs_FOP_Event() {
+                return is_FOP_Event;
+            }
+
+            public boolean isIs_seq_start() {
+                return is_seq_start;
+            }
+
+            public boolean isIs_seq_end() {
+                return is_seq_end;
             }
         }
     }
@@ -284,6 +296,7 @@ public class AppLaunch extends AppCompatActivity {
     public static ArrayList<DNPInfoRow> DNPList = new ArrayList<DNPInfoRow>();
     public static EventInfo EventList = new EventInfo();
     public static int CompetitionId = 4;
+    public static Timer appLaunch_timer = new Timer();
 
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility"})
     @Override
@@ -299,25 +312,36 @@ public class AppLaunch extends AppCompatActivity {
             return insets;
         });
 
-        page_root_view.setBackgroundColor(R.color.cpr_bkgnd);
-        LoadTeamData();
-        LoadCompetitionData();
-        LoadDeviceData();
-        LoadDNPData();
-        LoadMatchData();
-        LoadEventData();
+//        page_root_view.setBackgroundColor(R.color.cpr_bkgnd);
 
-        // Small delay to show the splash screen
-        try {
-            Thread.sleep(SPLASH_SCREEN_DELAY);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        appLaunch_timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // Load the data with a BRIEF delay between.  :)
+                try {
+                    LoadTeamData();
+                    Thread.sleep(SPLASH_SCREEN_DELAY);
+                    LoadCompetitionData();
+                    Thread.sleep(SPLASH_SCREEN_DELAY);
+                    LoadDeviceData();
+                    Thread.sleep(SPLASH_SCREEN_DELAY);
+                    LoadDNPData();
+                    Thread.sleep(SPLASH_SCREEN_DELAY);
+                    LoadMatchData();
+                    Thread.sleep(SPLASH_SCREEN_DELAY);
+                    LoadEventData();
+                    Thread.sleep(SPLASH_SCREEN_DELAY);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
 
-        // Go to the first page
-        Intent GoToNextPage = new Intent(AppLaunch.this, PreMatch.class);
-        startActivity(GoToNextPage);
+                // Go to the first page
+                Intent GoToNextPage = new Intent(AppLaunch.this, PreMatch.class);
+                startActivity(GoToNextPage);
+            }
+        }, 500);
     }
+
 
     // =============================================================================================
     // Function:    LoadTeamData
@@ -517,20 +541,37 @@ public class AppLaunch extends AppCompatActivity {
     public void LoadEventData(){
         String line = "";
 
-        applaunchbinding.statustext.setText(getResources().getString(R.string.loading_events_auto));
-
         // Open the asset file holding all of the Event information for AUTO
         // Read each line and add the event information into the EventList.  There is no mapping
         // of the event number and the index into the array (there's no need)
         //
         // This list also uses an array of EventRowInfo since we're storing more than 1 value
+        applaunchbinding.statustext.setText(getResources().getString(R.string.loading_events_auto));
+
         try {
             InputStream is = getAssets().open(getResources().getString(R.string.file_events_auto));
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] info = line.split(",");
-                EventList.addEventRow(info[0], info[1], EventInfo.EVENT_PHASE_AUTO, info[2], info[3], info[4]);
+                EventList.addEventRow(info[0], info[1], Match.PHASE_AUTO, info[4], info[2], info[3]);
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Do the same for Tele-op Events.
+        applaunchbinding.statustext.setText(getResources().getString(R.string.loading_events_teleop));
+
+        try {
+            InputStream is = getAssets().open(getResources().getString(R.string.file_events_teleop));
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            line = br.readLine();
+            while ((line = br.readLine()) != null) {
+                String[] info = line.split(",");
+                EventList.addEventRow(info[0], info[1], Match.PHASE_TELEOP, info[4], info[2], info[3]);
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
