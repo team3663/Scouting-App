@@ -1,7 +1,9 @@
 package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.Display;
@@ -491,6 +493,16 @@ public class AppLaunch extends AppCompatActivity {
         });
 
         applaunchbinding.banner.setText(getResources().getString(R.string.banner_app_name));
+
+        // TODO: Here's how you read in app preferences (settings) and set them.
+        // TODO: need an Admin / Settings page with a button Sprocket to go to and return to previous page
+        // TODO: Either way, we need to read them in and if empty, force user to admin page to set.  AFTER we load the data
+        SharedPreferences sp = this.getSharedPreferences(getResources().getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+        int d = sp.getInt("DeviceId", -1);
+
+        SharedPreferences.Editor spe = sp.edit();
+        spe.putInt("DeviceId", 4);
+        spe.apply();
 
         // Set a TimerTask to load the data shortly AFTER this OnCreate finishes
         appLaunch_timer.schedule(new TimerTask() {

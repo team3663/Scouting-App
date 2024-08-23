@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">CPR-Scouting-App</string>
-    <string name="banner_app_name">Scouting App"</string>
+    <string name="banner_app_name">Scouting App</string>
+    <string name="preference_setting_file_key">com.cpr3663.cpr_scouting_app.PREFERENCE_FILE_KEY</string>
 
     <string name="button_start_match">Start Match</string>
     <string name="button_start_teleop">Start Teleop</string>
