@@ -127,9 +127,9 @@ public class Match extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Capture screen size. Need to use WindowManager to populate a Point that holds the screen size.
-        Display myscreen = getWindowManager().getDefaultDisplay();
+        Display screen = getWindowManager().getDefaultDisplay();
         Point screen_size = new Point();
-        myscreen.getSize(screen_size);
+        screen.getSize(screen_size);
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
@@ -172,12 +172,16 @@ public class Match extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Checks the current phase and makes the button press act accordingly
-                if (matchPhase == PHASE_NONE) {
-                    start_Match();
-                } else if (matchPhase.equals(PHASE_AUTO)) {
-                    start_Teleop();
-                } else if (matchPhase.equals(PHASE_TELEOP)) {
-                    end_match();
+                switch (matchPhase) {
+                    case PHASE_NONE:
+                        start_Match();
+                        break;
+                    case PHASE_AUTO:
+                        start_Teleop();
+                        break;
+                    case PHASE_TELEOP:
+                        end_match();
+                        break;
                 }
             }
         });
@@ -196,7 +200,7 @@ public class Match extends AppCompatActivity {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 // Check the motion type and the phase and if its correct then get the X and Y
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && matchPhase != PHASE_NONE) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && !matchPhase.equals(PHASE_NONE)) {
                     double x = motionEvent.getX();
                     double y = motionEvent.getY();
                     matchBinding.textClickXY.setText(x + "," + y);

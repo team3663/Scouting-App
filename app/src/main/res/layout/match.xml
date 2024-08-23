@@ -12,7 +12,7 @@
         android:layout_width="140dp"
         android:layout_height="65dp"
         android:text="Time: 0"
-        tools:ignore="HardcodedText,MissingConstraints"
+        tools:ignore="HardcodedText,MissingConstraints,VisualLintBounds"
         tools:layout_editor_absoluteX="1127dp"
         tools:layout_editor_absoluteY="16dp" />
 
@@ -33,7 +33,7 @@
         android:clickable="false"
         android:text="@string/button_play_defense"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints,UseSwitchCompatOrMaterialXml,DuplicateClickableBoundsCheck,VisualLintOverlap"
+        tools:ignore="MissingConstraints,UseSwitchCompatOrMaterialXml,DuplicateClickableBoundsCheck,VisualLintOverlap,VisualLintBounds"
         tools:layout_editor_absoluteX="806dp"
         tools:textSize="20sp" />
 
@@ -43,7 +43,7 @@
         android:layout_height="65dp"
         android:clickable="false"
         android:text="@string/button_was_defended"
-        tools:ignore="MissingConstraints,UseSwitchCompatOrMaterialXml,DuplicateClickableBoundsCheck,VisualLintOverlap"
+        tools:ignore="MissingConstraints,UseSwitchCompatOrMaterialXml,DuplicateClickableBoundsCheck,VisualLintOverlap,VisualLintBounds"
         tools:layout_editor_absoluteX="501dp"
         tools:layout_editor_absoluteY="16dp"
         tools:textSize="20sp" />
@@ -62,10 +62,10 @@
         android:id="@+id/text_ClickXY"
         android:layout_width="207dp"
         android:layout_height="44dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="28dp"
         android:text="X,Y"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintHorizontal_bias="0.803"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText,MissingConstraints"
@@ -73,10 +73,10 @@
 
     <RelativeLayout
         android:id="@+id/ContextMenu"
-        android:layout_width="1278dp"
-        android:layout_height="645dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         tools:ignore="MissingConstraints,UselessLeaf"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="152dp"></RelativeLayout>
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="523dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
