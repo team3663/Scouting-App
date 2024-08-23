@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.Display;
@@ -504,6 +505,31 @@ public class AppLaunch extends AppCompatActivity {
         spe.putInt("DeviceId", 4);
         spe.apply();
 
+        // TODO: Define the Settings Button
+        applaunchbinding.settingsButton.setImageResource(R.drawable.settings_icon);
+        applaunchbinding.settingsButton.setBackgroundColor(Color.TRANSPARENT); // Set background Color
+        applaunchbinding.settingsButton.setVisibility(View.INVISIBLE);
+        applaunchbinding.settingsButton.setClickable(false);
+
+        // Define the Start Scouting Button
+        applaunchbinding.startScoutingbutton.setText(R.string.button_start_scouting);
+        applaunchbinding.startScoutingbutton.setBackgroundColor(Color.WHITE);
+        applaunchbinding.startScoutingbutton.setTextColor(R.color.cpr_bkgnd);
+        applaunchbinding.startScoutingbutton.setVisibility(View.INVISIBLE);
+        applaunchbinding.startScoutingbutton.setClickable(false);
+        applaunchbinding.startScoutingbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Stop the timer
+                appLaunch_timer.cancel();
+                appLaunch_timer.purge();
+
+                // Go to the first page
+                Intent GoToNextPage = new Intent(AppLaunch.this, PreMatch.class);
+                startActivity(GoToNextPage);
+            }
+        });
+
         // Set a TimerTask to load the data shortly AFTER this OnCreate finishes
         appLaunch_timer.schedule(new TimerTask() {
             @Override
@@ -526,9 +552,23 @@ public class AppLaunch extends AppCompatActivity {
                     throw new RuntimeException(e);
                 }
 
-                // Go to the first page
-                Intent GoToNextPage = new Intent(AppLaunch.this, PreMatch.class);
-                startActivity(GoToNextPage);
+                // Erase the status text
+                applaunchbinding.statustext.setText("");
+
+                // Enable the start scouting button and settings button
+                applaunchbinding.startScoutingbutton.setClickable(true);
+                applaunchbinding.settingsButton.setClickable(true);
+
+                // Setting the Visibility attribute can't be set from a non-UI thread (like withing a TimerTask
+                // that runs on a separate thread.  So we need to make a Runner that will execute on the UI thread
+                // to set these.
+                AppLaunch.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        applaunchbinding.startScoutingbutton.setVisibility(View.VISIBLE);
+                        applaunchbinding.settingsButton.setVisibility(View.VISIBLE);
+                    }
+                });
             }
         }, 100);
     }
