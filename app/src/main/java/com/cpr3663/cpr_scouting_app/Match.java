@@ -224,6 +224,8 @@ public class Match extends AppCompatActivity {
         ViewGroup.LayoutParams switch_Defense_LP = new ViewGroup.LayoutParams(360, 100);
         switch_Defense.setLayoutParams(switch_Defense_LP);
         switch_Defense.setBackgroundColor(BUTTON_COLOR_NORMAL);
+        // Do this so that you can't mess with the switch during the wrong phases
+        switch_Defense.setEnabled(false);
 
         switch_Defense.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -240,8 +242,6 @@ public class Match extends AppCompatActivity {
                 }
             }
         });
-        // Do this so that you can't mess with the switch during the wrong phases
-        switch_Defense.setClickable(false);
 
         // Map the Defended Switch to the actual switch
         switch_Defended = matchBinding.switchDefended;
@@ -255,6 +255,8 @@ public class Match extends AppCompatActivity {
         ViewGroup.LayoutParams switch_Defended_LP = new ViewGroup.LayoutParams(360, 100);
         switch_Defended.setLayoutParams(switch_Defended_LP);
         switch_Defended.setBackgroundColor(BUTTON_COLOR_NORMAL);
+        // Do this so that you can't mess with the switch during the wrong phases
+        switch_Defended.setEnabled(false);
 
         switch_Defended.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -271,8 +273,6 @@ public class Match extends AppCompatActivity {
                 }
             }
         });
-        // Do this so that you can't mess with the switch during the wrong phases
-        switch_Defended.setClickable(false);
 
         // Define a context menu
         RelativeLayout ContextMenu = matchBinding.ContextMenu;
@@ -352,10 +352,6 @@ public class Match extends AppCompatActivity {
         match_Timer.scheduleAtFixedRate(gametime_timertask, 0, TIMER_UPDATE_RATE);
         match_Timer.scheduleAtFixedRate(flashing_timertask, 0, BUTTON_FLASH_INTERVAL);
 
-        // Default the toggles
-        switch_Defense.setChecked(false);
-        switch_Defended.setChecked(false);
-
         // Set match Phase to be correct and Button text
         matchPhase = PHASE_AUTO;
         but_MatchControl.setText(getResources().getString(R.string.button_start_teleop));
@@ -383,11 +379,18 @@ public class Match extends AppCompatActivity {
         but_MatchControl.setText(getResources().getString(R.string.button_end_match));
         but_MatchControl.setBackgroundColor(getResources().getColor(R.color.dark_red));
 
-        // Enable the Switches
-        switch_Defense.setClickable(true);
-        switch_Defense.setTextColor(Color.BLACK);
-        switch_Defended.setClickable(true);
-        switch_Defended.setTextColor(Color.BLACK);
+        // Enabling the Switches can't be set from a non-UI thread (like withing a TimerTask
+        // that runs on a separate thread). So we need to make a Runner that will execute on the UI thread
+        // to set this.
+        Match.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                switch_Defense.setEnabled(true);
+                switch_Defense.setTextColor(Color.BLACK);
+                switch_Defended.setEnabled(true);
+                switch_Defended.setTextColor(Color.BLACK);
+            }
+        });
     }
 
     // =============================================================================================
@@ -414,14 +417,20 @@ public class Match extends AppCompatActivity {
         but_MatchControl.setBackgroundColor(getResources().getColor(R.color.dark_green));
         text_Time.setText("Time: " + TIMER_DEFAULT_NUM);
 
-        // Disable the Switches and make sure they are off
-        switch_Defense.setClickable(false);
-        switch_Defense.setTextColor(BUTTON_TEXT_COLOR_DISABLED);
-        switch_Defended.setClickable(false);
-        switch_Defended.setTextColor(BUTTON_TEXT_COLOR_DISABLED);
-
-        switch_Defense.setBackgroundColor(BUTTON_COLOR_NORMAL);
-        switch_Defended.setBackgroundColor(BUTTON_COLOR_NORMAL);
+        // Disabling the Switches can't be set from a non-UI thread (like withing a TimerTask
+        // that runs on a separate thread). So we need to make a Runner that will execute on the UI thread
+        // to set this.
+        Match.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                switch_Defense.setEnabled(false);
+                switch_Defense.setTextColor(BUTTON_TEXT_COLOR_DISABLED);
+                switch_Defense.setBackgroundColor(BUTTON_COLOR_NORMAL);
+                switch_Defended.setEnabled(false);
+                switch_Defended.setTextColor(BUTTON_TEXT_COLOR_DISABLED);
+                switch_Defended.setBackgroundColor(BUTTON_COLOR_NORMAL);
+            }
+        });
 
         // Go to the next page
         Intent GoToNextPage = new Intent(Match.this, PreMatch.class);
