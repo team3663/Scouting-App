@@ -16,4 +16,6 @@
     <string name="loading_devices">Loading Device Data...</string>
 
     <string name="timer_label">Time: </string>
+
+    <string name="context_menu_cancel">Cancel</string>
 </resources>
