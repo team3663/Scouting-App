@@ -43,7 +43,7 @@ public class AppLaunch extends AppCompatActivity {
     public static class MatchInfo {
         private ArrayList<MatchInfoRow> match_list;
 
-        // Contructor
+        // Constructor
         public MatchInfo() {
             match_list = new ArrayList<MatchInfoRow>();
         }
@@ -78,7 +78,7 @@ public class AppLaunch extends AppCompatActivity {
             private int blue2 = 0;
             private int blue3 = 0;
 
-            // Contructor with a csv string
+            // Constructor with a csv string
             public MatchInfoRow(String csvRow) {
                 if (!csvRow.equals(NO_MATCH)) {
                     String[] data = csvRow.split(",");
@@ -94,7 +94,7 @@ public class AppLaunch extends AppCompatActivity {
                 }
             }
 
-            // Contructor with individual data
+            // Constructor with individual data
             public MatchInfoRow(String in_red1, String in_red2, String in_red3, String in_blue1, String in_blue2, String in_blue3) {
                 red1 = Integer.valueOf(in_red1);
                 red2 = Integer.valueOf(in_red2);
@@ -122,7 +122,7 @@ public class AppLaunch extends AppCompatActivity {
     public static class CompetitionInfo {
         private ArrayList<CompetitionInfoRow> competition_list;
 
-        // Contructor
+        // Constructor
         public CompetitionInfo() {
             competition_list = new ArrayList<CompetitionInfoRow>();
         }
@@ -155,7 +155,7 @@ public class AppLaunch extends AppCompatActivity {
             private int id = 0;
             private String description = "";
 
-            // Contructor with individual data
+            // Constructor with individual data
             public CompetitionInfoRow(String in_id, String in_description) {
                 id = Integer.valueOf(in_id);
                 description = in_description;
@@ -220,7 +220,7 @@ public class AppLaunch extends AppCompatActivity {
             private int team_number = 0;
             private String description = "";
 
-            // Contructor with individual data
+            // Constructor with individual data
             public DeviceInfoRow(String in_device_number, String in_team_number, String in_description) {
                 device_number = Integer.valueOf(in_device_number);
                 team_number = Integer.valueOf(in_team_number);
@@ -303,7 +303,7 @@ public class AppLaunch extends AppCompatActivity {
             private int id = 0;
             private String description = "";
 
-            // Contructor with individual data
+            // Constructor with individual data
             public DNPInfoRow(String in_id, String in_description) {
                 id = Integer.valueOf(in_id);
                 description = in_description;
@@ -362,10 +362,11 @@ public class AppLaunch extends AppCompatActivity {
             // Error check the input and only do this if they passed in a valid parameter
             if (in_phase.equals(Match.PHASE_AUTO) || in_phase.equals(Match.PHASE_TELEOP)) {
                 for (EventInfoRow eventInfoRow : event_list) {
-                for (int i = 0; i < event_list.size(); i++) {
-                    // Only build the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
-                    if ((event_list.get(i).match_phase.equals(in_phase)) && (event_list.get(i).is_FOP_Event) && (event_list.get(i).is_seq_start)) {
-                        ret.add(event_list.get(i).description);
+                    for (int i = 0; i < event_list.size(); i++) {
+                        // Only build the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
+                        if ((event_list.get(i).match_phase.equals(in_phase)) && (event_list.get(i).is_FOP_Event) && (event_list.get(i).is_seq_start)) {
+                            ret.add(event_list.get(i).description);
+                        }
                     }
                 }
             }
@@ -489,7 +490,7 @@ public class AppLaunch extends AppCompatActivity {
             return insets;
         });
 
-        applaunchbinding.banner.setText(getResources().getColor(R.string.banner_app_name));
+        applaunchbinding.banner.setText(getResources().getString(R.string.banner_app_name));
 
         // Set a TimerTask to load the data shortly AFTER this OnCreate finishes
         appLaunch_timer.schedule(new TimerTask() {

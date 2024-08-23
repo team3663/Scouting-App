@@ -1,13 +1,11 @@
 <resources>
     <string name="app_name">CPR-Scouting-App</string>
-    <string name="banner_app_name">Scouting App"</string>
-
+    <string name="banner_app_name">Scouting App</string>
     <string name="button_start_match">Start Match</string>
     <string name="button_start_teleop">Start Teleop</string>
     <string name="button_end_match">End Match</string>
     <string name="button_play_defense">Defense</string>
     <string name="button_was_defended">Defended</string>
-  
     <string name="loading_teams">Loading Team Data...</string>
     <string name="loading_matches">Loading Match Data...</string>
     <string name="loading_dnp">Loading Do Not Pick Reasons...</string>
@@ -15,6 +13,5 @@
     <string name="loading_events_teleop">Loading Teleop Event Data...</string>
     <string name="loading_competitions">Loading Competition Data...</string>
     <string name="loading_devices">Loading Device Data...</string>
-
     <string name="timer_label">Time: </string>
 </resources>
