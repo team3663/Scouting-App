@@ -299,11 +299,13 @@ public class Match extends AppCompatActivity {
             // Get the events
             String[] events;
             ArrayList<String> events_al;
-            if (eventPrevious != -1) {
-                events_al = AppLaunch.EventList.getNextEvents(eventPrevious);
-            } else {
+            if (eventPrevious == -1) {
                 events_al = AppLaunch.EventList.getEventsForPhase(matchPhase);
+            } else {
+                events_al = AppLaunch.EventList.getNextEvents(eventPrevious);
+                if (events_al == null) events_al = AppLaunch.EventList.getEventsForPhase(matchPhase);
             }
+            events_al.add(getResources().getString(R.string.context_menu_cancel));
             events = new String[events_al.size()];
             events = events_al.toArray(events);
             // Add all the events
@@ -315,7 +317,7 @@ public class Match extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        if (item.getTitle() != "Cancel") {
+        if (item.getTitle() != getResources().getString(R.string.context_menu_cancel)) {
             matchBinding.textClickXY.setText(item.getTitle());
             eventPrevious = AppLaunch.EventList.getEventId((String) item.getTitle());
             // Log the event
