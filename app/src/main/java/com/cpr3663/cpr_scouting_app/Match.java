@@ -309,7 +309,6 @@ public class Match extends AppCompatActivity {
                 events_al = AppLaunch.EventList.getNextEvents(eventPrevious);
                 if (events_al == null) events_al = AppLaunch.EventList.getEventsForPhase(matchPhase);
             }
-            events_al.add(getResources().getString(R.string.context_menu_cancel));
             events = new String[events_al.size()];
             events = events_al.toArray(events);
             // Add all the events
@@ -321,11 +320,9 @@ public class Match extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        if (item.getTitle() != getResources().getString(R.string.context_menu_cancel)) {
-            matchBinding.textClickXY.setText(item.getTitle());
-            eventPrevious = AppLaunch.EventList.getEventId((String) item.getTitle());
-            // Log the event
-        }
+        matchBinding.textClickXY.setText(item.getTitle());
+        eventPrevious = AppLaunch.EventList.getEventId((String) item.getTitle());
+        // Log the event
         return true;
     }
 
