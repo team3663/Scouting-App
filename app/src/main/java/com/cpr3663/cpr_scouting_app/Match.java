@@ -439,15 +439,15 @@ public class Match extends AppCompatActivity {
     // Description: Flash the background color of the button.  Since all toggle-able buttons extend
     //              from CompoundButton, we can use that as the param type.
     // Output:      void
-    // Parameters:  button - specific the button you want to flash.
+    // Parameters:  in_button - specific the button you want to flash.
     // =============================================================================================
-    public void flash_button(CompoundButton button) {
+    public void flash_button(CompoundButton in_button) {
         // If the button is ON then toggle the background color between COLOR_FLASH and COLOR_NORMAL
-        if (button.isChecked()) {
+        if (in_button.isChecked()) {
             if (System.currentTimeMillis() / BUTTON_FLASH_INTERVAL % 2 == 0) {
-                button.setBackgroundColor(BUTTON_COLOR_NORMAL);
+                in_button.setBackgroundColor(BUTTON_COLOR_NORMAL);
             } else {
-                button.setBackgroundColor(BUTTON_COLOR_FLASH);
+                in_button.setBackgroundColor(BUTTON_COLOR_FLASH);
             }
         }
     }
