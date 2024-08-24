@@ -145,7 +145,7 @@ public class Match extends AppCompatActivity {
         // Map the text box variable to the actual text box
         text_Time = matchBinding.textTime;
         // Initialize the match timer textbox settings
-        text_Time.setText("Time: " + TIMER_DEFAULT_NUM);
+        text_Time.setText(getResources().getString(R.string.timer_label) + TIMER_DEFAULT_NUM);
         text_Time.setTextSize(20F);
         text_Time.setTextColor(Color.BLACK);
         text_Time.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
@@ -164,8 +164,8 @@ public class Match extends AppCompatActivity {
         but_MatchControl.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
         but_MatchControl.setX(16F);
         but_MatchControl.setY(16F);
-        ViewGroup.LayoutParams but_Update_LP = new ViewGroup.LayoutParams(300, 100);
-        but_MatchControl.setLayoutParams(but_Update_LP);
+        ViewGroup.LayoutParams but_MatchControl_LP = new ViewGroup.LayoutParams(300, 100);
+        but_MatchControl.setLayoutParams(but_MatchControl_LP);
         but_MatchControl.setBackgroundColor(getResources().getColor(R.color.dark_green));
 
         but_MatchControl.setOnClickListener(new View.OnClickListener() {

@@ -5,8 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -353,8 +358,10 @@ public class AppLaunch extends AppCompatActivity {
         }
 
         // Member Function: Add a row of event info into the list giving the data individually
-        public void addEventRow(String in_id, String in_description, String in_phase, String in_seq_start, String in_FOP, String in_next_set) {
-            event_list.add(new EventInfoRow(Integer.parseInt(in_id), in_description, in_phase, Boolean.parseBoolean(in_seq_start), Boolean.parseBoolean(in_FOP), in_next_set));
+        public void addEventRow(String in_id, String in_description, String in_phase,
+                                String in_seq_start, String in_FOP, String in_next_set) {
+            event_list.add(new EventInfoRow(Integer.parseInt(in_id), in_description, in_phase,
+                    Boolean.parseBoolean(in_seq_start), Boolean.parseBoolean(in_FOP), in_next_set));
         }
 
         // Member Function: Return a list of Events (description) for a give phase of the match (only ones that start a sequence)
@@ -416,7 +423,8 @@ public class AppLaunch extends AppCompatActivity {
 
             // Look through the event rows to find a match
             for (int i = 0; i < event_list.size(); i++) {
-                if (event_list.get(i).description.equals(in_EventDescription) && event_list.get(i).match_phase.equals(Match.matchPhase)) {
+                if (event_list.get(i).description.equals(in_EventDescription) &&
+                        event_list.get(i).match_phase.equals(Match.matchPhase)) {
                     ret = event_list.get(i).id;
                     break;
                 }
@@ -440,7 +448,8 @@ public class AppLaunch extends AppCompatActivity {
             private String next_event_set = "";
 
             // Constructor
-            public EventInfoRow(int in_id, String in_description, String in_phase, Boolean in_seq_start, Boolean in_FOP, String in_next_event_set) {
+            public EventInfoRow(int in_id, String in_description, String in_phase,
+                                Boolean in_seq_start, Boolean in_FOP, String in_next_event_set) {
                 id = in_id;
                 description = in_description;
                 match_phase = in_phase;
@@ -479,6 +488,11 @@ public class AppLaunch extends AppCompatActivity {
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Capture screen size. Need to use WindowManager to populate a Point that holds the screen size.
+        Display screen = getWindowManager().getDefaultDisplay();
+        Point screen_size = new Point();
+        screen.getSize(screen_size);
+
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         applaunchbinding = AppLaunchBinding.inflate(getLayoutInflater());
@@ -490,7 +504,7 @@ public class AppLaunch extends AppCompatActivity {
             return insets;
         });
 
-        applaunchbinding.banner.setText(getResources().getString(R.string.banner_app_name));
+        applaunchbinding.textBanner.setText(getResources().getString(R.string.banner_app_name));
 
         // TODO: Here's how you read in app preferences (settings) and set them.
         // TODO: need an Admin / Settings page with a button Sprocket to go to and return to previous page
@@ -502,19 +516,43 @@ public class AppLaunch extends AppCompatActivity {
         spe.putInt("DeviceId", 4);
         spe.apply();
 
-        // TODO: Define the Settings Button
-        applaunchbinding.settingsButton.setImageResource(R.drawable.settings_icon);
-        applaunchbinding.settingsButton.setBackgroundColor(Color.TRANSPARENT); // Set background Color
-        applaunchbinding.settingsButton.setVisibility(View.INVISIBLE);
-        applaunchbinding.settingsButton.setClickable(false);
+        // Define a Frame for the Settings Fragment to go in
+        FrameLayout frame_Settings = applaunchbinding.frameSettings;
+        frame_Settings.setBackgroundColor(Color.TRANSPARENT);
+        frame_Settings.setX(300F);
+        frame_Settings.setY(200F);
+        FrameLayout.LayoutParams frame_Settings_LP = new FrameLayout.LayoutParams(
+                screen_size.x - 2 * (int) frame_Settings.getX(), screen_size.y - 2 * (int) frame_Settings.getY());
+        frame_Settings.setLayoutParams(frame_Settings_LP);
+
+        // Define a Fragment for the Settings
+        SettingsFragment settingsFragment = new SettingsFragment();
+        settingsFragment.setWidth(frame_Settings.getWidth());
+        settingsFragment.setHeight(frame_Settings.getHeight());
+
+        // Define a Image Button to open up the Settings Fragment
+        ImageButton imgBut_Settings = applaunchbinding.imgButSettings;
+        imgBut_Settings.setImageResource(R.drawable.settings_icon);
+        imgBut_Settings.setBackgroundColor(Color.TRANSPARENT); // Set background Color
+        imgBut_Settings.setVisibility(View.INVISIBLE);
+        imgBut_Settings.setClickable(false);
+        imgBut_Settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                frame_Settings.setBackgroundColor(Color.LTGRAY);
+                // Add the fragment to the 'fragment_container' FrameLayout
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.frame_Settings, settingsFragment).commit();
+            }
+        });
 
         // Define the Start Scouting Button
-        applaunchbinding.startScoutingbutton.setText(R.string.button_start_scouting);
-        applaunchbinding.startScoutingbutton.setBackgroundColor(Color.WHITE);
-        applaunchbinding.startScoutingbutton.setTextColor(R.color.cpr_bkgnd);
-        applaunchbinding.startScoutingbutton.setVisibility(View.INVISIBLE);
-        applaunchbinding.startScoutingbutton.setClickable(false);
-        applaunchbinding.startScoutingbutton.setOnClickListener(new View.OnClickListener() {
+        applaunchbinding.butStartScouting.setText(R.string.button_start_scouting);
+        applaunchbinding.butStartScouting.setBackgroundColor(Color.WHITE);
+        applaunchbinding.butStartScouting.setTextColor(R.color.cpr_bkgnd);
+        applaunchbinding.butStartScouting.setVisibility(View.INVISIBLE);
+        applaunchbinding.butStartScouting.setClickable(false);
+        applaunchbinding.butStartScouting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Stop the timer
@@ -550,11 +588,11 @@ public class AppLaunch extends AppCompatActivity {
                 }
 
                 // Erase the status text
-                applaunchbinding.statustext.setText("");
+                applaunchbinding.textStatus.setText("");
 
                 // Enable the start scouting button and settings button
-                applaunchbinding.startScoutingbutton.setClickable(true);
-                applaunchbinding.settingsButton.setClickable(true);
+                applaunchbinding.butStartScouting.setClickable(true);
+                imgBut_Settings.setClickable(true);
 
                 // Setting the Visibility attribute can't be set from a non-UI thread (like withing a TimerTask
                 // that runs on a separate thread.  So we need to make a Runner that will execute on the UI thread
@@ -562,8 +600,8 @@ public class AppLaunch extends AppCompatActivity {
                 AppLaunch.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        applaunchbinding.startScoutingbutton.setVisibility(View.VISIBLE);
-                        applaunchbinding.settingsButton.setVisibility(View.VISIBLE);
+                        applaunchbinding.butStartScouting.setVisibility(View.VISIBLE);
+                        imgBut_Settings.setVisibility(View.VISIBLE);
                     }
                 });
             }
@@ -580,7 +618,7 @@ public class AppLaunch extends AppCompatActivity {
         String line = "";
         int index = 1;
 
-        applaunchbinding.statustext.setText(getResources().getString(R.string.loading_teams));
+        applaunchbinding.textStatus.setText(getResources().getString(R.string.loading_teams));
 
         // Open the asset file holding all of the Teams information (~10,000 records)
         // Read each line and add the team name into the ArrayList and use the team number as
@@ -624,7 +662,7 @@ public class AppLaunch extends AppCompatActivity {
         // as the index to the array.  We need to then ensure that if there's a gap in competition
         // numbers, we fill the Array with a "NO_COMPETITION" entry so subsequent competitions are
         // matched with their corresponding index into the ArrayList.  This should never happen.
-        applaunchbinding.statustext.setText(getResources().getString(R.string.loading_competitions));
+        applaunchbinding.textStatus.setText(getResources().getString(R.string.loading_competitions));
         try {
             InputStream is = getAssets().open(getResources().getString(R.string.file_competitions));
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -656,7 +694,7 @@ public class AppLaunch extends AppCompatActivity {
         // as the index to the array.
         //
         // This list also uses an array of MatchRowInfo since we're storing more than 1 value.
-        applaunchbinding.statustext.setText(getResources().getString(R.string.loading_matches));
+        applaunchbinding.textStatus.setText(getResources().getString(R.string.loading_matches));
         try {
             MatchList.addMatchRow(NO_MATCH);
 
@@ -696,7 +734,7 @@ public class AppLaunch extends AppCompatActivity {
         // of the device number and the index into the array (there's no need)
         //
         // This list also uses an array of DeviceRowInfo since we're storing more than 1 value.
-        applaunchbinding.statustext.setText(getResources().getString(R.string.loading_devices));
+        applaunchbinding.textStatus.setText(getResources().getString(R.string.loading_devices));
         try {
             InputStream is = getAssets().open(getResources().getString(R.string.file_devices));
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -727,7 +765,7 @@ public class AppLaunch extends AppCompatActivity {
         // of the device number and the index into the array (there's no need)
         //
         // This list also uses an array of DeviceRowInfo since we're storing more than 1 value
-        applaunchbinding.statustext.setText(getResources().getString(R.string.loading_dnp));
+        applaunchbinding.textStatus.setText(getResources().getString(R.string.loading_dnp));
         try {
             InputStream is = getAssets().open(getResources().getString(R.string.file_dnp));
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -761,7 +799,7 @@ public class AppLaunch extends AppCompatActivity {
         // of the event number and the index into the array (there's no need)
         //
         // This list also uses an array of EventRowInfo since we're storing more than 1 value
-        applaunchbinding.statustext.setText(getResources().getString(R.string.loading_events_auto));
+        applaunchbinding.textStatus.setText(getResources().getString(R.string.loading_events_auto));
 
         try {
             InputStream is = getAssets().open(getResources().getString(R.string.file_events_auto));
@@ -778,7 +816,7 @@ public class AppLaunch extends AppCompatActivity {
         }
 
         // Do the same for Teleop Events.
-        applaunchbinding.statustext.setText(getResources().getString(R.string.loading_events_teleop));
+        applaunchbinding.textStatus.setText(getResources().getString(R.string.loading_events_teleop));
 
         try {
             InputStream is = getAssets().open(getResources().getString(R.string.file_events_teleop));
