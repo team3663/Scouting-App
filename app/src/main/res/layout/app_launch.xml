@@ -76,13 +76,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <FrameLayout
-        android:id="@+id/frame_Settings"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="75dp"
-        android:layout_marginBottom="75dp"
-        android:layout_marginLeft="100dp"
-        android:layout_marginRight="100dp" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

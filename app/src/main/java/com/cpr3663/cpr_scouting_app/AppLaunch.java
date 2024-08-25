@@ -525,44 +525,12 @@ public class AppLaunch extends AppCompatActivity {
                 screen_size.x - 2 * (int) frame_Settings.getX(), screen_size.y - 2 * (int) frame_Settings.getY());
         frame_Settings.setLayoutParams(frame_Settings_LP);
 
-        // Define a Fragment for the Settings
-        SettingsFragment settingsFragment = new SettingsFragment();
-        settingsFragment.setWidth(frame_Settings.getWidth());
-        settingsFragment.setHeight(frame_Settings.getHeight());
-
         // Define a Image Button to open up the Settings Fragment
         ImageButton imgBut_Settings = applaunchbinding.imgButSettings;
         imgBut_Settings.setImageResource(R.drawable.settings_icon);
         imgBut_Settings.setBackgroundColor(Color.TRANSPARENT); // Set background Color
         imgBut_Settings.setVisibility(View.INVISIBLE);
         imgBut_Settings.setClickable(false);
-        imgBut_Settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                frame_Settings.setBackgroundColor(Color.LTGRAY);
-                // Add the fragment to the 'fragment_container' FrameLayout
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.frame_Settings, settingsFragment).commit();
-            }
-        });
-
-        settingsFragment.fragmentSettingsBinding.butCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO Exit
-            }
-        });
-
-        settingsFragment.fragmentSettingsBinding.butSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String CompetitionId = String.valueOf(settingsFragment.fragmentSettingsBinding.editCompetition.getText());
-                String DeviceId = String.valueOf(settingsFragment.fragmentSettingsBinding.editDevice.getText());
-                if (CompetitionId != ""); // Then record it as an int
-                if (DeviceId != ""); // Then record it as an int
-                // TODO Exit
-            }
-        });
 
         // Define the Start Scouting Button
         applaunchbinding.butStartScouting.setText(R.string.button_start_scouting);
