@@ -430,8 +430,8 @@ public class Match extends AppCompatActivity {
         });
 
         // Go to the next page
-        Intent GoToNextPage = new Intent(Match.this, PreMatch.class);
-        startActivity(GoToNextPage);
+        Intent GoToPostMatch = new Intent(Match.this, PreMatch.class);
+        startActivity(GoToPostMatch);
     }
 
     // =============================================================================================

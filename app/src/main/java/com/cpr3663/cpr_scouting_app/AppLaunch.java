@@ -9,8 +9,6 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
@@ -485,7 +483,7 @@ public class AppLaunch extends AppCompatActivity {
     public static int CompetitionId = 4; // THIS NEEDS TO BE READ FROM THE CONFIG FILE
     public static Timer appLaunch_timer = new Timer();
 
-    @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility"})
+    @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Capture screen size. Need to use WindowManager to populate a Point that holds the screen size.
@@ -516,21 +514,19 @@ public class AppLaunch extends AppCompatActivity {
         spe.putInt("DeviceId", 4);
         spe.apply();
 
-        // Define a Frame for the Settings Fragment to go in
-        FrameLayout frame_Settings = applaunchbinding.frameSettings;
-        frame_Settings.setBackgroundColor(Color.TRANSPARENT);
-        frame_Settings.setX(300F);
-        frame_Settings.setY(200F);
-        FrameLayout.LayoutParams frame_Settings_LP = new FrameLayout.LayoutParams(
-                screen_size.x - 2 * (int) frame_Settings.getX(), screen_size.y - 2 * (int) frame_Settings.getY());
-        frame_Settings.setLayoutParams(frame_Settings_LP);
-
-        // Define a Image Button to open up the Settings Fragment
+        // Define a Image Button to open up the Settings
         ImageButton imgBut_Settings = applaunchbinding.imgButSettings;
         imgBut_Settings.setImageResource(R.drawable.settings_icon);
         imgBut_Settings.setBackgroundColor(Color.TRANSPARENT); // Set background Color
         imgBut_Settings.setVisibility(View.INVISIBLE);
         imgBut_Settings.setClickable(false);
+        imgBut_Settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent GoToSettings = new Intent(AppLaunch.this, Settings.class);
+                startActivity(GoToSettings);
+            }
+        });
 
         // Define the Start Scouting Button
         applaunchbinding.butStartScouting.setText(R.string.button_start_scouting);
@@ -546,8 +542,8 @@ public class AppLaunch extends AppCompatActivity {
                 appLaunch_timer.purge();
 
                 // Go to the first page
-                Intent GoToNextPage = new Intent(AppLaunch.this, PreMatch.class);
-                startActivity(GoToNextPage);
+                Intent GoToPreMatch = new Intent(AppLaunch.this, PreMatch.class);
+                startActivity(GoToPreMatch);
             }
         });
 
