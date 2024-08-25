@@ -8,6 +8,64 @@
     android:background="@color/white"
     tools:context=".Settings">
 
+    <TextView
+        android:id="@+id/text_Competition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Competition:"
+        tools:layout_editor_absoluteX="46dp"
+        tools:layout_editor_absoluteY="19dp"
+        tools:ignore="HardcodedText,MissingConstraints" />
+
+    <EditText
+        android:id="@+id/edit_CompetitionId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints="Enter Competition Id here"
+        android:ems="10"
+        android:inputType="number"
+        tools:layout_editor_absoluteX="233dp"
+        tools:layout_editor_absoluteY="15dp"
+        tools:ignore="LabelFor,MissingConstraints" />
+
+    <TextView
+        android:id="@+id/text_CompetitionName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="574dp"
+        tools:layout_editor_absoluteY="18dp"
+        tools:ignore="HardcodedText,MissingConstraints" />
+
+    <TextView
+        android:id="@+id/text_Device"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Device:"
+        tools:layout_editor_absoluteX="46dp"
+        tools:layout_editor_absoluteY="19dp"
+        tools:ignore="HardcodedText,MissingConstraints" />
+
+    <EditText
+        android:id="@+id/edit_DeviceId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints="Enter Device Id here"
+        android:ems="10"
+        android:inputType="number"
+        tools:layout_editor_absoluteX="233dp"
+        tools:layout_editor_absoluteY="15dp"
+        tools:ignore="LabelFor,MissingConstraints" />
+
+    <TextView
+        android:id="@+id/text_DeviceName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        tools:layout_editor_absoluteX="574dp"
+        tools:layout_editor_absoluteY="18dp"
+        tools:ignore="HardcodedText,MissingConstraints" />
+
     <Button
         android:id="@+id/but_Cancel"
         android:layout_width="189dp"

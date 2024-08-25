@@ -19,4 +19,9 @@
     <string name="loading_devices">Loading Device Data...</string>
 
     <string name="timer_label">Time: </string>
+
+    <string name="settings_competition">Competition:</string>
+    <string name="settings_device">Device:</string>
+    <string name="settings_cancel">Cancel</string>
+    <string name="settings_save">Save and Exit</string>
 </resources>

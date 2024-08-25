@@ -21,11 +21,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Match"
+            android:name=".Settings"
             android:exported="true">
         </activity>
         <activity
             android:name=".PreMatch"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".Match"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".PostMatch"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".SubmitData"
             android:exported="true">
         </activity>
     </application>
