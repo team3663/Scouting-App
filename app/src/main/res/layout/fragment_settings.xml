@@ -14,7 +14,7 @@
         android:text="Settings"
         tools:ignore="HardcodedText" />
 
-    <ToggleButton
+    <Button
         android:id="@+id/but_Done"
         android:layout_width="100dp"
         android:layout_height="50dp"

@@ -20,16 +20,8 @@ import com.cpr3663.cpr_scouting_app.databinding.FragmentSettingsBinding;
 
 public class SettingsFragment extends Fragment {
 
-    public int getWidth() {
-        return width;
-    }
-
     public void setWidth(int width) {
         this.width = width;
-    }
-
-    public int getHeight() {
-        return height;
     }
 
     public void setHeight(int height) {
@@ -43,6 +35,7 @@ public class SettingsFragment extends Fragment {
     private View view;
     private int width;
     private int height;
+    private int BackgroundColor;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,23 +52,21 @@ public class SettingsFragment extends Fragment {
         text_Header.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
         text_Header.setX(0F);
         text_Header.setY(0F);
-//        ViewGroup.LayoutParams text_Time_LP = new ViewGroup.LayoutParams(width, 200);
-//        text_Header.setLayoutParams(text_Time_LP);
+        ViewGroup.LayoutParams text_Time_LP = new ViewGroup.LayoutParams(width, 200);
+        text_Header.setLayoutParams(text_Time_LP);
         text_Header.setBackgroundColor(Color.TRANSPARENT);
 
         // TODO Comment and fix this
-        ToggleButton but_Done = fragmentSettingsBinding.butDone;
-        but_Done.setTextOff("Done");
-        but_Done.setTextOn("Done");
+        Button but_Done = fragmentSettingsBinding.butDone;
+        but_Done.setText("Done");
         but_Done.setTextSize(20F);
         but_Done.setTextColor(Color.WHITE);
         but_Done.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
-        ViewGroup.LayoutParams but_Done_LP = view.getLayoutParams();
-        but_Done_LP = new ViewGroup.LayoutParams(300, 100);
+        ViewGroup.LayoutParams but_Done_LP = new ViewGroup.LayoutParams(300, 100);
         but_Done.setLayoutParams(but_Done_LP);
         but_Done.setX(width - but_Done.getWidth());
         but_Done.setY(height - but_Done.getHeight());
-        but_Done.setBackgroundColor(Color.BLACK);
+        but_Done.setBackgroundColor(Color.TRANSPARENT);
 
         but_Done.setOnClickListener(new View.OnClickListener() {
             @Override
