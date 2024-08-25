@@ -546,6 +546,24 @@ public class AppLaunch extends AppCompatActivity {
             }
         });
 
+        settingsFragment.fragmentSettingsBinding.butCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO Exit
+            }
+        });
+
+        settingsFragment.fragmentSettingsBinding.butSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String CompetitionId = String.valueOf(settingsFragment.fragmentSettingsBinding.editCompetition.getText());
+                String DeviceId = String.valueOf(settingsFragment.fragmentSettingsBinding.editDevice.getText());
+                if (CompetitionId != ""); // Then record it as an int
+                if (DeviceId != ""); // Then record it as an int
+                // TODO Exit
+            }
+        });
+
         // Define the Start Scouting Button
         applaunchbinding.butStartScouting.setText(R.string.button_start_scouting);
         applaunchbinding.butStartScouting.setBackgroundColor(Color.WHITE);
