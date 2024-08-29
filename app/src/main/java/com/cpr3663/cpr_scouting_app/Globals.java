@@ -10,4 +10,8 @@ public class Globals {
     public static DNPs DNPList = new DNPs();
     public static Events EventList = new Events();
 
+    public static int CurrentCompetitionId;
+    public static int CurrentMatchNumber;
+    public static int CurrentTeamNumber;
+    public static int CurrentDeviceId;
 }

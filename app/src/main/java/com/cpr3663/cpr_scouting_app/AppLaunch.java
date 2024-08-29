@@ -1,12 +1,17 @@
 package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -53,6 +59,35 @@ public class AppLaunch extends AppCompatActivity {
         });
 
         applaunchbinding.banner.setText(getResources().getString(R.string.banner_app_name));
+
+        // TODO: Bluetooth work
+        // Use this check to determine whether Bluetooth classic is supported on the device.
+        // Then you can selectively disable BLE-related features.
+//        boolean bluetoothAvailable = getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH);
+//
+//        BluetoothManager bluetoothManager = getSystemService(BluetoothManager.class);
+//        BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
+//        if (bluetoothAdapter == null) {
+//            // Device doesn't support Bluetooth
+//        }
+//
+//        if (!bluetoothAdapter.isEnabled()) {
+//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//            startActivityForResult(enableBtIntent, 0);
+//        }
+//
+//        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+//
+//        if (pairedDevices.size() > 0) {
+//            // There are paired devices. Get the name and address of each paired device.
+//            for (BluetoothDevice device : pairedDevices) {
+//                String deviceName = device.getName();
+//                String deviceHardwareAddress = device.getAddress(); // MAC address
+//            }
+//        }
+
+        Globals.CurrentDeviceId = 4;
+Logger log = new Logger(this.getApplicationContext());
 
         // TODO: Here's how you read in app preferences (settings) and set them.
         // TODO: need an Admin / Settings page with a button Sprocket to go to and return to previous page
