@@ -9,7 +9,7 @@
     tools:context=".AppLaunch">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/image_CPR3663"
         android:layout_width="502dp"
         android:layout_height="270dp"
         android:layout_marginTop="2dp"
@@ -21,7 +21,7 @@
         tools:ignore="MissingConstraints,VisualLintBounds" />
 
     <TextView
-        android:id="@+id/statustext"
+        android:id="@+id/text_Status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
@@ -34,7 +34,7 @@
         tools:ignore="MissingConstraints" />
 
     <TextView
-        android:id="@+id/banner"
+        android:id="@+id/text_Banner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="-30dp"
@@ -63,10 +63,11 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/settings_icon" />
+        app:srcCompat="@drawable/settings_icon"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
-        android:id="@+id/startScoutingbutton"
+        android:id="@+id/but_StartScouting"
         android:layout_width="245dp"
         android:layout_height="72dp"
         android:layout_marginTop="80dp"

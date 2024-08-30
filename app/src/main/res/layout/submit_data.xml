@@ -5,7 +5,8 @@
     android:id="@+id/qr_code"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".QRCode">
+    android:background="@color/white"
+    tools:context=".SubmitData">
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

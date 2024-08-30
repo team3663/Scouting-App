@@ -141,8 +141,13 @@ public class Match extends AppCompatActivity {
         // Map the text box variable to the actual text box
         text_Time = matchBinding.textTime;
         // Initialize the match timer textbox settings
+<<<<<<< HEAD
         text_Time.setText("Time: " + TIMER_DEFAULT_NUM);
 //        text_Time.setTextSize(20F);
+=======
+        text_Time.setText(getResources().getString(R.string.timer_label) + TIMER_DEFAULT_NUM);
+        text_Time.setTextSize(20F);
+>>>>>>> 175f7c2c5e420c6590610a6adc8d9b42ecd89617
         text_Time.setTextColor(Color.BLACK);
         text_Time.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
 //        text_Time.setX(2200F);
@@ -157,12 +162,22 @@ public class Match extends AppCompatActivity {
         but_MatchControl.setText(getResources().getString(R.string.button_start_match));
 //        but_MatchControl.setTextSize(18F);
         but_MatchControl.setTextColor(Color.WHITE);
+<<<<<<< HEAD
 //        but_MatchControl.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
 //        but_MatchControl.setX(16F);
 //        but_MatchControl.setY(16F);
 //        ViewGroup.LayoutParams but_Update_LP = new ViewGroup.LayoutParams(300, 100);
 //        but_MatchControl.setLayoutParams(but_Update_LP);
         but_MatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_green));
+=======
+        but_MatchControl.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
+        but_MatchControl.setX(16F);
+        but_MatchControl.setY(16F);
+        ViewGroup.LayoutParams but_MatchControl_LP = new ViewGroup.LayoutParams(300, 100);
+        but_MatchControl.setLayoutParams(but_MatchControl_LP);
+        but_MatchControl.setBackgroundColor(getResources().getColor(R.color.dark_green));
+
+>>>>>>> 175f7c2c5e420c6590610a6adc8d9b42ecd89617
         but_MatchControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -425,8 +440,13 @@ public class Match extends AppCompatActivity {
         });
 
         // Go to the next page
+<<<<<<< HEAD
         Intent GoToNextPage = new Intent(Match.this, PostMatch.class);
         startActivity(GoToNextPage);
+=======
+        Intent GoToPostMatch = new Intent(Match.this, PreMatch.class);
+        startActivity(GoToPostMatch);
+>>>>>>> 175f7c2c5e420c6590610a6adc8d9b42ecd89617
     }
 
     // =============================================================================================
@@ -434,15 +454,15 @@ public class Match extends AppCompatActivity {
     // Description: Flash the background color of the button.  Since all toggle-able buttons extend
     //              from CompoundButton, we can use that as the param type.
     // Output:      void
-    // Parameters:  button - specific the button you want to flash.
+    // Parameters:  in_button - specific the button you want to flash.
     // =============================================================================================
-    public void flash_button(CompoundButton button) {
+    public void flash_button(CompoundButton in_button) {
         // If the button is ON then toggle the background color between COLOR_FLASH and COLOR_NORMAL
-        if (button.isChecked()) {
+        if (in_button.isChecked()) {
             if (System.currentTimeMillis() / BUTTON_FLASH_INTERVAL % 2 == 0) {
-                button.setBackgroundColor(BUTTON_COLOR_NORMAL);
+                in_button.setBackgroundColor(BUTTON_COLOR_NORMAL);
             } else {
-                button.setBackgroundColor(BUTTON_COLOR_FLASH);
+                in_button.setBackgroundColor(BUTTON_COLOR_FLASH);
             }
         }
     }

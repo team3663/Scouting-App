@@ -10,10 +10,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.cpr3663.cpr_scouting_app.QRCode;
-import com.cpr3663.cpr_scouting_app.databinding.QrCodeBinding;
+import com.cpr3663.cpr_scouting_app.databinding.SubmitDataBinding;
 
-public class QRCode extends AppCompatActivity {
+public class SubmitData extends AppCompatActivity {
     // =============================================================================================
     // Constants
     // =============================================================================================
@@ -22,17 +21,17 @@ public class QRCode extends AppCompatActivity {
     // =============================================================================================
     // Global variables
     // =============================================================================================
-    private QrCodeBinding qrCodeBinding;
+    private SubmitDataBinding submitDataBinding;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        qrCodeBinding = QrCodeBinding.inflate(getLayoutInflater());
-        View page_root_view = qrCodeBinding.getRoot();
+        submitDataBinding = SubmitDataBinding.inflate(getLayoutInflater());
+        View page_root_view = submitDataBinding.getRoot();
         setContentView(page_root_view);
-        ViewCompat.setOnApplyWindowInsetsListener(qrCodeBinding.qrCode, (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(submitDataBinding.qrCode, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
