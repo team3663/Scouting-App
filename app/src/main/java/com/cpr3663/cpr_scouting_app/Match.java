@@ -44,7 +44,7 @@ public class Match extends AppCompatActivity {
     private static final int BUTTON_FLASH_INTERVAL = 1_000; // in milliseconds
     private static final int BUTTON_COLOR_FLASH = Color.RED;
     private static final int BUTTON_COLOR_NORMAL = Color.LTGRAY;
-    private static final int BUTTON_TEXT_COLOR_DISABLED = Color.GRAY;
+    private static final int BUTTON_TEXT_COLOR_DISABLED = Color.LTGRAY;
 
     // =============================================================================================
     // Class:       AutoTimerTask
@@ -143,7 +143,6 @@ public class Match extends AppCompatActivity {
         // Initialize the match timer textbox settings
         text_Time.setText(getResources().getString(R.string.timer_label) + TIMER_DEFAULT_NUM);
         text_Time.setTextSize(20F);
-        text_Time.setTextColor(Color.BLACK);
         text_Time.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
         text_Time.setBackgroundColor(Color.TRANSPARENT);
 
@@ -364,9 +363,9 @@ public class Match extends AppCompatActivity {
             @Override
             public void run() {
                 switch_Defense.setEnabled(true);
-                switch_Defense.setTextColor(Color.BLACK);
+                switch_Defense.setTextColor(Color.WHITE);
                 switch_Defended.setEnabled(true);
-                switch_Defended.setTextColor(Color.BLACK);
+                switch_Defended.setTextColor(Color.WHITE);
             }
         });
     }
