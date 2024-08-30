@@ -61,7 +61,7 @@ public class Settings extends AppCompatActivity {
         edit_CompetitionId.setText(String.valueOf(sp.getInt("CompetitionId", -1)));
 
         // Define a text box for the name of the Competition to appear in when you enter the ID
-        TextView text_CompetitionName = settingsBinding.textCompetition;
+        TextView text_CompetitionName = settingsBinding.textCompetitionName;
         text_CompetitionName.setText("");
 
         // Define the edit Text for entering the Device Id
