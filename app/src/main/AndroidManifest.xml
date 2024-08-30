@@ -2,29 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Request legacy Bluetooth permissions on older devices. -->
-    <uses-permission android:name="android.permission.BLUETOOTH"
-        android:maxSdkVersion="31" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
-        android:maxSdkVersion="31" />
-
-    <!-- Needed only if your app looks for Bluetooth devices.
-         If your app doesn't use Bluetooth scan results to derive physical
-         location information, you can
-         <a href="#assert-never-for-location">strongly assert that your app
-         doesn't derive physical location</a>. -->
-<!--    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />-->
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
-        android:usesPermissionFlags="neverForLocation" />
-    <!-- Needed only if your app makes the device discoverable to Bluetooth
-         devices. -->
-<!--    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />-->
-
-    <!-- Needed only if your app communicates with already-paired Bluetooth
-         devices. -->
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <uses-feature android:name="android.hardware.bluetooth" android:required="true"/>
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -40,16 +17,20 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".Match"
-            android:exported="true">
         </activity>
         <activity
             android:name=".PreMatch"
             android:exported="true">
         </activity>
+        <activity
+            android:name=".Match"
+            android:exported="true" />
+        <activity
+            android:name=".PostMatch"
+            android:exported="true" />
     </application>
+
 </manifest>

@@ -3,11 +3,10 @@ package com.cpr3663.cpr_scouting_app;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.text.Layout;
+import android.util.DisplayMetrics;
 import android.view.ContextMenu;
-import android.view.Display;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,6 +21,7 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -29,6 +29,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.cpr3663.cpr_scouting_app.databinding.MatchBinding;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -123,9 +124,8 @@ public class Match extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Capture screen size. Need to use WindowManager to populate a Point that holds the screen size.
-        Display screen = getWindowManager().getDefaultDisplay();
-        Point screen_size = new Point();
-        screen.getSize(screen_size);
+        DisplayMetrics screen = new DisplayMetrics();
+        Objects.requireNonNull(this.getDisplay()).getRealMetrics(screen);
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
@@ -142,28 +142,27 @@ public class Match extends AppCompatActivity {
         text_Time = matchBinding.textTime;
         // Initialize the match timer textbox settings
         text_Time.setText("Time: " + TIMER_DEFAULT_NUM);
-        text_Time.setTextSize(20F);
+//        text_Time.setTextSize(20F);
         text_Time.setTextColor(Color.BLACK);
         text_Time.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
-        text_Time.setX(2200F);
-        text_Time.setY(0F);
-        ViewGroup.LayoutParams text_Time_LP = new ViewGroup.LayoutParams(300, 100);
-        text_Time.setLayoutParams(text_Time_LP);
+//        text_Time.setX(2200F);
+//        text_Time.setY(0F);
+//        ViewGroup.LayoutParams text_Time_LP = new ViewGroup.LayoutParams(300, 100);
+//        text_Time.setLayoutParams(text_Time_LP);
         text_Time.setBackgroundColor(Color.TRANSPARENT);
 
         // Map the button variable to the actual button
         but_MatchControl = matchBinding.butMatchControl;
         // Initialize the match Control Button settings
         but_MatchControl.setText(getResources().getString(R.string.button_start_match));
-        but_MatchControl.setTextSize(18F);
+//        but_MatchControl.setTextSize(18F);
         but_MatchControl.setTextColor(Color.WHITE);
-        but_MatchControl.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
-        but_MatchControl.setX(16F);
-        but_MatchControl.setY(16F);
-        ViewGroup.LayoutParams but_Update_LP = new ViewGroup.LayoutParams(300, 100);
-        but_MatchControl.setLayoutParams(but_Update_LP);
-        but_MatchControl.setBackgroundColor(getResources().getColor(R.color.dark_green));
-
+//        but_MatchControl.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
+//        but_MatchControl.setX(16F);
+//        but_MatchControl.setY(16F);
+//        ViewGroup.LayoutParams but_Update_LP = new ViewGroup.LayoutParams(300, 100);
+//        but_MatchControl.setLayoutParams(but_Update_LP);
+        but_MatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_green));
         but_MatchControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -185,11 +184,11 @@ public class Match extends AppCompatActivity {
         // Define a field image
         ImageView image_Field = matchBinding.imageFieldView;
         // Initialize the fields settings
-        int image_Field_height = screen_size.x * 1297 / 2560;
-        image_Field.setX(0F);
-        image_Field.setY(screen_size.y - image_Field_height);
-        ViewGroup.LayoutParams image_Field_LP = new ViewGroup.LayoutParams(screen_size.x, image_Field_height);
-        image_Field.setLayoutParams(image_Field_LP);
+        int image_Field_height = screen.heightPixels * screen.widthPixels / 1985; // 1985 is the pixel width of the image
+//        image_Field.setX(0F);
+//        image_Field.setY(screen.heightPixels - image_Field_height);
+//        ViewGroup.LayoutParams image_Field_LP = new ViewGroup.LayoutParams(screen.widthPixels, image_Field_height);
+//        image_Field.setLayoutParams(image_Field_LP);
 
         // Listens for a click/touch on the screen
         image_Field.setOnTouchListener(new View.OnTouchListener() {
@@ -211,14 +210,14 @@ public class Match extends AppCompatActivity {
         // Map the Defense Switch to the actual switch
         switch_Defense = matchBinding.switchDefense;
         // Initialize the Defense Switch settings
-        switch_Defense.setText(getResources().getString(R.string.button_play_defense));
-        switch_Defense.setTextSize(20F);
+//        switch_Defense.setText(getResources().getString(R.string.button_play_defense));
+//        switch_Defense.setTextSize(20F);
         switch_Defense.setTextColor(BUTTON_TEXT_COLOR_DISABLED);
-        switch_Defense.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
-        switch_Defense.setX(1500F);
-        switch_Defense.setY(16F);
-        ViewGroup.LayoutParams switch_Defense_LP = new ViewGroup.LayoutParams(360, 100);
-        switch_Defense.setLayoutParams(switch_Defense_LP);
+//        switch_Defense.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
+//        switch_Defense.setX(1500F);
+//        switch_Defense.setY(16F);
+//        ViewGroup.LayoutParams switch_Defense_LP = new ViewGroup.LayoutParams(360, 100);
+//        switch_Defense.setLayoutParams(switch_Defense_LP);
         switch_Defense.setBackgroundColor(BUTTON_COLOR_NORMAL);
         // Do this so that you can't mess with the switch during the wrong phases
         switch_Defense.setEnabled(false);
@@ -242,14 +241,14 @@ public class Match extends AppCompatActivity {
         // Map the Defended Switch to the actual switch
         switch_Defended = matchBinding.switchDefended;
         // Initialize the Defended Switch settings
-        switch_Defended.setText(getResources().getString(R.string.button_was_defended));
-        switch_Defended.setTextSize(20F);
+//        switch_Defended.setText(getResources().getString(R.string.button_was_defended));
+//        switch_Defended.setTextSize(20F);
         switch_Defended.setTextColor(BUTTON_TEXT_COLOR_DISABLED);
-        switch_Defended.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
-        switch_Defended.setX(1000F);
-        switch_Defended.setY(16F);
-        ViewGroup.LayoutParams switch_Defended_LP = new ViewGroup.LayoutParams(360, 100);
-        switch_Defended.setLayoutParams(switch_Defended_LP);
+//        switch_Defended.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
+//        switch_Defended.setX(1000F);
+//        switch_Defended.setY(16F);
+//        ViewGroup.LayoutParams switch_Defended_LP = new ViewGroup.LayoutParams(360, 100);
+//        switch_Defended.setLayoutParams(switch_Defended_LP);
         switch_Defended.setBackgroundColor(BUTTON_COLOR_NORMAL);
         // Do this so that you can't mess with the switch during the wrong phases
         switch_Defended.setEnabled(false);
@@ -274,8 +273,8 @@ public class Match extends AppCompatActivity {
         RelativeLayout ContextMenu = matchBinding.ContextMenu;
         // Initialize the Context Menu's settings
         ContextMenu.setX(0F);
-        ContextMenu.setY(screen_size.y - image_Field_height);
-        ViewGroup.LayoutParams ContextMenu_LP = new ViewGroup.LayoutParams(screen_size.x, image_Field_height);
+        ContextMenu.setY(screen.heightPixels - image_Field_height);
+        ViewGroup.LayoutParams ContextMenu_LP = new ViewGroup.LayoutParams(screen.widthPixels, image_Field_height);
         ContextMenu.setLayoutParams(ContextMenu_LP);
 //        ContextMenu.setBackgroundColor(getResources().getColor(R.color.red_highlight)); // For checking it's location
         ContextMenu.setBackgroundColor(Color.TRANSPARENT);
@@ -348,7 +347,7 @@ public class Match extends AppCompatActivity {
         // Set match Phase to be correct and Button text
         matchPhase = Constants.PHASE_AUTO;
         but_MatchControl.setText(getResources().getString(R.string.button_start_teleop));
-        but_MatchControl.setBackgroundColor(getResources().getColor(R.color.dark_yellow));
+        but_MatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_yellow));
     }
 
     // =============================================================================================
@@ -370,7 +369,7 @@ public class Match extends AppCompatActivity {
         // Set match Phase to be correct and Button text
         matchPhase = Constants.PHASE_TELEOP;
         but_MatchControl.setText(getResources().getString(R.string.button_end_match));
-        but_MatchControl.setBackgroundColor(getResources().getColor(R.color.dark_red));
+        but_MatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_red));
 
         // Enabling the Switches can't be set from a non-UI thread (like withing a TimerTask
         // that runs on a separate thread). So we need to make a Runner that will execute on the UI thread
@@ -407,7 +406,7 @@ public class Match extends AppCompatActivity {
         // Set the match Phase and button text
         matchPhase = Constants.PHASE_NONE;
         but_MatchControl.setText(getResources().getString(R.string.button_start_match));
-        but_MatchControl.setBackgroundColor(getResources().getColor(R.color.dark_green));
+        but_MatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_green));
         text_Time.setText("Time: " + TIMER_DEFAULT_NUM);
 
         // Disabling the Switches can't be set from a non-UI thread (like withing a TimerTask
@@ -426,7 +425,7 @@ public class Match extends AppCompatActivity {
         });
 
         // Go to the next page
-        Intent GoToNextPage = new Intent(Match.this, PreMatch.class);
+        Intent GoToNextPage = new Intent(Match.this, PostMatch.class);
         startActivity(GoToNextPage);
     }
 

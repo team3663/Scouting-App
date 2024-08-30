@@ -1,13 +1,8 @@
 package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -60,55 +55,10 @@ public class AppLaunch extends AppCompatActivity {
 
         applaunchbinding.banner.setText(getResources().getString(R.string.banner_app_name));
 
-        // TODO: Bluetooth work
-        // Use this check to determine whether Bluetooth classic is supported on the device.
-        // Then you can selectively disable BLE-related features.
-//        boolean bluetoothAvailable = getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH);
-//
-//        BluetoothManager bluetoothManager = getSystemService(BluetoothManager.class);
-//        BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
-//        if (bluetoothAdapter == null) {
-//            // Device doesn't support Bluetooth
-//        }
-//
-//        if (!bluetoothAdapter.isEnabled()) {
-//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//            startActivityForResult(enableBtIntent, 0);
-//        }
-//
-//        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
-//
-//        if (pairedDevices.size() > 0) {
-//            // There are paired devices. Get the name and address of each paired device.
-//            for (BluetoothDevice device : pairedDevices) {
-//                String deviceName = device.getName();
-//                String deviceHardwareAddress = device.getAddress(); // MAC address
-//            }
-//        }
-
-        Globals.CurrentDeviceId = 4;
-Logger log = new Logger(this.getApplicationContext());
-
-        // TODO: Here's how you read in app preferences (settings) and set them.
-        // TODO: need an Admin / Settings page with a button Sprocket to go to and return to previous page
-        // TODO: Either way, we need to read them in and if empty, force user to admin page to set.  AFTER we load the data
-        SharedPreferences sp = this.getSharedPreferences(getResources().getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
-        int d = sp.getInt("DeviceId", -1);
-
-        SharedPreferences.Editor spe = sp.edit();
-        spe.putInt("DeviceId", 4);
-        spe.apply();
-
-        // TODO: Define the Settings Button
-        applaunchbinding.settingsButton.setImageResource(R.drawable.settings_icon);
-        applaunchbinding.settingsButton.setBackgroundColor(Color.TRANSPARENT); // Set background Color
-        applaunchbinding.settingsButton.setVisibility(View.INVISIBLE);
-        applaunchbinding.settingsButton.setClickable(false);
-
         // Define the Start Scouting Button
         applaunchbinding.startScoutingbutton.setText(R.string.button_start_scouting);
-        applaunchbinding.startScoutingbutton.setBackgroundColor(Color.WHITE);
-        applaunchbinding.startScoutingbutton.setTextColor(R.color.cpr_bkgnd);
+//        applaunchbinding.startScoutingbutton.setBackgroundColor(Color.WHITE);
+//        applaunchbinding.startScoutingbutton.setTextColor(R.color.cpr_bkgnd);
         applaunchbinding.startScoutingbutton.setVisibility(View.INVISIBLE);
         applaunchbinding.startScoutingbutton.setClickable(false);
         applaunchbinding.startScoutingbutton.setOnClickListener(new View.OnClickListener() {
