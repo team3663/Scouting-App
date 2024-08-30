@@ -50,7 +50,7 @@
         tools:ignore="MissingConstraints" />
 
     <ImageButton
-        android:id="@+id/settingsButton"
+        android:id="@+id/imgBut_Settings"
         android:contentDescription="Go to settings"
         android:layout_width="80dp"
         android:layout_height="80dp"
