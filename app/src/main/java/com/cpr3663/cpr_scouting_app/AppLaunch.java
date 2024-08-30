@@ -64,15 +64,21 @@ public class AppLaunch extends AppCompatActivity {
         applaunchbinding.textBanner.setText(getResources().getString(R.string.banner_app_name));
 
         // Define the Start Scouting Button
-        applaunchbinding.startScoutingbutton.setText(R.string.button_start_scouting);
+        applaunchbinding.butStartScouting.setText(R.string.button_start_scouting);
 //        applaunchbinding.startScoutingbutton.setBackgroundColor(Color.WHITE);
 //        applaunchbinding.startScoutingbutton.setTextColor(R.color.cpr_bkgnd);
-        applaunchbinding.startScoutingbutton.setVisibility(View.INVISIBLE);
-        applaunchbinding.startScoutingbutton.setClickable(false);
-        applaunchbinding.startScoutingbutton.setOnClickListener(new View.OnClickListener() {
+        applaunchbinding.butStartScouting.setVisibility(View.INVISIBLE);
+        applaunchbinding.butStartScouting.setClickable(false);
+        applaunchbinding.butStartScouting.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 Intent GoToSettings = new Intent(AppLaunch.this, Settings.class);
+                 startActivity(GoToSettings);
+            }
+        });
 
         // Define a Image Button to open up the Settings
-        ImageButton imgBut_Settings = applaunchbinding.imgButSettings;
+        ImageButton imgBut_Settings = applaunchbinding.settingsButton;
         imgBut_Settings.setImageResource(R.drawable.settings_icon);
         imgBut_Settings.setBackgroundColor(Color.TRANSPARENT); // Set background Color
         imgBut_Settings.setVisibility(View.INVISIBLE);

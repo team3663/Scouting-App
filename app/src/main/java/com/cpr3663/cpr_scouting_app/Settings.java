@@ -72,7 +72,7 @@ public class Settings extends AppCompatActivity {
 
         // Define the edit Text for entering the Competition Id
         EditText edit_CompetitionId = settingsBinding.editCompetitionId;
-        edit_CompetitionId.setText(sp.getInt("CompetitionId", -1));
+        edit_CompetitionId.setText(String.valueOf(sp.getInt("CompetitionId", -1)));
         edit_CompetitionId.setTextColor(Color.BLACK);
         edit_CompetitionId.setHint("Enter Competition ID Here:");
         edit_CompetitionId.setHintTextColor(Color.GRAY);
@@ -110,7 +110,7 @@ public class Settings extends AppCompatActivity {
 
         // Define the edit Text for entering the Device Id
         EditText edit_DeviceId = settingsBinding.editDeviceId;
-        edit_DeviceId.setText(sp.getInt("DeviceId", -1));
+        edit_DeviceId.setText(String.valueOf(sp.getInt("DeviceId", -1)));
         edit_DeviceId.setTextColor(Color.BLACK);
         edit_DeviceId.setHint("Enter Device ID Here:");
         edit_DeviceId.setHintTextColor(Color.GRAY);

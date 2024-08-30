@@ -46,7 +46,7 @@
         android:ems="12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageView"
+        app:layout_constraintTop_toBottomOf="@id/image_CPR3663"
         tools:ignore="MissingConstraints" />
 
     <ImageButton
@@ -78,6 +78,6 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/banner" />
+        app:layout_constraintTop_toBottomOf="@id/text_Banner" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
