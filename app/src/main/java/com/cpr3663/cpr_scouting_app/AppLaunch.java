@@ -3,12 +3,12 @@ package com.cpr3663.cpr_scouting_app;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.View;
+import android.widget.Toast;
 import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -62,15 +63,13 @@ public class AppLaunch extends AppCompatActivity {
 
         applaunchbinding.textBanner.setText(getResources().getString(R.string.banner_app_name));
 
-        // TODO: Here's how you read in app preferences (settings) and set them.
-        // TODO: need an Admin / Settings page with a button Sprocket to go to and return to previous page
-        // TODO: Either way, we need to read them in and if empty, force user to admin page to set.  AFTER we load the data
-        SharedPreferences sp = this.getSharedPreferences(getResources().getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
-        int d = sp.getInt("DeviceId", -1);
-
-        SharedPreferences.Editor spe = sp.edit();
-        spe.putInt("DeviceId", 4);
-        spe.apply();
+        // Define the Start Scouting Button
+        applaunchbinding.startScoutingbutton.setText(R.string.button_start_scouting);
+//        applaunchbinding.startScoutingbutton.setBackgroundColor(Color.WHITE);
+//        applaunchbinding.startScoutingbutton.setTextColor(R.color.cpr_bkgnd);
+        applaunchbinding.startScoutingbutton.setVisibility(View.INVISIBLE);
+        applaunchbinding.startScoutingbutton.setClickable(false);
+        applaunchbinding.startScoutingbutton.setOnClickListener(new View.OnClickListener() {
 
         // Define a Image Button to open up the Settings
         ImageButton imgBut_Settings = applaunchbinding.imgButSettings;
