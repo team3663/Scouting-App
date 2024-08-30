@@ -141,13 +141,8 @@ public class Match extends AppCompatActivity {
         // Map the text box variable to the actual text box
         text_Time = matchBinding.textTime;
         // Initialize the match timer textbox settings
-<<<<<<< HEAD
-        text_Time.setText("Time: " + TIMER_DEFAULT_NUM);
-//        text_Time.setTextSize(20F);
-=======
         text_Time.setText(getResources().getString(R.string.timer_label) + TIMER_DEFAULT_NUM);
         text_Time.setTextSize(20F);
->>>>>>> 175f7c2c5e420c6590610a6adc8d9b42ecd89617
         text_Time.setTextColor(Color.BLACK);
         text_Time.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
 //        text_Time.setX(2200F);
@@ -162,22 +157,12 @@ public class Match extends AppCompatActivity {
         but_MatchControl.setText(getResources().getString(R.string.button_start_match));
 //        but_MatchControl.setTextSize(18F);
         but_MatchControl.setTextColor(Color.WHITE);
-<<<<<<< HEAD
 //        but_MatchControl.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
 //        but_MatchControl.setX(16F);
 //        but_MatchControl.setY(16F);
 //        ViewGroup.LayoutParams but_Update_LP = new ViewGroup.LayoutParams(300, 100);
 //        but_MatchControl.setLayoutParams(but_Update_LP);
         but_MatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_green));
-=======
-        but_MatchControl.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
-        but_MatchControl.setX(16F);
-        but_MatchControl.setY(16F);
-        ViewGroup.LayoutParams but_MatchControl_LP = new ViewGroup.LayoutParams(300, 100);
-        but_MatchControl.setLayoutParams(but_MatchControl_LP);
-        but_MatchControl.setBackgroundColor(getResources().getColor(R.color.dark_green));
-
->>>>>>> 175f7c2c5e420c6590610a6adc8d9b42ecd89617
         but_MatchControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -440,13 +425,8 @@ public class Match extends AppCompatActivity {
         });
 
         // Go to the next page
-<<<<<<< HEAD
         Intent GoToNextPage = new Intent(Match.this, PostMatch.class);
         startActivity(GoToNextPage);
-=======
-        Intent GoToPostMatch = new Intent(Match.this, PreMatch.class);
-        startActivity(GoToPostMatch);
->>>>>>> 175f7c2c5e420c6590610a6adc8d9b42ecd89617
     }
 
     // =============================================================================================
