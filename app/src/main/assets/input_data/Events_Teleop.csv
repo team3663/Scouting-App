@@ -1,17 +1,17 @@
-﻿Events_Id,Events_Name,Events_StartOfSeq,Events_EndOfSeq,Events_AppliesToFOP
-50,Teleop_Pickup,True,False,True
-51,Teleop_PickupSteal,True,False,True
-52,Teleop_Drop,False,True,True
-53,Teleop_Pass,False,True,True
-54,Teleop_SpeakerScore,False,True,True
-55,Teleop_SpeakerMissed,False,True,True
-56,Teleop_AmpScore,False,True,True
-57,Teleop_AmpMissed,False,True,True
-58,Teleop_AutoNote,True,False,True
-100,End_ClimbStart,True,False,True
-101,End_ClimbSuccess,False,True,True
-102,End_ClimbFail,False,True,True
-150,Defended_Start,True,False,False
-151,Defended_End,False,True,False
-152,PlayDefense_Start,True,False,False
-153,PlayDefense_End,False,True,False
+﻿Events_Id,Events_Name,Events_StartOfSeq,Events_AppliesToFOP,Events_NextSet
+50,Pickup Note,True,True,52:53:54:55:56:57:100
+51,Steal Note,True,True,52:53:54:55:56:57:100
+52,Drop Note,False,True,:
+53,Pass Note,False,True,:
+54,Speaker Score,False,True,:
+55,Speaker Miss,False,True,:
+56,Amp Score,False,True,:
+57,Amp Miss,False,True,:
+58,Teleop_AutoNote,True,False,:
+100,Climb Start,True,True,101:102
+101,Climb Success,False,True,:
+102,Climb Failed,False,True,:
+150,Defended_Start,True,False,151
+151,Defended_End,False,False,:
+152,PlayDefense_Start,True,False,153
+153,PlayDefense_End,False,False,:
