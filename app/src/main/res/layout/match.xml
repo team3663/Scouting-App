@@ -35,21 +35,21 @@
                 tools:textSize="20sp" />
 
             <Switch
-                android:id="@+id/switch_Defended"
+                android:id="@+id/switchDefended"
                 android:layout_width="165dp"
                 android:layout_height="65dp"
                 android:clickable="false"
-                android:text="@string/button_was_defended"
+                android:text="Being Defended"
                 tools:ignore="MissingConstraints,UseSwitchCompatOrMaterialXml,DuplicateClickableBoundsCheck,VisualLintOverlap,VisualLintBounds"
                 tools:textSize="20sp" />
 
             <Switch
-                android:id="@+id/switch_Defense"
+                android:id="@+id/switchDefense"
                 android:layout_width="165dp"
                 android:layout_height="65dp"
                 android:layout_marginTop="16dp"
                 android:clickable="false"
-                android:text="@string/button_play_defense"
+                android:text="Playing Defense"
                 tools:ignore="MissingConstraints,UseSwitchCompatOrMaterialXml,DuplicateClickableBoundsCheck,VisualLintOverlap,VisualLintBounds"
                 tools:textSize="20sp" />
 
