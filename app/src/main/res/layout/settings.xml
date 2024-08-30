@@ -32,19 +32,19 @@
         android:id="@+id/text_CompetitionName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="574dp"
-        tools:layout_editor_absoluteY="18dp"
-        tools:ignore="hardCodedText, missingConstraints,VisualLintBounds" />
+        android:text="CompName"
+        tools:ignore="hardCodedText, missingConstraints,VisualLintBounds"
+        tools:layout_editor_absoluteX="504dp"
+        tools:layout_editor_absoluteY="38dp" />
 
     <TextView
         android:id="@+id/text_Device"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Device:"
+        tools:ignore="hardCodedText, missingConstraints,VisualLintBounds"
         tools:layout_editor_absoluteX="46dp"
-        tools:layout_editor_absoluteY="19dp"
-        tools:ignore="hardCodedText, missingConstraints,VisualLintBounds" />
+        tools:layout_editor_absoluteY="151dp" />
 
     <EditText
         android:id="@+id/edit_DeviceId"
@@ -55,16 +55,16 @@
         android:inputType="number"
         tools:ignore="LabelFor,MissingConstraints,SpeakableTextPresentCheck,TouchTargetSizeCheck,VisualLintBounds"
         tools:layout_editor_absoluteX="233dp"
-        tools:layout_editor_absoluteY="15dp" />
+        tools:layout_editor_absoluteY="125dp" />
 
     <TextView
         android:id="@+id/text_DeviceName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        tools:layout_editor_absoluteX="574dp"
-        tools:layout_editor_absoluteY="18dp"
-        tools:ignore="hardCodedText, missingConstraints,VisualLintBounds" />
+        android:layout_width="190dp"
+        android:layout_height="0dp"
+        android:text="DeviceName"
+        tools:ignore="hardCodedText, missingConstraints,VisualLintBounds"
+        tools:layout_editor_absoluteX="504dp"
+        tools:layout_editor_absoluteY="139dp" />
 
     <Button
         android:id="@+id/but_Cancel"
@@ -72,8 +72,8 @@
         android:layout_height="62dp"
         android:text="Cancel"
         tools:ignore="hardCodedText, missingConstraints,VisualLintBounds"
-        tools:layout_editor_absoluteX="755dp"
-        tools:layout_editor_absoluteY="522dp" />
+        tools:layout_editor_absoluteX="436dp"
+        tools:layout_editor_absoluteY="245dp" />
 
     <Button
         android:id="@+id/but_Save"
@@ -81,7 +81,7 @@
         android:layout_height="55dp"
         android:text="Save"
         tools:ignore="hardCodedText, missingConstraints,VisualLintBounds"
-        tools:layout_editor_absoluteX="619dp"
-        tools:layout_editor_absoluteY="521dp" />
+        tools:layout_editor_absoluteX="158dp"
+        tools:layout_editor_absoluteY="252dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

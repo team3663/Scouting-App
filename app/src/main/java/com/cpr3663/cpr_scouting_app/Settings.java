@@ -64,15 +64,16 @@ public class Settings extends AppCompatActivity {
         text_Competition.setTextSize(20F);
         text_Competition.setTextColor(Color.BLACK);
         text_Competition.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
-        text_Competition.setX(0F);
-        text_Competition.setY(0F);
+        text_Competition.setX(100F);
+        text_Competition.setY(10F);
         ViewGroup.LayoutParams text_Competition_LP = new ViewGroup.LayoutParams(300, 100);
         text_Competition.setLayoutParams(text_Competition_LP);
         text_Competition.setBackgroundColor(Color.TRANSPARENT);
 
         // Define the edit Text for entering the Competition Id
         EditText edit_CompetitionId = settingsBinding.editCompetitionId;
-        edit_CompetitionId.setText(sp.getInt("CompetitionId", -1));
+        // Make sure you convert it to a String it won't warn you or give an error about it needing to be but it will crash
+        edit_CompetitionId.setText(String.valueOf(sp.getInt("CompetitionId", -1)));
         edit_CompetitionId.setTextColor(Color.BLACK);
         edit_CompetitionId.setHint("Enter Competition ID Here:");
         edit_CompetitionId.setHintTextColor(Color.GRAY);
@@ -110,7 +111,8 @@ public class Settings extends AppCompatActivity {
 
         // Define the edit Text for entering the Device Id
         EditText edit_DeviceId = settingsBinding.editDeviceId;
-        edit_DeviceId.setText(sp.getInt("DeviceId", -1));
+        // Make sure you convert it to a String it won't warn you or give an error about it needing to be but it will crash
+        edit_DeviceId.setText(String.valueOf(sp.getInt("DeviceId", -1)));
         edit_DeviceId.setTextColor(Color.BLACK);
         edit_DeviceId.setHint("Enter Device ID Here:");
         edit_DeviceId.setHintTextColor(Color.GRAY);
@@ -168,16 +170,15 @@ public class Settings extends AppCompatActivity {
         but_Save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String CompetitionId = String.valueOf(edit_DeviceId.getText());
+                String CompetitionId = String.valueOf(edit_CompetitionId.getText());
                 if (!CompetitionId.isEmpty()) {
-                    spe.putInt("DeviceId", Integer.parseInt(CompetitionId));
-                    spe.apply();
+                    spe.putInt("CompetitionId", Integer.parseInt(CompetitionId));
                 }
                 String DeviceId = String.valueOf(edit_DeviceId.getText());
                 if (!DeviceId.isEmpty()) {
                     spe.putInt("DeviceId", Integer.parseInt(DeviceId));
-                    spe.apply();
                 }
+                spe.apply();
                 Exit();
             }
         });
