@@ -5,28 +5,253 @@
     android:id="@+id/pre_match"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/cpr_bkgnd"
     tools:context=".PreMatch">
 
-    <EditText
-        android:id="@+id/edit_Name"
-        android:layout_width="336dp"
-        android:layout_height="95dp"
-        android:autofillHints="Type your name"
-        android:ems="10"
-        android:inputType="text"
-        android:text="Name"
-        tools:ignore="HardcodedText,LabelFor,MissingConstraints,VisualLintBounds"
-        tools:layout_editor_absoluteX="335dp"
-        tools:layout_editor_absoluteY="129dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/heading"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:textColor="@color/cpr_green"
+            android:textStyle="bold"
+            android:textSize="42sp"
+            android:gravity="center"
+            android:text="Pre-Match Scouting Information" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textMatch"
+                android:layout_width="447dp"
+                android:layout_height="60dp"
+                android:gravity="right|center"
+                android:paddingRight="50dp"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:text="Match Number:"/>
+
+            <EditText
+                android:id="@+id/editMatch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="24sp"
+                android:inputType="text"
+                android:text="Name" />
+
+            <TextView
+                android:id="@+id/matchPadding"
+                android:layout_width="650dp"
+                android:layout_height="65dp"
+                android:text="" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textTeamToScout"
+                android:layout_width="447dp"
+                android:layout_height="60dp"
+                android:gravity="right|center"
+                android:paddingRight="50dp"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+
+                android:text="Team Number To Scout:" />
+
+            <EditText
+                android:id="@+id/editTeamToScout"
+                android:layout_width="253dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="24sp"
+                android:inputType="text"
+                android:text="Name" />
+
+            <TextView
+                android:id="@+id/textTeamToScoutName"
+                android:layout_width="650dp"
+                android:layout_height="65dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textScouterTeam"
+                android:layout_width="447dp"
+                android:layout_height="60dp"
+                android:gravity="right|center"
+                android:paddingRight="50dp"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:text="Scouting Team Number:" />
+
+            <EditText
+                android:id="@+id/editScouterTeam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="text"
+                android:text="Name" />
+
+            <TextView
+                android:id="@+id/textScouterTeamName"
+                android:textSize="24sp"
+                android:layout_width="650dp"
+                android:layout_height="65dp"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textScouterName"
+                android:layout_width="447dp"
+                android:layout_height="60dp"
+                android:gravity="right|center"
+                android:paddingRight="50dp"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:text="Scouter Name:" />
+
+            <EditText
+                android:id="@+id/editScouterName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="text"
+                android:text="Name" />
+
+            <TextView
+                android:id="@+id/paddingScouterName"
+                android:layout_width="650dp"
+                android:layout_height="60dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/paddingDidPlay"
+                android:layout_width="447dp"
+                android:layout_height="60dp"
+                android:gravity="right|center"
+                android:paddingRight="50dp"
+                android:textColor="@color/white"
+                android:textSize="24sp"/>
+
+            <CheckBox
+                android:id="@+id/didPlay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:paddingLeft="10dp"
+                android:textSize="24sp"
+                android:text="Did They Play?" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textStartingPosition"
+                android:layout_width="447dp"
+                android:layout_height="60dp"
+                android:gravity="right|center"
+                android:paddingRight="50dp"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:visibility="visible"
+                android:text="Starting Position:"/>
+
+            <CheckBox
+                android:id="@+id/startingPosition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:paddingLeft="10dp"
+                android:textSize="24sp"
+                android:visibility="visible"
+                android:text="Single select Drop down" />
+        </LinearLayout>
+    </LinearLayout>
 
     <Button
-        android:id="@+id/but_SubmitPage1"
-        android:layout_width="238dp"
-        android:layout_height="97dp"
-        android:text="Submit"
-        android:textSize="25sp"
-        tools:layout_editor_absoluteX="477dp"
-        tools:layout_editor_absoluteY="431dp"
+        android:id="@+id/but_Next"
+        android:layout_width="175dp"
+        android:layout_height="60dp"
+        android:text="Next"
+        android:textSize="28sp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@color/white"
+        android:textColor="@color/cpr_bkgnd"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         tools:ignore="HardcodedText,MissingConstraints" />
+
+    <CheckBox
+        android:id="@+id/checkOverride"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/dark_green"
+        android:paddingLeft="10dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="20dp"
+        android:textSize="16sp"
+        android:text="Override Team Number"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/textOverride"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:gravity="right|center"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:text="Enter Team Number:"
+        android:layout_marginStart="80dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/checkOverride"
+        app:layout_constraintLeft_toRightOf="@id/checkOverride" />
+
+    <EditText
+        android:id="@+id/editTextNumber"
+        android:layout_width="253dp"
+        android:layout_height="60dp"
+        android:layout_weight="1"
+        android:textSize="24sp"
+        android:inputType="number"
+        android:layout_marginStart="10dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/textOverride"
+        app:layout_constraintLeft_toRightOf="@id/textOverride" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

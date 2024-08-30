@@ -1,8 +1,10 @@
 package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +39,14 @@ public class PostMatch extends AppCompatActivity {
             return insets;
         });
 
-        
+        // Create a button for when you are done inputting info
+        Button but_Next = postMatchBinding.butNext;
+        but_Next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent preMatch_Activity = new Intent(PostMatch.this, PreMatch.class);
+                startActivity(preMatch_Activity);
+            }
+        });
     }
 }
