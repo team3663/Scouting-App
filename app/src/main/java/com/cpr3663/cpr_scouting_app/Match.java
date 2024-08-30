@@ -141,7 +141,7 @@ public class Match extends AppCompatActivity {
         // Map the text box variable to the actual text box
         text_Time = matchBinding.textTime;
         // Initialize the match timer textbox settings
-        text_Time.setText("Time: " + TIMER_DEFAULT_NUM);
+        text_Time.setText(getResources().getString(R.string.timer_label) + TIMER_DEFAULT_NUM);
         text_Time.setTextSize(20F);
         text_Time.setTextColor(Color.BLACK);
         text_Time.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
@@ -160,8 +160,8 @@ public class Match extends AppCompatActivity {
         but_MatchControl.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
         but_MatchControl.setX(16F);
         but_MatchControl.setY(16F);
-        ViewGroup.LayoutParams but_Update_LP = new ViewGroup.LayoutParams(300, 100);
-        but_MatchControl.setLayoutParams(but_Update_LP);
+        ViewGroup.LayoutParams but_MatchControl_LP = new ViewGroup.LayoutParams(300, 100);
+        but_MatchControl.setLayoutParams(but_MatchControl_LP);
         but_MatchControl.setBackgroundColor(getResources().getColor(R.color.dark_green));
 
         but_MatchControl.setOnClickListener(new View.OnClickListener() {
@@ -426,8 +426,8 @@ public class Match extends AppCompatActivity {
         });
 
         // Go to the next page
-        Intent GoToNextPage = new Intent(Match.this, PreMatch.class);
-        startActivity(GoToNextPage);
+        Intent GoToPostMatch = new Intent(Match.this, PreMatch.class);
+        startActivity(GoToPostMatch);
     }
 
     // =============================================================================================
@@ -435,15 +435,15 @@ public class Match extends AppCompatActivity {
     // Description: Flash the background color of the button.  Since all toggle-able buttons extend
     //              from CompoundButton, we can use that as the param type.
     // Output:      void
-    // Parameters:  button - specific the button you want to flash.
+    // Parameters:  in_button - specific the button you want to flash.
     // =============================================================================================
-    public void flash_button(CompoundButton button) {
+    public void flash_button(CompoundButton in_button) {
         // If the button is ON then toggle the background color between COLOR_FLASH and COLOR_NORMAL
-        if (button.isChecked()) {
+        if (in_button.isChecked()) {
             if (System.currentTimeMillis() / BUTTON_FLASH_INTERVAL % 2 == 0) {
-                button.setBackgroundColor(BUTTON_COLOR_NORMAL);
+                in_button.setBackgroundColor(BUTTON_COLOR_NORMAL);
             } else {
-                button.setBackgroundColor(BUTTON_COLOR_FLASH);
+                in_button.setBackgroundColor(BUTTON_COLOR_FLASH);
             }
         }
     }
