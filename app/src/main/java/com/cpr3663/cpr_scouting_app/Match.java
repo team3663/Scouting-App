@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
 public class Match extends AppCompatActivity {
     // =============================================================================================
     // Define constants
@@ -45,9 +44,6 @@ public class Match extends AppCompatActivity {
     private static final int BUTTON_COLOR_FLASH = Color.RED;
     private static final int BUTTON_COLOR_NORMAL = Color.LTGRAY;
     private static final int BUTTON_TEXT_COLOR_DISABLED = Color.GRAY;
-    public static final String PHASE_AUTO = "Auto";
-    public static final String PHASE_TELEOP = "Teleop";
-    public static final String PHASE_NONE = "";
 
     // =============================================================================================
     // Class:       AutoTimerTask
@@ -56,7 +52,7 @@ public class Match extends AppCompatActivity {
     public class AutoTimerTask extends TimerTask {
         @Override
         public void run() {
-            if (matchPhase.equals(PHASE_AUTO)) {
+            if (matchPhase.equals(Constants.PHASE_AUTO)) {
                 start_Teleop();
             }
         }
@@ -69,7 +65,7 @@ public class Match extends AppCompatActivity {
     public class TeleopTimerTask extends TimerTask {
         @Override
         public void run() {
-            if (matchPhase.equals(PHASE_TELEOP)) {
+            if (matchPhase.equals(Constants.PHASE_TELEOP)) {
                 end_match();
             }
         }
@@ -107,7 +103,7 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     private MatchBinding matchBinding;
     public static long startTime;
-    public static String matchPhase = PHASE_NONE;
+    public static String matchPhase = Constants.PHASE_NONE;
     private static int eventPrevious = -1;
     // Define a button that starts the match, skips to Teleop, and ends the match early
     Button but_MatchControl;
@@ -173,13 +169,13 @@ public class Match extends AppCompatActivity {
             public void onClick(View view) {
                 // Checks the current phase and makes the button press act accordingly
                 switch (matchPhase) {
-                    case PHASE_NONE:
+                    case Constants.PHASE_NONE:
                         start_Match();
                         break;
-                    case PHASE_AUTO:
+                    case Constants.PHASE_AUTO:
                         start_Teleop();
                         break;
-                    case PHASE_TELEOP:
+                    case Constants.PHASE_TELEOP:
                         end_match();
                         break;
                 }
@@ -200,7 +196,7 @@ public class Match extends AppCompatActivity {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 // Check the motion type and the phase and if its correct then get the X and Y
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && !matchPhase.equals(PHASE_NONE)) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && !matchPhase.equals(Constants.PHASE_NONE)) {
                     double x = motionEvent.getX();
                     double y = motionEvent.getY();
                     matchBinding.textClickXY.setText(x + "," + y);
@@ -299,15 +295,15 @@ public class Match extends AppCompatActivity {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         // Check to make sure the game is going
-        if (!matchPhase.equals(PHASE_NONE)) {
+        if (!matchPhase.equals(Constants.PHASE_NONE)) {
             // Get the events
             String[] events;
             ArrayList<String> events_al;
             if (eventPrevious == -1) {
-                events_al = AppLaunch.EventList.getEventsForPhase(matchPhase);
+                events_al = Globals.EventList.getEventsForPhase(matchPhase);
             } else {
-                events_al = AppLaunch.EventList.getNextEvents(eventPrevious);
-                if (events_al == null) events_al = AppLaunch.EventList.getEventsForPhase(matchPhase);
+                events_al = Globals.EventList.getNextEvents(eventPrevious);
+                if (events_al == null) events_al = Globals.EventList.getEventsForPhase(matchPhase);
             }
             events = new String[events_al.size()];
             events = events_al.toArray(events);
@@ -321,7 +317,7 @@ public class Match extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         matchBinding.textClickXY.setText(item.getTitle());
-        eventPrevious = AppLaunch.EventList.getEventId((String) item.getTitle());
+        eventPrevious = Globals.EventList.getEventId((String) item.getTitle());
         // Log the event
         return true;
     }
@@ -350,7 +346,7 @@ public class Match extends AppCompatActivity {
         match_Timer.scheduleAtFixedRate(flashing_timertask, 0, BUTTON_FLASH_INTERVAL);
 
         // Set match Phase to be correct and Button text
-        matchPhase = PHASE_AUTO;
+        matchPhase = Constants.PHASE_AUTO;
         but_MatchControl.setText(getResources().getString(R.string.button_start_teleop));
         but_MatchControl.setBackgroundColor(getResources().getColor(R.color.dark_yellow));
     }
@@ -372,7 +368,7 @@ public class Match extends AppCompatActivity {
         match_Timer.schedule(teleop_timertask, TIMER_TELEOP_LENGTH * 1_000);
 
         // Set match Phase to be correct and Button text
-        matchPhase = PHASE_TELEOP;
+        matchPhase = Constants.PHASE_TELEOP;
         but_MatchControl.setText(getResources().getString(R.string.button_end_match));
         but_MatchControl.setBackgroundColor(getResources().getColor(R.color.dark_red));
 
@@ -409,7 +405,7 @@ public class Match extends AppCompatActivity {
         flashing_timertask = null;
 
         // Set the match Phase and button text
-        matchPhase = PHASE_NONE;
+        matchPhase = Constants.PHASE_NONE;
         but_MatchControl.setText(getResources().getString(R.string.button_start_match));
         but_MatchControl.setBackgroundColor(getResources().getColor(R.color.dark_green));
         text_Time.setText("Time: " + TIMER_DEFAULT_NUM);

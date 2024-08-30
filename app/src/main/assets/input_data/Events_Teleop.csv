@@ -7,7 +7,7 @@
 55,Speaker Miss,False,True,:
 56,Amp Score,False,True,:
 57,Amp Miss,False,True,:
-58,Teleop_AutoNote,True,True,:
+58,Teleop_AutoNote,True,False,:
 100,Climb Start,True,True,101:102
 101,Climb Success,False,True,:
 102,Climb Failed,False,True,:
