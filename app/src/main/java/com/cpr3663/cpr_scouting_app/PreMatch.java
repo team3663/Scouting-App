@@ -64,9 +64,11 @@ public class PreMatch extends AppCompatActivity {
         but_AddTeamNum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int teamNum = Integer.parseInt(String.valueOf(preMatchBinding.editOverrideTeamNum.getText()));
-                // TODO make it add teamNum to the options and
-                //      have it auto select that one
+                String teamNum = String.valueOf(preMatchBinding.editOverrideTeamNum.getText());
+                if (!teamNum.isEmpty()) {
+                    // TODO make it add teamNum to the options after converting to int and
+                    //      have it auto select that one
+                }
                 check_Override.setChecked(false);
                 preMatchBinding.textOverride.setVisibility(View.INVISIBLE);
                 preMatchBinding.editOverrideTeamNum.setVisibility(View.INVISIBLE);
