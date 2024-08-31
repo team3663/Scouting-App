@@ -40,14 +40,14 @@ public class Comments {
     // Member Function: Return an ordered list of Comments
     public String[] getCommentList() {
         // If there are no comments, return a null
-        if (comment_list.size() == 0) return null;
+        if (comment_list.isEmpty()) return null;
 
         // Since we'll load only Active/Valid comments, we can assume all have an order.
         // Insert into the String array at the ordered location.
         String[] ret = new String[comment_list.size()];
 
-        for (int i = 0; i < comment_list.size(); i++) {
-            ret[comment_list.get(i).order - 1] = comment_list.get(i).description;
+        for (CommentRow cr : comment_list) {
+            ret[cr.order - 1] = cr.description;
         }
 
         return ret;
@@ -58,9 +58,9 @@ public class Comments {
         int ret = 0;
 
         // Loop through the DNP list to find a matching description and return the id
-        for (int i = 0; i < comment_list.size(); i++) {
-            if (comment_list.get(i).getDescription().equals(in_description)) {
-                ret = comment_list.get(i).id;
+        for (CommentRow cr : comment_list) {
+            if (cr.getDescription().equals(in_description)) {
+                ret = cr.id;
                 break;
             }
         }
