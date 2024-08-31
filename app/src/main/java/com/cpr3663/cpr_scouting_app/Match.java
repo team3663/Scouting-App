@@ -44,7 +44,7 @@ public class Match extends AppCompatActivity {
     private static final int BUTTON_FLASH_INTERVAL = 1_000; // in milliseconds
     private static final int BUTTON_COLOR_FLASH = Color.RED;
     private static final int BUTTON_COLOR_NORMAL = Color.LTGRAY;
-    private static final int BUTTON_TEXT_COLOR_DISABLED = Color.GRAY;
+    private static final int BUTTON_TEXT_COLOR_DISABLED = Color.LTGRAY;
 
     // =============================================================================================
     // Class:       AutoTimerTask
@@ -106,8 +106,11 @@ public class Match extends AppCompatActivity {
     public static long startTime;
     public static String matchPhase = Constants.PHASE_NONE;
     private static int eventPrevious = -1;
-    // Define a button that starts the match, skips to Teleop, and ends the match early
+    // Define the buttons on the page
     Button but_MatchControl;
+    Button but_Back;
+    Switch switch_Defense;
+    Switch switch_Defended;
     // Define a TextView to display the match time
     TextView text_Time;
     // Define a Timer and TimerTasks so you can schedule things
@@ -116,9 +119,6 @@ public class Match extends AppCompatActivity {
     TimerTask teleop_timertask;
     TimerTask gametime_timertask;
     TimerTask flashing_timertask;
-    // Define the toggle switches
-    Switch switch_Defense;
-    Switch switch_Defended;
 
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility"})
     @Override
@@ -143,25 +143,13 @@ public class Match extends AppCompatActivity {
         // Initialize the match timer textbox settings
         text_Time.setText(getResources().getString(R.string.timer_label) + TIMER_DEFAULT_NUM);
         text_Time.setTextSize(20F);
-        text_Time.setTextColor(Color.BLACK);
         text_Time.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
-//        text_Time.setX(2200F);
-//        text_Time.setY(0F);
-//        ViewGroup.LayoutParams text_Time_LP = new ViewGroup.LayoutParams(300, 100);
-//        text_Time.setLayoutParams(text_Time_LP);
         text_Time.setBackgroundColor(Color.TRANSPARENT);
 
         // Map the button variable to the actual button
         but_MatchControl = matchBinding.butMatchControl;
         // Initialize the match Control Button settings
         but_MatchControl.setText(getResources().getString(R.string.button_start_match));
-//        but_MatchControl.setTextSize(18F);
-        but_MatchControl.setTextColor(Color.WHITE);
-//        but_MatchControl.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
-//        but_MatchControl.setX(16F);
-//        but_MatchControl.setY(16F);
-//        ViewGroup.LayoutParams but_Update_LP = new ViewGroup.LayoutParams(300, 100);
-//        but_MatchControl.setLayoutParams(but_Update_LP);
         but_MatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_green));
         but_MatchControl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,14 +169,20 @@ public class Match extends AppCompatActivity {
             }
         });
 
+        // Map the button variable to the actual button
+        // If clicked, go back to the previous page
+        but_Back = matchBinding.buttonBack;
+        but_Back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Go to the previous page
+                Intent GoToNextPage = new Intent(Match.this, PreMatch.class);
+                startActivity(GoToNextPage);
+            }
+        });
+
         // Define a field image
         ImageView image_Field = matchBinding.imageFieldView;
-        // Initialize the fields settings
-//        image_Field.setX(0F);
-//        image_Field.setY(screen.heightPixels - image_Field_height);
-//        ViewGroup.LayoutParams image_Field_LP = new ViewGroup.LayoutParams(screen.widthPixels, image_Field_height);
-//        image_Field.setLayoutParams(image_Field_LP);
-
         // Listens for a click/touch on the screen
         image_Field.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -197,7 +191,7 @@ public class Match extends AppCompatActivity {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && !matchPhase.equals(Constants.PHASE_NONE)) {
                     double x = motionEvent.getX();
                     double y = motionEvent.getY();
-                    matchBinding.textClickXY.setText(x + "," + y);
+                    matchBinding.textStatus.setText(x + "," + y);
                     // Get current time, elapsed time, or tell the logger that the initial click happened now, so it doesn't log the second click's time instead
                     // Also make a Popup Context Menu to ask what the event was
                 }
@@ -209,14 +203,7 @@ public class Match extends AppCompatActivity {
         // Map the Defense Switch to the actual switch
         switch_Defense = matchBinding.switchDefense;
         // Initialize the Defense Switch settings
-//        switch_Defense.setText(getResources().getString(R.string.button_play_defense));
-//        switch_Defense.setTextSize(20F);
         switch_Defense.setTextColor(BUTTON_TEXT_COLOR_DISABLED);
-//        switch_Defense.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
-//        switch_Defense.setX(1500F);
-//        switch_Defense.setY(16F);
-//        ViewGroup.LayoutParams switch_Defense_LP = new ViewGroup.LayoutParams(360, 100);
-//        switch_Defense.setLayoutParams(switch_Defense_LP);
         switch_Defense.setBackgroundColor(BUTTON_COLOR_NORMAL);
         // Do this so that you can't mess with the switch during the wrong phases
         switch_Defense.setEnabled(false);
@@ -240,14 +227,7 @@ public class Match extends AppCompatActivity {
         // Map the Defended Switch to the actual switch
         switch_Defended = matchBinding.switchDefended;
         // Initialize the Defended Switch settings
-//        switch_Defended.setText(getResources().getString(R.string.button_was_defended));
-//        switch_Defended.setTextSize(20F);
         switch_Defended.setTextColor(BUTTON_TEXT_COLOR_DISABLED);
-//        switch_Defended.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
-//        switch_Defended.setX(1000F);
-//        switch_Defended.setY(16F);
-//        ViewGroup.LayoutParams switch_Defended_LP = new ViewGroup.LayoutParams(360, 100);
-//        switch_Defended.setLayoutParams(switch_Defended_LP);
         switch_Defended.setBackgroundColor(BUTTON_COLOR_NORMAL);
         // Do this so that you can't mess with the switch during the wrong phases
         switch_Defended.setEnabled(false);
@@ -309,7 +289,7 @@ public class Match extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        matchBinding.textClickXY.setText(item.getTitle());
+        matchBinding.textStatus.setText(item.getTitle());
         eventPrevious = Globals.EventList.getEventId((String) item.getTitle());
         // Log the event
         return true;
@@ -332,6 +312,10 @@ public class Match extends AppCompatActivity {
         teleop_timertask = new TeleopTimerTask();
         gametime_timertask = new GameTimeTimerTask();
         flashing_timertask = new FlashingTimerTask();
+
+        // Hide Back Button (too late to go back now!)
+        matchBinding.buttonBack.setClickable(false);
+        matchBinding.buttonBack.setVisibility(View.INVISIBLE);
 
         // Set timer tasks
         match_Timer.schedule(auto_timertask, TIMER_AUTO_LENGTH * 1_000);
@@ -372,9 +356,9 @@ public class Match extends AppCompatActivity {
             @Override
             public void run() {
                 switch_Defense.setEnabled(true);
-                switch_Defense.setTextColor(Color.BLACK);
+                switch_Defense.setTextColor(Color.WHITE);
                 switch_Defended.setEnabled(true);
-                switch_Defended.setTextColor(Color.BLACK);
+                switch_Defended.setTextColor(Color.WHITE);
             }
         });
     }
@@ -430,7 +414,7 @@ public class Match extends AppCompatActivity {
     // Output:      void
     // Parameters:  in_button - specific the button you want to flash.
     // =============================================================================================
-    public void flash_button(CompoundButton in_button) {
+    public void flash_button(@NonNull CompoundButton in_button) {
         // If the button is ON then toggle the background color between COLOR_FLASH and COLOR_NORMAL
         if (in_button.isChecked()) {
             if (System.currentTimeMillis() / BUTTON_FLASH_INTERVAL % 2 == 0) {

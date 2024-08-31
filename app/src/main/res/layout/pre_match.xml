@@ -198,6 +198,20 @@
         </LinearLayout>
     </LinearLayout>
 
+    <Button
+        android:id="@+id/but_Next"
+        android:layout_width="175dp"
+        android:layout_height="60dp"
+        android:text="Next"
+        android:textSize="28sp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="20dp"
+        android:textColor="@color/cpr_bkgnd"
+        app:backgroundTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="HardcodedText,MissingConstraints" />
+  
     <CheckBox
         android:id="@+id/checkOverride"
         android:layout_width="wrap_content"

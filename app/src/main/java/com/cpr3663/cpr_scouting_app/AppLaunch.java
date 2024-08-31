@@ -30,7 +30,7 @@ public class AppLaunch extends AppCompatActivity {
     // =============================================================================================
     // Define constants
     // =============================================================================================
-    private static final long SPLASH_SCREEN_DELAY = 300; // delay (ms) in between "loading" messages
+    private static final long SPLASH_SCREEN_DELAY = 200; // delay (ms) in between "loading" messages
 
     // =============================================================================================
     // Global variables
@@ -58,12 +58,9 @@ public class AppLaunch extends AppCompatActivity {
             return insets;
         });
 
-        appLaunchBinding.textBanner.setText(getResources().getString(R.string.banner_app_name));
-
         // Define a Image Button to open up the Settings
         ImageButton imgBut_Settings = appLaunchBinding.imgButSettings;
         imgBut_Settings.setImageResource(R.drawable.settings_icon);
-        imgBut_Settings.setBackgroundColor(Color.TRANSPARENT); // Set background Color
         imgBut_Settings.setVisibility(View.INVISIBLE);
         imgBut_Settings.setClickable(false);
         imgBut_Settings.setOnClickListener(new View.OnClickListener() {
@@ -76,9 +73,6 @@ public class AppLaunch extends AppCompatActivity {
 
         // Define the Start Scouting Button
         Button but_StartScouting = appLaunchBinding.butStartScouting;
-        but_StartScouting.setText(R.string.button_start_scouting);
-//        but_StartScouting.setBackgroundColor(Color.WHITE);
-//        but_StartScouting.setTextColor(R.color.cpr_bkgnd);
         but_StartScouting.setVisibility(View.INVISIBLE);
         but_StartScouting.setClickable(false);
         but_StartScouting.setOnClickListener(new View.OnClickListener() {
