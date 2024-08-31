@@ -192,8 +192,8 @@ public class Match extends AppCompatActivity {
                     double x = motionEvent.getX();
                     double y = motionEvent.getY();
                     matchBinding.textStatus.setText(x + "," + y);
-                    // Get current time, elapsed time, or tell the logger that the initial click happened now, so it doesn't log the second click's time instead
-                    // Also make a Popup Context Menu to ask what the event was
+                    // TODO Get current time, elapsed time, tell the logger that the initial click happened now,
+                    //  or log it when context menu is created, so it doesn't log the second click's time instead
                 }
                 // This decides if it consumes the click and stops it
                 return false;
@@ -213,12 +213,10 @@ public class Match extends AppCompatActivity {
             public void onClick(View view) {
                 // If the button is being turned ON make it RED otherwise LTGRAY
                 if (switch_Defense.isChecked()) {
-                    // Log EVENT
-                    // <code goes here>
+                    // TODO Log EVENT here
                     switch_Defense.setBackgroundColor(BUTTON_COLOR_FLASH);
                 } else {
-                    // Log EVENT
-                    // <code goes here>
+                    // TODO Log EVENT here
                     switch_Defense.setBackgroundColor(BUTTON_COLOR_NORMAL);
                 }
             }
@@ -237,12 +235,10 @@ public class Match extends AppCompatActivity {
             public void onClick(View view) {
                 // If the button is being turned ON make it RED otherwise LTGRAY
                 if (switch_Defended.isChecked()) {
-                    // Log EVENT
-                    // <code goes here>
+                    // TODO Log EVENT here
                     switch_Defended.setBackgroundColor(BUTTON_COLOR_FLASH);
                 } else {
-                    // Log EVENT
-                    // <code goes here>
+                    // TODO Log EVENT here
                     switch_Defended.setBackgroundColor(BUTTON_COLOR_NORMAL);
                 }
             }
@@ -291,7 +287,7 @@ public class Match extends AppCompatActivity {
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         matchBinding.textStatus.setText(item.getTitle());
         eventPrevious = Globals.EventList.getEventId((String) item.getTitle());
-        // Log the event
+        // TODO Log EVENT here
         return true;
     }
 

@@ -87,50 +87,62 @@ public class AppLaunch extends AppCompatActivity {
                 startActivity(GoToPreMatch);
             }
         });
-
-        // Set a TimerTask to load the data shortly AFTER this OnCreate finishes
-        appLaunch_timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                // Load the data with a BRIEF delay between.  :)
-                try {
-                    LoadTeamData();
-                    Thread.sleep(SPLASH_SCREEN_DELAY);
-                    LoadCompetitionData();
-                    Thread.sleep(SPLASH_SCREEN_DELAY);
-                    LoadDeviceData();
-                    Thread.sleep(SPLASH_SCREEN_DELAY);
-                    LoadDNPData();
-                    Thread.sleep(SPLASH_SCREEN_DELAY);
-                    LoadMatchData();
-                    Thread.sleep(SPLASH_SCREEN_DELAY);
-                    LoadEventData();
-                    Thread.sleep(SPLASH_SCREEN_DELAY);
-                    LoadCommentData();
-                    Thread.sleep(SPLASH_SCREEN_DELAY);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-
-                // Erase the status text
-                appLaunchBinding.textStatus.setText("");
-
-                // Enable the start scouting button and settings button
-                but_StartScouting.setClickable(true);
-                imgBut_Settings.setClickable(true);
-
-                // Setting the Visibility attribute can't be set from a non-UI thread (like withing a TimerTask
-                // that runs on a separate thread.  So we need to make a Runner that will execute on the UI thread
-                // to set these.
-                AppLaunch.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        but_StartScouting.setVisibility(View.VISIBLE);
-                        imgBut_Settings.setVisibility(View.VISIBLE);
+      
+        // Make sure that we aren't coming back to the page and it is the first time running this
+        if (Globals.TeamList.size() == 0) {
+            // Set a TimerTask to load the data shortly AFTER this OnCreate finishes
+            appLaunch_timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    // Make sure that we aren't coming back to the page and it is the first time running this
+                    if (Globals.TeamList.size() == 0) {
+                        // Load the data with a BRIEF delay between.  :)
+                        try {
+                            LoadTeamData();
+                            Thread.sleep(SPLASH_SCREEN_DELAY);
+                            LoadCompetitionData();
+                            Thread.sleep(SPLASH_SCREEN_DELAY);
+                            LoadDeviceData();
+                            Thread.sleep(SPLASH_SCREEN_DELAY);
+                            LoadDNPData();
+                            Thread.sleep(SPLASH_SCREEN_DELAY);
+                            LoadMatchData();
+                            Thread.sleep(SPLASH_SCREEN_DELAY);
+                            LoadEventData();
+                            Thread.sleep(SPLASH_SCREEN_DELAY);
+                            LoadCommentData();
+                            Thread.sleep(SPLASH_SCREEN_DELAY);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
-                });
-            }
-        }, 100);
+
+                    // Erase the status text
+                    appLaunchBinding.textStatus.setText("");
+
+                    // Enable the start scouting button and settings button
+                    but_StartScouting.setClickable(true);
+                    imgBut_Settings.setClickable(true);
+
+                    // Setting the Visibility attribute can't be set from a non-UI thread (like withing a TimerTask
+                    // that runs on a separate thread.  So we need to make a Runner that will execute on the UI thread
+                    // to set these.
+                    AppLaunch.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            but_StartScouting.setVisibility(View.VISIBLE);
+                            imgBut_Settings.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
+            }, 100);
+        } else {
+            // Enable the start scouting button and settings button because it isn't
+            but_StartScouting.setClickable(true);
+            imgBut_Settings.setClickable(true);
+            but_StartScouting.setVisibility(View.VISIBLE);
+            imgBut_Settings.setVisibility(View.VISIBLE);
+        }
     }
 
     // =============================================================================================
@@ -139,7 +151,7 @@ public class AppLaunch extends AppCompatActivity {
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
-    public void LoadTeamData(){
+    private void LoadTeamData(){
         String line = "";
         int index = 1;
 
@@ -179,7 +191,7 @@ public class AppLaunch extends AppCompatActivity {
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
-    public void LoadCompetitionData(){
+    private void LoadCompetitionData(){
         String line = "";
 
         // Open the asset file holding all of the Competition information
@@ -210,7 +222,7 @@ public class AppLaunch extends AppCompatActivity {
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
-    public void LoadMatchData(){
+    private void LoadMatchData(){
         String line = "";
         int index = 1;
 
@@ -251,7 +263,7 @@ public class AppLaunch extends AppCompatActivity {
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
-    public void LoadDeviceData(){
+    private void LoadDeviceData(){
         String line = "";
 
         // Open the asset file holding all of the Device information
@@ -282,7 +294,7 @@ public class AppLaunch extends AppCompatActivity {
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
-    public void LoadDNPData(){
+    private void LoadDNPData(){
         String line = "";
 
         // Open the asset file holding all of the Device information
@@ -316,7 +328,7 @@ public class AppLaunch extends AppCompatActivity {
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
-    public void LoadEventData(){
+    private void LoadEventData(){
         String line = "";
 
         // Open the asset file holding all of the Event information for AUTO

@@ -25,11 +25,6 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="23dp"
-        android:orientation="horizontal"></LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
         android:layout_height="80dp"
         android:orientation="horizontal">
 
@@ -39,25 +34,30 @@
             android:layout_height="60dp"
             android:gravity="end|center"
             android:paddingEnd="50dp"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            android:text="Competition ID:" />
-
-        <EditText
-            android:id="@+id/edit_CompetitionId"
-            android:autofillHints="Enter Competition ID Here"
-            android:textColorHint="@color/light_grey"
-            android:inputType="number"
-            android:layout_width="253dp"
-            android:layout_height="60dp"
-            android:gravity="start|center"
+            android:text="Competition ID:"
             android:textColor="@color/white"
             android:textSize="24sp" />
 
+        <EditText
+            android:id="@+id/edit_CompetitionId"
+            android:layout_width="253dp"
+            android:layout_height="60dp"
+            android:autofillHints="Enter Competition ID Here"
+            android:gravity="start|center"
+            android:inputType="number"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:textSize="24sp"
+            android:paddingHorizontal="20dp"
+            android:background="@color/light_grey" />
+
         <TextView
             android:id="@+id/text_CompetitionName"
-            android:layout_width="650dp"
-            android:layout_height="5dp" />
+            android:layout_width="580dp"
+            android:layout_height="60dp"
+            android:textColor="@color/light_grey"
+            android:paddingHorizontal="20dp"
+            android:textSize="20sp" />
 
     </LinearLayout>
 
@@ -79,21 +79,63 @@
         <EditText
             android:id="@+id/edit_DeviceId"
             android:autofillHints="Enter Device ID Here"
-            android:textColorHint="@color/light_grey"
+            android:textColorHint="@color/black"
             android:inputType="number"
             android:layout_width="253dp"
             android:layout_height="60dp"
             android:gravity="start|center"
-            android:textColor="@color/white"
-            android:textSize="24sp" />
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:paddingHorizontal="20dp"
+            android:background="@color/light_grey" />
 
         <TextView
             android:id="@+id/text_DeviceName"
-            android:layout_width="650dp"
-            android:layout_height="5dp"/>
+            android:layout_width="580dp"
+            android:layout_height="60dp"
+            android:textColor="@color/light_grey"
+            android:paddingHorizontal="20dp"
+            android:textSize="20sp" />
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_ScoutingTeam"
+            android:layout_width="447dp"
+            android:layout_height="60dp"
+            android:gravity="end|center"
+            android:paddingEnd="50dp"
+            android:text="Scouting Team:"
+            android:textColor="@color/white"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/edit_ScoutingTeam"
+            android:layout_width="253dp"
+            android:layout_height="60dp"
+            android:autofillHints="Enter Scouting team number here"
+            android:gravity="start|center"
+            android:inputType="number"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:textSize="24sp"
+            android:paddingHorizontal="20dp"
+            android:background="@color/light_grey" />
+
+        <TextView
+            android:id="@+id/text_ScoutingTeamName"
+            android:layout_width="580dp"
+            android:layout_height="60dp"
+            android:textColor="@color/light_grey"
+            android:paddingHorizontal="20dp"
+            android:textSize="20sp" />
+
+    </LinearLayout>
 </LinearLayout>
 
 <Button

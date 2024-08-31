@@ -37,7 +37,7 @@ public class Matches {
     // Methods:     getListOfTeams()
     //                  return an array of team numbers (6 of them) that are in this match
     // =============================================================================================
-    private static class MatchRow {
+    protected static class MatchRow {
         // Class Members
         private int red1 = 0;
         private int red2 = 0;
