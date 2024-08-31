@@ -9,6 +9,7 @@ public class Globals {
     public static Devices DeviceList = new Devices();
     public static DNPs DNPList = new DNPs();
     public static Events EventList = new Events();
+    public static Comments CommentList = new Comments();
 
     public static int CurrentCompetitionId;
     public static int CurrentMatchNumber;

@@ -102,6 +102,8 @@
         android:layout_width="150dp"
         android:layout_height="65dp"
         android:layout_marginTop="5dp"
+        android:backgroundTint="@color/light_grey"
+        android:textColor="@color/cpr_bkgnd"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         tools:textSize="20sp"
