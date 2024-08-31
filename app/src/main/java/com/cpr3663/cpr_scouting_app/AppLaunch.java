@@ -92,22 +92,25 @@ public class AppLaunch extends AppCompatActivity {
         appLaunch_timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                // Load the data with a BRIEF delay between.  :)
-                try {
-                    LoadTeamData();
-                    Thread.sleep(SPLASH_SCREEN_DELAY);
-                    LoadCompetitionData();
-                    Thread.sleep(SPLASH_SCREEN_DELAY);
-                    LoadDeviceData();
-                    Thread.sleep(SPLASH_SCREEN_DELAY);
-                    LoadDNPData();
-                    Thread.sleep(SPLASH_SCREEN_DELAY);
-                    LoadMatchData();
-                    Thread.sleep(SPLASH_SCREEN_DELAY);
-                    LoadEventData();
-                    Thread.sleep(SPLASH_SCREEN_DELAY);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                // Make sure that we aren't coming back to the page and it is the first time running this
+                if (Globals.TeamList.size() == 0) {
+                    // Load the data with a BRIEF delay between.  :)
+                    try {
+                        LoadTeamData();
+                        Thread.sleep(SPLASH_SCREEN_DELAY);
+                        LoadCompetitionData();
+                        Thread.sleep(SPLASH_SCREEN_DELAY);
+                        LoadDeviceData();
+                        Thread.sleep(SPLASH_SCREEN_DELAY);
+                        LoadDNPData();
+                        Thread.sleep(SPLASH_SCREEN_DELAY);
+                        LoadMatchData();
+                        Thread.sleep(SPLASH_SCREEN_DELAY);
+                        LoadEventData();
+                        Thread.sleep(SPLASH_SCREEN_DELAY);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
                 // Erase the status text
