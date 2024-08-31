@@ -28,9 +28,15 @@ public class Competitions {
         return competition_list.size();
     }
 
-    // Member Function: Get back a row of data for a given competition
-    public CompetitionRow getCompetitionRow(int in_index) {
-        return competition_list.get(in_index);
+    public CompetitionRow getCompetitionRow(int id) {
+        CompetitionRow competition = null;
+        for (CompetitionRow competitionRow : competition_list) {
+            if (id == competitionRow.getId()) {
+                competition = competitionRow;
+                break;
+            }
+        }
+        return competition;
     }
 
     // =============================================================================================

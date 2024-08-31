@@ -28,9 +28,15 @@ public class Devices {
         return device_list.size();
     }
 
-    // Member Function: Get back a row of data for a given device
-    public DeviceRow getDeviceRow(int in_index) {
-        return device_list.get(in_index);
+    public DeviceRow getDeviceRow(int deviceNumber) {
+        DeviceRow device = null;
+        for (DeviceRow deviceRow : device_list) {
+            if (deviceNumber == deviceRow.getDeviceNumber()) {
+                device = deviceRow;
+                break;
+            }
+        }
+        return device;
     }
 
     // =============================================================================================
