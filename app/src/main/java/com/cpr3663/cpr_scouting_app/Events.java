@@ -60,9 +60,9 @@ public class Events {
         String[] next_set_ids;
 
         // Find the event in the list, and get it's list of valid next events
-        for (int i = 0; i < event_list.size(); i++) {
-            if ((event_list.get(i).id == in_EventId)) {
-                next_set = event_list.get(i).next_event_set;
+        for (EventRow er : event_list) {
+            if ((er.id == in_EventId)) {
+                next_set = er.next_event_set;
                 break;
             }
         }
@@ -71,11 +71,11 @@ public class Events {
         next_set_ids = next_set.split(":");
 
         // Now find all events match the list of next events we can go to
-        for (int i = 0; i < event_list.size(); i++) {
+        for (EventRow er : event_list) {
             for (int j = ret.size(); j < next_set_ids.length; j++) {
                 // If the event we're looking at (i) is in the list of valid next event ids (j) add it to the list
-                if (event_list.get(i).id == Integer.parseInt(next_set_ids[j])) {
-                    ret.add(event_list.get(i).description);
+                if (er.id == Integer.parseInt(next_set_ids[j])) {
+                    ret.add(er.description);
                 }
             }
         }
@@ -94,9 +94,9 @@ public class Events {
         int ret = Constants.NO_EVENT;
 
         // Look through the event rows to find a match
-        for (int i = 0; i < event_list.size(); i++) {
-            if (event_list.get(i).description.equals(in_EventDescription) && event_list.get(i).match_phase.equals(Match.matchPhase)) {
-                ret = event_list.get(i).id;
+        for (EventRow er : event_list) {
+            if (er.description.equals(in_EventDescription) && er.match_phase.equals(Match.matchPhase)) {
+                ret = er.id;
                 break;
             }
         }

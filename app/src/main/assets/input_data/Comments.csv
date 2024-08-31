@@ -1,0 +1,8 @@
+﻿Comment_Id,Comment_IsActive,Comment_Order,Comment_Text
+1,True,1,Robot became disabled or stopped moving
+2,True,2,Robot (or part of it) broke
+3,True,3,Robot didn't contribue much (no auto - low scoring - no defense)
+4,True,5,Poor human player (source)
+5,True,6,Poor human player (amp)
+6,True,4,Robot had note(s) stuck in it
+7,False,,They were mean

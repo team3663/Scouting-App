@@ -106,6 +106,8 @@ public class AppLaunch extends AppCompatActivity {
                     Thread.sleep(SPLASH_SCREEN_DELAY);
                     LoadEventData();
                     Thread.sleep(SPLASH_SCREEN_DELAY);
+                    LoadCommentData();
+                    Thread.sleep(SPLASH_SCREEN_DELAY);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -275,8 +277,8 @@ public class AppLaunch extends AppCompatActivity {
 
     // =============================================================================================
     // Function:    LoadDNPData
-    // Description: Read the list of devices from the .csv file into the global
-    //              DeviceList structure.
+    // Description: Read the list of DNP reasons from the .csv file into the global
+    //              DNPList structure.
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
@@ -309,7 +311,7 @@ public class AppLaunch extends AppCompatActivity {
 
     // =============================================================================================
     // Function:    LoadEventData
-    // Description: Read the list of devices from the .csv file into the global
+    // Description: Read the list of events from the .csv file into the global
     //              EventList structure.
     // Output:      void
     // Parameters:  n/a
@@ -348,6 +350,40 @@ public class AppLaunch extends AppCompatActivity {
             while ((line = br.readLine()) != null) {
                 String[] info = line.split(",");
                 Globals.EventList.addEventRow(info[0], info[1], Constants.PHASE_TELEOP, info[2], info[3], info[4]);
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // =============================================================================================
+    // Function:    LoadCommentData
+    // Description: Read the list of comments from the .csv file into the global
+    //              CommentList structure.
+    // Output:      void
+    // Parameters:  n/a
+    // =============================================================================================
+    public void LoadCommentData(){
+        String line = "";
+
+        // Open the asset file holding all of the Device information
+        // Read each line and add the device information into the DeviceList.  There is no mapping
+        // of the device number and the index into the array (there's no need)
+        //
+        // This list also uses an array of DeviceRowInfo since we're storing more than 1 value
+        appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_comments));
+        try {
+            InputStream is = getAssets().open(getResources().getString(R.string.file_comments));
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            line = br.readLine();
+            while ((line = br.readLine()) != null) {
+                String[] info = line.split(",");
+                // Only load "active" Comments reasons
+                if (Boolean.parseBoolean(info[1])) {
+                    Globals.CommentList.addCommentRow(info[0], info[2], info[3]);
+                }
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
