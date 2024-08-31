@@ -38,9 +38,9 @@ public class DNPs {
         int ret = 0;
 
         // Loop through the DNP list to find a matching description and return the id
-        for (int i = 0; i < dnp_list.size(); i++) {
-            if (dnp_list.get(i).getDescription().equals(in_description)) {
-                ret = dnp_list.get(i).id;
+        for (DNPRow dr : dnp_list) {
+            if (dr.getDescription().equals(in_description)) {
+                ret = dr.id;
                 break;
             }
         }
@@ -49,7 +49,7 @@ public class DNPs {
     }
 
     // =============================================================================================
-    // Class:       DNPRow (PRIVATE)
+    // Class:       DNPRow
     // Description: Defines a structure/class to hold the information for each DNP reason
     // Methods:     getId()
     //                  returns the (int) DNP number for this row to use for logging

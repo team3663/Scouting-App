@@ -40,7 +40,7 @@ public class Competitions {
     }
 
     // =============================================================================================
-    // Class:       CompetitionRow (PRIVATE)
+    // Class:       CompetitionRow
     // Description: Defines a structure/class to hold the information for each Device.
     // Methods:     getId()
     //                  returns the (int) competition number for this row.

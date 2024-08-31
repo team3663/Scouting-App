@@ -13,6 +13,7 @@
     <string name="loading_events_teleop">Loading Teleop Event Data...</string>
     <string name="loading_competitions">Loading Competition Data...</string>
     <string name="loading_devices">Loading Device Data...</string>
+    <string name="loading_comments">Loading Comment Data...</string>
 
     <string name="timer_label">Time: </string>
 </resources>

@@ -40,7 +40,7 @@ public class Devices {
     }
 
     // =============================================================================================
-    // Class:       DeviceRow (PRIVATE)
+    // Class:       DeviceRow
     // Description: Defines a structure/class to hold the information for each Device.
     // Methods:     getDeviceNumber()
     //                  returns the (int) device number for this row.
