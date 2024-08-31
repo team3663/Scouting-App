@@ -184,7 +184,6 @@ public class Match extends AppCompatActivity {
         // Define a field image
         ImageView image_Field = matchBinding.imageFieldView;
         // Initialize the fields settings
-        int image_Field_height = screen.heightPixels * screen.widthPixels / 1985; // 1985 is the pixel width of the image
 //        image_Field.setX(0F);
 //        image_Field.setY(screen.heightPixels - image_Field_height);
 //        ViewGroup.LayoutParams image_Field_LP = new ViewGroup.LayoutParams(screen.widthPixels, image_Field_height);
@@ -271,13 +270,8 @@ public class Match extends AppCompatActivity {
 
         // Define a context menu
         RelativeLayout ContextMenu = matchBinding.ContextMenu;
-        // Initialize the Context Menu's settings
-        ContextMenu.setX(0F);
-        ContextMenu.setY(screen.heightPixels - image_Field_height);
-        ViewGroup.LayoutParams ContextMenu_LP = new ViewGroup.LayoutParams(screen.widthPixels, image_Field_height);
-        ContextMenu.setLayoutParams(ContextMenu_LP);
-//        ContextMenu.setBackgroundColor(getResources().getColor(R.color.red_highlight)); // For checking it's location
         ContextMenu.setBackgroundColor(Color.TRANSPARENT);
+//        ContextMenu.setBackgroundColor(getResources().getColor(R.color.red_highlight)); // For checking it's location
         // This is required it will not run without it
         registerForContextMenu(image_Field);
         // So that it activates on a normal click instead of a long click

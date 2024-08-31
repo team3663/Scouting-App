@@ -60,23 +60,24 @@
                 android:text="Time: 0"
                 tools:ignore="HardcodedText,MissingConstraints,VisualLintBounds" />
         </LinearLayout>
-
-        <ImageView
-            android:id="@+id/image_FieldView"
+        <FrameLayout
             android:layout_width="fill_parent"
-            android:layout_height="480dp"
-            android:adjustViewBounds="true"
-            android:contentDescription="Shows the field of play"
-            app:srcCompat="@drawable/field_image"
-            tools:ignore="HardcodedText,MissingConstraints" />
+            android:layout_height="480dp">
+
+            <ImageView
+                android:id="@+id/image_FieldView"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:adjustViewBounds="true"
+                android:contentDescription="Shows the field of play"
+                app:srcCompat="@drawable/field_image"
+                tools:ignore="HardcodedText,MissingConstraints" />
+
+            <RelativeLayout
+                android:id="@+id/ContextMenu"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                tools:ignore="MissingConstraints,UselessLeaf" />
+        </FrameLayout>
     </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/ContextMenu"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints,UselessLeaf"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="523dp" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
