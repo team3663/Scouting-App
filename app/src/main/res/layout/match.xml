@@ -75,18 +75,28 @@
                 android:text="Time: 0"
                 tools:textSize="20sp" />
         </LinearLayout>
+      
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="480dp">
 
-        <ImageView
-            android:id="@+id/image_FieldView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:contentDescription="Shows the field of play"
-            app:srcCompat="@drawable/field_image"
-            tools:ignore="HardcodedText,MissingConstraints" />
+            <ImageView
+                android:id="@+id/image_FieldView"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:adjustViewBounds="true"
+                android:contentDescription="Shows the field of play"
+                app:srcCompat="@drawable/field_image"
+                tools:ignore="HardcodedText,MissingConstraints" />
 
+            <RelativeLayout
+                android:id="@+id/ContextMenu"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                tools:ignore="MissingConstraints,UselessLeaf" />
+        </FrameLayout>
     </LinearLayout>
-
+      
     <Button
         android:id="@+id/button_Back"
         android:layout_width="150dp"
@@ -96,13 +106,4 @@
         app:layout_constraintRight_toRightOf="parent"
         tools:textSize="20sp"
         android:text="Back" />
-
-    <RelativeLayout
-        android:id="@+id/ContextMenu"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints,UselessLeaf"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="523dp" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -37,6 +38,12 @@ public class SubmitData extends AppCompatActivity {
             return insets;
         });
 
-        
+        submitDataBinding.butDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent GoToPreMatch = new Intent(SubmitData.this, PreMatch.class);
+                startActivity(GoToPreMatch);
+            }
+        });
     }
 }
