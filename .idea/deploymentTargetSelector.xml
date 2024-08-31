@@ -7,7 +7,7 @@
         <DropdownSelection timestamp="2024-08-30T23:10:20.244023800Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=R9PT60B1PZD" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\stamm\.android\avd\Medium_Tablet_API_35.avd" />
             </handle>
           </Target>
         </DropdownSelection>

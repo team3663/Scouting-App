@@ -68,7 +68,6 @@
                 android:paddingRight="50dp"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-
                 android:text="Team Number To Scout:" />
 
             <EditText
@@ -84,7 +83,6 @@
                 android:id="@+id/textTeamToScoutName"
                 android:layout_width="650dp"
                 android:layout_height="65dp"/>
-
         </LinearLayout>
 
         <LinearLayout
@@ -115,8 +113,6 @@
                 android:textSize="24sp"
                 android:layout_width="650dp"
                 android:layout_height="65dp"/>
-
-
         </LinearLayout>
 
         <LinearLayout
@@ -201,21 +197,7 @@
                 android:text="Single select Drop down" />
         </LinearLayout>
     </LinearLayout>
-
-    <Button
-        android:id="@+id/but_Next"
-        android:layout_width="175dp"
-        android:layout_height="60dp"
-        android:text="Next"
-        android:textSize="28sp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginEnd="20dp"
-        android:textColor="@color/cpr_bkgnd"
-        app:backgroundTint="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:ignore="HardcodedText,MissingConstraints" />
-
+  
     <CheckBox
         android:id="@+id/checkOverride"
         android:layout_width="wrap_content"
@@ -234,24 +216,54 @@
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:gravity="right|center"
-        android:textColor="@color/white"
         android:textSize="24sp"
         android:text="Enter Team Number:"
-        android:layout_marginStart="80dp"
+        android:textColor="@color/white"
+        android:layout_marginStart="50dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@id/checkOverride"
         app:layout_constraintLeft_toRightOf="@id/checkOverride" />
 
     <EditText
-        android:id="@+id/editTextNumber"
-        android:layout_width="253dp"
+        android:id="@+id/editOverrideTeamNum"
+        android:layout_width="150dp"
         android:layout_height="60dp"
         android:layout_weight="1"
-        android:textSize="24sp"
+        android:autofillHints="Enter team number"
+        android:textColor="@color/black"
+        android:background="@color/white"
+        android:layout_marginStart="20dp"
         android:inputType="number"
-        android:layout_marginStart="10dp"
+        android:textSize="24sp"
+        android:gravity="center"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@id/textOverride"
         app:layout_constraintLeft_toRightOf="@id/textOverride" />
 
+    <Button
+        android:id="@+id/butAddOverrideTeamNum"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:text="Add"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:visibility="invisible"
+        android:gravity="center"
+        android:layout_marginStart="50dp"
+        app:layout_constraintTop_toTopOf="@id/editOverrideTeamNum"
+        app:layout_constraintLeft_toRightOf="@id/editOverrideTeamNum" />
+
+    <Button
+        android:id="@+id/but_Next"
+        android:layout_width="175dp"
+        android:layout_height="60dp"
+        android:text="Next"
+        android:textSize="28sp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@color/white"
+        android:textColor="@color/cpr_bkgnd"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="HardcodedText,MissingConstraints" />
 </androidx.constraintlayout.widget.ConstraintLayout>
