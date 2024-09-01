@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,6 +40,14 @@ public class PostMatch extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Create Components
+        // TODO: Change type for drop downs once we have the right XML and Java for it.
+        CheckBox check_DidLeave = postMatchBinding.didLeave;
+        EditText drop_ClimbPosition = postMatchBinding.dropClimbingPosition;
+        EditText drop_Trap = postMatchBinding.dropTrap;
+        EditText drop_DNP = postMatchBinding.dropDNP;
+        EditText drop_Comments = postMatchBinding.dropComments;
 
         // Create a button for when you are done inputting info
         Button but_Next = postMatchBinding.butNext;

@@ -43,7 +43,7 @@ public class Match extends AppCompatActivity {
     private static final String TIMER_DEFAULT_NUM = "-:--"; // What the timer displays when there isn't a match going
     private static final int BUTTON_FLASH_INTERVAL = 1_000; // in milliseconds
     private static final int BUTTON_COLOR_FLASH = Color.RED;
-    private static final int BUTTON_COLOR_NORMAL = Color.LTGRAY;
+    private static final int BUTTON_COLOR_NORMAL = R.color.cpr_bkgnd;
     private static final int BUTTON_TEXT_COLOR_DISABLED = Color.LTGRAY;
 
     // =============================================================================================
@@ -144,7 +144,11 @@ public class Match extends AppCompatActivity {
         text_Time.setText(getResources().getString(R.string.timer_label) + TIMER_DEFAULT_NUM);
         text_Time.setTextSize(20F);
         text_Time.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
+        text_Time.setVisibility(View.INVISIBLE);
         text_Time.setBackgroundColor(Color.TRANSPARENT);
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         // Map the button variable to the actual button
         but_MatchControl = matchBinding.butMatchControl;
@@ -191,8 +195,7 @@ public class Match extends AppCompatActivity {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && !matchPhase.equals(Constants.PHASE_NONE)) {
                     double x = motionEvent.getX();
                     double y = motionEvent.getY();
-                    matchBinding.textStatus.setText(x + "," + y);
-                    // Get current time, elapsed time, or tell the logger that the initial click happened now, so it doesn't log the second click's time instead
+                    // TODO: Get current time, elapsed time, or tell the logger that the initial click happened now, so it doesn't log the second click's time instead
                     // Also make a Popup Context Menu to ask what the event was
                 }
                 // This decides if it consumes the click and stops it
@@ -205,6 +208,7 @@ public class Match extends AppCompatActivity {
         // Initialize the Defense Switch settings
         switch_Defense.setTextColor(BUTTON_TEXT_COLOR_DISABLED);
         switch_Defense.setBackgroundColor(BUTTON_COLOR_NORMAL);
+        switch_Defense.setVisibility(View.INVISIBLE);
         // Do this so that you can't mess with the switch during the wrong phases
         switch_Defense.setEnabled(false);
 
@@ -229,6 +233,7 @@ public class Match extends AppCompatActivity {
         // Initialize the Defended Switch settings
         switch_Defended.setTextColor(BUTTON_TEXT_COLOR_DISABLED);
         switch_Defended.setBackgroundColor(BUTTON_COLOR_NORMAL);
+        switch_Defended.setVisibility(View.INVISIBLE);
         // Do this so that you can't mess with the switch during the wrong phases
         switch_Defended.setEnabled(false);
 
@@ -289,7 +294,7 @@ public class Match extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        matchBinding.textStatus.setText(item.getTitle());
+        matchBinding.textStatus.setText("Last Event: " + item.getTitle());
         eventPrevious = Globals.EventList.getEventId((String) item.getTitle());
         // Log the event
         return true;
@@ -316,6 +321,9 @@ public class Match extends AppCompatActivity {
         // Hide Back Button (too late to go back now!)
         matchBinding.buttonBack.setClickable(false);
         matchBinding.buttonBack.setVisibility(View.INVISIBLE);
+
+        // Show the time
+        text_Time.setVisibility(View.VISIBLE);
 
         // Set timer tasks
         match_Timer.schedule(auto_timertask, TIMER_AUTO_LENGTH * 1_000);
@@ -359,6 +367,8 @@ public class Match extends AppCompatActivity {
                 switch_Defense.setTextColor(Color.WHITE);
                 switch_Defended.setEnabled(true);
                 switch_Defended.setTextColor(Color.WHITE);
+                switch_Defended.setVisibility(View.VISIBLE);
+                switch_Defense.setVisibility(View.VISIBLE);
             }
         });
     }
