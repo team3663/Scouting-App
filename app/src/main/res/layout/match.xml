@@ -5,7 +5,7 @@
     android:id="@+id/match"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/cpr_bkgnd"
     tools:context=".Match">
 
     <LinearLayout
@@ -15,68 +15,97 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="83dp"
+            android:layout_height="75dp"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/but_MatchControl"
-                android:layout_width="120dp"
+                android:layout_width="180dp"
                 android:layout_height="65dp"
-                android:text="@string/button_start_match"
-                tools:ignore="MissingConstraints,VisualLintOverlap" />
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="5dp"
+                tools:textSize="20sp"
+                android:text="@string/button_start_match" />
 
             <TextView
-                android:id="@+id/text_ClickXY"
-                android:layout_width="207dp"
-                android:layout_height="44dp"
-                android:layout_marginTop="24dp"
-                android:text="X,Y"
-                tools:ignore="HardcodedText,MissingConstraints"
+                android:id="@+id/textPadding1"
+                android:layout_width="80dp"
+                android:layout_height="65dp"
                 tools:textSize="20sp" />
 
             <Switch
-                android:id="@+id/switch_Defended"
-                android:layout_width="165dp"
+                android:id="@+id/switchDefended"
+                android:layout_width="200dp"
                 android:layout_height="65dp"
+                android:layout_marginTop="5dp"
                 android:clickable="false"
-                android:text="@string/button_was_defended"
-                tools:ignore="MissingConstraints,UseSwitchCompatOrMaterialXml,DuplicateClickableBoundsCheck,VisualLintOverlap,VisualLintBounds"
-                tools:textSize="20sp" />
+                tools:textSize="20sp"
+                android:text="Being Defended"/>
+
+            <TextView
+                android:id="@+id/text_Status"
+                android:layout_width="450dp"
+                android:layout_height="65dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center"
+                tools:textSize="20sp"
+                android:text="X,Y" />
 
             <Switch
-                android:id="@+id/switch_Defense"
-                android:layout_width="165dp"
+                android:id="@+id/switchDefense"
+                android:layout_width="200dp"
                 android:layout_height="65dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="5dp"
                 android:clickable="false"
-                android:text="@string/button_play_defense"
-                tools:ignore="MissingConstraints,UseSwitchCompatOrMaterialXml,DuplicateClickableBoundsCheck,VisualLintOverlap,VisualLintBounds"
+                android:text="Playing Defense"
+                tools:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/textPadding2"
+                android:layout_width="80dp"
+                android:layout_height="65dp"
                 tools:textSize="20sp" />
 
             <TextView
                 android:id="@+id/text_Time"
-                android:layout_width="140dp"
+                android:layout_width="145dp"
                 android:layout_height="65dp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/white"
                 android:text="Time: 0"
-                tools:ignore="HardcodedText,MissingConstraints,VisualLintBounds" />
+                tools:textSize="20sp" />
         </LinearLayout>
-
-        <ImageView
-            android:id="@+id/image_FieldView"
+      
+        <FrameLayout
             android:layout_width="fill_parent"
-            android:layout_height="480dp"
-            android:adjustViewBounds="true"
-            android:contentDescription="Shows the field of play"
-            app:srcCompat="@drawable/field_image"
-            tools:ignore="HardcodedText,MissingConstraints" />
+            android:layout_height="480dp">
+
+            <ImageView
+                android:id="@+id/image_FieldView"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:adjustViewBounds="true"
+                android:contentDescription="Shows the field of play"
+                app:srcCompat="@drawable/field_image"
+                tools:ignore="HardcodedText,MissingConstraints" />
+
+            <RelativeLayout
+                android:id="@+id/ContextMenu"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                tools:ignore="MissingConstraints,UselessLeaf" />
+        </FrameLayout>
     </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/ContextMenu"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints,UselessLeaf"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="523dp" />
-
+      
+    <Button
+        android:id="@+id/button_Back"
+        android:layout_width="150dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="5dp"
+        android:backgroundTint="@color/light_grey"
+        android:textColor="@color/cpr_bkgnd"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:textSize="20sp"
+        android:text="Back" />
 </androidx.constraintlayout.widget.ConstraintLayout>

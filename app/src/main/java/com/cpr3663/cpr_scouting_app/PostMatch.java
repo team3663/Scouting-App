@@ -44,8 +44,8 @@ public class PostMatch extends AppCompatActivity {
         but_Next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent preMatch_Activity = new Intent(PostMatch.this, PreMatch.class);
-                startActivity(preMatch_Activity);
+                Intent GoToSubmitData = new Intent(PostMatch.this, SubmitData.class);
+                startActivity(GoToSubmitData);
             }
         });
     }
