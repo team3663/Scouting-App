@@ -44,7 +44,7 @@ public class PreMatch extends AppCompatActivity {
         EditText edit_Name = preMatchBinding.editScouterName;
         edit_Name.setText(NAME_SCOUTER);
         edit_Name.setHint("Input your name");
-        edit_Name.setHintTextColor(Color.GRAY);
+        edit_Name.setHintTextColor(Color.WHITE);
 
         // Defualt them to playing
         preMatchBinding.didPlay.setChecked(true);
