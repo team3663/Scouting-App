@@ -24,7 +24,8 @@ public class PreMatch extends AppCompatActivity {
     // =============================================================================================
     private PreMatchBinding preMatchBinding;
     // To store the inputted name
-    public static String NAME_SCOUTER;
+    protected static String ScouterName;
+    protected static int MatchNum = -1;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -40,11 +41,27 @@ public class PreMatch extends AppCompatActivity {
             return insets;
         });
 
-        // Create a input text box for the scouter name
-        EditText edit_Name = preMatchBinding.editScouterName;
-        edit_Name.setText(NAME_SCOUTER);
-        edit_Name.setHint("Input your name");
-        edit_Name.setHintTextColor(Color.GRAY);
+        // Create a EditText to enter the scouters name
+        EditText edit_ScouterName = preMatchBinding.editScouterName;
+        edit_ScouterName.setText(ScouterName);
+        edit_ScouterName.setHint("Input your name");
+        edit_ScouterName.setHintTextColor(Color.GRAY);
+
+        // Create a EditText to enter the scouters name
+        EditText edit_Match = preMatchBinding.editMatch;
+        MatchNum++;
+        if (MatchNum > 0) {
+            // MUST CONVERT TO STRING or it crashes with out warning
+            edit_Match.setText(String.valueOf(MatchNum));
+            Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
+            if (Match != null) {
+                int[] Teams = Match.getListOfTeams();
+                for (int team : Teams)
+                    ; // TODO Add "team" to the options in the single select dropdown
+            }
+        } else edit_Match.setText("");
+        edit_Match.setHint("Input the match num");
+        edit_Match.setHintTextColor(Color.GRAY);
 
         // Defualt them to playing
         preMatchBinding.didPlay.setChecked(true);
@@ -82,20 +99,21 @@ public class PreMatch extends AppCompatActivity {
         but_SubmitPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NAME_SCOUTER = String.valueOf(edit_Name.getText());
+                // Save off the name and match to auto fill next time
+                ScouterName = String.valueOf(edit_ScouterName.getText());
+                MatchNum = Integer.parseInt(String.valueOf(edit_Match.getText()));
                 // If they didn't play skip everything else
                 if (preMatchBinding.didPlay.isChecked()) {
+                    // TODO log here
                     Intent GoToMatch = new Intent(PreMatch.this, Match.class);
                     startActivity(GoToMatch);
                 } else {
+                    // TODO log here
                     Intent GoToSubmitData = new Intent(PreMatch.this, SubmitData.class);
                     startActivity(GoToSubmitData);
                 }
             }
         });
-
-        // Create an EditText for entering the match your on
-        EditText edit_Match = preMatchBinding.editMatch;
 
         // Create an EditText for entering the team you are scouting
         EditText edit_TeamToScout = preMatchBinding.editTeamToScout;
@@ -112,7 +130,6 @@ public class PreMatch extends AppCompatActivity {
                         int MatchNum = Integer.parseInt(MatchNumStr);
                         Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
                         if (Match != null) {
-                            // MUST CONVERT TO STRING or it crashes with out warning
                             int[] Teams = Match.getListOfTeams();
                             for (int team : Teams) ; // TODO Add "team" to the options in the single select dropdown
                         }

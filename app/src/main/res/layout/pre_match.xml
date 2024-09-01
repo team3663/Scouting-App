@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="24sp"
-                android:inputType="text"
+                android:inputType="number"
                 android:text="Name" />
 
             <TextView
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="24sp"
-                android:inputType="text"
+                android:inputType="number"
                 android:text="Name" />
 
             <TextView
