@@ -162,7 +162,7 @@ public class PostMatch extends AppCompatActivity {
                             // clear comment list
                             CommentList.clear();
                             // clear text view value
-                            textView.setText("");
+                            textView.setText("Select All That Apply");
                         }
                     }
                 });
@@ -249,8 +249,8 @@ public class PostMatch extends AppCompatActivity {
                             selectedDNPReasons[j] = false;
                             // clear DNP Reasons list
                             DNPReasonsList.clear();
-                            // clear text view value
-                            DNPTextView.setText("");
+                            // clear text view value and reset to the title
+                            DNPTextView.setText("Select Reason(s)");
                         }
                     }
                 });

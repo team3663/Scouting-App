@@ -48,6 +48,7 @@
                 android:layout_height="65dp"
                 android:layout_marginTop="5dp"
                 android:gravity="center"
+                android:textColor="@color/white"
                 tools:textSize="20sp"
                 android:text="X,Y" />
 

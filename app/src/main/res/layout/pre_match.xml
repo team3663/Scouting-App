@@ -168,7 +168,7 @@
                 android:paddingRight="50dp"
                 android:drawableRight="@android:drawable/arrow_down_float"
                 android:drawablePadding="16dp"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:background="@color/white"
                 android:textSize="24sp"
                 android:text="Starting Position"
