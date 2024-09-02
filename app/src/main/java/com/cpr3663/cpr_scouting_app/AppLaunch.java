@@ -87,7 +87,7 @@ public class AppLaunch extends AppCompatActivity {
                 startActivity(GoToPreMatch);
             }
         });
-
+      
         // Make sure that we aren't coming back to the page and it is the first time running this
         if (Globals.TeamList.size() == 0) {
             // Set a TimerTask to load the data shortly AFTER this OnCreate finishes
@@ -116,9 +116,6 @@ public class AppLaunch extends AppCompatActivity {
                             throw new RuntimeException(e);
                         }
                     }
-
-                    // Erase the status text
-                    appLaunchBinding.textStatus.setText("");
 
                     // Enable the start scouting button and settings button
                     but_StartScouting.setClickable(true);

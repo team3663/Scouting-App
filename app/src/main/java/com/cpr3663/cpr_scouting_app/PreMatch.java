@@ -152,5 +152,51 @@ public class PreMatch extends AppCompatActivity {
                 }
             }
         });
+
+        // Create an EditText for entering the match your on
+        EditText edit_Match = preMatchBinding.editMatch;
+
+        // Create an EditText for entering the team you are scouting
+        EditText edit_TeamToScout = preMatchBinding.editTeamToScout;
+
+        // Create a text box for the name of the team your scouting to appear in
+        TextView text_TeamToScoutName = preMatchBinding.textTeamToScoutName;
+
+        edit_Match.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean focus) {
+                if (!focus) {
+                    String MatchNumStr = String.valueOf(edit_Match.getText());
+                    if (!MatchNumStr.isEmpty()) {
+                        int MatchNum = Integer.parseInt(MatchNumStr);
+                        Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
+                        if (Match != null) {
+                            // MUST CONVERT TO STRING or it crashes with out warning
+                            int[] Teams = Match.getListOfTeams();
+                            for (int team : Teams) ; // TODO Add "team" to the options in the single select dropdown
+                        }
+                    }
+                }
+            }
+        });
+
+        edit_TeamToScout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean focus) {
+                if (!focus) {
+                    String TeamToScoutStr = String.valueOf(edit_TeamToScout.getText());
+                    if (!TeamToScoutStr.isEmpty()) {
+                        int TeamToScout = Integer.parseInt(TeamToScoutStr);
+                        if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size()) {
+                            // This will crash the app instead of returning null if you pass it an invalid num
+                            String ScoutingTeamName = Globals.TeamList.get(TeamToScout);
+                            text_TeamToScoutName.setText(ScoutingTeamName);
+                        } else {
+                            text_TeamToScoutName.setText("");
+                        }
+                    }
+                }
+            }
+        });
     }
 }
