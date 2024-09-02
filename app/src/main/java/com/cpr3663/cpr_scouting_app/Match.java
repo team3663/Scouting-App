@@ -3,12 +3,14 @@ package com.cpr3663.cpr_scouting_app;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.text.Layout;
 import android.util.DisplayMetrics;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.OrientationEventListener;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -44,6 +46,9 @@ public class Match extends AppCompatActivity {
     private static final int BUTTON_COLOR_FLASH = Color.RED;
     private static final int BUTTON_COLOR_NORMAL = R.color.cpr_bkgnd;
     private static final int BUTTON_TEXT_COLOR_DISABLED = Color.LTGRAY;
+    private static final String ORIENTATION_LANDSCAPE = "l";
+    private static final String ORIENTATION_LANDSCAPE_REVERSE = "lr";
+
 
     // =============================================================================================
     // Class:       AutoTimerTask
@@ -105,10 +110,15 @@ public class Match extends AppCompatActivity {
     public static long startTime;
     public static String matchPhase = Constants.PHASE_NONE;
     private static int eventPrevious = -1;
+    private static OrientationEventListener OEL; // needed to detect the screen being flipped around
+    private static String currentOrientation = ORIENTATION_LANDSCAPE;
+
     // Define the buttons on the page
     Button but_MatchControl;
     Button but_Back;
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     Switch switch_Defense;
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     Switch switch_Defended;
     // Define a TextView to display the match time
     TextView text_Time;
@@ -136,6 +146,33 @@ public class Match extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Set up a listener for Orientation changes so we can flip the field properly (which means we
+        // ignore the flip for the field image in a sense)
+        // This listener will get triggered for every slight movement so we'll need to be careful on how
+        // we call the rotation.  Keeping track of the current orientation should help!
+        currentOrientation = ORIENTATION_LANDSCAPE;
+        OEL = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
+            @Override
+            public void onOrientationChanged(int rotation_degrees) {
+                // If the device is in the 0 to 180 degree range, make it Landscape
+                if ((rotation_degrees >= 0) && (rotation_degrees < 180) && !currentOrientation.equals(ORIENTATION_LANDSCAPE)) {
+                    matchBinding.imageFieldView.setRotation(0);
+                    currentOrientation = ORIENTATION_LANDSCAPE;
+                }
+                // If the device is in the 180 to 359 degree range, make it Landscape
+                // We can get passed a -1 if the device can't tell (it's lying flat) and we want to ignore that
+                else if ((rotation_degrees >= 180) && !currentOrientation.equals(ORIENTATION_LANDSCAPE_REVERSE)) {
+                    matchBinding.imageFieldView.setRotation(180);
+                    currentOrientation = ORIENTATION_LANDSCAPE_REVERSE;
+                }
+            }
+        };
+
+        // Enable orientation listening if we can!
+        if (OEL.canDetectOrientation()) {
+            OEL.enable();
+        }
 
         // Map the text box variable to the actual text box
         text_Time = matchBinding.textTime;
@@ -376,6 +413,11 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint("SetTextI18n")
     public void end_match() {
+        // Disable orientation listening if we can!
+        if (OEL.canDetectOrientation()) {
+            OEL.disable();
+        }
+
         // Get rid of the Scheduled events that are over/have ended
         // Need to set match_Timer and TimerTasks to null so we can create "new" ones at the start of the next match
         match_Timer.cancel();
@@ -387,25 +429,25 @@ public class Match extends AppCompatActivity {
         flashing_timertask = null;
 
         // Set the match Phase and button text
-        matchPhase = Constants.PHASE_NONE;
-        but_MatchControl.setText(getResources().getString(R.string.button_start_match));
-        but_MatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_green));
-        text_Time.setText("Time: " + TIMER_DEFAULT_NUM);
+//        matchPhase = Constants.PHASE_NONE;
+//        but_MatchControl.setText(getResources().getString(R.string.button_start_match));
+//        but_MatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_green));
+//        text_Time.setText("Time: " + TIMER_DEFAULT_NUM);
 
         // Disabling the Switches can't be set from a non-UI thread (like withing a TimerTask
         // that runs on a separate thread). So we need to make a Runner that will execute on the UI thread
         // to set this.
-        Match.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                switch_Defense.setEnabled(false);
-                switch_Defense.setTextColor(BUTTON_TEXT_COLOR_DISABLED);
-                switch_Defense.setBackgroundColor(BUTTON_COLOR_NORMAL);
-                switch_Defended.setEnabled(false);
-                switch_Defended.setTextColor(BUTTON_TEXT_COLOR_DISABLED);
-                switch_Defended.setBackgroundColor(BUTTON_COLOR_NORMAL);
-            }
-        });
+//        Match.this.runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                switch_Defense.setEnabled(false);
+//                switch_Defense.setTextColor(BUTTON_TEXT_COLOR_DISABLED);
+//                switch_Defense.setBackgroundColor(BUTTON_COLOR_NORMAL);
+//                switch_Defended.setEnabled(false);
+//                switch_Defended.setTextColor(BUTTON_TEXT_COLOR_DISABLED);
+//                switch_Defended.setBackgroundColor(BUTTON_COLOR_NORMAL);
+//            }
+//        });
 
         // Go to the next page
         Intent GoToPostMatch = new Intent(Match.this, PostMatch.class);
@@ -419,14 +461,14 @@ public class Match extends AppCompatActivity {
     // Output:      void
     // Parameters:  in_button - specific the button you want to flash.
     // =============================================================================================
+    @SuppressLint("ResourceAsColor")
     public void flash_button(@NonNull CompoundButton in_button) {
         // If the button is ON then toggle the background color between COLOR_FLASH and COLOR_NORMAL
         if (in_button.isChecked()) {
-            if (System.currentTimeMillis() / BUTTON_FLASH_INTERVAL % 2 == 0) {
+            if (System.currentTimeMillis() / BUTTON_FLASH_INTERVAL % 2 == 0)
                 in_button.setBackgroundColor(BUTTON_COLOR_NORMAL);
-            } else {
+            else
                 in_button.setBackgroundColor(BUTTON_COLOR_FLASH);
-            }
         }
     }
 }
