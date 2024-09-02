@@ -11,17 +11,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="65dp"
+        tools:layout_editor_absoluteY="337dp">
 
         <TextView
             android:id="@+id/heading"
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:textColor="@color/cpr_green"
-            android:textStyle="bold"
-            android:textSize="42sp"
             android:gravity="center"
-            android:text="Pre-Match Scouting Information" />
+            android:text="Pre-Match Scouting Information"
+            android:textColor="@color/cpr_green"
+            android:textSize="42sp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,18 +36,19 @@
                 android:layout_height="60dp"
                 android:gravity="right|center"
                 android:paddingRight="50dp"
+                android:text="Match Number:"
                 android:textColor="@color/white"
-                android:textSize="24sp"
-                android:text="Match Number:"/>
+                android:textSize="24sp" />
 
             <EditText
                 android:id="@+id/editMatch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="24sp"
                 android:inputType="text"
-                android:text="Name" />
+                android:textColor='@color/white'
+                android:text="Name"
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/matchPadding"
@@ -66,23 +69,25 @@
                 android:layout_height="60dp"
                 android:gravity="right|center"
                 android:paddingRight="50dp"
+                android:text="Team Number To Scout:"
                 android:textColor="@color/white"
-                android:textSize="24sp"
-                android:text="Team Number To Scout:" />
+                android:textSize="24sp" />
 
             <EditText
                 android:id="@+id/editTeamToScout"
                 android:layout_width="253dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="24sp"
                 android:inputType="text"
-                android:text="Name" />
+                android:textColor='@color/white'
+                android:text="Name"
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/textTeamToScoutName"
+                android:textColor='@color/white'
                 android:layout_width="650dp"
-                android:layout_height="65dp"/>
+                android:layout_height="65dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -96,9 +101,9 @@
                 android:layout_height="60dp"
                 android:gravity="right|center"
                 android:paddingRight="50dp"
+                android:text="Scouter Name:"
                 android:textColor="@color/white"
-                android:textSize="24sp"
-                android:text="Scouter Name:" />
+                android:textSize="24sp" />
 
             <EditText
                 android:id="@+id/editScouterName"
@@ -111,7 +116,7 @@
             <TextView
                 android:id="@+id/paddingScouterName"
                 android:layout_width="650dp"
-                android:layout_height="60dp"/>
+                android:layout_height="60dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -126,17 +131,17 @@
                 android:gravity="right|center"
                 android:paddingRight="50dp"
                 android:textColor="@color/white"
-                android:textSize="24sp"/>
+                android:textSize="24sp" />
 
             <CheckBox
                 android:id="@+id/didPlay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="@color/white"
                 android:paddingLeft="10dp"
-                android:textSize="24sp"
-                android:text="Did They Play?" />
+                android:text="Did They Play?"
+                android:textColor="@color/white"
+                android:textSize="24sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -150,24 +155,24 @@
                 android:layout_height="60dp"
                 android:gravity="right|center"
                 android:paddingRight="50dp"
+                android:text="Starting Position:"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-                android:visibility="visible"
-                android:text="Starting Position:"/>
+                android:visibility="visible" />
 
             <CheckBox
                 android:id="@+id/startingPosition"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="@color/white"
                 android:paddingLeft="10dp"
+                android:text="Single select Drop down"
+                android:textColor="@color/white"
                 android:textSize="24sp"
-                android:visibility="visible"
-                android:text="Single select Drop down" />
+                android:visibility="visible" />
         </LinearLayout>
     </LinearLayout>
-  
+
     <CheckBox
         android:id="@+id/checkOverride"
         android:layout_width="wrap_content"
