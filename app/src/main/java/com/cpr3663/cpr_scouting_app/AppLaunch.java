@@ -151,7 +151,7 @@ public class AppLaunch extends AppCompatActivity {
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
-    public void LoadTeamData(){
+    private void LoadTeamData(){
         String line = "";
         int index = 1;
 
@@ -191,7 +191,7 @@ public class AppLaunch extends AppCompatActivity {
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
-    public void LoadCompetitionData(){
+    private void LoadCompetitionData(){
         String line = "";
 
         // Open the asset file holding all of the Competition information
@@ -222,7 +222,7 @@ public class AppLaunch extends AppCompatActivity {
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
-    public void LoadMatchData(){
+    private void LoadMatchData(){
         String line = "";
         int index = 1;
 
@@ -263,7 +263,7 @@ public class AppLaunch extends AppCompatActivity {
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
-    public void LoadDeviceData(){
+    private void LoadDeviceData(){
         String line = "";
 
         // Open the asset file holding all of the Device information
@@ -294,7 +294,7 @@ public class AppLaunch extends AppCompatActivity {
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
-    public void LoadDNPData(){
+    private void LoadDNPData(){
         String line = "";
 
         // Open the asset file holding all of the Device information
@@ -328,7 +328,7 @@ public class AppLaunch extends AppCompatActivity {
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
-    public void LoadEventData(){
+    private void LoadEventData(){
         String line = "";
 
         // Open the asset file holding all of the Event information for AUTO
