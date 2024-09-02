@@ -15,4 +15,6 @@ public class Globals {
     public static int CurrentMatchNumber;
     public static int CurrentTeamNumber;
     public static int CurrentDeviceId;
+
+    public static String CheckBoxTextPadding = "       ";
 }

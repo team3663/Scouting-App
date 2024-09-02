@@ -48,20 +48,25 @@ public class PreMatch extends AppCompatActivity {
         TextView text_Team = preMatchBinding.textTeamToScout;
         EditText edit_Name = preMatchBinding.editScouterName;
 
+        // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
+        // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)
+        // So add it in now.
+        preMatchBinding.checkboxDidPlay.setText(preMatchBinding.checkboxDidPlay.getText() + Globals.CheckBoxTextPadding);
+
         // Create a input text box for the scouter name
         edit_Name.setText(NAME_SCOUTER);
         edit_Name.setHint("Input your name");
         edit_Name.setHintTextColor(Color.GRAY);
 
         // Default them to playing
-        preMatchBinding.didPlay.setChecked(true);
+        preMatchBinding.checkboxDidPlay.setChecked(true);
 
         // Hide override components initially
         preMatchBinding.textOverride.setVisibility(View.INVISIBLE);
         preMatchBinding.editOverrideTeamNum.setVisibility(View.INVISIBLE);
         preMatchBinding.butAddOverrideTeamNum.setVisibility(View.INVISIBLE);
 
-        CheckBox check_Override = preMatchBinding.checkOverride;
+        CheckBox check_Override = preMatchBinding.checkboxOverride;
         check_Override.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,7 +105,7 @@ public class PreMatch extends AppCompatActivity {
                 } else {
                     NAME_SCOUTER = String.valueOf(edit_Name.getText());
                     // If they didn't play skip everything else
-                    if (preMatchBinding.didPlay.isChecked()) {
+                    if (preMatchBinding.checkboxDidPlay.isChecked()) {
                         Intent GoToMatch = new Intent(PreMatch.this, Match.class);
                         startActivity(GoToMatch);
                     } else {

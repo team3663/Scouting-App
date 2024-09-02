@@ -43,11 +43,16 @@ public class PostMatch extends AppCompatActivity {
 
         // Create Components
         // TODO: Change type for drop downs once we have the right XML and Java for it.
-        CheckBox check_DidLeave = postMatchBinding.didLeave;
+        CheckBox check_DidLeave = postMatchBinding.checkboxDidLeave;
         EditText drop_ClimbPosition = postMatchBinding.dropClimbingPosition;
         EditText drop_Trap = postMatchBinding.dropTrap;
         EditText drop_DNP = postMatchBinding.dropDNP;
         EditText drop_Comments = postMatchBinding.dropComments;
+
+        // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
+        // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)
+        // So add it in now.
+        postMatchBinding.checkboxDidLeave.setText(postMatchBinding.checkboxDidLeave.getText() + Globals.CheckBoxTextPadding);
 
         // Create a button for when you are done inputting info
         Button but_Next = postMatchBinding.butNext;
