@@ -14,39 +14,39 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/heading"
+            android:id="@+id/text_Heading"
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:textColor="@color/cpr_green"
             android:textStyle="bold"
             android:textSize="42sp"
             android:gravity="center"
-            android:text="Post-Match Scouting Information" />
+            android:text="@string/post_heading" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/paddingLeaveStart"
-                android:layout_width="447dp"
-                android:layout_height="60dp"
-                android:gravity="right|center"
-                android:paddingRight="50dp"
-                android:textColor="@color/white"
-                android:textSize="24sp"/>
 
             <CheckBox
-                android:id="@+id/didPlay"
-                android:layout_width="wrap_content"
+                android:id="@+id/checkbox_DidLeave"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:button="@null"
+                android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
                 android:textColor="@color/white"
-                android:paddingLeft="10dp"
                 android:textSize="24sp"
-                android:text="Did they leave the starting zone?" />
+                android:gravity="end|center"
+                android:paddingStart="0dp"
+                android:paddingEnd="10dp"
+                android:text="@string/post_left_start_zone" />
 
+            <TextView
+                android:id="@+id/text_LeaveStartPadding"
+                android:layout_width="570dp"
+                android:layout_height="60dp"
+                android:gravity="end|center" />
         </LinearLayout>
 
         <LinearLayout
@@ -55,29 +55,30 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textClimbPosition"
-                android:layout_width="447dp"
+                android:id="@+id/text_ClimbPosition"
+                android:layout_width="400dp"
                 android:layout_height="60dp"
-                android:gravity="right|center"
-                android:paddingRight="50dp"
+                android:gravity="end|center"
+                android:paddingEnd="50dp"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-
-                android:text="Climbing Position:" />
+                android:text="@string/post_climb_position"
+                tools:ignore="RtlSymmetry" />
 
             <EditText
-                android:id="@+id/dropClimbingPosition"
-                android:layout_width="253dp"
+                android:id="@+id/drop_ClimbingPosition"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="24sp"
-                android:textColor="@color/white"
+                android:textColor="@color/cpr_bkgnd"
+                android:background="@color/white"
                 android:inputType="text"
                 android:text="Singleselect Dropdown" />
 
             <TextView
-                android:id="@+id/paddingClimbPosition"
-                android:layout_width="650dp"
+                android:id="@+id/text_ClimbPositionPadding"
+                android:layout_width="400dp"
                 android:layout_height="wrap_content"/>
 
         </LinearLayout>
@@ -88,32 +89,31 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textTrap"
-                android:layout_width="447dp"
+                android:id="@+id/text_Trap"
+                android:layout_width="400dp"
                 android:layout_height="60dp"
-                android:gravity="right|center"
-                android:paddingRight="50dp"
+                android:gravity="end|center"
+                android:paddingEnd="50dp"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-                android:text="Trap Outcome:" />
+                android:text="@string/post_trap"
+                tools:ignore="RtlSymmetry" />
 
             <EditText
-                android:id="@+id/dropTrap"
-                android:layout_width="wrap_content"
+                android:id="@+id/drop_Trap"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="@color/white"
+                android:textColor="@color/cpr_bkgnd"
+                android:background="@color/white"
                 android:textSize="24sp"
                 android:inputType="text"
                 android:text="Singleselect Dropdown" />
 
             <TextView
-                android:id="@+id/paddingTrap"
-                android:textSize="24sp"
-                android:layout_width="650dp"
+                android:id="@+id/text_TrapPadding"
+                android:layout_width="400dp"
                 android:layout_height="wrap_content"/>
-
-
         </LinearLayout>
 
         <LinearLayout
@@ -122,28 +122,30 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textDNP"
-                android:layout_width="447dp"
+                android:id="@+id/text_DNP"
+                android:layout_width="400dp"
                 android:layout_height="60dp"
-                android:gravity="right|center"
-                android:paddingRight="50dp"
+                android:gravity="end|center"
+                android:paddingEnd="50dp"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-                android:text="DNP Reasons:" />
+                android:text="@string/post_dnp"
+                tools:ignore="RtlSymmetry" />
 
             <EditText
-                android:id="@+id/dropDNP"
-                android:layout_width="wrap_content"
+                android:id="@+id/drop_DNP"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:inputType="text"
-                android:textColor="@color/white"
+                android:textColor="@color/cpr_bkgnd"
+                android:background="@color/white"
                 android:textSize="24sp"
                 android:text="Multiselect Dropdown" />
 
             <TextView
-                android:id="@+id/paddingDNP"
-                android:layout_width="650dp"
+                android:id="@+id/text_DNPPadding"
+                android:layout_width="400dp"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
 
@@ -153,29 +155,31 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textComments"
-                android:layout_width="447dp"
+                android:id="@+id/text_Comments"
+                android:layout_width="400dp"
                 android:layout_height="60dp"
-                android:gravity="right|center"
-                android:paddingRight="50dp"
+                android:gravity="end|center"
+                android:paddingEnd="50dp"
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 android:visibility="visible"
-                android:text="Comments:"/>
+                android:text="@string/post_comments"
+                tools:ignore="RtlSymmetry" />
 
             <EditText
-                android:id="@+id/dropComments"
-                android:layout_width="wrap_content"
+                android:id="@+id/drop_Comments"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:inputType="text"
-                android:textColor="@color/white"
+                android:textColor="@color/cpr_bkgnd"
+                android:background="@color/white"
                 android:textSize="24sp"
                 android:text="Multiselect Dropdown" />
 
             <TextView
-                android:id="@+id/paddingComments"
-                android:layout_width="650dp"
+                android:id="@+id/text_CommentsPadding"
+                android:layout_width="400dp"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
     </LinearLayout>
