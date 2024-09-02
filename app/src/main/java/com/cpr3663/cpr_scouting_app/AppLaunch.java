@@ -117,6 +117,9 @@ public class AppLaunch extends AppCompatActivity {
                         }
                     }
 
+                    // Erase the status text
+                    appLaunchBinding.textStatus.setText("");
+
                     // Enable the start scouting button and settings button
                     but_StartScouting.setClickable(true);
                     imgBut_Settings.setClickable(true);

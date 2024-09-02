@@ -153,15 +153,6 @@ public class PreMatch extends AppCompatActivity {
             }
         });
 
-        // Create an EditText for entering the match your on
-        EditText edit_Match = preMatchBinding.editMatch;
-
-        // Create an EditText for entering the team you are scouting
-        EditText edit_TeamToScout = preMatchBinding.editTeamToScout;
-
-        // Create a text box for the name of the team your scouting to appear in
-        TextView text_TeamToScoutName = preMatchBinding.textTeamToScoutName;
-
         edit_Match.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean focus) {
@@ -180,19 +171,19 @@ public class PreMatch extends AppCompatActivity {
             }
         });
 
-        edit_TeamToScout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        edit_Team.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean focus) {
                 if (!focus) {
-                    String TeamToScoutStr = String.valueOf(edit_TeamToScout.getText());
+                    String TeamToScoutStr = String.valueOf(edit_Team.getText());
                     if (!TeamToScoutStr.isEmpty()) {
                         int TeamToScout = Integer.parseInt(TeamToScoutStr);
                         if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size()) {
                             // This will crash the app instead of returning null if you pass it an invalid num
                             String ScoutingTeamName = Globals.TeamList.get(TeamToScout);
-                            text_TeamToScoutName.setText(ScoutingTeamName);
+                            text_Team.setText(ScoutingTeamName);
                         } else {
-                            text_TeamToScoutName.setText("");
+                            text_Team.setText("");
                         }
                     }
                 }
