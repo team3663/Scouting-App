@@ -21,11 +21,11 @@
         android:textStyle="bold"
         android:textSize="42sp"
         android:gravity="center"
-        android:text="Settings" />
+        android:text="@string/settings_heading" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="23dp"
+        android:layout_height="30dp"
         android:orientation="horizontal"></LinearLayout>
 
     <LinearLayout
@@ -35,29 +35,31 @@
 
         <TextView
             android:id="@+id/text_Competition"
-            android:layout_width="447dp"
+            android:layout_width="450dp"
             android:layout_height="60dp"
             android:gravity="end|center"
             android:paddingEnd="50dp"
             android:textColor="@color/white"
             android:textSize="24sp"
-            android:text="Competition ID:" />
+            android:text="@string/settings_competition"
+            tools:ignore="RtlSymmetry" />
 
         <EditText
             android:id="@+id/edit_CompetitionId"
-            android:layout_width="253dp"
+            android:layout_width="100dp"
             android:layout_height="60dp"
             android:autofillHints="Enter Competition ID Here"
-            android:gravity="start|center"
+            android:gravity="center"
             android:inputType="number"
-            android:textColor="@color/white"
+            android:textColor="@color/cpr_bkgnd"
+            android:background="@color/white"
             android:textColorHint="@color/light_grey"
             android:textSize="24sp"
-            tools:ignore="SpeakableTextPresentCheck" />
+            tools:ignore="LabelFor,SpeakableTextPresentCheck" />
 
         <TextView
             android:id="@+id/text_CompetitionName"
-            android:layout_width="650dp"
+            android:layout_width="450dp"
             android:layout_height="5dp" />
 
     </LinearLayout>
@@ -69,29 +71,31 @@
 
         <TextView
             android:id="@+id/text_Device"
-            android:layout_width="447dp"
+            android:layout_width="450dp"
             android:layout_height="60dp"
             android:gravity="end|center"
             android:paddingEnd="50dp"
             android:textColor="@color/white"
             android:textSize="24sp"
-            android:text="Device ID:" />
+            android:text="@string/settings_device"
+            tools:ignore="RtlSymmetry" />
 
         <EditText
             android:id="@+id/edit_DeviceId"
-            android:layout_width="253dp"
+            android:layout_width="100dp"
             android:layout_height="60dp"
             android:autofillHints="Enter Device ID Here"
-            android:gravity="start|center"
+            android:gravity="center"
             android:inputType="number"
-            android:textColor="@color/white"
+            android:textColor="@color/cpr_bkgnd"
+            android:background="@color/white"
             android:textColorHint="@color/light_grey"
             android:textSize="24sp"
-            tools:ignore="SpeakableTextPresentCheck" />
+            tools:ignore="LabelFor,SpeakableTextPresentCheck" />
 
         <TextView
             android:id="@+id/text_DeviceName"
-            android:layout_width="650dp"
+            android:layout_width="450dp"
             android:layout_height="5dp"/>
 
     </LinearLayout>

@@ -21,7 +21,7 @@
             android:textStyle="bold"
             android:textSize="42sp"
             android:gravity="center"
-            android:text="Pre-Match Scouting Information" />
+            android:text="@string/pre_heading" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,27 +30,30 @@
 
             <TextView
                 android:id="@+id/textMatch"
-                android:layout_width="500dp"
+                android:layout_width="425dp"
                 android:layout_height="60dp"
-                android:gravity="right|center"
-                android:paddingRight="50dp"
+                android:gravity="end|center"
+                android:paddingEnd="50dp"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-                android:text="Match Number:"/>
+                android:text="@string/pre_match_num"
+                tools:ignore="RtlSymmetry" />
 
             <EditText
                 android:id="@+id/editMatch"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:inputType="text"
+                android:inputType="number"
+                android:gravity="center"
                 android:textColor="@color/cpr_bkgnd"
                 android:background="@color/white"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                tools:ignore="LabelFor" />
 
             <TextView
                 android:id="@+id/matchPadding"
-                android:layout_width="650dp"
+                android:layout_width="400dp"
                 android:layout_height="65dp"
                 android:text="" />
 
@@ -63,27 +66,29 @@
 
             <TextView
                 android:id="@+id/textTeamToScout"
-                android:layout_width="500dp"
+                android:layout_width="425dp"
                 android:layout_height="60dp"
-                android:gravity="right|center"
-                android:paddingRight="50dp"
+                android:gravity="end|center"
+                android:paddingEnd="50dp"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-                android:text="Team Number To Scout:" />
+                android:text="@string/pre_team_num"
+                tools:ignore="RtlSymmetry" />
 
             <EditText
                 android:id="@+id/editTeamToScout"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="24sp"
-                android:inputType="text"
+                android:gravity="center"
+                android:inputType="number"
                 android:textColor="@color/cpr_bkgnd"
                 android:background="@color/white" />
 
             <TextView
                 android:id="@+id/textTeamToScoutName"
-                android:layout_width="650dp"
+                android:layout_width="400dp"
                 android:layout_height="65dp"/>
         </LinearLayout>
 
@@ -94,28 +99,30 @@
 
             <TextView
                 android:id="@+id/textScouterTeam"
-                android:layout_width="500dp"
+                android:layout_width="425dp"
                 android:layout_height="60dp"
-                android:gravity="right|center"
-                android:paddingRight="50dp"
+                android:gravity="end|center"
+                android:paddingEnd="50dp"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-                android:text="Scouting Team Number:" />
+                android:text="Scouting Team Number:"
+                tools:ignore="RtlSymmetry" />
 
             <EditText
                 android:id="@+id/editScouterTeam"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="24sp"
-                android:inputType="text"
+                android:gravity="center"
+                android:inputType="number"
                 android:textColor="@color/cpr_bkgnd"
                 android:background="@color/white" />
 
             <TextView
                 android:id="@+id/textScouterTeamName"
                 android:textSize="24sp"
-                android:layout_width="650dp"
+                android:layout_width="400dp"
                 android:layout_height="65dp"/>
         </LinearLayout>
 
@@ -126,27 +133,29 @@
 
             <TextView
                 android:id="@+id/textScouterName"
-                android:layout_width="500dp"
+                android:layout_width="425dp"
                 android:layout_height="60dp"
-                android:gravity="right|center"
-                android:paddingRight="50dp"
+                android:gravity="end|center"
+                android:paddingEnd="50dp"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-                android:text="Scouter Name:" />
+                android:text="@string/pre_scouter"
+                tools:ignore="RtlSymmetry" />
 
             <EditText
                 android:id="@+id/editScouterName"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:inputType="text"
                 android:textSize="24sp"
+                android:gravity="center"
                 android:textColor="@color/cpr_bkgnd"
                 android:background="@color/white"/>
 
             <TextView
                 android:id="@+id/paddingScouterName"
-                android:layout_width="550dp"
+                android:layout_width="400dp"
                 android:layout_height="60dp"/>
         </LinearLayout>
 
@@ -155,24 +164,29 @@
             android:layout_height="60dp"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/paddingDidPlay"
-                android:layout_width="500dp"
-                android:layout_height="60dp"
-                android:gravity="right|center"
-                android:paddingRight="50dp"
-                android:textColor="@color/white"
-                android:textSize="24sp"/>
-
             <CheckBox
                 android:id="@+id/didPlay"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:button="@null"
+                android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
                 android:textColor="@color/white"
-                android:paddingLeft="10dp"
+                android:gravity="end|center"
+                android:paddingEnd="0dp"
+                android:paddingStart="10dp"
                 android:textSize="24sp"
-                android:text="Did They Play?" />
+                android:text="@string/pre_did_play" />
+
+            <TextView
+                android:id="@+id/paddingDidPlay"
+                android:layout_width="555dp"
+                android:layout_height="60dp"
+                android:gravity="end|center"
+                android:paddingEnd="50dp"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                tools:ignore="RtlSymmetry" />
         </LinearLayout>
 
         <LinearLayout
@@ -182,25 +196,27 @@
 
             <TextView
                 android:id="@+id/textStartingPosition"
-                android:layout_width="500dp"
+                android:layout_width="425dp"
                 android:layout_height="60dp"
-                android:gravity="right|center"
-                android:paddingRight="50dp"
+                android:gravity="end|center"
+                android:paddingEnd="50dp"
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 android:visibility="visible"
-                android:text="Starting Position:"/>
+                android:text="@string/pre_start_pos"
+                tools:ignore="RtlSymmetry" />
 
             <CheckBox
                 android:id="@+id/startingPosition"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/white"
-                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
                 android:textSize="24sp"
                 android:visibility="visible"
-                android:text="Single select Drop down" />
+                android:text="Single select Drop down"
+                tools:ignore="RtlSymmetry" />
         </LinearLayout>
     </LinearLayout>
   
@@ -209,21 +225,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/dark_green"
-        android:paddingLeft="10dp"
+        android:paddingStart="10dp"
         android:layout_marginBottom="20dp"
         android:layout_marginStart="20dp"
         android:textSize="16sp"
-        android:text="Override Team Number"
+        android:text="@string/pre_override"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:ignore="RtlSymmetry" />
 
     <TextView
         android:id="@+id/textOverride"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
-        android:gravity="right|center"
+        android:gravity="end|center"
         android:textSize="24sp"
-        android:text="Enter Team Number:"
+        android:text="@string/pre_new_team_num"
         android:textColor="@color/white"
         android:layout_marginStart="50dp"
         app:layout_constraintBottom_toBottomOf="@id/checkOverride"
@@ -249,12 +266,14 @@
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:text="Add"
-        android:textColor="@color/black"
+        android:textColor="@color/cpr_bkgnd"
+        android:backgroundTint="@color/cpr_green"
         android:textSize="24sp"
         android:gravity="center"
         android:layout_marginStart="10dp"
         app:layout_constraintTop_toTopOf="@id/editOverrideTeamNum"
-        app:layout_constraintLeft_toRightOf="@id/editOverrideTeamNum" />
+        app:layout_constraintLeft_toRightOf="@id/editOverrideTeamNum"
+        tools:ignore="HardcodedText" />
 
     <Button
         android:id="@+id/but_Next"

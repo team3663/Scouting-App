@@ -17,4 +17,24 @@
 
     <string name="missing_data">Please fill in all fields</string>
     <string name="timer_label">Time: </string>
+
+    <string name="settings_heading">Settings</string>
+    <string name="settings_competition">Competition ID:</string>
+    <string name="settings_device">Device ID:</string>
+
+    <string name="pre_heading">Pre-Match Scouting Information</string>
+    <string name="pre_match_num">Match number:</string>
+    <string name="pre_team_num">Team number to scout:</string>
+    <string name="pre_scouter">Scouter name:</string>
+    <string name="pre_did_play">Did they play?       </string>
+    <string name="pre_start_pos">Starting position:</string>
+    <string name="pre_override">Override Team Number</string>
+    <string name="pre_new_team_num">Enter team number:</string>
+
+    <string name="post_heading">Post-Match Scouting Information</string>
+    <string name="post_left_start_zone">Left the starting zone?       </string>
+    <string name="post_climb_position">Climbing position:</string>
+    <string name="post_trap">Trap outcome:</string>
+    <string name="post_dnp">DNP reasons:</string>
+    <string name="post_comments">Comments:</string>
 </resources>

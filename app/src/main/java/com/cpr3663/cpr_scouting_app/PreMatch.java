@@ -97,8 +97,7 @@ public class PreMatch extends AppCompatActivity {
                 // Check we have all the fields entered that are needed.  Otherwise, pop a TOAST message instead
                 if (String.valueOf(edit_Match.getText()).isEmpty() || String.valueOf(edit_Team.getText()).isEmpty() || String.valueOf(edit_Name.getText()).isEmpty()) {
                     Toast.makeText(PreMatch.this, R.string.missing_data, Toast.LENGTH_SHORT).show();
-// TODO: uncomment the else once you can edit the text fields
-//                } else {
+                } else {
                     NAME_SCOUTER = String.valueOf(edit_Name.getText());
                     // If they didn't play skip everything else
                     if (preMatchBinding.didPlay.isChecked()) {
