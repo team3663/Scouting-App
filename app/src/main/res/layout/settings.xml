@@ -96,9 +96,6 @@
         <TextView
             android:id="@+id/text_DeviceName"
             android:layout_width="450dp"
-<<<<<<< Updated upstream
-            android:layout_height="5dp"/>
-=======
             android:layout_height="5dp"
             android:textColor="@color/light_grey"
             android:paddingHorizontal="20dp"
@@ -142,8 +139,6 @@
             android:textColor="@color/light_grey"
             android:paddingHorizontal="20dp"
             android:textSize="20sp" />
->>>>>>> Stashed changes
-
     </LinearLayout>
 
 </LinearLayout>
