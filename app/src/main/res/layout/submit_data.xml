@@ -8,5 +8,13 @@
     android:background="@color/white"
     tools:context=".SubmitData">
 
+    <Button
+        android:id="@+id/but_Done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        tools:layout_editor_absoluteX="173dp"
+        tools:layout_editor_absoluteY="270dp"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

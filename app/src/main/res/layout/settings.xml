@@ -5,83 +5,129 @@
     android:id="@+id/settings"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/cpr_bkgnd"
     tools:context=".Settings">
 
-    <TextView
-        android:id="@+id/text_Competition"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Competition:"
-        tools:layout_editor_absoluteX="46dp"
-        tools:layout_editor_absoluteY="19dp"
-        tools:ignore="hardCodedText, missingConstraints,VisualLintBounds,VisualLintOverlap" />
-
-    <EditText
-        android:id="@+id/edit_CompetitionId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autofillHints="Enter Competition Id here"
-        android:ems="10"
-        android:inputType="number"
-        tools:ignore="LabelFor,MissingConstraints,DuplicateClickableBoundsCheck,SpeakableTextPresentCheck,TouchTargetSizeCheck,VisualLintOverlap,VisualLintBounds"
-        tools:layout_editor_absoluteX="233dp"
-        tools:layout_editor_absoluteY="15dp" />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/text_CompetitionName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="CompName"
-        tools:ignore="hardCodedText, missingConstraints,VisualLintBounds"
-        tools:layout_editor_absoluteX="504dp"
-        tools:layout_editor_absoluteY="38dp" />
+        android:id="@+id/heading"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:textColor="@color/cpr_green"
+        android:textStyle="bold"
+        android:textSize="42sp"
+        android:gravity="center"
+        android:text="@string/settings_heading" />
 
-    <TextView
-        android:id="@+id/text_Device"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Device:"
-        tools:ignore="hardCodedText, missingConstraints,VisualLintBounds"
-        tools:layout_editor_absoluteX="46dp"
-        tools:layout_editor_absoluteY="151dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"></LinearLayout>
 
-    <EditText
-        android:id="@+id/edit_DeviceId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autofillHints="Enter Device Id here"
-        android:ems="10"
-        android:inputType="number"
-        tools:ignore="LabelFor,MissingConstraints,SpeakableTextPresentCheck,TouchTargetSizeCheck,VisualLintBounds"
-        tools:layout_editor_absoluteX="233dp"
-        tools:layout_editor_absoluteY="125dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/text_DeviceName"
-        android:layout_width="190dp"
-        android:layout_height="0dp"
-        android:text="DeviceName"
-        tools:ignore="hardCodedText, missingConstraints,VisualLintBounds"
-        tools:layout_editor_absoluteX="504dp"
-        tools:layout_editor_absoluteY="139dp" />
+        <TextView
+            android:id="@+id/text_Competition"
+            android:layout_width="450dp"
+            android:layout_height="60dp"
+            android:gravity="end|center"
+            android:paddingEnd="50dp"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:text="@string/settings_competition"
+            tools:ignore="RtlSymmetry" />
 
-    <Button
-        android:id="@+id/but_Cancel"
-        android:layout_width="189dp"
-        android:layout_height="62dp"
-        android:text="Cancel"
-        tools:ignore="hardCodedText, missingConstraints,VisualLintBounds"
-        tools:layout_editor_absoluteX="436dp"
-        tools:layout_editor_absoluteY="245dp" />
+        <EditText
+            android:id="@+id/edit_CompetitionId"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:autofillHints="Enter Competition ID Here"
+            android:gravity="center"
+            android:inputType="number"
+            android:textColor="@color/cpr_bkgnd"
+            android:background="@color/white"
+            android:textColorHint="@color/light_grey"
+            android:textSize="24sp"
+            tools:ignore="LabelFor,SpeakableTextPresentCheck" />
 
-    <Button
-        android:id="@+id/but_Save"
-        android:layout_width="111dp"
-        android:layout_height="55dp"
-        android:text="Save"
-        tools:ignore="hardCodedText, missingConstraints,VisualLintBounds"
-        tools:layout_editor_absoluteX="158dp"
-        tools:layout_editor_absoluteY="252dp" />
+        <TextView
+            android:id="@+id/text_CompetitionName"
+            android:layout_width="450dp"
+            android:layout_height="5dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_Device"
+            android:layout_width="450dp"
+            android:layout_height="60dp"
+            android:gravity="end|center"
+            android:paddingEnd="50dp"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:text="@string/settings_device"
+            tools:ignore="RtlSymmetry" />
+
+        <EditText
+            android:id="@+id/edit_DeviceId"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:autofillHints="Enter Device ID Here"
+            android:gravity="center"
+            android:inputType="number"
+            android:textColor="@color/cpr_bkgnd"
+            android:background="@color/white"
+            android:textColorHint="@color/light_grey"
+            android:textSize="24sp"
+            tools:ignore="LabelFor,SpeakableTextPresentCheck" />
+
+        <TextView
+            android:id="@+id/text_DeviceName"
+            android:layout_width="450dp"
+            android:layout_height="5dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>
+
+<Button
+    android:id="@+id/but_Cancel"
+    android:layout_width="175dp"
+    android:layout_height="60dp"
+    android:textSize="28sp"
+    android:layout_marginBottom="20dp"
+    android:layout_marginStart="20dp"
+    android:textColor="@color/cpr_bkgnd"
+    app:backgroundTint="@color/white"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    tools:ignore="HardcodedText,MissingConstraints"
+    android:text="Cancel" />
+
+<Button
+    android:id="@+id/but_Save"
+    android:layout_width="175dp"
+    android:layout_height="60dp"
+    android:textSize="28sp"
+    android:layout_marginBottom="20dp"
+    android:layout_marginEnd="20dp"
+    android:textColor="@color/cpr_bkgnd"
+    app:backgroundTint="@color/white"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    tools:ignore="HardcodedText,MissingConstraints"
+    android:text="Save" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
