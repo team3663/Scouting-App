@@ -25,7 +25,8 @@ public class PreMatch extends AppCompatActivity {
     // =============================================================================================
     private PreMatchBinding preMatchBinding;
     // To store the inputted name
-    public static String NAME_SCOUTER;
+    protected static String ScouterName;
+    protected static int MatchNum = -1;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -53,10 +54,24 @@ public class PreMatch extends AppCompatActivity {
         // So add it in now.
         preMatchBinding.checkboxDidPlay.setText(preMatchBinding.checkboxDidPlay.getText() + Globals.CheckBoxTextPadding);
 
-        // Create a input text box for the scouter name
-        edit_Name.setText(NAME_SCOUTER);
-        edit_Name.setHint("Input your name");
-        edit_Name.setHintTextColor(Color.GRAY);
+        // Create a text box to input the scouters name
+        edit_ScouterName.setText(ScouterName);
+        edit_ScouterName.setHint("Input your name");
+        edit_ScouterName.setHintTextColor(Color.GRAY);
+
+        MatchNum++;
+        if (MatchNum > 0) {
+            // MUST CONVERT TO STRING or it crashes with out warning
+            edit_Match.setText(String.valueOf(MatchNum));
+            Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
+            if (Match != null) {
+                int[] Teams = Match.getListOfTeams();
+                for (int team : Teams)
+                    ; // TODO Add "team" to the options in the single select dropdown
+            }
+        } else edit_Match.setText("");
+        edit_Match.setHint("Input the match num");
+        edit_Match.setHintTextColor(Color.GRAY);
 
         // Default them to playing
         preMatchBinding.checkboxDidPlay.setChecked(true);
@@ -106,9 +121,11 @@ public class PreMatch extends AppCompatActivity {
                     NAME_SCOUTER = String.valueOf(edit_Name.getText());
                     // If they didn't play skip everything else
                     if (preMatchBinding.checkboxDidPlay.isChecked()) {
+                        // TODO log here
                         Intent GoToMatch = new Intent(PreMatch.this, Match.class);
                         startActivity(GoToMatch);
                     } else {
+                        // TODO log here
                         Intent GoToSubmitData = new Intent(PreMatch.this, SubmitData.class);
                         startActivity(GoToSubmitData);
                     }
@@ -162,7 +179,6 @@ public class PreMatch extends AppCompatActivity {
                         int MatchNum = Integer.parseInt(MatchNumStr);
                         Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
                         if (Match != null) {
-                            // MUST CONVERT TO STRING or it crashes with out warning
                             int[] Teams = Match.getListOfTeams();
                             for (int team : Teams) ; // TODO Add "team" to the options in the single select dropdown
                         }
