@@ -428,27 +428,6 @@ public class Match extends AppCompatActivity {
         gametime_timertask = null;
         flashing_timertask = null;
 
-        // Set the match Phase and button text
-//        matchPhase = Constants.PHASE_NONE;
-//        but_MatchControl.setText(getResources().getString(R.string.button_start_match));
-//        but_MatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_green));
-//        text_Time.setText("Time: " + TIMER_DEFAULT_NUM);
-
-        // Disabling the Switches can't be set from a non-UI thread (like withing a TimerTask
-        // that runs on a separate thread). So we need to make a Runner that will execute on the UI thread
-        // to set this.
-//        Match.this.runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                switch_Defense.setEnabled(false);
-//                switch_Defense.setTextColor(BUTTON_TEXT_COLOR_DISABLED);
-//                switch_Defense.setBackgroundColor(BUTTON_COLOR_NORMAL);
-//                switch_Defended.setEnabled(false);
-//                switch_Defended.setTextColor(BUTTON_TEXT_COLOR_DISABLED);
-//                switch_Defended.setBackgroundColor(BUTTON_COLOR_NORMAL);
-//            }
-//        });
-
         // Go to the next page
         Intent GoToPostMatch = new Intent(Match.this, PostMatch.class);
         startActivity(GoToPostMatch);
