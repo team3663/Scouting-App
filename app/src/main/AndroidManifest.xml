@@ -34,7 +34,8 @@
         <activity
             android:name=".Match"
             android:screenOrientation="sensorLandscape"
-            android:exported="true">
+            android:exported="true"
+            android:configChanges="orientation|screenSize">
         </activity>
         <activity
             android:name=".PostMatch"
