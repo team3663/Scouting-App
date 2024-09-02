@@ -120,7 +120,7 @@ public class Match extends AppCompatActivity {
     TimerTask gametime_timertask;
     TimerTask flashing_timertask;
 
-    @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility"})
+    @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Capture screen size. Need to use WindowManager to populate a Point that holds the screen size.
@@ -217,12 +217,10 @@ public class Match extends AppCompatActivity {
             public void onClick(View view) {
                 // If the button is being turned ON make it RED otherwise LTGRAY
                 if (switch_Defense.isChecked()) {
-                    // Log EVENT
-                    // <code goes here>
+                    // TODO Log EVENT here
                     switch_Defense.setBackgroundColor(BUTTON_COLOR_FLASH);
                 } else {
-                    // Log EVENT
-                    // <code goes here>
+                    // TODO Log EVENT here
                     switch_Defense.setBackgroundColor(BUTTON_COLOR_NORMAL);
                 }
             }
@@ -242,12 +240,10 @@ public class Match extends AppCompatActivity {
             public void onClick(View view) {
                 // If the button is being turned ON make it RED otherwise LTGRAY
                 if (switch_Defended.isChecked()) {
-                    // Log EVENT
-                    // <code goes here>
+                    // TODO Log EVENT here
                     switch_Defended.setBackgroundColor(BUTTON_COLOR_FLASH);
                 } else {
-                    // Log EVENT
-                    // <code goes here>
+                    // TODO Log EVENT here
                     switch_Defended.setBackgroundColor(BUTTON_COLOR_NORMAL);
                 }
             }
@@ -296,7 +292,7 @@ public class Match extends AppCompatActivity {
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         matchBinding.textStatus.setText("Last Event: " + item.getTitle());
         eventPrevious = Globals.EventList.getEventId((String) item.getTitle());
-        // Log the event
+        // TODO Log EVENT here
         return true;
     }
 
