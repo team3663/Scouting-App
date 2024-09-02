@@ -42,7 +42,10 @@ public class PreMatch extends AppCompatActivity {
             return insets;
         });
 
+        // creates the single select menu for the robot starting positions
         Spinner spinner=findViewById(R.id.spinnerStartingPosition);
+
+        // adds the items from the starting positions array to the list
         ArrayAdapter<CharSequence> adapter= ArrayAdapter.createFromResource(this,R.array.starting_positions_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
