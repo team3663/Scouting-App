@@ -67,15 +67,18 @@
 
                 android:textSize="24sp" />
 
-            <EditText
-                android:id="@+id/dropClimbingPosition"
-                android:layout_width="253dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:inputType="text"
-                android:text="Singleselect Dropdown"
-                android:textColor="@color/white"
-                android:textSize="24sp" />
+            <Spinner
+                android:id="@+id/spinnerClimbPosition"
+                android:layout_width="180dp"
+                android:layout_height="60dp"
+                android:gravity="right|center"
+                android:paddingRight="50dp"
+                android:drawableRight="@android:drawable/arrow_down_float"
+                android:drawablePadding="16dp"
+                android:background="@color/white"
+                android:textSize="24sp"
+                android:text="spinnerClimbPosition"
+                android:visibility="visible" />
 
             <TextView
                 android:id="@+id/paddingClimbPosition"
@@ -99,15 +102,18 @@
                 android:textColor="@color/white"
                 android:textSize="24sp" />
 
-            <EditText
-                android:id="@+id/dropTrap"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:inputType="text"
-                android:text="Singleselect Dropdown"
-                android:textColor="@color/white"
-                android:textSize="24sp" />
+            <Spinner
+                android:id="@+id/spinnerTrap"
+                android:layout_width="180dp"
+                android:layout_height="60dp"
+                android:gravity="right|center"
+                android:paddingRight="50dp"
+                android:drawableRight="@android:drawable/arrow_down_float"
+                android:drawablePadding="16dp"
+                android:background="@color/white"
+                android:textSize="24sp"
+                android:text="Trap Outcome"
+                android:visibility="visible" />
 
             <TextView
                 android:id="@+id/paddingTrap"

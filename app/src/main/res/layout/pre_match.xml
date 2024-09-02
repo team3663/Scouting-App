@@ -107,8 +107,8 @@
 
             <EditText
                 android:id="@+id/editScouterName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="253dp"
+                android:layout_height="60dp"
                 android:layout_weight="1"
                 android:inputType="text"
                 android:text="Name" />
@@ -160,16 +160,20 @@
                 android:textSize="24sp"
                 android:visibility="visible" />
 
-            <CheckBox
-                android:id="@+id/startingPosition"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingLeft="10dp"
-                android:text="Single select Drop down"
-                android:textColor="@color/white"
+            <Spinner
+                android:id="@+id/spinnerStartingPosition"
+                android:layout_width="180dp"
+                android:layout_height="60dp"
+                android:gravity="right|center"
+                android:paddingRight="50dp"
+                android:drawableRight="@android:drawable/arrow_down_float"
+                android:drawablePadding="16dp"
+                android:textColor="@color/black"
+                android:background="@color/white"
                 android:textSize="24sp"
+                android:text="Starting Position"
                 android:visibility="visible" />
+
         </LinearLayout>
     </LinearLayout>
 

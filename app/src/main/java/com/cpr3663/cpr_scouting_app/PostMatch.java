@@ -5,7 +5,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -56,6 +58,16 @@ public class PostMatch extends AppCompatActivity {
             return insets;
         });
         setContentView(R.layout.post_match);
+
+        Spinner trapSpinner=findViewById(R.id.spinnerTrap);
+        ArrayAdapter<CharSequence> trapAdapter= ArrayAdapter.createFromResource(this,R.array.trap_outcomes_array, android.R.layout.simple_spinner_item);
+        trapAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        trapSpinner.setAdapter(trapAdapter);
+
+        Spinner climbPositionSpinner=findViewById(R.id.spinnerClimbPosition);
+        ArrayAdapter<CharSequence> climbPositionAdapter= ArrayAdapter.createFromResource(this,R.array.climb_positions_array, android.R.layout.simple_spinner_item);
+        climbPositionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        climbPositionSpinner.setAdapter(climbPositionAdapter);
 
         // assign variable
         textView = findViewById(R.id.textViewComments);
