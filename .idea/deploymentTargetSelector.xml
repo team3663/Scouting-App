@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-08-31T20:50:11.636328800Z">
+        <DropdownSelection timestamp="2024-09-02T05:32:04.890029100Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\jstam\.android\avd\Galaxy_Tab_A7_Lite_SM-T220_API_30.avd" />
