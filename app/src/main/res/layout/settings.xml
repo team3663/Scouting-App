@@ -45,14 +45,15 @@
 
         <EditText
             android:id="@+id/edit_CompetitionId"
-            android:autofillHints="Enter Competition ID Here"
-            android:textColorHint="@color/light_grey"
-            android:inputType="number"
             android:layout_width="253dp"
             android:layout_height="60dp"
+            android:autofillHints="Enter Competition ID Here"
             android:gravity="start|center"
+            android:inputType="number"
             android:textColor="@color/white"
-            android:textSize="24sp" />
+            android:textColorHint="@color/light_grey"
+            android:textSize="24sp"
+            tools:ignore="SpeakableTextPresentCheck" />
 
         <TextView
             android:id="@+id/text_CompetitionName"
@@ -78,14 +79,15 @@
 
         <EditText
             android:id="@+id/edit_DeviceId"
-            android:autofillHints="Enter Device ID Here"
-            android:textColorHint="@color/light_grey"
-            android:inputType="number"
             android:layout_width="253dp"
             android:layout_height="60dp"
+            android:autofillHints="Enter Device ID Here"
             android:gravity="start|center"
+            android:inputType="number"
             android:textColor="@color/white"
-            android:textSize="24sp" />
+            android:textColorHint="@color/light_grey"
+            android:textSize="24sp"
+            tools:ignore="SpeakableTextPresentCheck" />
 
         <TextView
             android:id="@+id/text_DeviceName"
