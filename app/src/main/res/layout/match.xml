@@ -23,6 +23,7 @@
                 android:layout_width="180dp"
                 android:layout_height="65dp"
                 android:layout_marginStart="5dp"
+                android:drawableEnd="@drawable/start_match"
                 tools:textSize="20sp"
                 android:text="@string/button_start_match" />
 
@@ -100,14 +101,15 @@
     </LinearLayout>
       
     <Button
-        android:id="@+id/button_Back"
+        android:id="@+id/but_Back"
         android:layout_width="150dp"
         android:layout_height="65dp"
         android:layout_marginEnd="5dp"
         android:backgroundTint="@color/light_grey"
         android:textColor="@color/cpr_bkgnd"
+        android:text="Back"
+        android:drawableEnd="@drawable/back_button"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        tools:textSize="20sp"
-        android:text="Back" />
+        tools:textSize="20sp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

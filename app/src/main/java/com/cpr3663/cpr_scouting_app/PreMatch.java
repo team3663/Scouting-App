@@ -47,17 +47,23 @@ public class PreMatch extends AppCompatActivity {
         TextView text_Match = preMatchBinding.textMatch;
         EditText edit_Team = preMatchBinding.editTeamToScout;
         TextView text_Team = preMatchBinding.textTeamToScout;
+        TextView text_TeamName = preMatchBinding.textTeamToScoutName;
         EditText edit_Name = preMatchBinding.editScouterName;
+        CheckBox checkbox_DidPlay = preMatchBinding.checkboxDidPlay;
+        CheckBox checkbox_Override = preMatchBinding.checkboxOverride;
+        TextView text_Override = preMatchBinding.textOverride;
+        EditText edit_OverrideTeamNum = preMatchBinding.editOverrideTeamNum;
+        Button but_AddOverrideTeamNum = preMatchBinding.butAddOverrideTeamNum;
 
         // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
         // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)
         // So add it in now.
-        preMatchBinding.checkboxDidPlay.setText(preMatchBinding.checkboxDidPlay.getText() + Globals.CheckBoxTextPadding);
+        checkbox_DidPlay.setText(preMatchBinding.checkboxDidPlay.getText() + Globals.CheckBoxTextPadding);
 
         // Create a text box to input the scouters name
-        edit_ScouterName.setText(ScouterName);
-        edit_ScouterName.setHint("Input your name");
-        edit_ScouterName.setHintTextColor(Color.GRAY);
+        edit_Name.setText(ScouterName);
+        edit_Name.setHint("Input your name");
+        edit_Name.setHintTextColor(Color.GRAY);
 
         MatchNum++;
         if (MatchNum > 0) {
@@ -70,16 +76,16 @@ public class PreMatch extends AppCompatActivity {
                     ; // TODO Add "team" to the options in the single select dropdown
             }
         } else edit_Match.setText("");
-        edit_Match.setHint("Input the match num");
+        edit_Match.setHint("Input the match number");
         edit_Match.setHintTextColor(Color.GRAY);
 
         // Default them to playing
-        preMatchBinding.checkboxDidPlay.setChecked(true);
+        checkbox_DidPlay.setChecked(true);
 
         // Hide override components initially
-        preMatchBinding.textOverride.setVisibility(View.INVISIBLE);
-        preMatchBinding.editOverrideTeamNum.setVisibility(View.INVISIBLE);
-        preMatchBinding.butAddOverrideTeamNum.setVisibility(View.INVISIBLE);
+        text_Override.setVisibility(View.INVISIBLE);
+        edit_OverrideTeamNum.setVisibility(View.INVISIBLE);
+        but_AddOverrideTeamNum.setVisibility(View.INVISIBLE);
 
         CheckBox check_Override = preMatchBinding.checkboxOverride;
         check_Override.setOnClickListener(new View.OnClickListener() {
@@ -87,9 +93,9 @@ public class PreMatch extends AppCompatActivity {
             public void onClick(View view) {
                 int state = View.VISIBLE;
                 if (!check_Override.isChecked()) state = View.INVISIBLE;
-                preMatchBinding.textOverride.setVisibility(state);
-                preMatchBinding.editOverrideTeamNum.setVisibility(state);
-                preMatchBinding.butAddOverrideTeamNum.setVisibility(state);
+                text_Override.setVisibility(state);
+                edit_OverrideTeamNum.setVisibility(state);
+                but_AddOverrideTeamNum.setVisibility(state);
             }
         });
 
@@ -103,9 +109,9 @@ public class PreMatch extends AppCompatActivity {
                     //      have it auto select that one
                 }
                 check_Override.setChecked(false);
-                preMatchBinding.textOverride.setVisibility(View.INVISIBLE);
-                preMatchBinding.editOverrideTeamNum.setVisibility(View.INVISIBLE);
-                preMatchBinding.butAddOverrideTeamNum.setVisibility(View.INVISIBLE);
+                text_Override.setVisibility(View.INVISIBLE);
+                edit_OverrideTeamNum.setVisibility(View.INVISIBLE);
+                but_AddOverrideTeamNum.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -118,7 +124,7 @@ public class PreMatch extends AppCompatActivity {
                 if (String.valueOf(edit_Match.getText()).isEmpty() || String.valueOf(edit_Team.getText()).isEmpty() || String.valueOf(edit_Name.getText()).isEmpty()) {
                     Toast.makeText(PreMatch.this, R.string.missing_data, Toast.LENGTH_SHORT).show();
                 } else {
-                    NAME_SCOUTER = String.valueOf(edit_Name.getText());
+                    ScouterName = String.valueOf(edit_Name.getText());
                     // If they didn't play skip everything else
                     if (preMatchBinding.checkboxDidPlay.isChecked()) {
                         // TODO log here
@@ -161,9 +167,9 @@ public class PreMatch extends AppCompatActivity {
                         if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size()) {
                             // This will crash the app instead of returning null if you pass it an invalid num
                             String ScoutingTeamName = Globals.TeamList.get(TeamToScout);
-                            text_Team.setText(ScoutingTeamName);
+                            text_TeamName.setText(ScoutingTeamName);
                         } else {
-                            text_Team.setText("");
+                            text_TeamName.setText("");
                         }
                     }
                 }
@@ -197,9 +203,9 @@ public class PreMatch extends AppCompatActivity {
                         if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size()) {
                             // This will crash the app instead of returning null if you pass it an invalid num
                             String ScoutingTeamName = Globals.TeamList.get(TeamToScout);
-                            text_Team.setText(ScoutingTeamName);
+                            text_TeamName.setText(ScoutingTeamName);
                         } else {
-                            text_Team.setText("");
+                            text_TeamName.setText("");
                         }
                     }
                 }
