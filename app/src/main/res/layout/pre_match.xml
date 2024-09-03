@@ -44,12 +44,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:inputType="number"
                 android:gravity="center"
                 android:textColor="@color/cpr_bkgnd"
                 android:background="@color/white"
                 android:textSize="24sp"
-                tools:ignore="LabelFor" />
+                tools:ignore="LabelFor"
+                android:inputType="number" />
 
             <TextView
                 android:id="@+id/text_MatchPadding"
@@ -89,7 +89,10 @@
             <TextView
                 android:id="@+id/text_TeamToScoutName"
                 android:layout_width="400dp"
-                android:layout_height="65dp"/>
+                android:layout_height="65dp"
+                android:paddingStart="25dp"
+                android:textColor="@color/white"
+                android:textSize="20dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -123,7 +126,7 @@
                 android:id="@+id/text_ScouterNamePading"
                 android:textSize="24sp"
                 android:layout_width="400dp"
-                android:layout_height="60dp"/>
+                android:layout_height="60dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -237,7 +240,7 @@
         android:backgroundTint="@color/cpr_green"
         android:textSize="24sp"
         android:gravity="center"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="30dp"
         app:layout_constraintTop_toTopOf="@id/edit_OverrideTeamNum"
         app:layout_constraintLeft_toRightOf="@id/edit_OverrideTeamNum"
         tools:ignore="HardcodedText" />
