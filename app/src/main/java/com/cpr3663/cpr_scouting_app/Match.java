@@ -48,7 +48,8 @@ public class Match extends AppCompatActivity {
     private static final int BUTTON_TEXT_COLOR_DISABLED = Color.LTGRAY;
     private static final String ORIENTATION_LANDSCAPE = "l";
     private static final String ORIENTATION_LANDSCAPE_REVERSE = "lr";
-
+    private static int IMAGE_HEIGHT;
+    private static int IMAGE_WIDTH;
 
     // =============================================================================================
     // Class:       AutoTimerTask
@@ -151,19 +152,22 @@ public class Match extends AppCompatActivity {
         // ignore the flip for the field image in a sense)
         // This listener will get triggered for every slight movement so we'll need to be careful on how
         // we call the rotation.  Keeping track of the current orientation should help!
+        // KEY: actually calling setRotation works, but severely messes up the context menu.  SO, we'll
+        // hack it by just loading a "flipped" image to display.
         currentOrientation = ORIENTATION_LANDSCAPE;
         OEL = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
+            @SuppressLint("UseCompatLoadingForDrawables")
             @Override
             public void onOrientationChanged(int rotation_degrees) {
                 // If the device is in the 0 to 180 degree range, make it Landscape
                 if ((rotation_degrees >= 0) && (rotation_degrees < 180) && !currentOrientation.equals(ORIENTATION_LANDSCAPE)) {
-                    matchBinding.imageFieldView.setRotation(0);
+                    matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field_image));
                     currentOrientation = ORIENTATION_LANDSCAPE;
                 }
                 // If the device is in the 180 to 359 degree range, make it Landscape
                 // We can get passed a -1 if the device can't tell (it's lying flat) and we want to ignore that
                 else if ((rotation_degrees >= 180) && !currentOrientation.equals(ORIENTATION_LANDSCAPE_REVERSE)) {
-                    matchBinding.imageFieldView.setRotation(180);
+                    matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field_image_flipped));
                     currentOrientation = ORIENTATION_LANDSCAPE_REVERSE;
                 }
             }
@@ -223,21 +227,6 @@ public class Match extends AppCompatActivity {
 
         // Define a field image
         ImageView image_Field = matchBinding.imageFieldView;
-        // Listens for a click/touch on the screen
-        image_Field.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                // Check the motion type and the phase and if its correct then get the X and Y
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && !matchPhase.equals(Constants.PHASE_NONE)) {
-                    double x = motionEvent.getX();
-                    double y = motionEvent.getY();
-                    // TODO: Get current time, elapsed time, or tell the logger that the initial click happened now, so it doesn't log the second click's time instead
-                    // Also make a Popup Context Menu to ask what the event was
-                }
-                // This decides if it consumes the click and stops it
-                return false;
-            }
-        });
 
         // Map the Defense Switch to the actual switch
         switch_Defense = matchBinding.switchDefense;
@@ -287,8 +276,6 @@ public class Match extends AppCompatActivity {
 
         // Define a context menu
         RelativeLayout ContextMenu = matchBinding.ContextMenu;
-        ContextMenu.setBackgroundColor(Color.TRANSPARENT);
-//        ContextMenu.setBackgroundColor(getResources().getColor(R.color.red_highlight)); // For checking it's location
         // This is required it will not run without it
         registerForContextMenu(image_Field);
         // So that it activates on a normal click instead of a long click
@@ -357,6 +344,10 @@ public class Match extends AppCompatActivity {
         // Show the time
         text_Time.setVisibility(View.VISIBLE);
 
+        // Calculate the image dimensions
+        IMAGE_WIDTH = matchBinding.imageFieldView.getWidth();
+        IMAGE_HEIGHT = matchBinding.imageFieldView.getHeight();
+
         // Set timer tasks
         match_Timer.schedule(auto_timertask, TIMER_AUTO_LENGTH * 1_000);
         match_Timer.scheduleAtFixedRate(gametime_timertask, 0, TIMER_UPDATE_RATE);
@@ -389,11 +380,9 @@ public class Match extends AppCompatActivity {
         matchPhase = Constants.PHASE_TELEOP;
         but_MatchControl.setText(getResources().getString(R.string.button_end_match));
         but_MatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_red));
-        but_MatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.stop_match, 0);
 
-        // Enabling the Switches can't be set from a non-UI thread (like withing a TimerTask
-        // that runs on a separate thread). So we need to make a Runner that will execute on the UI thread
-        // to set this.
+        // Certain actionscan't be set from a non-UI thread (like withing a TimerTask that runs on a
+        // separate thread). So we need to make a Runner that will execute on the UI thread to set this.
         Match.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -403,6 +392,8 @@ public class Match extends AppCompatActivity {
                 switch_Defended.setTextColor(Color.WHITE);
                 switch_Defended.setVisibility(View.VISIBLE);
                 switch_Defense.setVisibility(View.VISIBLE);
+
+                but_MatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.stop_match, 0);
             }
         });
     }
@@ -422,13 +413,18 @@ public class Match extends AppCompatActivity {
 
         // Get rid of the Scheduled events that are over/have ended
         // Need to set match_Timer and TimerTasks to null so we can create "new" ones at the start of the next match
-        match_Timer.cancel();
-        match_Timer.purge();
+        if (match_Timer != null) {
+            match_Timer.cancel();
+            match_Timer.purge();
+        }
         match_Timer = null;
         auto_timertask = null;
         teleop_timertask = null;
         gametime_timertask = null;
         flashing_timertask = null;
+
+        // Reset match phase so that the next time we hit Start Match we do the right thing
+        matchPhase = Constants.PHASE_NONE;
 
         // Go to the next page
         Intent GoToPostMatch = new Intent(Match.this, PostMatch.class);

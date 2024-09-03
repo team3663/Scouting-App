@@ -24,8 +24,8 @@
                 android:layout_height="65dp"
                 android:layout_marginStart="5dp"
                 android:drawableEnd="@drawable/start_match"
-                tools:textSize="20sp"
-                android:text="@string/button_start_match" />
+                android:text="@string/button_start_match"
+                tools:textSize="20sp" />
 
             <TextView
                 android:id="@+id/textPadding1"
@@ -96,6 +96,7 @@
                 android:id="@+id/ContextMenu"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
+                android:background="@color/transparent"
                 tools:ignore="MissingConstraints,UselessLeaf" />
         </FrameLayout>
     </LinearLayout>
