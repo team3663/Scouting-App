@@ -174,7 +174,7 @@ public class Match extends AppCompatActivity {
 
         // Map the button variable to the actual button
         // If clicked, go back to the previous page
-        but_Back = matchBinding.buttonBack;
+        but_Back = matchBinding.butBack;
         but_Back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -314,8 +314,8 @@ public class Match extends AppCompatActivity {
         flashing_timertask = new FlashingTimerTask();
 
         // Hide Back Button (too late to go back now!)
-        matchBinding.buttonBack.setClickable(false);
-        matchBinding.buttonBack.setVisibility(View.INVISIBLE);
+        but_Back.setClickable(false);
+        but_Back.setVisibility(View.INVISIBLE);
 
         // Show the time
         text_Time.setVisibility(View.VISIBLE);
@@ -329,6 +329,7 @@ public class Match extends AppCompatActivity {
         matchPhase = Constants.PHASE_AUTO;
         but_MatchControl.setText(getResources().getString(R.string.button_start_teleop));
         but_MatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_yellow));
+        but_MatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.start_teleop, 0);
     }
 
     // =============================================================================================
@@ -351,6 +352,7 @@ public class Match extends AppCompatActivity {
         matchPhase = Constants.PHASE_TELEOP;
         but_MatchControl.setText(getResources().getString(R.string.button_end_match));
         but_MatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_red));
+        but_MatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.stop_match, 0);
 
         // Enabling the Switches can't be set from a non-UI thread (like withing a TimerTask
         // that runs on a separate thread). So we need to make a Runner that will execute on the UI thread
