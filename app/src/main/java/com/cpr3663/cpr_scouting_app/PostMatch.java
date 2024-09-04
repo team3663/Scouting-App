@@ -80,8 +80,8 @@ public class PostMatch extends AppCompatActivity {
         climbPositionSpinner.setAdapter(climbPositionAdapter);
 
         // assign variable
-        textView = findViewById(R.id.textViewComments);
-        DNPTextView = findViewById(R.id.textViewDNP);
+        textView = findViewById(R.id.text_Comments);
+        DNPTextView = findViewById(R.id.text_DNP);
 
         // initialize comment and dnp reasons arrays
         selectedComment = new boolean[CommentArray.length];
@@ -266,8 +266,8 @@ public class PostMatch extends AppCompatActivity {
         // Create Components
         // TODO: Change type for drop downs once we have the right XML and Java for it.
         CheckBox check_DidLeave = postMatchBinding.checkboxDidLeave;
-        EditText drop_ClimbPosition = postMatchBinding.dropClimbingPosition;
-        EditText drop_Trap = postMatchBinding.dropTrap;
+        Spinner drop_ClimbPosition = postMatchBinding.spinnerClimbPosition;
+        Spinner drop_Trap = postMatchBinding.spinnerTrap;
         EditText drop_DNP = postMatchBinding.dropDNP;
         EditText drop_Comments = postMatchBinding.dropComments;
 

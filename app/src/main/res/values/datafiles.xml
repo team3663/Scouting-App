@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="file_teams">input_data/Teams.csv</string>
-    <string name="file_competitions">input_data/Competitions.csv</string>
-    <string name="file_dnp">input_data/DNP.csv</string>
-    <string name="file_matches">input_data/Matches.csv</string>
-    <string name="file_devices">input_data/Devices.csv</string>
-    <string name="file_events_auto">input_data/Events_Auto.csv</string>
-    <string name="file_events_teleop">input_data/Events_Teleop.csv</string>
-    <string name="file_comments">input_data/Comments.csv</string>
+    <string name="private_file_teams">input_data/Teams.csv</string>
+    <string name="private_file_competitions">input_data/Competitions.csv</string>
+    <string name="private_file_dnp">input_data/DNP.csv</string>
+    <string name="private_file_matches">input_data/Matches.csv</string>
+    <string name="private_file_devices">input_data/Devices.csv</string>
+    <string name="private_file_events_auto">input_data/Events_Auto.csv</string>
+    <string name="private_file_events_teleop">input_data/Events_Teleop.csv</string>
+    <string name="private_file_comments">input_data/Comments.csv</string>
+
+    <string name="public_file_teams">CPR-Scouting/Input/Teams.csv</string>
+    <string name="public_file_competitions">CPR-Scouting/Input/Competitions.csv</string>
+    <string name="public_file_dnp">CPR-Scouting/Input/DNP.csv</string>
+    <string name="public_file_matches">CPR-Scouting/Input/Matches.csv</string>
+    <string name="public_file_devices">CPR-Scouting/Input/Devices.csv</string>
+    <string name="public_file_events_auto">CPR-Scouting/Input/Events_Auto.csv</string>
+    <string name="public_file_events_teleop">CPR-Scouting/Input/Events_Teleop.csv</string>
+    <string name="public_file_comments">CPR-Scouting/Input/Comments.csv</string>
+
 </resources>
