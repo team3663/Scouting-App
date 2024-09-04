@@ -55,7 +55,10 @@
         <TextView
             android:id="@+id/text_CompetitionName"
             android:layout_width="450dp"
-            android:layout_height="5dp" />
+            android:layout_height="50dp"
+            android:textColor="@color/light_grey"
+            android:paddingHorizontal="20dp"
+            android:textSize="20sp" />
 
     </LinearLayout>
 
@@ -91,7 +94,7 @@
         <TextView
             android:id="@+id/text_DeviceName"
             android:layout_width="450dp"
-            android:layout_height="5dp"
+            android:layout_height="50dp"
             android:textColor="@color/light_grey"
             android:paddingHorizontal="20dp"
             android:textSize="20sp" />

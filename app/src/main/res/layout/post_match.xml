@@ -11,14 +11,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="218dp"
+        tools:layout_editor_absoluteY="-37dp">
 
         <TextView
             android:id="@+id/text_Heading"
             android:layout_width="match_parent"
             android:layout_height="80dp"
+            android:gravity="center"
+            android:text="Post-Match Scouting Information"
             android:textColor="@color/cpr_green"
-            android:textStyle="bold"
             android:textSize="42sp"
             android:gravity="center"
             android:text="@string/post_heading" />
@@ -27,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:orientation="horizontal">
-
+          
             <CheckBox
                 android:id="@+id/checkbox_DidLeave"
                 android:layout_width="0dp"
@@ -65,22 +68,22 @@
                 android:text="@string/post_climb_position"
                 tools:ignore="RtlSymmetry" />
 
-            <EditText
-                android:id="@+id/drop_ClimbingPosition"
+            <Spinner
+                android:id="@+id/spinnerClimbPosition"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="24sp"
                 android:textColor="@color/cpr_bkgnd"
                 android:background="@color/white"
-                android:inputType="text"
-                android:text="Singleselect Dropdown" />
+                android:gravity="right|center"
+                android:paddingRight="50dp"
+                android:drawableRight="@android:drawable/arrow_down_float" />
 
             <TextView
                 android:id="@+id/text_ClimbPositionPadding"
                 android:layout_width="400dp"
                 android:layout_height="wrap_content"/>
-
         </LinearLayout>
 
         <LinearLayout
@@ -99,16 +102,17 @@
                 android:text="@string/post_trap"
                 tools:ignore="RtlSymmetry" />
 
-            <EditText
-                android:id="@+id/drop_Trap"
+            <Spinner
+                android:id="@+id/spinnerTrap"
+                android:gravity="right|center"
+                android:paddingRight="50dp"
+                android:drawableRight="@android:drawable/arrow_down_float"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/cpr_bkgnd"
-                android:background="@color/white"
-                android:textSize="24sp"
-                android:inputType="text"
-                android:text="Singleselect Dropdown" />
+                android:textColor="@color/white"
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/text_TrapPadding"
@@ -188,7 +192,7 @@
         android:id="@+id/but_Next"
         android:layout_width="175dp"
         android:layout_height="60dp"
-        android:text="Next"
+        android:text="Submit"
         android:textSize="28sp"
         android:layout_marginBottom="20dp"
         android:layout_marginEnd="20dp"
