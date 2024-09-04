@@ -112,7 +112,7 @@
                 android:gravity="right|center"
                 android:paddingRight="50dp"
                 android:textColor="@color/cpr_bkgnd"
-                android:textSize="24dp" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/text_TrapPadding"

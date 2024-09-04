@@ -64,9 +64,9 @@ public class PreMatch extends AppCompatActivity {
         Spinner spinner = findViewById(R.id.spinner_StartingPosition);
 
         // adds the items from the starting positions array to the list
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.starting_positions_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.starting_positions_array, android.R.layout.simple_spinner_item);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spinner.setAdapter(adapter);
 
         EditText edit_Name = preMatchBinding.editScouterName;
         CheckBox checkbox_DidPlay = preMatchBinding.checkboxDidPlay;
@@ -118,8 +118,7 @@ public class PreMatch extends AppCompatActivity {
             }
         });
 
-        Button but_AddTeamNum = preMatchBinding.butAddOverrideTeamNum;
-        but_AddTeamNum.setOnClickListener(new View.OnClickListener() {
+        but_AddOverrideTeamNum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String teamNum = String.valueOf(preMatchBinding.editOverrideTeamNum.getText());
@@ -161,7 +160,8 @@ public class PreMatch extends AppCompatActivity {
                     Globals.EventLogger.LogData(Constants.LOGKEY_START_POSITION, preMatchBinding.spinnerStartingPosition.getSelectedItem().toString());
 
                     // Save off some fields for next time or later usage
-                    ScouterName = edit_Name.getText().toString();
+                    ScouterName = String.valueOf(edit_Name.getText());
+                    MatchNum = Integer.parseInt(String.valueOf(edit_Match.getText()));
 
                     // If they didn't play skip everything else
                     if (preMatchBinding.checkboxDidPlay.isChecked()) {
@@ -186,7 +186,7 @@ public class PreMatch extends AppCompatActivity {
                         if (Match != null) {
                             // MUST CONVERT TO STRING or it crashes with out warning
                             int[] Teams = Match.getListOfTeams();
-                            for (int team : Teams) ; // TODO Add "team" to the options in the single select dropdown
+                            // TODO Add "team" to the options in the single select dropdown
                         }
                     }
                 }
@@ -212,23 +212,6 @@ public class PreMatch extends AppCompatActivity {
             }
         });
 
-        edit_Match.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean focus) {
-                if (!focus) {
-                    String MatchNumStr = String.valueOf(edit_Match.getText());
-                    if (!MatchNumStr.isEmpty()) {
-                        int MatchNum = Integer.parseInt(MatchNumStr);
-                        Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
-                        if (Match != null) {
-                            int[] Teams = Match.getListOfTeams();
-                            for (int team : Teams) ; // TODO Add "team" to the options in the single select dropdown
-                        }
-                    }
-                }
-            }
-        });
-
         edit_Team.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean focus) {
@@ -240,9 +223,7 @@ public class PreMatch extends AppCompatActivity {
                             // This will crash the app instead of returning null if you pass it an invalid num
                             String ScoutingTeamName = Globals.TeamList.get(TeamToScout);
                             text_TeamName.setText(ScoutingTeamName);
-                        } else {
-                            text_TeamName.setText("");
-                        }
+                        } else text_TeamName.setText("");
                     }
                 }
             }
