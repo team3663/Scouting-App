@@ -208,6 +208,8 @@ public class Match extends AppCompatActivity {
                         start_Match();
                         break;
                     case Constants.PHASE_AUTO:
+                        // If we're going to teleop manually, log the start time offset
+                        Globals.EventLogger.LogData(Constants.LOGKEY_START_TIME_OFFSET, String.valueOf(TIMER_AUTO_LENGTH- Math.round((System.currentTimeMillis() - startTime)/100.0)/100.0));
                         start_Teleop();
                         break;
                     case Constants.PHASE_TELEOP:

@@ -21,6 +21,7 @@ public class Constants {
     public static final String LOGKEY_TRAP = "Trap";
     public static final String LOGKEY_DNPS = "DNP";
     public static final String LOGKEY_COMMENTS = "Comments";
+    public static final String LOGKEY_START_TIME_OFFSET = "StartTimeOffset";
 
     public static final int EVENT_ID_DEFENDED_START = 150;
     public static final int EVENT_ID_DEFENDED_END = 151;

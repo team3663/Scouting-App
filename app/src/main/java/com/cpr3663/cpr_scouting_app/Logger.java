@@ -28,10 +28,10 @@ public class Logger {
     private static String filename_event;
     private static FileOutputStream fos_data;
     private static FileOutputStream fos_event;
-    private static int seq_number = 0;
-    private static int seq_number_prev_common = 0;
-    private static int seq_number_prev_defended = 0;
-    private static int seq_number_prev_defense = 0;
+    private static int seq_number = 0; // Track the current sequence number for events
+    private static int seq_number_prev_common = 0; // Track previous sequence number for all common events
+    private static int seq_number_prev_defended = 0; // Track previous sequence number for just defended toggle
+    private static int seq_number_prev_defense = 0; // Track previous sequence number for just defense toggle
     private static final ArrayList<Pair<String, String>> match_data = new ArrayList<Pair<String, String>>();
 
     // Constructor: create the new files
@@ -43,6 +43,7 @@ public class Logger {
             if (!path.endsWith("/")) path = path + "/";
         }
 
+        // Define the filenames/files to be used for this logger
         filename_data =  path + Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_d.csv";
         filename_event = path + Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_e.csv";
 
@@ -75,35 +76,17 @@ public class Logger {
             String csv_line = Globals.CurrentCompetitionId + ":" + Globals.CurrentMatchNumber + ":" + Globals.CurrentDeviceId;
 
             // Append to the csv line the values in the correct order
-            for(Pair<String, String> p : match_data) { if (p.first.equals(Constants.LOGKEY_TEAM_TO_SCOUT)) { csv_line += "," + p.second; found = true; break; } }
-            if (!found) { csv_line += ","; found = false; }
-
-            for(Pair<String, String> p : match_data) { if (p.first.equals(Constants.LOGKEY_TEAM_SCOUTING)) { csv_line += "," + p.second; found = true; break; } }
-            if (!found) { csv_line += ","; found = false; }
-
-            for(Pair<String, String> p : match_data) { if (p.first.equals(Constants.LOGKEY_SCOUTER)) { csv_line += "," + p.second; found = true; break; } }
-            if (!found) { csv_line += ","; found = false; }
-
-            for(Pair<String, String> p : match_data) { if (p.first.equals(Constants.LOGKEY_DID_PLAY)) { csv_line += "," + p.second; found = true; break; } }
-            if (!found) { csv_line += ","; found = false; }
-
-            for(Pair<String, String> p : match_data) { if (p.first.equals(Constants.LOGKEY_START_POSITION)) { csv_line += "," + p.second; found = true; break; } }
-            if (!found) { csv_line += ","; found = false; }
-
-            for(Pair<String, String> p : match_data) { if (p.first.equals(Constants.LOGKEY_DID_LEAVE_START)) { csv_line += "," + p.second; found = true; break; } }
-            if (!found) { csv_line += ","; found = false; }
-
-            for(Pair<String, String> p : match_data) { if (p.first.equals(Constants.LOGKEY_CLIMB_POSITION)) { csv_line += "," + p.second; found = true; break; } }
-            if (!found) { csv_line += ","; found = false; }
-
-            for(Pair<String, String> p : match_data) { if (p.first.equals(Constants.LOGKEY_TRAP)) { csv_line += "," + p.second; found = true; break; } }
-            if (!found) { csv_line += ","; found = false; }
-
-            for(Pair<String, String> p : match_data) { if (p.first.equals(Constants.LOGKEY_DNPS)) { csv_line += "," + p.second; found = true; break; } }
-            if (!found) { csv_line += ","; found = false; }
-
-            for(Pair<String, String> p : match_data) { if (p.first.equals(Constants.LOGKEY_COMMENTS)) { csv_line += "," + p.second; found = true; break; } }
-            if (!found) { csv_line += ","; found = false; }
+            csv_line += FindValueInPair(Constants.LOGKEY_TEAM_TO_SCOUT);
+            csv_line += FindValueInPair(Constants.LOGKEY_TEAM_SCOUTING);
+            csv_line += FindValueInPair(Constants.LOGKEY_SCOUTER);
+            csv_line += FindValueInPair(Constants.LOGKEY_DID_PLAY);
+            csv_line += FindValueInPair(Constants.LOGKEY_START_POSITION);
+            csv_line += FindValueInPair(Constants.LOGKEY_DID_LEAVE_START);
+            csv_line += FindValueInPair(Constants.LOGKEY_CLIMB_POSITION);
+            csv_line += FindValueInPair(Constants.LOGKEY_TRAP);
+            csv_line += FindValueInPair(Constants.LOGKEY_DNPS);
+            csv_line += FindValueInPair(Constants.LOGKEY_COMMENTS);
+            csv_line += FindValueInPair(Constants.LOGKEY_START_TIME_OFFSET);
 
             // Write out the data
             fos_data.write(csv_line.getBytes(StandardCharsets.UTF_8));
@@ -117,10 +100,27 @@ public class Logger {
         }
     }
 
+    // Member Function: Find the correct data in the Key/Value Pair variable
+    private String FindValueInPair(String in_Key) {
+        String ret = ",";
+
+        // loop through the pairs and stop if you find a key match.  Append the value if found.
+        for(Pair<String, String> p : match_data) {
+            if (p.first.equals(in_Key)) {
+                ret += p.second;
+                break;
+            }
+        }
+
+        return ret;
+    }
+
     // Member Function: Log a time-based event
     public void LogEvent(int in_EventId, float in_X, float in_Y, boolean in_NewSequence, double in_time) {
         int seq_number_prev = 0;
 
+        // We need to special case the toggle switches.  We must preserve their own "previous" eventID but still
+        // keep the sequence numbers going.
         switch (in_EventId) {
             case Constants.EVENT_ID_DEFENDED_START:
                 seq_number_prev_defended = ++seq_number;
@@ -149,7 +149,7 @@ public class Logger {
         if (!in_NewSequence) prev = String.valueOf(seq_number_prev);
 
         // Form the output line that goes in the csv file.  Round X,Y to 2 decimal places.
-        csv_line = seq + "," + in_EventId + "," + String.valueOf((float)(Math.round((in_time - Match.startTime)*100.0))/100.0) + "," + String.valueOf((float)(Math.round(in_X * 100.0)) / 100.0) + "," + String.valueOf((float)(Math.round(in_Y * 100.0)) / 100.0) + "," + prev;
+        csv_line = seq + "," + in_EventId + "," + String.valueOf((float)(Math.round((in_time - Match.startTime) / 100.0)) / 100.0) + "," + String.valueOf((float)(Math.round(in_X * 100.0)) / 100.0) + "," + String.valueOf((float)(Math.round(in_Y * 100.0)) / 100.0) + "," + prev;
         try {
             fos_event.write(csv_line.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
@@ -159,9 +159,7 @@ public class Logger {
 
     // Member Function: Log a time-based event (with no time passed in)
     public void LogEvent(int in_EventId, float in_X, float in_Y, boolean in_NewSequence){
-        double time = ((int)Math.round(System.currentTimeMillis() / 10.0)) / 10.0;
-
-        LogEvent(in_EventId, in_X, in_Y, in_NewSequence, time);
+        LogEvent(in_EventId, in_X, in_Y, in_NewSequence, System.currentTimeMillis());
     }
 
     // Member Function: Log a non-time based event - just store this for later.

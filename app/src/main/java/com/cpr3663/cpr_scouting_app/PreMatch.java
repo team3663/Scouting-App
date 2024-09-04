@@ -40,8 +40,7 @@ public class PreMatch extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         preMatchBinding = PreMatchBinding.inflate(getLayoutInflater());
-        View page_root_view = preMatchBinding.getRoot();
-        setContentView(page_root_view);
+        setContentView(preMatchBinding.getRoot());
         ViewCompat.setOnApplyWindowInsetsListener(preMatchBinding.preMatch, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -62,7 +61,7 @@ public class PreMatch extends AppCompatActivity {
         TextView text_TeamName = preMatchBinding.textTeamToScoutName;
 
         // creates the single select menu for the robot starting positions
-        Spinner spinner = findViewById(R.id.spinnerStartingPosition);
+        Spinner spinner = findViewById(R.id.spinner_StartingPosition);
 
         // adds the items from the starting positions array to the list
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.starting_positions_array, android.R.layout.simple_spinner_item);
@@ -136,8 +135,8 @@ public class PreMatch extends AppCompatActivity {
         });
 
         // Create a button for when you are done inputting info
-        Button but_SubmitPage = preMatchBinding.butNext;
-        but_SubmitPage.setOnClickListener(new View.OnClickListener() {
+        Button but_Next = preMatchBinding.butNext;
+        but_Next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Check we have all the fields entered that are needed.  Otherwise, pop a TOAST message instead

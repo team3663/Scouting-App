@@ -20,6 +20,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.cpr3663.cpr_scouting_app.databinding.PostMatchBinding;
+import com.cpr3663.cpr_scouting_app.databinding.PreMatchBinding;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,14 +57,12 @@ public class PostMatch extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         postMatchBinding = PostMatchBinding.inflate(getLayoutInflater());
-        View page_root_view = postMatchBinding.getRoot();
-        setContentView(page_root_view);
+        setContentView(postMatchBinding.getRoot());
         ViewCompat.setOnApplyWindowInsetsListener(postMatchBinding.postMatch, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        setContentView(R.layout.post_match);
 
         //Creating the single select dropdown menu for the trap outcomes
         Spinner trapSpinner=findViewById(R.id.spinnerTrap);
@@ -288,8 +287,9 @@ public class PostMatch extends AppCompatActivity {
                 Globals.EventLogger.LogData(Constants.LOGKEY_DID_LEAVE_START, String.valueOf(postMatchBinding.checkboxDidLeave.isChecked()));
                 Globals.EventLogger.LogData(Constants.LOGKEY_CLIMB_POSITION, postMatchBinding.spinnerClimbPosition.toString());
                 Globals.EventLogger.LogData(Constants.LOGKEY_TRAP, postMatchBinding.spinnerTrap.toString());
-                Globals.EventLogger.LogData(Constants.LOGKEY_DNPS, postMatchBinding.dropDNP.toString());
-                Globals.EventLogger.LogData(Constants.LOGKEY_COMMENTS, postMatchBinding.dropComments.toString());
+                // TODO : need to know how to build a multi-selected list of IDs (delimiter will be ":")
+//                Globals.EventLogger.LogData(Constants.LOGKEY_DNPS, postMatchBinding.dropDNP.toString());
+//                Globals.EventLogger.LogData(Constants.LOGKEY_COMMENTS, postMatchBinding.dropComments.toString());
 
                 // We're done with the logger
                 Globals.EventLogger.close();
