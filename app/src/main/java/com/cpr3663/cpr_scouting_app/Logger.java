@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.content.Context;
 import android.os.Environment;
@@ -53,7 +56,34 @@ public class Logger {
         // Ensure the directory structure exists first - only need to do one
         file_data.getParentFile().mkdirs();
 
-        // TODO: read in the list of files and delete the excess file(s)
+        // Delete files to ensure we're not creating more than Constants.KEEP_NUMBER_OF_MATCHES
+        // Only look at _d.csv files, ensure it's a file, and store off CreationTime attribute
+        File[] files = file_data.getParentFile().listFiles();
+        ArrayList<Long> last_created = new ArrayList<>();
+
+        for (File file : files) {
+            if (file.isFile() && file.getName().endsWith("d.csv")) {
+                BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+                last_created.add(attrs.creationTime().toMillis());
+            }
+        }
+
+        // If there's too many files, go through and delete ANY that are older than then Nth - 1
+        if (last_created.size() >= Constants.KEEP_NUMBER_OF_MATCHES) {
+            // Sort the list and find the Nth - 1 oldest file (because we're about to create the Nth)
+            Collections.sort(last_created);
+            Collections.reverse(last_created);
+
+            long created_check = last_created.get(Constants.KEEP_NUMBER_OF_MATCHES - 1);
+
+            for (File file : files) {
+                if (file.isFile()) {
+                    BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+                    if (attrs.creationTime().toMillis() < created_check) file.delete();
+                }
+            }
+
+        }
 
         // If the output file doesn't exist, output a stream to it and copy contents over
         if (!file_data.exists()) file_data.createNewFile();
@@ -69,8 +99,6 @@ public class Logger {
 
     // Member Function: Close out the logger.  Write out all of the non-time based match data and close the files.
     public void close(){
-        boolean found = false;
-
         try {
             // Start the csv line with the event key
             String csv_line = Globals.CurrentCompetitionId + ":" + Globals.CurrentMatchNumber + ":" + Globals.CurrentDeviceId;
