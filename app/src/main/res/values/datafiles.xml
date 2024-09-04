@@ -18,4 +18,5 @@
     <string name="public_file_events_teleop">CPR-Scouting/Input/Events_Teleop.csv</string>
     <string name="public_file_comments">CPR-Scouting/Input/Comments.csv</string>
 
+    <string name="logger_path">CPR-Scouting/Output</string>
 </resources>

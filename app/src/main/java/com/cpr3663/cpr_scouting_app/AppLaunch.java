@@ -163,7 +163,6 @@ public class AppLaunch extends AppCompatActivity {
     //                  filename for the "public" accessible file
     // =============================================================================================
     private void CopyPrivateToPublicFile(String in_PrivateFileName, String in_PublicFileName) throws IOException {
-        String dirPath = "";
         InputStream in = getAssets().open(in_PrivateFileName);
         File out_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), in_PublicFileName);
 

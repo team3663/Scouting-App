@@ -1,7 +1,9 @@
 package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +22,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.cpr3663.cpr_scouting_app.databinding.PreMatchBinding;
+
+import java.io.IOException;
 
 public class PreMatch extends AppCompatActivity {
     // =============================================================================================
@@ -44,11 +48,17 @@ public class PreMatch extends AppCompatActivity {
             return insets;
         });
 
+        // Now that we are starting to scout data, set the Global values
+        SharedPreferences sp;
+        sp = this.getSharedPreferences(getResources().getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+        Globals.CurrentScoutingTeam = sp.getInt(Settings.SP_SCOUTING_TEAM, 0);
+        Globals.CurrentCompetitionId = sp.getInt(Settings.SP_COMPETITION_ID, 0);
+        Globals.CurrentDeviceId = sp.getInt(Settings.SP_DEVICE_ID, 0);
+
         // Create components
         EditText edit_Match = preMatchBinding.editMatch;
         TextView text_Match = preMatchBinding.textMatch;
         EditText edit_Team = preMatchBinding.editTeamToScout;
-        TextView text_Team = preMatchBinding.textTeamToScout;
         TextView text_TeamName = preMatchBinding.textTeamToScoutName;
 
         // creates the single select menu for the robot starting positions
@@ -98,12 +108,11 @@ public class PreMatch extends AppCompatActivity {
         edit_OverrideTeamNum.setVisibility(View.INVISIBLE);
         but_AddOverrideTeamNum.setVisibility(View.INVISIBLE);
 
-        CheckBox check_Override = preMatchBinding.checkboxOverride;
-        check_Override.setOnClickListener(new View.OnClickListener() {
+        checkbox_Override.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int state = View.VISIBLE;
-                if (!check_Override.isChecked()) state = View.INVISIBLE;
+                if (!checkbox_Override.isChecked()) state = View.INVISIBLE;
                 text_Override.setVisibility(state);
                 edit_OverrideTeamNum.setVisibility(state);
                 but_AddOverrideTeamNum.setVisibility(state);
@@ -119,7 +128,7 @@ public class PreMatch extends AppCompatActivity {
                     // TODO make it add teamNum to the options after converting to int and
                     //      have it auto select that one
                 }
-                check_Override.setChecked(false);
+                checkbox_Override.setChecked(false);
                 text_Override.setVisibility(View.INVISIBLE);
                 edit_OverrideTeamNum.setVisibility(View.INVISIBLE);
                 but_AddOverrideTeamNum.setVisibility(View.INVISIBLE);
@@ -135,14 +144,31 @@ public class PreMatch extends AppCompatActivity {
                 if (String.valueOf(edit_Match.getText()).isEmpty() || String.valueOf(edit_Team.getText()).isEmpty() || String.valueOf(edit_Name.getText()).isEmpty()) {
                     Toast.makeText(PreMatch.this, R.string.missing_data, Toast.LENGTH_SHORT).show();
                 } else {
-                    ScouterName = String.valueOf(edit_Name.getText());
+                    // Save off the current match number (Logger needs this)
+                    Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
+
+                    // Set up the Logger - if it fails, we better stop now, or we won't capture any data!
+                    try {
+                        Globals.EventLogger = new Logger(getApplicationContext());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    // Log all of the data from this page
+                    Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_TO_SCOUT, preMatchBinding.editTeamToScout.getText().toString());
+                    Globals.EventLogger.LogData(Constants.LOGKEY_SCOUTER, preMatchBinding.editScouterName.getText().toString());
+                    Globals.EventLogger.LogData(Constants.LOGKEY_DID_PLAY, String.valueOf(preMatchBinding.checkboxDidPlay.isChecked()));
+                    Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_SCOUTING, String.valueOf(Globals.CurrentScoutingTeam));
+                    Globals.EventLogger.LogData(Constants.LOGKEY_START_POSITION, preMatchBinding.spinnerStartingPosition.toString());
+
+                    // Save off some fields for next time or later usage
+                    ScouterName = edit_Name.getText().toString();
+
                     // If they didn't play skip everything else
                     if (preMatchBinding.checkboxDidPlay.isChecked()) {
-                        // TODO log here
                         Intent GoToMatch = new Intent(PreMatch.this, Match.class);
                         startActivity(GoToMatch);
                     } else {
-                        // TODO log here
                         Intent GoToSubmitData = new Intent(PreMatch.this, SubmitData.class);
                         startActivity(GoToSubmitData);
                     }

@@ -282,6 +282,19 @@ public class PostMatch extends AppCompatActivity {
         but_Next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String multi_values = "";
+
+                // Log all of the data from this page
+                Globals.EventLogger.LogData(Constants.LOGKEY_DID_LEAVE_START, String.valueOf(postMatchBinding.checkboxDidLeave.isChecked()));
+                Globals.EventLogger.LogData(Constants.LOGKEY_CLIMB_POSITION, postMatchBinding.spinnerClimbPosition.toString());
+                Globals.EventLogger.LogData(Constants.LOGKEY_TRAP, postMatchBinding.spinnerTrap.toString());
+                Globals.EventLogger.LogData(Constants.LOGKEY_DNPS, postMatchBinding.dropDNP.toString());
+                Globals.EventLogger.LogData(Constants.LOGKEY_COMMENTS, postMatchBinding.dropComments.toString());
+
+                // We're done with the logger
+                Globals.EventLogger.close();
+                Globals.EventLogger = null;
+
                 Intent GoToSubmitData = new Intent(PostMatch.this, SubmitData.class);
                 startActivity(GoToSubmitData);
             }
