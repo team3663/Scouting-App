@@ -64,6 +64,9 @@ public class PostMatch extends AppCompatActivity {
             return insets;
         });
 
+        // Default them to leaving
+        postMatchBinding.checkboxDidLeave.setChecked(true);
+
         //Creating the single select dropdown menu for the trap outcomes
         Spinner trapSpinner=findViewById(R.id.spinnerTrap);
         //accessing the array in strings.xml
@@ -260,7 +263,6 @@ public class PostMatch extends AppCompatActivity {
 
             }
         });
-
 
         // Create Components
         // TODO: Change type for drop downs once we have the right XML and Java for it.
