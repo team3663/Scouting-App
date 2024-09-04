@@ -163,9 +163,7 @@ public class Settings extends AppCompatActivity {
                             // MUST CONVERT TO STRING or it crashes with out warning
                             settingsBinding.editScoutingTeam.setText(String.valueOf(device.getTeamNumber()));
                             settingsBinding.textScoutingTeamName.setText(Globals.TeamList.get(device.getTeamNumber()));
-                        } else {
-                            text_DeviceName.setText("");
-                        }
+                        } else text_DeviceName.setText("");
                     }
                 }
             }
@@ -182,9 +180,7 @@ public class Settings extends AppCompatActivity {
                             // This will crash the app instead of returning null if you pass it an invalid num
                             String ScoutingTeamName = Globals.TeamList.get(ScoutingTeamNum);
                             text_ScoutingTeamName.setText(ScoutingTeamName);
-                        } else {
-                            text_ScoutingTeamName.setText("");
-                        }
+                        } else text_ScoutingTeamName.setText("");
                     }
                 }
             }
