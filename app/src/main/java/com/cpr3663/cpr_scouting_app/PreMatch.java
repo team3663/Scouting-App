@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +50,15 @@ public class PreMatch extends AppCompatActivity {
         EditText edit_Team = preMatchBinding.editTeamToScout;
         TextView text_Team = preMatchBinding.textTeamToScout;
         TextView text_TeamName = preMatchBinding.textTeamToScoutName;
+
+        // creates the single select menu for the robot starting positions
+        Spinner spinner = findViewById(R.id.spinnerStartingPosition);
+
+        // adds the items from the starting positions array to the list
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.starting_positions_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
         EditText edit_Name = preMatchBinding.editScouterName;
         CheckBox checkbox_DidPlay = preMatchBinding.checkboxDidPlay;
         CheckBox checkbox_Override = preMatchBinding.checkboxOverride;
@@ -63,7 +74,7 @@ public class PreMatch extends AppCompatActivity {
         // Create a text box to input the scouters name
         edit_Name.setText(ScouterName);
         edit_Name.setHint("Input your name");
-        edit_Name.setHintTextColor(Color.GRAY);
+        edit_Name.setHintTextColor(Color.WHITE);
 
         MatchNum++;
         if (MatchNum > 0) {

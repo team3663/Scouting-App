@@ -11,14 +11,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="65dp"
+        tools:layout_editor_absoluteY="337dp">
 
         <TextView
             android:id="@+id/text_Heading"
             android:layout_width="match_parent"
             android:layout_height="80dp"
+            android:gravity="center"
+            android:text="Pre-Match Scouting Information"
             android:textColor="@color/cpr_green"
-            android:textStyle="bold"
             android:textSize="42sp"
             android:gravity="center"
             android:text="@string/pre_heading" />
@@ -133,7 +136,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:orientation="horizontal">
-
+          
             <CheckBox
                 android:id="@+id/checkbox_DidPlay"
                 android:layout_width="0dp"
@@ -176,8 +179,13 @@
                 android:text="@string/pre_start_pos"
                 tools:ignore="RtlSymmetry" />
 
-            <CheckBox
-                android:id="@+id/checkbox_StartingPosition"
+            <Spinner
+                android:id="@+id/spinnerStartingPosition"
+                android:gravity="right|center"
+                android:paddingRight="50dp"
+                android:drawableRight="@android:drawable/arrow_down_float"
+                android:drawablePadding="16dp"
+                android:background="@color/white"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -189,7 +197,7 @@
                 tools:ignore="RtlSymmetry" />
         </LinearLayout>
     </LinearLayout>
-  
+
     <CheckBox
         android:id="@+id/checkbox_Override"
         android:layout_width="wrap_content"
