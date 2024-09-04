@@ -34,7 +34,7 @@ public class PostMatch extends AppCompatActivity {
     // Global variables
     // =============================================================================================
     private PostMatchBinding postMatchBinding;
-    TextView textView;
+    TextView CommentsTextView;
     TextView DNPTextView;
     boolean[] selectedComment;
     boolean[] selectedDNPReasons;
@@ -68,27 +68,27 @@ public class PostMatch extends AppCompatActivity {
         //Creating the single select dropdown menu for the trap outcomes
         Spinner trapSpinner=findViewById(R.id.spinnerTrap);
         //accessing the array in strings.xml
-        ArrayAdapter<CharSequence> trapAdapter= ArrayAdapter.createFromResource(this,R.array.trap_outcomes_array, android.R.layout.simple_spinner_item);
-        trapAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        trapSpinner.setAdapter(trapAdapter);
+//        ArrayAdapter<CharSequence> trapAdapter= ArrayAdapter.createFromResource(this,R.array.trap_outcomes_array, android.R.layout.simple_spinner_item);
+//        trapAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        trapSpinner.setAdapter(trapAdapter);
 
         //Creating the single select dropdown menu for the climb positions
         Spinner climbPositionSpinner=findViewById(R.id.spinnerClimbPosition);
         //accessing the array in strings.xml
-        ArrayAdapter<CharSequence> climbPositionAdapter= ArrayAdapter.createFromResource(this,R.array.climb_positions_array, android.R.layout.simple_spinner_item);
-        climbPositionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        climbPositionSpinner.setAdapter(climbPositionAdapter);
+//        ArrayAdapter<CharSequence> climbPositionAdapter= ArrayAdapter.createFromResource(this,R.array.climb_positions_array, android.R.layout.simple_spinner_item);
+//        climbPositionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        climbPositionSpinner.setAdapter(climbPositionAdapter);
 
         // assign variable
-        textView = findViewById(R.id.textViewComments);
-        DNPTextView = findViewById(R.id.textViewDNP);
+        CommentsTextView = postMatchBinding.textComments;
+        DNPTextView = postMatchBinding.textDNP;
 
         // initialize comment and dnp reasons arrays
         selectedComment = new boolean[CommentArray.length];
         selectedDNPReasons = new boolean[DNPReasonsArray.length];
 
         //code for how to open the dropdown menu when clicked and select items
-        textView.setOnClickListener(new View.OnClickListener() {
+        CommentsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(PostMatch.this);
@@ -138,8 +138,8 @@ public class PostMatch extends AppCompatActivity {
                                 stringBuilder.append(", ");
                             }
                         }
-                        // set text on textView
-                        textView.setText(stringBuilder.toString());
+                        // set text on CommentsTextView
+                        CommentsTextView.setText(stringBuilder.toString());
                     }
                 });
 
@@ -164,7 +164,7 @@ public class PostMatch extends AppCompatActivity {
                             // clear comment list
                             CommentList.clear();
                             // clear text view value
-                            textView.setText("Select All That Apply");
+                            CommentsTextView.setText("Select All That Apply");
                         }
                     }
                 });
@@ -225,7 +225,7 @@ public class PostMatch extends AppCompatActivity {
                                 stringBuilder.append(", ");
                             }
                         }
-                        // set text on textView
+                        // set text on CommentsTextView
                         DNPTextView.setText(stringBuilder.toString());
                     }
                 });
@@ -266,8 +266,8 @@ public class PostMatch extends AppCompatActivity {
         // Create Components
         // TODO: Change type for drop downs once we have the right XML and Java for it.
         CheckBox check_DidLeave = postMatchBinding.checkboxDidLeave;
-        EditText drop_ClimbPosition = postMatchBinding.dropClimbingPosition;
-        EditText drop_Trap = postMatchBinding.dropTrap;
+//        EditText drop_ClimbPosition = postMatchBinding.dropClimbingPosition;
+//        EditText drop_Trap = postMatchBinding.dropTrap;
         EditText drop_DNP = postMatchBinding.dropDNP;
         EditText drop_Comments = postMatchBinding.dropComments;
 

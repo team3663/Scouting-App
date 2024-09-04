@@ -10,6 +10,9 @@ public class Globals {
     public static DNPs DNPList = new DNPs();
     public static Events EventList = new Events();
     public static Comments CommentList = new Comments();
+    public static ClimbPositions ClimbPositionList = new ClimbPositions();
+    public static TrapResults TrapResultsList = new TrapResults();
+    public static StartPositions StartPositionList = new StartPositions();
 
     public static int CurrentCompetitionId;
     public static int CurrentMatchNumber;
