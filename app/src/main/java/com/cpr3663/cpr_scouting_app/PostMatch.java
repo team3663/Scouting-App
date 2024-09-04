@@ -20,6 +20,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.cpr3663.cpr_scouting_app.databinding.PostMatchBinding;
+import com.cpr3663.cpr_scouting_app.databinding.PreMatchBinding;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,14 +57,15 @@ public class PostMatch extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         postMatchBinding = PostMatchBinding.inflate(getLayoutInflater());
-        View page_root_view = postMatchBinding.getRoot();
-        setContentView(page_root_view);
+        setContentView(postMatchBinding.getRoot());
         ViewCompat.setOnApplyWindowInsetsListener(postMatchBinding.postMatch, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        setContentView(R.layout.post_match);
+
+        // Default them to leaving
+        postMatchBinding.checkboxDidLeave.setChecked(true);
 
         //Creating the single select dropdown menu for the trap outcomes
         Spinner trapSpinner=findViewById(R.id.spinnerTrap);
@@ -262,12 +264,11 @@ public class PostMatch extends AppCompatActivity {
             }
         });
 
-
         // Create Components
         // TODO: Change type for drop downs once we have the right XML and Java for it.
         CheckBox check_DidLeave = postMatchBinding.checkboxDidLeave;
-//        EditText drop_ClimbPosition = postMatchBinding.dropClimbingPosition;
-//        EditText drop_Trap = postMatchBinding.dropTrap;
+        Spinner drop_ClimbPosition = postMatchBinding.spinnerClimbPosition;
+        Spinner drop_Trap = postMatchBinding.spinnerTrap;
         EditText drop_DNP = postMatchBinding.dropDNP;
         EditText drop_Comments = postMatchBinding.dropComments;
 
@@ -282,6 +283,20 @@ public class PostMatch extends AppCompatActivity {
         but_Next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String multi_values = "";
+
+                // Log all of the data from this page
+                Globals.EventLogger.LogData(Constants.LOGKEY_DID_LEAVE_START, String.valueOf(postMatchBinding.checkboxDidLeave.isChecked()));
+                Globals.EventLogger.LogData(Constants.LOGKEY_CLIMB_POSITION, postMatchBinding.spinnerClimbPosition.getSelectedItem().toString());
+                Globals.EventLogger.LogData(Constants.LOGKEY_TRAP, postMatchBinding.spinnerTrap.getSelectedItem().toString());
+                // TODO : need to know how to build a multi-selected list of IDs (delimiter will be ":")
+//                Globals.EventLogger.LogData(Constants.LOGKEY_DNPS, postMatchBinding.dropDNP.toString());
+//                Globals.EventLogger.LogData(Constants.LOGKEY_COMMENTS, postMatchBinding.dropComments.toString());
+
+                // We're done with the logger
+                Globals.EventLogger.close();
+                Globals.EventLogger = null;
+
                 Intent GoToSubmitData = new Intent(PostMatch.this, SubmitData.class);
                 startActivity(GoToSubmitData);
             }

@@ -18,6 +18,15 @@
     <string name="missing_data">Please fill in all fields</string>
     <string name="timer_label">Time: </string>
 
+    <string name="file_error_teams">Error loading teams from data file!</string>
+    <string name="file_error_matches">Error loading matches from data file!</string>
+    <string name="file_error_dnp">Error loading DNPs from data file!</string>
+    <string name="file_error_events_auto">Error loading Auto events from data file!</string>
+    <string name="file_error_events_teleop">Error loading Teleop events from data file!</string>
+    <string name="file_error_competitions">Error loading competitions from data file!</string>
+    <string name="file_error_devices">Error loading devices from data file!</string>
+    <string name="file_error_comments">Error loading comments from data file!</string>
+
     <string name="settings_heading">Settings</string>
     <string name="settings_competition">Competition ID:</string>
     <string name="settings_device">Device ID:</string>
