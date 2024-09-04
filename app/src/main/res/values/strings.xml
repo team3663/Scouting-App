@@ -38,4 +38,24 @@
     <string name="post_trap">Trap outcome:</string>
     <string name="post_dnp">DNP reasons:</string>
     <string name="post_comments">Comments:</string>
+
+        <string-array name="starting_positions_array">
+            <item>Amp Side</item>
+            <item>Center</item>
+            <item>Center Source Side</item>
+            <item>Source Side</item>
+        </string-array>
+
+    <string-array name="trap_outcomes_array">
+        <item>Did Not Attempt</item>
+        <item>Succeed</item>
+        <item>Fail</item>
+    </string-array>
+
+    <string-array name="climb_positions_array">
+        <item>Did Not Climb</item>
+        <item>Left</item>
+        <item>Center</item>
+        <item>Right</item>
+    </string-array>
 </resources>
