@@ -90,6 +90,7 @@ public class Logger {
 
             // Write out the data
             fos_data.write(csv_line.getBytes(StandardCharsets.UTF_8));
+            fos_data.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
 
             fos_event.flush();
             fos_event.close();
@@ -152,6 +153,7 @@ public class Logger {
         csv_line = seq + "," + in_EventId + "," + String.valueOf((float)(Math.round((in_time - Match.startTime) / 100.0)) / 100.0) + "," + String.valueOf((float)(Math.round(in_X * 100.0)) / 100.0) + "," + String.valueOf((float)(Math.round(in_Y * 100.0)) / 100.0) + "," + prev;
         try {
             fos_event.write(csv_line.getBytes(StandardCharsets.UTF_8));
+            fos_event.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

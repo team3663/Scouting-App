@@ -285,8 +285,8 @@ public class PostMatch extends AppCompatActivity {
 
                 // Log all of the data from this page
                 Globals.EventLogger.LogData(Constants.LOGKEY_DID_LEAVE_START, String.valueOf(postMatchBinding.checkboxDidLeave.isChecked()));
-                Globals.EventLogger.LogData(Constants.LOGKEY_CLIMB_POSITION, postMatchBinding.spinnerClimbPosition.toString());
-                Globals.EventLogger.LogData(Constants.LOGKEY_TRAP, postMatchBinding.spinnerTrap.toString());
+                Globals.EventLogger.LogData(Constants.LOGKEY_CLIMB_POSITION, postMatchBinding.spinnerClimbPosition.getSelectedItem().toString());
+                Globals.EventLogger.LogData(Constants.LOGKEY_TRAP, postMatchBinding.spinnerTrap.getSelectedItem().toString());
                 // TODO : need to know how to build a multi-selected list of IDs (delimiter will be ":")
 //                Globals.EventLogger.LogData(Constants.LOGKEY_DNPS, postMatchBinding.dropDNP.toString());
 //                Globals.EventLogger.LogData(Constants.LOGKEY_COMMENTS, postMatchBinding.dropComments.toString());
