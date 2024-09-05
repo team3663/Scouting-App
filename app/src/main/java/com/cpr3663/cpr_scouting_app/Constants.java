@@ -11,17 +11,26 @@ public class Constants {
     public static final String PHASE_NONE = "";
 
     public static final int KEEP_NUMBER_OF_MATCHES = 5;
-    public static final String LOGKEY_DID_PLAY = "DidPlay";
-    public static final String LOGKEY_START_POSITION = "StartPos";
-    public static final String LOGKEY_TEAM_SCOUTING = "TeamScouting";
-    public static final String LOGKEY_TEAM_TO_SCOUT = "Team";
-    public static final String LOGKEY_SCOUTER = "Scouter";
-    public static final String LOGKEY_DID_LEAVE_START = "DidLeaveStart";
-    public static final String LOGKEY_CLIMB_POSITION = "ClimbPos";
-    public static final String LOGKEY_TRAP = "Trap";
-    public static final String LOGKEY_DNPS = "DNP";
-    public static final String LOGKEY_COMMENTS = "Comments";
-    public static final String LOGKEY_START_TIME_OFFSET = "StartTimeOffset";
+    // Logger Keys - These are also the csv column header names
+    public static final String LOGKEY_DID_PLAY = "D_DidPlay";
+    public static final String LOGKEY_START_POSITION = "D_StartPos";
+    public static final String LOGKEY_TEAM_SCOUTING = "D_TeamScouting";
+    public static final String LOGKEY_TEAM_TO_SCOUT = "D_Team";
+    public static final String LOGKEY_SCOUTER = "D_Scouter";
+    public static final String LOGKEY_DID_LEAVE_START = "D_DidLeaveStart";
+    public static final String LOGKEY_CLIMB_POSITION = "D_ClimbPos";
+    public static final String LOGKEY_TRAP = "D_Trap";
+    public static final String LOGKEY_DNPS = "D_DNPs";
+    public static final String LOGKEY_COMMENTS = "D_Comments";
+    public static final String LOGKEY_START_TIME_OFFSET = "D_StartOffset";
+    public static final String LOGKEY_DATA_KEY = "D_Key";
+    public static final String LOGKEY_EVENT_KEY = "E_Key";
+    public static final String LOGKEY_EVENT_SEQ = "E_Seq";
+    public static final String LOGKEY_EVENT_ID = "E_ID";
+    public static final String LOGKEY_EVENT_TIME = "E_Time";
+    public static final String LOGKEY_EVENT_X = "E_X";
+    public static final String LOGKEY_EVENT_Y = "E_Y";
+    public static final String LOGKEY_EVENT_PREVIOUS_SEQ = "E_PrevSeq";
 
     public static final int EVENT_ID_DEFENDED_START = 150;
     public static final int EVENT_ID_DEFENDED_END = 151;

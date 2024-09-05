@@ -92,6 +92,18 @@ public class Logger {
         try {
             fos_data = new FileOutputStream(file_data);
             fos_event = new FileOutputStream(file_event);
+
+            // Write out the header for for the file_event csv file
+            String csv_header = Constants.LOGKEY_EVENT_KEY;
+            csv_header += "," + Constants.LOGKEY_EVENT_SEQ;
+            csv_header += "," + Constants.LOGKEY_EVENT_ID;
+            csv_header += "," + Constants.LOGKEY_EVENT_TIME;
+            csv_header += "," + Constants.LOGKEY_EVENT_X;
+            csv_header += "," + Constants.LOGKEY_EVENT_Y;
+            csv_header += "," + Constants.LOGKEY_EVENT_PREVIOUS_SEQ;
+
+            fos_event.write(csv_header.getBytes(StandardCharsets.UTF_8));
+            fos_event.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -101,9 +113,22 @@ public class Logger {
     public void close(){
         try {
             // Start the csv line with the event key
+            String csv_header = Constants.LOGKEY_EVENT_KEY;
             String csv_line = Globals.CurrentCompetitionId + ":" + Globals.CurrentMatchNumber + ":" + Globals.CurrentDeviceId;
 
             // Append to the csv line the values in the correct order
+            csv_header += "," + Constants.LOGKEY_TEAM_TO_SCOUT;
+            csv_header += "," + Constants.LOGKEY_TEAM_SCOUTING;
+            csv_header += "," + Constants.LOGKEY_SCOUTER;
+            csv_header += "," + Constants.LOGKEY_DID_PLAY;
+            csv_header += "," + Constants.LOGKEY_START_POSITION;
+            csv_header += "," + Constants.LOGKEY_DID_LEAVE_START;
+            csv_header += "," + Constants.LOGKEY_CLIMB_POSITION;
+            csv_header += "," + Constants.LOGKEY_TRAP;
+            csv_header += "," + Constants.LOGKEY_DNPS;
+            csv_header += "," + Constants.LOGKEY_COMMENTS;
+            csv_header += "," + Constants.LOGKEY_START_TIME_OFFSET;
+
             csv_line += FindValueInPair(Constants.LOGKEY_TEAM_TO_SCOUT);
             csv_line += FindValueInPair(Constants.LOGKEY_TEAM_SCOUTING);
             csv_line += FindValueInPair(Constants.LOGKEY_SCOUTER);
@@ -117,6 +142,8 @@ public class Logger {
             csv_line += FindValueInPair(Constants.LOGKEY_START_TIME_OFFSET);
 
             // Write out the data
+            fos_data.write(csv_header.getBytes(StandardCharsets.UTF_8));
+            fos_data.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
             fos_data.write(csv_line.getBytes(StandardCharsets.UTF_8));
             fos_data.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
 
@@ -171,14 +198,13 @@ public class Logger {
         }
 
         String prev="";
-        String seq = Globals.CurrentCompetitionId + ":" + Globals.CurrentMatchNumber + ":" + Globals.CurrentDeviceId + ":" + seq_number;
-        String csv_line;
+        String csv_line = Globals.CurrentCompetitionId + ":" + Globals.CurrentMatchNumber + ":" + Globals.CurrentDeviceId;
 
         // If this is NOT a new sequence, we need to write out the previous event id that goes with this one
         if (!in_NewSequence) prev = String.valueOf(seq_number_prev);
 
         // Form the output line that goes in the csv file.  Round X,Y to 2 decimal places.
-        csv_line = seq + "," + in_EventId + "," + String.valueOf((float)(Math.round((in_time - Match.startTime) / 100.0)) / 100.0) + "," + String.valueOf((float)(Math.round(in_X * 100.0)) / 100.0) + "," + String.valueOf((float)(Math.round(in_Y * 100.0)) / 100.0) + "," + prev;
+        csv_line += "," + seq_number + "," + in_EventId + "," + String.valueOf((float)(Math.round((in_time - Match.startTime) / 100.0)) / 100.0) + "," + String.valueOf((float)(Math.round(in_X * 100.0)) / 100.0) + "," + String.valueOf((float)(Math.round(in_Y * 100.0)) / 100.0) + "," + prev;
         try {
             fos_event.write(csv_line.getBytes(StandardCharsets.UTF_8));
             fos_event.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
