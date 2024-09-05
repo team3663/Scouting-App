@@ -8,6 +8,9 @@
     <string name="private_file_events_auto">input_data/Events_Auto.csv</string>
     <string name="private_file_events_teleop">input_data/Events_Teleop.csv</string>
     <string name="private_file_comments">input_data/Comments.csv</string>
+    <string name="private_file_trap_results">input_data/TrapResults.csv</string>
+    <string name="private_file_climb_positions">input_data/ClimbPositions.csv</string>
+    <string name="private_file_start_positions">input_data/StartPositions.csv</string>
 
     <string name="public_file_teams">CPR-Scouting/Input/Teams.csv</string>
     <string name="public_file_competitions">CPR-Scouting/Input/Competitions.csv</string>
@@ -17,6 +20,9 @@
     <string name="public_file_events_auto">CPR-Scouting/Input/Events_Auto.csv</string>
     <string name="public_file_events_teleop">CPR-Scouting/Input/Events_Teleop.csv</string>
     <string name="public_file_comments">CPR-Scouting/Input/Comments.csv</string>
+    <string name="public_file_trap_results">CPR-Scouting/Input/TrapResults.csv</string>
+    <string name="public_file_climb_positions">CPR-Scouting/Input/ClimbPositions.csv</string>
+    <string name="public_file_start_positions">CPR-Scouting/Input/StartPositions.csv</string>
 
     <string name="logger_path">CPR-Scouting/Output</string>
 </resources>

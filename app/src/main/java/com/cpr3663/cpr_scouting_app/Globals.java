@@ -1,5 +1,15 @@
 package com.cpr3663.cpr_scouting_app;
 
+import com.cpr3663.cpr_scouting_app.data.ClimbPositions;
+import com.cpr3663.cpr_scouting_app.data.Comments;
+import com.cpr3663.cpr_scouting_app.data.Competitions;
+import com.cpr3663.cpr_scouting_app.data.DNPs;
+import com.cpr3663.cpr_scouting_app.data.Devices;
+import com.cpr3663.cpr_scouting_app.data.Events;
+import com.cpr3663.cpr_scouting_app.data.Matches;
+import com.cpr3663.cpr_scouting_app.data.StartPositions;
+import com.cpr3663.cpr_scouting_app.data.TrapResults;
+
 import java.util.ArrayList;
 
 public class Globals {

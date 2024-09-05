@@ -1,6 +1,5 @@
-package com.cpr3663.cpr_scouting_app;
+package com.cpr3663.cpr_scouting_app.data;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 // =============================================================================================

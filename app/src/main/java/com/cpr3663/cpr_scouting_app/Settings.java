@@ -4,9 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Point;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +16,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.cpr3663.cpr_scouting_app.data.Competitions;
+import com.cpr3663.cpr_scouting_app.data.Devices;
 import com.cpr3663.cpr_scouting_app.databinding.SettingsBinding;
 
 public class Settings extends AppCompatActivity {
