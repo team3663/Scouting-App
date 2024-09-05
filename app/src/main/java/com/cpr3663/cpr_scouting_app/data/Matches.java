@@ -1,4 +1,6 @@
-package com.cpr3663.cpr_scouting_app;
+package com.cpr3663.cpr_scouting_app.data;
+
+import com.cpr3663.cpr_scouting_app.Constants;
 
 import java.util.ArrayList;
 
@@ -37,7 +39,7 @@ public class Matches {
     // Methods:     getListOfTeams()
     //                  return an array of team numbers (6 of them) that are in this match
     // =============================================================================================
-    protected static class MatchRow {
+    public static class MatchRow {
         // Class Members
         private int red1 = 0;
         private int red2 = 0;

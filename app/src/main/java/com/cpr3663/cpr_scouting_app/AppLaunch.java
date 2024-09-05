@@ -119,6 +119,12 @@ public class AppLaunch extends AppCompatActivity {
                             Thread.sleep(SPLASH_SCREEN_DELAY);
                             LoadCommentData();
                             Thread.sleep(SPLASH_SCREEN_DELAY);
+                            LoadTrapResultsData();
+                            Thread.sleep(SPLASH_SCREEN_DELAY);
+                            LoadClimbPositionsData();
+                            Thread.sleep(SPLASH_SCREEN_DELAY);
+                            LoadStartPositionsData();
+                            Thread.sleep(SPLASH_SCREEN_DELAY);
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }
@@ -554,6 +560,156 @@ public class AppLaunch extends AppCompatActivity {
                 // Only load "active" Comments reasons
                 if (Boolean.parseBoolean(info[1])) {
                     Globals.CommentList.addCommentRow(info[0], info[2], info[3]);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // =============================================================================================
+    // Function:    LoadTrapResultsData
+    // Description: Read the list of trap options from the .csv file into the global
+    //              TrapList structure.
+    //              Read from the shared location.  If no file, then read from the private location
+    //              created when installing the app AND then make a copy to the shared location.
+    // Output:      void
+    // Parameters:  n/a
+    // =============================================================================================
+    public void LoadTrapResultsData() {
+        String line = "";
+
+        // Ensure the public file exists, and if not, copy the private one there.
+        try {
+            CopyPrivateToPublicFile(getResources().getString(R.string.private_file_trap_results), getResources().getString(R.string.public_file_trap_results));
+        } catch (IOException e) {
+            AppLaunch.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(AppLaunch.this, R.string.file_error_trap_results, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        // Open the asset file holding all of the Trap information
+        // Read each line and add the device information into the TrapList.  There is no mapping
+        // of the trap number and the index into the array (there's no need)
+        //
+        // This list also uses an array of TrapRowInfo since we're storing more than 1 value
+        appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_trap_results));
+
+        try {
+            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_trap_results));
+            InputStream is = new FileInputStream(in_file);
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            line = br.readLine();
+            while ((line = br.readLine()) != null) {
+                String[] info = line.split(",");
+                // Only load "active" rows
+                if (Boolean.parseBoolean(info[1])) {
+                    Globals.TrapResultsList.addTrapResultRow(info[0], info[2]);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // =============================================================================================
+    // Function:    LoadClimbPositionsData
+    // Description: Read the list of climbing positions from the .csv file into the global
+    //              ClimbPositionList structure.
+    //              Read from the shared location.  If no file, then read from the private location
+    //              created when installing the app AND then make a copy to the shared location.
+    // Output:      void
+    // Parameters:  n/a
+    // =============================================================================================
+    public void LoadClimbPositionsData() {
+        String line = "";
+
+        // Ensure the public file exists, and if not, copy the private one there.
+        try {
+            CopyPrivateToPublicFile(getResources().getString(R.string.private_file_climb_positions), getResources().getString(R.string.public_file_climb_positions));
+        } catch (IOException e) {
+            AppLaunch.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(AppLaunch.this, R.string.file_error_climb_positions, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        // Open the asset file holding all of the Climbing Position information
+        // Read each line and add the information into the ClimbPositionList.  There is no mapping
+        // of the climb position number and the index into the array (there's no need)
+        //
+        // This list also uses an array of ClimbPositionRow since we're storing more than 1 value
+        appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_climb_positions));
+
+        try {
+            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_climb_positions));
+            InputStream is = new FileInputStream(in_file);
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            line = br.readLine();
+            while ((line = br.readLine()) != null) {
+                String[] info = line.split(",");
+                // Only load "active" rows
+                if (Boolean.parseBoolean(info[1])) {
+                    Globals.ClimbPositionList.addClimbPositionRow(info[0], info[2]);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // =============================================================================================
+    // Function:    LoadStartPositionsData
+    // Description: Read the list of starting positions from the .csv file into the global
+    //              StartPositionList structure.
+    //              Read from the shared location.  If no file, then read from the private location
+    //              created when installing the app AND then make a copy to the shared location.
+    // Output:      void
+    // Parameters:  n/a
+    // =============================================================================================
+    public void LoadStartPositionsData() {
+        String line = "";
+
+        // Ensure the public file exists, and if not, copy the private one there.
+        try {
+            CopyPrivateToPublicFile(getResources().getString(R.string.private_file_start_positions), getResources().getString(R.string.public_file_start_positions));
+        } catch (IOException e) {
+            AppLaunch.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(AppLaunch.this, R.string.file_error_start_positions, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        // Open the asset file holding all of the Start Positions information
+        // Read each line and add the information into the StartPositionList.  There is no mapping
+        // of the start position number and the index into the array (there's no need)
+        //
+        // This list also uses an array of StartPositionRow since we're storing more than 1 value
+        appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_start_positions));
+
+        try {
+            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_start_positions));
+            InputStream is = new FileInputStream(in_file);
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            line = br.readLine();
+            while ((line = br.readLine()) != null) {
+                String[] info = line.split(",");
+                // Only load "active" rows
+                if (Boolean.parseBoolean(info[1])) {
+                    Globals.StartPositionList.addStartPositionRow(info[0], info[2]);
                 }
             }
         } catch (FileNotFoundException e) {

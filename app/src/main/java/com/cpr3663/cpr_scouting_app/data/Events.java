@@ -1,4 +1,7 @@
-package com.cpr3663.cpr_scouting_app;
+package com.cpr3663.cpr_scouting_app.data;
+
+import com.cpr3663.cpr_scouting_app.Constants;
+import com.cpr3663.cpr_scouting_app.Match;
 
 import java.util.ArrayList;
 
