@@ -68,17 +68,19 @@ public class PreMatch extends AppCompatActivity {
 //        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //        spinner.setAdapter(adapter);
 
-        EditText edit_Name = preMatchBinding.editScouterName;
+        Button but_AddOverrideTeamNum = preMatchBinding.butAddOverrideTeamNum;
         CheckBox checkbox_DidPlay = preMatchBinding.checkboxDidPlay;
         CheckBox checkbox_Override = preMatchBinding.checkboxOverride;
-        TextView text_Override = preMatchBinding.textOverride;
+        CheckBox checkbox_ReSubmit = preMatchBinding.checkboxResubmit;
         EditText edit_OverrideTeamNum = preMatchBinding.editOverrideTeamNum;
-        Button but_AddOverrideTeamNum = preMatchBinding.butAddOverrideTeamNum;
+        EditText edit_Name = preMatchBinding.editScouterName;
+        TextView text_Override = preMatchBinding.textOverride;
 
         // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
         // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)
         // So add it in now.
         checkbox_DidPlay.setText(preMatchBinding.checkboxDidPlay.getText() + Globals.CheckBoxTextPadding);
+        checkbox_ReSubmit.setText(preMatchBinding.checkboxResubmit.getText() + Globals.CheckBoxTextPadding);
 
         // Create a text box to input the scouters name
         edit_Name.setText(ScouterName);
@@ -99,8 +101,9 @@ public class PreMatch extends AppCompatActivity {
         edit_Match.setHint("Input the match number");
         edit_Match.setHintTextColor(Color.GRAY);
 
-        // Default them to playing
+        // Default checkboxes
         checkbox_DidPlay.setChecked(true);
+        checkbox_ReSubmit.setChecked(false);
 
         // Hide override components initially
         text_Override.setVisibility(View.INVISIBLE);
@@ -138,38 +141,45 @@ public class PreMatch extends AppCompatActivity {
         but_Next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Check we have all the fields entered that are needed.  Otherwise, pop a TOAST message instead
-                if (String.valueOf(edit_Match.getText()).isEmpty() || String.valueOf(edit_Team.getText()).isEmpty() || String.valueOf(edit_Name.getText()).isEmpty()) {
-                    Toast.makeText(PreMatch.this, R.string.missing_data, Toast.LENGTH_SHORT).show();
-                } else {
-                    // Save off the current match number (Logger needs this)
-                    Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
-
-                    // Set up the Logger - if it fails, we better stop now, or we won't capture any data!
-                    try {
-                        Globals.EventLogger = new Logger(getApplicationContext());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    // Log all of the data from this page
-                    Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_TO_SCOUT, preMatchBinding.editTeamToScout.getText().toString());
-                    Globals.EventLogger.LogData(Constants.LOGKEY_SCOUTER, preMatchBinding.editScouterName.getText().toString().toUpperCase());
-                    Globals.EventLogger.LogData(Constants.LOGKEY_DID_PLAY, String.valueOf(preMatchBinding.checkboxDidPlay.isChecked()));
-                    Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_SCOUTING, String.valueOf(Globals.CurrentScoutingTeam));
-//                    Globals.EventLogger.LogData(Constants.LOGKEY_START_POSITION, preMatchBinding.spinnerStartingPosition.getSelectedItem().toString());
-
-                    // Save off some fields for next time or later usage
-                    ScouterName = String.valueOf(edit_Name.getText());
-                    MatchNum = Integer.parseInt(String.valueOf(edit_Match.getText()));
-
-                    // If they didn't play skip everything else
-                    if (preMatchBinding.checkboxDidPlay.isChecked()) {
-                        Intent GoToMatch = new Intent(PreMatch.this, Match.class);
-                        startActivity(GoToMatch);
+                // If we should re-submit data, go to the submit page immediately
+                if (checkbox_ReSubmit.isChecked()) {
+                    Intent GoToSubmitData = new Intent(PreMatch.this, SubmitData.class);
+                    startActivity(GoToSubmitData);
+                }
+                else {
+                    // Check we have all the fields entered that are needed.  Otherwise, pop a TOAST message instead
+                    if (String.valueOf(edit_Match.getText()).isEmpty() || String.valueOf(edit_Team.getText()).isEmpty() || String.valueOf(edit_Name.getText()).isEmpty()) {
+                        Toast.makeText(PreMatch.this, R.string.missing_data, Toast.LENGTH_SHORT).show();
                     } else {
-                        Intent GoToSubmitData = new Intent(PreMatch.this, SubmitData.class);
-                        startActivity(GoToSubmitData);
+                        // Save off the current match number (Logger needs this)
+                        Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
+
+                        // Set up the Logger - if it fails, we better stop now, or we won't capture any data!
+                        try {
+                            Globals.EventLogger = new Logger(getApplicationContext());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        // Log all of the data from this page
+                        Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_TO_SCOUT, preMatchBinding.editTeamToScout.getText().toString());
+                        Globals.EventLogger.LogData(Constants.LOGKEY_SCOUTER, preMatchBinding.editScouterName.getText().toString().toUpperCase());
+                        Globals.EventLogger.LogData(Constants.LOGKEY_DID_PLAY, String.valueOf(preMatchBinding.checkboxDidPlay.isChecked()));
+                        Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_SCOUTING, String.valueOf(Globals.CurrentScoutingTeam));
+                        //                    Globals.EventLogger.LogData(Constants.LOGKEY_START_POSITION, preMatchBinding.spinnerStartingPosition.getSelectedItem().toString());
+
+                        // Save off some fields for next time or later usage
+                        ScouterName = String.valueOf(edit_Name.getText());
+                        MatchNum = Integer.parseInt(String.valueOf(edit_Match.getText()));
+
+                        // If they didn't play skip everything else
+                        if (preMatchBinding.checkboxDidPlay.isChecked()) {
+                            Intent GoToMatch = new Intent(PreMatch.this, Match.class);
+                            startActivity(GoToMatch);
+                        } else {
+                            Intent GoToSubmitData = new Intent(PreMatch.this, SubmitData.class);
+                            startActivity(GoToSubmitData);
+                        }
                     }
                 }
             }
