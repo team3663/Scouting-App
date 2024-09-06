@@ -54,9 +54,9 @@
 
             <TextView
                 android:id="@+id/text_MatchPadding"
+                android:gravity="center"
                 android:layout_width="400dp"
-                android:layout_height="65dp"
-                android:text="" />
+                android:layout_height="60dp" />
 
         </LinearLayout>
 
@@ -89,8 +89,9 @@
 
             <TextView
                 android:id="@+id/text_TeamToScoutName"
+                android:gravity="center"
                 android:layout_width="400dp"
-                android:layout_height="65dp"
+                android:layout_height="60dp"
                 android:paddingStart="25dp"
                 android:textColor="@color/white"
                 android:textSize="20dp" />
@@ -126,6 +127,7 @@
             <TextView
                 android:id="@+id/text_ScouterNamePading"
                 android:textSize="24sp"
+                android:gravity="center"
                 android:layout_width="400dp"
                 android:layout_height="60dp" />
         </LinearLayout>
@@ -178,20 +180,56 @@
                 tools:ignore="RtlSymmetry" />
 
             <Spinner
-                android:id="@+id/spinnerStartingPosition"
+                android:id="@+id/spinner_StartingPosition"
                 android:gravity="right|center"
                 android:paddingRight="50dp"
                 android:drawableRight="@android:drawable/arrow_down_float"
                 android:drawablePadding="16dp"
                 android:background="@color/white"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
                 android:layout_weight="1"
                 android:textColor="@color/white"
                 android:paddingStart="10dp"
                 android:textSize="24sp"
-                android:visibility="visible"
                 android:text="Single select Drop down"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                android:id="@+id/text_StartingPositionPadding"
+                android:textSize="24sp"
+                android:gravity="center"
+                android:layout_width="400dp"
+                android:layout_height="60dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/checkbox_Resubmit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+                android:textColor="#FF5722"
+                android:gravity="end|center"
+                android:paddingEnd="0dp"
+                android:paddingStart="10dp"
+                android:textSize="24sp"
+                android:text="@string/pre_resubmit" />
+
+            <TextView
+                android:id="@+id/text_ResubmitPadding"
+                android:layout_width="555dp"
+                android:layout_height="60dp"
+                android:gravity="end|center"
+                android:paddingEnd="50dp"
+                android:textColor="@color/white"
+                android:textSize="24sp"
                 tools:ignore="RtlSymmetry" />
         </LinearLayout>
     </LinearLayout>

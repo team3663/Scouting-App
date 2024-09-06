@@ -4,9 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Point;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,13 +16,17 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.cpr3663.cpr_scouting_app.data.Competitions;
+import com.cpr3663.cpr_scouting_app.data.Devices;
 import com.cpr3663.cpr_scouting_app.databinding.SettingsBinding;
 
 public class Settings extends AppCompatActivity {
     // =============================================================================================
     // Define Constants
     // =============================================================================================
-
+    public static final String SP_COMPETITION_ID = "CompetitionId";
+    public static final String SP_DEVICE_ID = "DeviceId";
+    public static final String SP_SCOUTING_TEAM = "ScoutingTeam";
 
     // =============================================================================================
     // Global variables
@@ -36,11 +38,6 @@ public class Settings extends AppCompatActivity {
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceType"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Capture screen size. Need to use WindowManager to populate a Point that holds the screen size.
-        Display screen = getWindowManager().getDefaultDisplay();
-        Point screen_size = new Point();
-        screen.getSize(screen_size);
-
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         settingsBinding = SettingsBinding.inflate(getLayoutInflater());
@@ -58,7 +55,7 @@ public class Settings extends AppCompatActivity {
         // Define the edit Text for entering the Competition Id
         EditText edit_CompetitionId = settingsBinding.editCompetitionId;
         // MUST CONVERT TO STRING or it crashes with out warning
-        edit_CompetitionId.setText(String.valueOf(sp.getInt("CompetitionId", -1)));
+        edit_CompetitionId.setText(String.valueOf(sp.getInt(SP_COMPETITION_ID, -1)));
 
         // Define a text box for the name of the Competition to appear in when you enter the ID
         TextView text_CompetitionName = settingsBinding.textCompetitionName;
@@ -73,7 +70,7 @@ public class Settings extends AppCompatActivity {
         // Define the edit Text for entering the Device Id
         EditText edit_DeviceId = settingsBinding.editDeviceId;
         // MUST CONVERT TO STRING or it crashes with out warning
-        edit_DeviceId.setText(String.valueOf(sp.getInt("DeviceId", -1)));
+        edit_DeviceId.setText(String.valueOf(sp.getInt(SP_DEVICE_ID, -1)));
 
         // Define a text box for the name of the Device to appear in when you enter the ID
         TextView text_DeviceName = settingsBinding.textDeviceName;
@@ -88,7 +85,7 @@ public class Settings extends AppCompatActivity {
         // Define the edit Text for entering the Device Id
         EditText edit_ScoutingTeam = settingsBinding.editScoutingTeam;
         // MUST CONVERT TO STRING or it crashes with out warning
-        edit_ScoutingTeam.setText(String.valueOf(sp.getInt("ScoutingTeam", -1)));
+        edit_ScoutingTeam.setText(String.valueOf(sp.getInt(SP_SCOUTING_TEAM, -1)));
 
         // Define a text box for the name of the Team to appear in when you enter the Number
         TextView text_ScoutingTeamName = settingsBinding.textScoutingTeamName;
@@ -120,15 +117,15 @@ public class Settings extends AppCompatActivity {
             public void onClick(View view) {
                 String CompetitionId = String.valueOf(edit_CompetitionId.getText());
                 if (!CompetitionId.isEmpty()) {
-                    spe.putInt("CompetitionId", Integer.parseInt(CompetitionId));
+                    spe.putInt(SP_COMPETITION_ID, Integer.parseInt(CompetitionId));
                 }
                 String DeviceId = String.valueOf(edit_DeviceId.getText());
                 if (!DeviceId.isEmpty()) {
-                    spe.putInt("DeviceId", Integer.parseInt(DeviceId));
+                    spe.putInt(SP_DEVICE_ID, Integer.parseInt(DeviceId));
                 }
                 String ScoutingTeam = String.valueOf(edit_ScoutingTeam.getText());
                 if (!ScoutingTeam.isEmpty()) {
-                    spe.putInt("ScoutingTeam", Integer.parseInt(ScoutingTeam));
+                    spe.putInt(SP_SCOUTING_TEAM, Integer.parseInt(ScoutingTeam));
                 }
                 spe.apply();
                 Exit();

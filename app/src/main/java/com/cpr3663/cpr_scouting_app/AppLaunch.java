@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Environment; // TODO - test code - can be removed
 import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,10 +21,15 @@ import androidx.core.view.WindowInsetsCompat;
 import com.cpr3663.cpr_scouting_app.databinding.AppLaunchBinding;
 
 import java.io.BufferedReader;
+import java.io.File; // TODO - test code - can be removed
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream; // TODO - test code - can be removed
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -112,6 +119,12 @@ public class AppLaunch extends AppCompatActivity {
                             Thread.sleep(SPLASH_SCREEN_DELAY);
                             LoadCommentData();
                             Thread.sleep(SPLASH_SCREEN_DELAY);
+                            LoadTrapResultsData();
+                            Thread.sleep(SPLASH_SCREEN_DELAY);
+                            LoadClimbPositionsData();
+                            Thread.sleep(SPLASH_SCREEN_DELAY);
+                            LoadStartPositionsData();
+                            Thread.sleep(SPLASH_SCREEN_DELAY);
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }
@@ -146,14 +159,59 @@ public class AppLaunch extends AppCompatActivity {
     }
 
     // =============================================================================================
+    // Function:    CopyPrivateToPublicFile
+    // Description: If the public file doesn't exist, read in the private one and copy it to the
+    //              public one.
+    // Output:      void
+    // Parameters:  in_PrivateFileName
+    //                  filename for the "private" accessible file
+    //              in_PublicFileName
+    //                  filename for the "public" accessible file
+    // =============================================================================================
+    private void CopyPrivateToPublicFile(String in_PrivateFileName, String in_PublicFileName) throws IOException {
+        InputStream in = getAssets().open(in_PrivateFileName);
+        File out_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), in_PublicFileName);
+
+        // Ensure the directory structure exists first
+        out_file.getParentFile().mkdirs();
+
+        // If the output file doesn't exist, output a stream to it and copy contents over
+        if (!out_file.exists()) {
+            out_file.createNewFile();
+            OutputStream out = new FileOutputStream(out_file);
+
+            byte[] buffer = new byte[1024];
+            int read;
+            while ((read = in.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
+        }
+
+    }
+
+    // =============================================================================================
     // Function:    LoadTeamData
     // Description: Read the list of teams from the .csv file into the global TeamList structure
+    //              Read from the shared location.  If no file, then read from the private location
+    //              created when installing the app AND then make a copy to the shared location.
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
     private void LoadTeamData(){
         String line = "";
         int index = 1;
+
+        // Ensure the public file exists, and if not, copy the private one there.
+        try {
+            CopyPrivateToPublicFile(getResources().getString(R.string.private_file_teams), getResources().getString(R.string.public_file_teams));
+        } catch (IOException e) {
+            AppLaunch.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(AppLaunch.this, R.string.file_error_teams, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
         appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_teams));
 
@@ -165,7 +223,8 @@ public class AppLaunch extends AppCompatActivity {
         try {
             Globals.TeamList.add(Constants.NO_TEAM);
 
-            InputStream is = getAssets().open(getResources().getString(R.string.file_teams));
+            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_teams));
+            InputStream is = new FileInputStream(in_file);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {
@@ -188,11 +247,25 @@ public class AppLaunch extends AppCompatActivity {
     // Function:    LoadCompetitionData
     // Description: Read the list of competitions from the .csv file into the global
     //              CompetitionList structure.  This is used for ADMIN configuration of the device.
+    //              Read from the shared location.  If no file, then read from the private location
+    //              created when installing the app AND then make a copy to the shared location.
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
     private void LoadCompetitionData(){
         String line = "";
+
+        // Ensure the public file exists, and if not, copy the private one there.
+        try {
+            CopyPrivateToPublicFile(getResources().getString(R.string.private_file_competitions), getResources().getString(R.string.public_file_competitions));
+        } catch (IOException e) {
+            AppLaunch.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(AppLaunch.this, R.string.file_error_competitions, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
         // Open the asset file holding all of the Competition information
         // Read each line and add the competition name into the ArrayList and use the competition id
@@ -200,8 +273,10 @@ public class AppLaunch extends AppCompatActivity {
         // numbers, we fill the Array with a "NO_COMPETITION" entry so subsequent competitions are
         // matched with their corresponding index into the ArrayList.  This should never happen.
         appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_competitions));
+
         try {
-            InputStream is = getAssets().open(getResources().getString(R.string.file_competitions));
+            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_competitions));
+            InputStream is = new FileInputStream(in_file);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {
@@ -219,12 +294,26 @@ public class AppLaunch extends AppCompatActivity {
     // Function:    LoadMatchData
     // Description: Read the list of matches from the .csv file into the global
     //              MatchList structure.
+    //              Read from the shared location.  If no file, then read from the private location
+    //              created when installing the app AND then make a copy to the shared location.
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
     private void LoadMatchData(){
         String line = "";
         int index = 1;
+
+        // Ensure the public file exists, and if not, copy the private one there.
+        try {
+            CopyPrivateToPublicFile(getResources().getString(R.string.private_file_matches), getResources().getString(R.string.public_file_matches));
+        } catch (IOException e) {
+            AppLaunch.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(AppLaunch.this, R.string.file_error_matches, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
         // Open the asset file holding all of the Match information
         // Read each line and add the match information into the MatchList and use the match number
@@ -235,7 +324,8 @@ public class AppLaunch extends AppCompatActivity {
         try {
             Globals.MatchList.addMatchRow(Constants.NO_MATCH);
 
-            InputStream is = getAssets().open(getResources().getString(R.string.file_matches));
+            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_matches));
+            InputStream is = new FileInputStream(in_file);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {
@@ -260,11 +350,25 @@ public class AppLaunch extends AppCompatActivity {
     // Function:    LoadDeviceData
     // Description: Read the list of devices from the .csv file into the global
     //              DeviceList structure.
+    //              Read from the shared location.  If no file, then read from the private location
+    //              created when installing the app AND then make a copy to the shared location.
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
     private void LoadDeviceData(){
         String line = "";
+
+        // Ensure the public file exists, and if not, copy the private one there.
+        try {
+            CopyPrivateToPublicFile(getResources().getString(R.string.private_file_devices), getResources().getString(R.string.public_file_devices));
+        } catch (IOException e) {
+            AppLaunch.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(AppLaunch.this, R.string.file_error_devices, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
         // Open the asset file holding all of the Device information
         // Read each line and add the device information into the DeviceList.  There is no mapping
@@ -273,7 +377,8 @@ public class AppLaunch extends AppCompatActivity {
         // This list also uses an array of DeviceRowInfo since we're storing more than 1 value.
         appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_devices));
         try {
-            InputStream is = getAssets().open(getResources().getString(R.string.file_devices));
+            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_devices));
+            InputStream is = new FileInputStream(in_file);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {
@@ -291,11 +396,25 @@ public class AppLaunch extends AppCompatActivity {
     // Function:    LoadDNPData
     // Description: Read the list of DNP reasons from the .csv file into the global
     //              DNPList structure.
+    //              Read from the shared location.  If no file, then read from the private location
+    //              created when installing the app AND then make a copy to the shared location.
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
     private void LoadDNPData(){
         String line = "";
+
+        // Ensure the public file exists, and if not, copy the private one there.
+        try {
+            CopyPrivateToPublicFile(getResources().getString(R.string.private_file_dnp), getResources().getString(R.string.public_file_dnp));
+        } catch (IOException e) {
+            AppLaunch.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(AppLaunch.this, R.string.file_error_dnp, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
         // Open the asset file holding all of the Device information
         // Read each line and add the device information into the DeviceList.  There is no mapping
@@ -304,7 +423,8 @@ public class AppLaunch extends AppCompatActivity {
         // This list also uses an array of DeviceRowInfo since we're storing more than 1 value
         appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_dnp));
         try {
-            InputStream is = getAssets().open(getResources().getString(R.string.file_dnp));
+            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_dnp));
+            InputStream is = new FileInputStream(in_file);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {
@@ -325,21 +445,36 @@ public class AppLaunch extends AppCompatActivity {
     // Function:    LoadEventData
     // Description: Read the list of events from the .csv file into the global
     //              EventList structure.
+    //              Read from the shared location.  If no file, then read from the private location
+    //              created when installing the app AND then make a copy to the shared location.
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
     private void LoadEventData(){
         String line = "";
 
-        // Open the asset file holding all of the Event information for AUTO
-        // Read each line and add the event information into the EventList.  There is no mapping
+        // Ensure the public file exists, and if not, copy the private one there.
+        try {
+            CopyPrivateToPublicFile(getResources().getString(R.string.private_file_events_auto), getResources().getString(R.string.public_file_events_auto));
+        } catch (IOException e) {
+            AppLaunch.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(AppLaunch.this, R.string.file_error_events_auto, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        // Open the asset file holding all of the Event information
+        // Read each line and add the event information into the Eventist.  There is no mapping
         // of the event number and the index into the array (there's no need)
         //
         // This list also uses an array of EventRowInfo since we're storing more than 1 value
         appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_events_auto));
 
         try {
-            InputStream is = getAssets().open(getResources().getString(R.string.file_events_auto));
+            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_events_auto));
+            InputStream is = new FileInputStream(in_file);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {
@@ -353,10 +488,24 @@ public class AppLaunch extends AppCompatActivity {
         }
 
         // Do the same for Teleop Events.
+
+        // Ensure the public file exists, and if not, copy the private one there.
+        try {
+            CopyPrivateToPublicFile(getResources().getString(R.string.private_file_events_teleop), getResources().getString(R.string.public_file_events_teleop));
+        } catch (IOException e) {
+            AppLaunch.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(AppLaunch.this, R.string.file_error_events_teleop, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
         appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_events_teleop));
 
         try {
-            InputStream is = getAssets().open(getResources().getString(R.string.file_events_teleop));
+            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_events_teleop));
+            InputStream is = new FileInputStream(in_file);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {
@@ -374,11 +523,25 @@ public class AppLaunch extends AppCompatActivity {
     // Function:    LoadCommentData
     // Description: Read the list of comments from the .csv file into the global
     //              CommentList structure.
+    //              Read from the shared location.  If no file, then read from the private location
+    //              created when installing the app AND then make a copy to the shared location.
     // Output:      void
     // Parameters:  n/a
     // =============================================================================================
-    public void LoadCommentData(){
+    public void LoadCommentData() {
         String line = "";
+
+        // Ensure the public file exists, and if not, copy the private one there.
+        try {
+            CopyPrivateToPublicFile(getResources().getString(R.string.private_file_comments), getResources().getString(R.string.public_file_comments));
+        } catch (IOException e) {
+            AppLaunch.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(AppLaunch.this, R.string.file_error_comments, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
         // Open the asset file holding all of the Device information
         // Read each line and add the device information into the DeviceList.  There is no mapping
@@ -386,8 +549,10 @@ public class AppLaunch extends AppCompatActivity {
         //
         // This list also uses an array of DeviceRowInfo since we're storing more than 1 value
         appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_comments));
+
         try {
-            InputStream is = getAssets().open(getResources().getString(R.string.file_comments));
+            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_comments));
+            InputStream is = new FileInputStream(in_file);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {
@@ -395,6 +560,156 @@ public class AppLaunch extends AppCompatActivity {
                 // Only load "active" Comments reasons
                 if (Boolean.parseBoolean(info[1])) {
                     Globals.CommentList.addCommentRow(info[0], info[2], info[3]);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // =============================================================================================
+    // Function:    LoadTrapResultsData
+    // Description: Read the list of trap options from the .csv file into the global
+    //              TrapList structure.
+    //              Read from the shared location.  If no file, then read from the private location
+    //              created when installing the app AND then make a copy to the shared location.
+    // Output:      void
+    // Parameters:  n/a
+    // =============================================================================================
+    public void LoadTrapResultsData() {
+        String line = "";
+
+        // Ensure the public file exists, and if not, copy the private one there.
+        try {
+            CopyPrivateToPublicFile(getResources().getString(R.string.private_file_trap_results), getResources().getString(R.string.public_file_trap_results));
+        } catch (IOException e) {
+            AppLaunch.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(AppLaunch.this, R.string.file_error_trap_results, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        // Open the asset file holding all of the Trap information
+        // Read each line and add the device information into the TrapList.  There is no mapping
+        // of the trap number and the index into the array (there's no need)
+        //
+        // This list also uses an array of TrapRowInfo since we're storing more than 1 value
+        appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_trap_results));
+
+        try {
+            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_trap_results));
+            InputStream is = new FileInputStream(in_file);
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            line = br.readLine();
+            while ((line = br.readLine()) != null) {
+                String[] info = line.split(",");
+                // Only load "active" rows
+                if (Boolean.parseBoolean(info[1])) {
+                    Globals.TrapResultsList.addTrapResultRow(info[0], info[2]);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // =============================================================================================
+    // Function:    LoadClimbPositionsData
+    // Description: Read the list of climbing positions from the .csv file into the global
+    //              ClimbPositionList structure.
+    //              Read from the shared location.  If no file, then read from the private location
+    //              created when installing the app AND then make a copy to the shared location.
+    // Output:      void
+    // Parameters:  n/a
+    // =============================================================================================
+    public void LoadClimbPositionsData() {
+        String line = "";
+
+        // Ensure the public file exists, and if not, copy the private one there.
+        try {
+            CopyPrivateToPublicFile(getResources().getString(R.string.private_file_climb_positions), getResources().getString(R.string.public_file_climb_positions));
+        } catch (IOException e) {
+            AppLaunch.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(AppLaunch.this, R.string.file_error_climb_positions, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        // Open the asset file holding all of the Climbing Position information
+        // Read each line and add the information into the ClimbPositionList.  There is no mapping
+        // of the climb position number and the index into the array (there's no need)
+        //
+        // This list also uses an array of ClimbPositionRow since we're storing more than 1 value
+        appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_climb_positions));
+
+        try {
+            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_climb_positions));
+            InputStream is = new FileInputStream(in_file);
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            line = br.readLine();
+            while ((line = br.readLine()) != null) {
+                String[] info = line.split(",");
+                // Only load "active" rows
+                if (Boolean.parseBoolean(info[1])) {
+                    Globals.ClimbPositionList.addClimbPositionRow(info[0], info[2]);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // =============================================================================================
+    // Function:    LoadStartPositionsData
+    // Description: Read the list of starting positions from the .csv file into the global
+    //              StartPositionList structure.
+    //              Read from the shared location.  If no file, then read from the private location
+    //              created when installing the app AND then make a copy to the shared location.
+    // Output:      void
+    // Parameters:  n/a
+    // =============================================================================================
+    public void LoadStartPositionsData() {
+        String line = "";
+
+        // Ensure the public file exists, and if not, copy the private one there.
+        try {
+            CopyPrivateToPublicFile(getResources().getString(R.string.private_file_start_positions), getResources().getString(R.string.public_file_start_positions));
+        } catch (IOException e) {
+            AppLaunch.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(AppLaunch.this, R.string.file_error_start_positions, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        // Open the asset file holding all of the Start Positions information
+        // Read each line and add the information into the StartPositionList.  There is no mapping
+        // of the start position number and the index into the array (there's no need)
+        //
+        // This list also uses an array of StartPositionRow since we're storing more than 1 value
+        appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_start_positions));
+
+        try {
+            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_start_positions));
+            InputStream is = new FileInputStream(in_file);
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            line = br.readLine();
+            while ((line = br.readLine()) != null) {
+                String[] info = line.split(",");
+                // Only load "active" rows
+                if (Boolean.parseBoolean(info[1])) {
+                    Globals.StartPositionList.addStartPositionRow(info[0], info[2]);
                 }
             }
         } catch (FileNotFoundException e) {

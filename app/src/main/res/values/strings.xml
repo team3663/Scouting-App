@@ -14,9 +14,24 @@
     <string name="loading_competitions">Loading Competition Data...</string>
     <string name="loading_devices">Loading Device Data...</string>
     <string name="loading_comments">Loading Comment Data...</string>
+    <string name="loading_trap_results">Loading Trap Results Data...</string>
+    <string name="loading_climb_positions">Loading Climbing Positions Data...</string>
+    <string name="loading_start_positions">Loading Starting Positions Data...</string>
 
     <string name="missing_data">Please fill in all fields</string>
     <string name="timer_label">Time: </string>
+
+    <string name="file_error_teams">Error loading teams from data file!</string>
+    <string name="file_error_matches">Error loading matches from data file!</string>
+    <string name="file_error_dnp">Error loading DNPs from data file!</string>
+    <string name="file_error_events_auto">Error loading Auto events from data file!</string>
+    <string name="file_error_events_teleop">Error loading Teleop events from data file!</string>
+    <string name="file_error_competitions">Error loading competitions from data file!</string>
+    <string name="file_error_devices">Error loading devices from data file!</string>
+    <string name="file_error_comments">Error loading comments from data file!</string>
+    <string name="file_error_trap_results">Error loading trap results from data file!</string>
+    <string name="file_error_climb_positions">Error loading climbing positions from data file!</string>
+    <string name="file_error_start_positions">Error loading starting positions from data file!</string>
 
     <string name="settings_heading">Settings</string>
     <string name="settings_competition">Competition ID:</string>
@@ -31,6 +46,7 @@
     <string name="pre_start_pos">Starting position:</string>
     <string name="pre_override">Override Team Number</string>
     <string name="pre_new_team_num">Enter team number:</string>
+    <string name="pre_resubmit">Need to re-submit data?</string>
 
     <string name="post_heading">Post-Match Scouting Information</string>
     <string name="post_left_start_zone">Left the starting zone?</string>

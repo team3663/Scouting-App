@@ -113,6 +113,10 @@ public class Match extends AppCompatActivity {
     private static int eventPrevious = -1;
     private static OrientationEventListener OEL; // needed to detect the screen being flipped around
     private static String currentOrientation = ORIENTATION_LANDSCAPE;
+    private static double currentTouchTime = 0;
+    private static boolean is_start_of_seq = true;
+    private static float current_X = 0;
+    private static float current_Y = 0;
 
     // Define the buttons on the page
     Button but_MatchControl;
@@ -204,6 +208,8 @@ public class Match extends AppCompatActivity {
                         start_Match();
                         break;
                     case Constants.PHASE_AUTO:
+                        // If we're going to teleop manually, log the start time offset
+                        Globals.EventLogger.LogData(Constants.LOGKEY_START_TIME_OFFSET, String.valueOf(Math.round((TIMER_AUTO_LENGTH * 1000.0 - System.currentTimeMillis() + startTime) / 10.0) / 100.0));
                         start_Teleop();
                         break;
                     case Constants.PHASE_TELEOP:
@@ -242,10 +248,10 @@ public class Match extends AppCompatActivity {
             public void onClick(View view) {
                 // If the button is being turned ON make it RED otherwise LTGRAY
                 if (switch_Defense.isChecked()) {
-                    // TODO Log EVENT here
+                    Globals.EventLogger.LogEvent(Constants.EVENT_ID_DEFENSE_START, 0,0,true);
                     switch_Defense.setBackgroundColor(BUTTON_COLOR_FLASH);
                 } else {
-                    // TODO Log EVENT here
+                    Globals.EventLogger.LogEvent(Constants.EVENT_ID_DEFENSE_END, 0,0,false);
                     switch_Defense.setBackgroundColor(BUTTON_COLOR_NORMAL);
                 }
             }
@@ -265,10 +271,10 @@ public class Match extends AppCompatActivity {
             public void onClick(View view) {
                 // If the button is being turned ON make it RED otherwise LTGRAY
                 if (switch_Defended.isChecked()) {
-                    // TODO Log EVENT here
+                    Globals.EventLogger.LogEvent(Constants.EVENT_ID_DEFENDED_START, 0,0,true);
                     switch_Defended.setBackgroundColor(BUTTON_COLOR_FLASH);
                 } else {
-                    // TODO Log EVENT here
+                    Globals.EventLogger.LogEvent(Constants.EVENT_ID_DEFENDED_END, 0,0,false);
                     switch_Defended.setBackgroundColor(BUTTON_COLOR_NORMAL);
                 }
             }
@@ -282,7 +288,11 @@ public class Match extends AppCompatActivity {
         ContextMenu.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                image_Field.showContextMenu(motionEvent.getX(), motionEvent.getY());
+                // Save where we touched the field image
+                current_X = motionEvent.getX();
+                current_Y = motionEvent.getY();
+
+                image_Field.showContextMenu(current_X, current_Y);
                 return false;
             }
         });
@@ -291,16 +301,26 @@ public class Match extends AppCompatActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
+
+        // Save off the time that this was touched
+        currentTouchTime = System.currentTimeMillis();
+
         // Check to make sure the game is going
         if (!matchPhase.equals(Constants.PHASE_NONE)) {
             // Get the events
             String[] events;
             ArrayList<String> events_al;
+            is_start_of_seq = false;
+
             if (eventPrevious == -1) {
                 events_al = Globals.EventList.getEventsForPhase(matchPhase);
+                is_start_of_seq = true;
             } else {
                 events_al = Globals.EventList.getNextEvents(eventPrevious);
-                if (events_al == null) events_al = Globals.EventList.getEventsForPhase(matchPhase);
+                if (events_al == null) {
+                    events_al = Globals.EventList.getEventsForPhase(matchPhase);
+                    is_start_of_seq = true;
+                }
             }
             events = new String[events_al.size()];
             events = events_al.toArray(events);
@@ -315,7 +335,7 @@ public class Match extends AppCompatActivity {
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         matchBinding.textStatus.setText("Last Event: " + item.getTitle());
         eventPrevious = Globals.EventList.getEventId((String) item.getTitle());
-        // TODO Log EVENT here
+        Globals.EventLogger.LogEvent(eventPrevious, current_X, current_Y, is_start_of_seq, currentTouchTime);
         return true;
     }
 
@@ -381,7 +401,7 @@ public class Match extends AppCompatActivity {
         but_MatchControl.setText(getResources().getString(R.string.button_end_match));
         but_MatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_red));
 
-        // Certain actionscan't be set from a non-UI thread (like withing a TimerTask that runs on a
+        // Certain actions can't be set from a non-UI thread (like withing a TimerTask that runs on a
         // separate thread). So we need to make a Runner that will execute on the UI thread to set this.
         Match.this.runOnUiThread(new Runnable() {
             @Override
