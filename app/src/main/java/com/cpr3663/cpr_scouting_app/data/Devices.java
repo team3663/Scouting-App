@@ -7,8 +7,10 @@ import java.util.ArrayList;
 // Description: Defines a structure/class to hold the information for all Devices
 // Methods:     addDeviceInfoRow()
 //                  add a row of device info
+//              size()
+//                  return the number of devices we have
 //              getDeviceInfoRow()
-//                  return a MatchInfoRow item for the given match id
+//                  return a DeviceInfoRow item for the given device id
 // =============================================================================================
 public class Devices {
     private final ArrayList<DeviceRow> device_list;
@@ -28,6 +30,7 @@ public class Devices {
         return device_list.size();
     }
 
+    // Member Function: Get back a row of data for a given id
     public DeviceRow getDeviceRow(int deviceNumber) {
         DeviceRow device = null;
         for (DeviceRow deviceRow : device_list) {
@@ -45,7 +48,7 @@ public class Devices {
     // Methods:     getDeviceNumber()
     //                  returns the (int) device number for this row.
     //              getTeamNumber()
-    //                  returns the (int) team number for this row.
+    //                  returns the (int) device number for this row.
     //              getDescription()
     //                  returns the (String) description for this row.
     // =============================================================================================

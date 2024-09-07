@@ -22,13 +22,6 @@ public class Events {
     // Class Members
     private final ArrayList<EventRow> event_list;
 
-    // Class constants
-    public static final String EVENT_STARTING_NOTE = "Auto_StartingNote";
-    public static final String EVENT_DEFENDED_START = "Defended_Start";
-    public static final String EVENT_DEFENDED_END = "Defended_End";
-    public static final String EVENT_DEFENSE_START = "PlayDefense_Start";
-    public static final String EVENT_DEFENSE_END = "PlayDefense_End";
-
     // Constructor
     public Events() {
         event_list = new ArrayList<EventRow>();
