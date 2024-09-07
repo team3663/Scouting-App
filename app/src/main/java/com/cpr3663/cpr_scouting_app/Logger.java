@@ -204,7 +204,7 @@ public class Logger {
         if (!in_NewSequence) prev = String.valueOf(seq_number_prev);
 
         // Form the output line that goes in the csv file.  Round X,Y to 2 decimal places.
-        csv_line += "," + seq_number + "," + in_EventId + "," + String.valueOf((float)(Math.round((in_time - Match.startTime) / 100.0)) / 100.0) + "," + String.valueOf((float)(Math.round(in_X * 100.0)) / 100.0) + "," + String.valueOf((float)(Math.round(in_Y * 100.0)) / 100.0) + "," + prev;
+        csv_line += "," + seq_number + "," + in_EventId + "," + (float) (Math.round((in_time - Match.startTime) / 100.0)) / 100.0 + "," + (float) (Math.round(in_X * 100.0)) / 100.0 + "," + (float) (Math.round(in_Y * 100.0)) / 100.0 + "," + prev;
         try {
             fos_event.write(csv_line.getBytes(StandardCharsets.UTF_8));
             fos_event.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
