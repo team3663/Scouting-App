@@ -38,7 +38,14 @@ public class SubmitData extends AppCompatActivity {
             return insets;
         });
 
-        submitDataBinding.butDone.setOnClickListener(new View.OnClickListener() {
+        submitDataBinding.butQuit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SubmitData.this.finishAffinity();
+            }
+        });
+
+        submitDataBinding.butNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent GoToPreMatch = new Intent(SubmitData.this, PreMatch.class);

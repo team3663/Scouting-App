@@ -350,6 +350,11 @@ public class Match extends AppCompatActivity {
         // Record the current/start time of the match to calculate elapsed time
         startTime = System.currentTimeMillis();
 
+        // Disable orientation listening if we can!  Once we start the match don't allow rotation anymore
+        if (OEL.canDetectOrientation()) {
+            OEL.disable();
+        }
+
         // Create the Timers and timer tasks
         match_Timer = new Timer();
         auto_timertask = new AutoTimerTask();
@@ -426,11 +431,6 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint("SetTextI18n")
     public void end_match() {
-        // Disable orientation listening if we can!
-        if (OEL.canDetectOrientation()) {
-            OEL.disable();
-        }
-
         // Get rid of the Scheduled events that are over/have ended
         // Need to set match_Timer and TimerTasks to null so we can create "new" ones at the start of the next match
         if (match_Timer != null) {

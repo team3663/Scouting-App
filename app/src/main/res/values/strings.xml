@@ -54,4 +54,6 @@
     <string name="post_trap">Trap outcome:</string>
     <string name="post_dnp">DNP reasons:</string>
     <string name="post_comments">Comments:</string>
+
+    <string name="submit_heading">Submit Scouting Data</string>
 </resources>
