@@ -21,4 +21,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "CPR-Scouting-App"
 include(":app")
- 
