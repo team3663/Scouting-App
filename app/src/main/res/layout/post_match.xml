@@ -161,7 +161,6 @@
                 android:id="@+id/text_DNPPadding"
                 android:layout_width="400dp"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@android:drawable/ic_menu_more"
                 tools:ignore="VisualLintBounds" />
         </LinearLayout>
 
@@ -198,7 +197,6 @@
                 android:id="@+id/text_CommentsPadding"
                 android:layout_width="400dp"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@android:drawable/btn_dropdown"
                 tools:ignore="VisualLintBounds" />
         </LinearLayout>
     </LinearLayout>

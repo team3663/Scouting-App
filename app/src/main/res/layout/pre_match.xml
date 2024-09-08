@@ -183,7 +183,7 @@
                 android:id="@+id/spinner_StartingPosition"
                 android:gravity="right|center"
                 android:paddingRight="50dp"
-                android:drawableRight="@android:drawable/arrow_down_float"
+                android:drawableRight="@drawable/drop_down_arrow"
                 android:drawablePadding="16dp"
                 android:background="@color/cpr_bkgnd"
                 android:layout_width="0dp"

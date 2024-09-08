@@ -104,8 +104,8 @@ public class PostMatch extends AppCompatActivity {
         });
 
         // assign variable
-        CommentsTextView = postMatchBinding.dropComments;
-        DNPTextView = postMatchBinding.dropDNP;
+        drop_Comments = postMatchBinding.dropComments;
+        drop_DNP = postMatchBinding.dropDNP;
 
         // initialize comment and dnp reasons arrays
         selectedComment = new boolean[CommentArray.length];
@@ -164,7 +164,7 @@ public class PostMatch extends AppCompatActivity {
                             }
                         }
                         // set number of selected on CommentsTextView
-                        CommentsTextView.setText(String.valueOf(CommentList.size()));
+                        drop_Comments.setText(String.valueOf(CommentList.size()));
                     }
                 });
 
@@ -252,7 +252,7 @@ public class PostMatch extends AppCompatActivity {
                             }
                         }
                         // set number of selected on DNPTextView
-                        DNPTextView.setText(String.valueOf(DNPReasonsList.size()));
+                        drop_DNP.setText(String.valueOf(DNPReasonsList.size()));
                     }
                 });
 
