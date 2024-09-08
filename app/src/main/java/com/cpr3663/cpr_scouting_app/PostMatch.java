@@ -49,7 +49,7 @@ public class PostMatch extends AppCompatActivity {
     //Creating an array list for the DNP reasons
     ArrayList<Integer> DNPReasonsList = new ArrayList<>();
     String[] DNPReasonsArray = {"Fouled excessively", "Red/Yellow card", 
-            "Never contributing to match", "no show", "e", "f"};
+            "Never contributing to match", "no show"};
 
 
 
@@ -251,9 +251,9 @@ public class PostMatch extends AppCompatActivity {
                                 stringBuilder.append(", ");
                             }
                         }
-                        // set text on CommentsTextView
-                        DNPTextView.setText(DNPReasonsList.size());
-                    }
+                        // set text on DNPTextView
+                        DNPTextView.setText(String.valueOf(DNPReasonsList.size()));
+                         }
                 });
 
                 // adds the "cancel" button to the dropdown, allowing you to exit the
