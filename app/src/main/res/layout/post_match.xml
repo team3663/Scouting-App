@@ -6,15 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/cpr_bkgnd"
-    tools:context=".PostMatch">
+    tools:context=".PostMatch"
+    tools:ignore="VisualLintBounds">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="-166dp">
+        tools:layout_editor_absoluteX="218dp"
+        tools:layout_editor_absoluteY="-37dp">
 
         <TextView
             android:id="@+id/text_Heading"
@@ -23,13 +23,14 @@
             android:gravity="center"
             android:text="@string/post_heading"
             android:textColor="@color/cpr_green"
-            android:textSize="42sp" />
+            android:textSize="42sp"
+            tools:ignore="TextSizeCheck" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:orientation="horizontal">
-
+          
             <CheckBox
                 android:id="@+id/checkbox_DidLeave"
                 android:layout_width="0dp"
@@ -37,18 +38,20 @@
                 android:layout_weight="1"
                 android:button="@null"
                 android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+                android:textColor="@color/white"
+                android:textSize="24sp"
                 android:gravity="end|center"
                 android:paddingStart="0dp"
                 android:paddingEnd="10dp"
                 android:text="@string/post_left_start_zone"
-                android:textColor="@color/white"
-                android:textSize="24sp" />
+                tools:ignore="VisualLintButtonSize,VisualLintBounds" />
 
             <TextView
                 android:id="@+id/text_LeaveStartPadding"
                 android:layout_width="570dp"
                 android:layout_height="60dp"
-                android:gravity="end|center" />
+                android:gravity="end|center"
+                tools:ignore="VisualLintBounds" />
         </LinearLayout>
 
         <LinearLayout
@@ -62,28 +65,30 @@
                 android:layout_height="60dp"
                 android:gravity="end|center"
                 android:paddingEnd="50dp"
-                android:text="@string/post_climb_position"
                 android:textColor="@color/white"
                 android:textSize="24sp"
+                android:text="@string/post_climb_position"
                 tools:ignore="RtlSymmetry" />
 
             <Spinner
                 android:id="@+id/spinnerClimbPosition"
                 android:layout_width="0dp"
-                android:layout_height="35dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/cpr_bkgnd"
-                android:drawableRight="@android:drawable/arrow_down_float"
-                android:gravity="right|center"
-                android:paddingRight="50dp"
+                android:drawableEnd="@drawable/drop_down_arrow"
+                android:gravity="end|center"
+                android:minHeight="48dp"
+                android:paddingEnd="50dp"
                 android:textColor="@color/cpr_bkgnd"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                tools:ignore="RtlSymmetry" />
 
             <TextView
                 android:id="@+id/text_ClimbPositionPadding"
                 android:layout_width="400dp"
-                android:layout_height="60dp"
-                android:gravity="center" />
+                android:layout_height="wrap_content"
+                tools:ignore="VisualLintBounds" />
         </LinearLayout>
 
         <LinearLayout
@@ -97,28 +102,30 @@
                 android:layout_height="60dp"
                 android:gravity="end|center"
                 android:paddingEnd="50dp"
-                android:text="@string/post_trap"
                 android:textColor="@color/white"
                 android:textSize="24sp"
+                android:text="@string/post_trap"
                 tools:ignore="RtlSymmetry" />
 
             <Spinner
                 android:id="@+id/spinnerTrap"
                 android:layout_width="0dp"
-                android:layout_height="35dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/cpr_bkgnd"
-                android:drawableRight="@android:drawable/arrow_down_float"
-                android:gravity="right|center"
-                android:paddingRight="50dp"
+                android:drawableEnd="@drawable/drop_down_arrow"
+                android:gravity="end|center"
+                android:minHeight="48dp"
+                android:paddingEnd="50dp"
                 android:textColor="@color/cpr_bkgnd"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                tools:ignore="RtlSymmetry" />
 
             <TextView
                 android:id="@+id/text_TrapPadding"
                 android:layout_width="400dp"
-                android:layout_height="60dp"
-                android:gravity="center" />
+                android:layout_height="wrap_content"
+                tools:ignore="VisualLintBounds" />
         </LinearLayout>
 
         <LinearLayout
@@ -132,9 +139,10 @@
                 android:layout_height="60dp"
                 android:gravity="end|center"
                 android:paddingEnd="50dp"
-                android:text="@string/post_dnp"
                 android:textColor="@color/white"
                 android:textSize="24sp"
+                android:text="@string/post_dnp"
+                android:paddingHorizontal="20dp"
                 tools:ignore="RtlSymmetry" />
 
             <TextView
@@ -142,17 +150,18 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/cpr_bkgnd"
-                android:inputType="text"
-                android:text="Select Reason(s)"
-                android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textColor="@color/cpr_bkgnd"
+                android:background="@color/white"
+                android:drawableEnd="@drawable/drop_down_arrow"
+                android:paddingHorizontal="20dp"
+                android:textSize="24sp"
+                tools:ignore="UseCompatTextViewDrawableXml" />
 
             <TextView
                 android:id="@+id/text_DNPPadding"
                 android:layout_width="400dp"
-                android:layout_height="60dp"
-                android:gravity="center" />
+                android:layout_height="wrap_content"
+                tools:ignore="VisualLintBounds" />
         </LinearLayout>
 
         <LinearLayout
@@ -166,10 +175,10 @@
                 android:layout_height="60dp"
                 android:gravity="end|center"
                 android:paddingEnd="50dp"
-                android:text="@string/post_comments"
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 android:visibility="visible"
+                android:text="@string/post_comments"
                 tools:ignore="RtlSymmetry" />
 
             <TextView
@@ -177,17 +186,18 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/cpr_bkgnd"
-                android:inputType="text"
-                android:text="Select All That Apply"
-                android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textColor="@color/cpr_bkgnd"
+                android:background="@color/white"
+                android:textSize="24sp"
+                android:drawableEnd="@drawable/drop_down_arrow"
+                android:paddingHorizontal="20dp"
+                tools:ignore="UseCompatTextViewDrawableXml,VisualLintBounds" />
 
             <TextView
                 android:id="@+id/text_CommentsPadding"
                 android:layout_width="400dp"
-                android:layout_height="60dp"
-                android:gravity="center" />
+                android:layout_height="wrap_content"
+                tools:ignore="VisualLintBounds" />
         </LinearLayout>
     </LinearLayout>
 
@@ -195,13 +205,14 @@
         android:id="@+id/but_Next"
         android:layout_width="175dp"
         android:layout_height="60dp"
-        android:text="Next"
+        android:text="Submit"
         android:textSize="28sp"
         android:layout_marginBottom="20dp"
         android:layout_marginEnd="20dp"
-        android:backgroundTint="@color/white"
         android:textColor="@color/cpr_bkgnd"
+        app:backgroundTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         tools:ignore="HardcodedText,MissingConstraints" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

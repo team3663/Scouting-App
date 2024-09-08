@@ -55,6 +55,8 @@
     <string name="post_dnp">DNP reasons:</string>
     <string name="post_comments">Comments:</string>
 
+    <string name="dropdown_items_selected">selected</string>
+  
     <string-array name="trap_outcomes_array">
         <item>Did not attempt</item>
         <item>Success</item>
@@ -75,5 +77,4 @@
         <item>Source Side Subwoofer</item>
         <item>Source Side</item>
     </string-array>
-
 </resources>
