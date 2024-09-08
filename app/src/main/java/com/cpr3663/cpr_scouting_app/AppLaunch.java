@@ -94,7 +94,7 @@ public class AppLaunch extends AppCompatActivity {
                 startActivity(GoToPreMatch);
             }
         });
-      
+
         // Make sure that we aren't coming back to the page and it is the first time running this
         if (Globals.TeamList.size() == 0) {
             // Set a TimerTask to load the data shortly AFTER this OnCreate finishes
@@ -169,24 +169,25 @@ public class AppLaunch extends AppCompatActivity {
     //                  filename for the "public" accessible file
     // =============================================================================================
     private void CopyPrivateToPublicFile(String in_PrivateFileName, String in_PublicFileName) throws IOException {
-        InputStream in = getAssets().open(in_PrivateFileName);
-        File out_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), in_PublicFileName);
+        if (1==0) {
+            InputStream in = getAssets().open(in_PrivateFileName);
+            File out_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), in_PublicFileName);
 
-        // Ensure the directory structure exists first
-        out_file.getParentFile().mkdirs();
+            // Ensure the directory structure exists first
+            out_file.getParentFile().mkdirs();
 
-        // If the output file doesn't exist, output a stream to it and copy contents over
-        if (!out_file.exists()) {
-            out_file.createNewFile();
-            OutputStream out = new FileOutputStream(out_file);
+            // If the output file doesn't exist, output a stream to it and copy contents over
+            if (!out_file.exists()) {
+                out_file.createNewFile();
+                OutputStream out = new FileOutputStream(out_file);
 
-            byte[] buffer = new byte[1024];
-            int read;
-            while ((read = in.read(buffer)) != -1) {
-                out.write(buffer, 0, read);
+                byte[] buffer = new byte[1024];
+                int read;
+                while ((read = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, read);
+                }
             }
         }
-
     }
 
     // =============================================================================================
@@ -223,8 +224,9 @@ public class AppLaunch extends AppCompatActivity {
         try {
             Globals.TeamList.add(Constants.NO_TEAM);
 
-            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_teams));
-            InputStream is = new FileInputStream(in_file);
+//            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_teams));
+//            InputStream is = new FileInputStream(in_file);
+            InputStream is = getAssets().open(getResources().getString(R.string.private_file_teams));
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {
@@ -275,8 +277,10 @@ public class AppLaunch extends AppCompatActivity {
         appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_competitions));
 
         try {
-            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_competitions));
-            InputStream is = new FileInputStream(in_file);
+//            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_competitions));
+//            InputStream is = new FileInputStream(in_file);
+            InputStream is = getAssets().open(getResources().getString(R.string.private_file_competitions));
+
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {
@@ -324,8 +328,9 @@ public class AppLaunch extends AppCompatActivity {
         try {
             Globals.MatchList.addMatchRow(Constants.NO_MATCH);
 
-            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_matches));
-            InputStream is = new FileInputStream(in_file);
+//            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_matches));
+//            InputStream is = new FileInputStream(in_file);
+            InputStream is = getAssets().open(getResources().getString(R.string.private_file_matches));
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {
@@ -377,8 +382,9 @@ public class AppLaunch extends AppCompatActivity {
         // This list also uses an array of DeviceRowInfo since we're storing more than 1 value.
         appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_devices));
         try {
-            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_devices));
-            InputStream is = new FileInputStream(in_file);
+//            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_devices));
+//            InputStream is = new FileInputStream(in_file);
+            InputStream is = getAssets().open(getResources().getString(R.string.private_file_devices));
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {
@@ -423,8 +429,9 @@ public class AppLaunch extends AppCompatActivity {
         // This list also uses an array of DeviceRowInfo since we're storing more than 1 value
         appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_dnp));
         try {
-            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_dnp));
-            InputStream is = new FileInputStream(in_file);
+//            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_dnp));
+//            InputStream is = new FileInputStream(in_file);
+            InputStream is = getAssets().open(getResources().getString(R.string.private_file_dnp));
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {
@@ -473,8 +480,9 @@ public class AppLaunch extends AppCompatActivity {
         appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_events_auto));
 
         try {
-            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_events_auto));
-            InputStream is = new FileInputStream(in_file);
+//            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_events_auto));
+//            InputStream is = new FileInputStream(in_file);
+            InputStream is = getAssets().open(getResources().getString(R.string.private_file_events_auto));
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {
@@ -504,8 +512,9 @@ public class AppLaunch extends AppCompatActivity {
         appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_events_teleop));
 
         try {
-            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_events_teleop));
-            InputStream is = new FileInputStream(in_file);
+//            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_events_teleop));
+//            InputStream is = new FileInputStream(in_file);
+            InputStream is = getAssets().open(getResources().getString(R.string.private_file_events_teleop));
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {
@@ -551,8 +560,9 @@ public class AppLaunch extends AppCompatActivity {
         appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_comments));
 
         try {
-            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_comments));
-            InputStream is = new FileInputStream(in_file);
+//            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_comments));
+//            InputStream is = new FileInputStream(in_file);
+            InputStream is = getAssets().open(getResources().getString(R.string.private_file_comments));
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {
@@ -601,8 +611,9 @@ public class AppLaunch extends AppCompatActivity {
         appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_trap_results));
 
         try {
-            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_trap_results));
-            InputStream is = new FileInputStream(in_file);
+//            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_trap_results));
+//            InputStream is = new FileInputStream(in_file);
+            InputStream is = getAssets().open(getResources().getString(R.string.private_file_trap_results));
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {
@@ -651,8 +662,9 @@ public class AppLaunch extends AppCompatActivity {
         appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_climb_positions));
 
         try {
-            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_climb_positions));
-            InputStream is = new FileInputStream(in_file);
+//            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_climb_positions));
+//            InputStream is = new FileInputStream(in_file);
+            InputStream is = getAssets().open(getResources().getString(R.string.private_file_climb_positions));
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {
@@ -701,8 +713,9 @@ public class AppLaunch extends AppCompatActivity {
         appLaunchBinding.textStatus.setText(getResources().getString(R.string.loading_start_positions));
 
         try {
-            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_start_positions));
-            InputStream is = new FileInputStream(in_file);
+//            File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_file_start_positions));
+//            InputStream is = new FileInputStream(in_file);
+            InputStream is = getAssets().open(getResources().getString(R.string.private_file_start_positions));
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             line = br.readLine();
             while ((line = br.readLine()) != null) {

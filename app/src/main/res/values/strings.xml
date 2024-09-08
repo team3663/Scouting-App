@@ -56,4 +56,25 @@
     <string name="post_comments">Comments:</string>
 
     <string name="dropdown_items_selected">selected</string>
+  
+    <string-array name="trap_outcomes_array">
+        <item>Did not attempt</item>
+        <item>Success</item>
+        <item>Fail</item>
+    </string-array>
+
+
+    <string-array name="climb_positions_array">
+        <item>Did not attempt</item>
+        <item>Left</item>
+        <item>Center</item>
+        <item>Right</item>
+    </string-array>
+
+    <string-array name="starting_positions_array">
+        <item>Amp side</item>
+        <item>Subwoofer Base</item>
+        <item>Source Side Subwoofer</item>
+        <item>Source Side</item>
+    </string-array>
 </resources>
