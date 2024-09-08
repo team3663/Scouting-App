@@ -303,7 +303,6 @@ public class Match extends AppCompatActivity {
                     current_Y_Relative = IMAGE_HEIGHT - motionEvent.getY();
                 }
 
-                matchBinding.textStatus.setText(current_X_Relative + ", " + current_Y_Relative + ", " + current_X_Absolute + ", " + current_Y_Absolute);
                 image_Field.showContextMenu(current_X_Absolute, current_Y_Absolute);
                 return false;
             }
