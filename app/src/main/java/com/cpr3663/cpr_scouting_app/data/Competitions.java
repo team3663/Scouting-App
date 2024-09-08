@@ -7,6 +7,8 @@ import java.util.ArrayList;
 // Description: Defines a structure/class to hold the information for all Competitions
 // Methods:     addCompetitionInfoRow()
 //                  add a row of competition info
+//              size()
+//                  return the number of competitions we have
 //              getCompetitionInfoRow()
 //                  return a CompetitionInfoRow item for the given competition id
 // =============================================================================================
@@ -28,6 +30,7 @@ public class Competitions {
         return competition_list.size();
     }
 
+    // Member Function: Get back a row of data for a given id
     public CompetitionRow getCompetitionRow(int id) {
         CompetitionRow competition = null;
         for (CompetitionRow competitionRow : competition_list) {
@@ -41,7 +44,7 @@ public class Competitions {
 
     // =============================================================================================
     // Class:       CompetitionRow
-    // Description: Defines a structure/class to hold the information for each Device.
+    // Description: Defines a structure/class to hold the information for each Competition.
     // Methods:     getId()
     //                  returns the (int) competition number for this row.
     //              getDescription()

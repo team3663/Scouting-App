@@ -1,6 +1,7 @@
 package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,7 +11,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -22,7 +22,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.cpr3663.cpr_scouting_app.databinding.PostMatchBinding;
-import com.cpr3663.cpr_scouting_app.databinding.PreMatchBinding;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,8 +36,8 @@ public class PostMatch extends AppCompatActivity {
     // Global variables
     // =============================================================================================
     private PostMatchBinding postMatchBinding;
-    TextView CommentsTextView;
-    TextView DNPTextView;
+    TextView drop_Comments;
+    TextView drop_DNP;
     boolean[] selectedComment;
     boolean[] selectedDNPReasons;
     //Creating an array list for the Comments
@@ -51,7 +50,20 @@ public class PostMatch extends AppCompatActivity {
     String[] DNPReasonsArray = {"Fouled excessively", "Red/Yellow card", 
             "Never contributing to match", "no show"};
 
+    // Doesn't appear to be needed on Tablet but helps on Virtual Devices.
+    @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        // Hide the status and action bar
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) actionBar.hide();
+    }
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -70,7 +82,7 @@ public class PostMatch extends AppCompatActivity {
         postMatchBinding.checkboxDidLeave.setChecked(true);
 
         //Creating the single select dropdown menu for the trap outcomes
-        Spinner trapSpinner=findViewById(R.id.spinnerTrap);
+        Spinner trapSpinner = findViewById(R.id.spinnerTrap);
         //accessing the array in strings.xml
         ArrayAdapter<CharSequence> trapAdapter= ArrayAdapter.createFromResource(this,R.array.trap_outcomes_array, android.R.layout.simple_spinner_item);
         trapAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -88,7 +100,7 @@ public class PostMatch extends AppCompatActivity {
         });
 
         //Creating the single select dropdown menu for the climb positions
-        Spinner climbPositionSpinner=findViewById(R.id.spinnerClimbPosition);
+        Spinner climbPositionSpinner = findViewById(R.id.spinnerClimbPosition);
         //accessing the array in strings.xml
         ArrayAdapter<CharSequence> climbPositionAdapter= ArrayAdapter.createFromResource(this,R.array.climb_positions_array, android.R.layout.simple_spinner_item);
         climbPositionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -106,15 +118,16 @@ public class PostMatch extends AppCompatActivity {
         });
 
         // assign variable
-        CommentsTextView = postMatchBinding.dropComments;
-        DNPTextView = postMatchBinding.dropDNP;
+        drop_Comments = postMatchBinding.dropComments;
+        drop_DNP = postMatchBinding.dropDNP;
 
         // initialize comment and dnp reasons arrays
         selectedComment = new boolean[CommentArray.length];
         selectedDNPReasons = new boolean[DNPReasonsArray.length];
 
+        drop_Comments.setText("0 " + getResources().getString(R.string.dropdown_items_selected));
         //code for how to open the dropdown menu when clicked and select items
-        CommentsTextView.setOnClickListener(new View.OnClickListener() {
+        drop_Comments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(PostMatch.this);
@@ -165,7 +178,7 @@ public class PostMatch extends AppCompatActivity {
                             }
                         }
                         // set number of selected on CommentsTextView
-                        CommentsTextView.setText(String.valueOf(CommentList.size()));
+                        drop_Comments.setText(String.valueOf(CommentList.size()));
                     }
                 });
 
@@ -190,7 +203,7 @@ public class PostMatch extends AppCompatActivity {
                             // clear comment list
                             CommentList.clear();
                             // clear text view value
-                            CommentsTextView.setText("Select All That Apply");
+                            drop_Comments.setText("0 " + getResources().getString(R.string.dropdown_items_selected));
                         }
                     }
                 });
@@ -199,8 +212,9 @@ public class PostMatch extends AppCompatActivity {
             }
         });
 
+        drop_DNP.setText("0 " + getResources().getString(R.string.dropdown_items_selected));
         // code for how to open the DNP dropdown and select items
-        DNPTextView.setOnClickListener(new View.OnClickListener() {
+        drop_DNP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -252,8 +266,8 @@ public class PostMatch extends AppCompatActivity {
                             }
                         }
                         // set number of selected on DNPTextView
-                        DNPTextView.setText(String.valueOf(DNPReasonsList.size()));
-                         }
+                        drop_DNP.setText(String.valueOf(DNPReasonsList.size()));
+                    }
                 });
 
                 // adds the "cancel" button to the dropdown, allowing you to exit the
@@ -278,7 +292,7 @@ public class PostMatch extends AppCompatActivity {
                             // clear DNP Reasons list
                             DNPReasonsList.clear();
                             // clear text view value and reset to the title
-                            DNPTextView.setText("Select Reason(s)");
+                            drop_DNP.setText("0 " + getResources().getString(R.string.dropdown_items_selected));
                         }
                     }
                 });
