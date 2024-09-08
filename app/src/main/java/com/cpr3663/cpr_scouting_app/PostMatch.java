@@ -3,8 +3,10 @@ package com.cpr3663.cpr_scouting_app;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -47,7 +49,7 @@ public class PostMatch extends AppCompatActivity {
     //Creating an array list for the DNP reasons
     ArrayList<Integer> DNPReasonsList = new ArrayList<>();
     String[] DNPReasonsArray = {"Fouled excessively", "Red/Yellow card", 
-            "Never contributing to match", "no show", "e", "f"};
+            "Never contributing to match", "no show"};
 
 
 
@@ -70,20 +72,42 @@ public class PostMatch extends AppCompatActivity {
         //Creating the single select dropdown menu for the trap outcomes
         Spinner trapSpinner=findViewById(R.id.spinnerTrap);
         //accessing the array in strings.xml
-//        ArrayAdapter<CharSequence> trapAdapter= ArrayAdapter.createFromResource(this,R.array.trap_outcomes_array, android.R.layout.simple_spinner_item);
-//        trapAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        trapSpinner.setAdapter(trapAdapter);
+        ArrayAdapter<CharSequence> trapAdapter= ArrayAdapter.createFromResource(this,R.array.trap_outcomes_array, android.R.layout.simple_spinner_item);
+        trapAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        trapSpinner.setAdapter(trapAdapter);
+
+        trapSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE); /* if you want your item to be white */
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         //Creating the single select dropdown menu for the climb positions
         Spinner climbPositionSpinner=findViewById(R.id.spinnerClimbPosition);
         //accessing the array in strings.xml
-//        ArrayAdapter<CharSequence> climbPositionAdapter= ArrayAdapter.createFromResource(this,R.array.climb_positions_array, android.R.layout.simple_spinner_item);
-//        climbPositionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        climbPositionSpinner.setAdapter(climbPositionAdapter);
+        ArrayAdapter<CharSequence> climbPositionAdapter= ArrayAdapter.createFromResource(this,R.array.climb_positions_array, android.R.layout.simple_spinner_item);
+        climbPositionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        climbPositionSpinner.setAdapter(climbPositionAdapter);
+
+        climbPositionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE); /* if you want your item to be white */
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         // assign variable
-        CommentsTextView = postMatchBinding.textComments;
-        DNPTextView = postMatchBinding.textDNP;
+        CommentsTextView = postMatchBinding.dropComments;
+        DNPTextView = postMatchBinding.dropDNP;
 
         // initialize comment and dnp reasons arrays
         selectedComment = new boolean[CommentArray.length];
@@ -140,8 +164,8 @@ public class PostMatch extends AppCompatActivity {
                                 stringBuilder.append(", ");
                             }
                         }
-                        // set text on CommentsTextView
-                        CommentsTextView.setText(stringBuilder.toString());
+                        // set number of selected on CommentsTextView
+                        CommentsTextView.setText(String.valueOf(CommentList.size()));
                     }
                 });
 
@@ -227,9 +251,9 @@ public class PostMatch extends AppCompatActivity {
                                 stringBuilder.append(", ");
                             }
                         }
-                        // set text on CommentsTextView
-                        DNPTextView.setText(stringBuilder.toString());
-                    }
+                        // set number of selected on DNPTextView
+                        DNPTextView.setText(String.valueOf(DNPReasonsList.size()));
+                         }
                 });
 
                 // adds the "cancel" button to the dropdown, allowing you to exit the
@@ -269,8 +293,8 @@ public class PostMatch extends AppCompatActivity {
         CheckBox check_DidLeave = postMatchBinding.checkboxDidLeave;
         Spinner drop_ClimbPosition = postMatchBinding.spinnerClimbPosition;
         Spinner drop_Trap = postMatchBinding.spinnerTrap;
-        EditText drop_DNP = postMatchBinding.dropDNP;
-        EditText drop_Comments = postMatchBinding.dropComments;
+        TextView drop_DNP = postMatchBinding.dropDNP;
+        TextView drop_Comments = postMatchBinding.dropComments;
 
         // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
         // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)

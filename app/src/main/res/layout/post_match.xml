@@ -72,7 +72,7 @@
                 android:layout_width="0dp"
                 android:layout_height="35dp"
                 android:layout_weight="1"
-                android:background="@color/white"
+                android:background="@color/cpr_bkgnd"
                 android:drawableRight="@android:drawable/arrow_down_float"
                 android:gravity="right|center"
                 android:paddingRight="50dp"
@@ -107,7 +107,7 @@
                 android:layout_width="0dp"
                 android:layout_height="35dp"
                 android:layout_weight="1"
-                android:background="@color/white"
+                android:background="@color/cpr_bkgnd"
                 android:drawableRight="@android:drawable/arrow_down_float"
                 android:gravity="right|center"
                 android:paddingRight="50dp"
@@ -137,15 +137,15 @@
                 android:textSize="24sp"
                 tools:ignore="RtlSymmetry" />
 
-            <EditText
+            <TextView
                 android:id="@+id/drop_DNP"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/white"
+                android:background="@color/cpr_bkgnd"
                 android:inputType="text"
-                android:text="Multiselect Dropdown"
-                android:textColor="@color/cpr_bkgnd"
+                android:text="Select Reason(s)"
+                android:textColor="@color/white"
                 android:textSize="24sp" />
 
             <TextView
@@ -172,15 +172,15 @@
                 android:visibility="visible"
                 tools:ignore="RtlSymmetry" />
 
-            <EditText
+            <TextView
                 android:id="@+id/drop_Comments"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/white"
+                android:background="@color/cpr_bkgnd"
                 android:inputType="text"
-                android:text="Multiselect Dropdown"
-                android:textColor="@color/cpr_bkgnd"
+                android:text="Select All That Apply"
+                android:textColor="@color/white"
                 android:textSize="24sp" />
 
             <TextView
