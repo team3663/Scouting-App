@@ -8,12 +8,14 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ArrayAdapter;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -80,9 +82,20 @@ public class PreMatch extends AppCompatActivity {
         Spinner spinner = findViewById(R.id.spinner_StartingPosition);
 
         // adds the items from the starting positions array to the list
-//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.starting_positions_array, android.R.layout.simple_spinner_item);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spinner.setAdapter(adapter);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.starting_positions_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE); /* if you want your item to be white */
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         Button but_AddOverrideTeamNum = preMatchBinding.butAddOverrideTeamNum;
         CheckBox checkbox_DidPlay = preMatchBinding.checkboxDidPlay;

@@ -116,8 +116,10 @@ public class Match extends AppCompatActivity {
     private static String currentOrientation = ORIENTATION_LANDSCAPE;
     private static double currentTouchTime = 0;
     private static boolean is_start_of_seq = true;
-    private static float current_X = 0;
-    private static float current_Y = 0;
+    private static float current_X_Relative = 0;
+    private static float current_Y_Relative = 0;
+    private static float current_X_Absolute = 0;
+    private static float current_Y_Absolute = 0;
 
     // Define the buttons on the page
     Button but_MatchControl;
@@ -304,11 +306,20 @@ public class Match extends AppCompatActivity {
         ContextMenu.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                // Save where we touched the field image
-                current_X = motionEvent.getX();
-                current_Y = motionEvent.getY();
+                // Save where we touched the field image regardless of its orientation
+                current_X_Absolute = motionEvent.getX();
+                current_Y_Absolute = motionEvent.getY();
 
-                image_Field.showContextMenu(current_X, current_Y);
+                // Save where we touched the field image relative to the fields orientation
+                if (currentOrientation.equals(ORIENTATION_LANDSCAPE)) {
+                    current_X_Relative = motionEvent.getX();
+                    current_Y_Relative = motionEvent.getY();
+                } else {
+                    current_X_Relative = IMAGE_WIDTH - motionEvent.getX();
+                    current_Y_Relative = IMAGE_HEIGHT - motionEvent.getY();
+                }
+
+                image_Field.showContextMenu(current_X_Absolute, current_Y_Absolute);
                 return false;
             }
         });
@@ -346,11 +357,12 @@ public class Match extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         matchBinding.textStatus.setText("Last Event: " + item.getTitle());
         eventPrevious = Globals.EventList.getEventId((String) item.getTitle());
-        Globals.EventLogger.LogEvent(eventPrevious, current_X, current_Y, is_start_of_seq, currentTouchTime);
+        Globals.EventLogger.LogEvent(eventPrevious, current_X_Relative, current_Y_Relative, is_start_of_seq, currentTouchTime);
         return true;
     }
 

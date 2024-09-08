@@ -21,4 +21,3 @@ preference = { group = "androidx.preference", name = "preference", version.ref =
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-

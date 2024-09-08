@@ -11,7 +11,7 @@ import java.util.ArrayList;
 //                  return a MatchInfoRow item for the given match id
 // =============================================================================================
 public class Matches {
-    private ArrayList<MatchRow> match_list;
+    private final ArrayList<MatchRow> match_list;
 
     // Constructor
     public Matches() {
