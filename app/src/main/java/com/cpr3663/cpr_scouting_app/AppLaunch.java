@@ -1,6 +1,7 @@
 package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -45,6 +46,21 @@ public class AppLaunch extends AppCompatActivity {
     private AppLaunchBinding appLaunchBinding;
     public static int CompetitionId = 4; // THIS NEEDS TO BE READ FROM THE CONFIG FILE
     public static Timer appLaunch_timer = new Timer();
+
+    // Doesn't appear to be needed on Tablet but helps on Virtual Devices.
+    @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Hide the status and action bar
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) actionBar.hide();
+    }
 
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
     @Override
@@ -517,6 +533,10 @@ public class AppLaunch extends AppCompatActivity {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        // Now that the data is all loaded, pre-build the list of next event descriptions for all
+        // events so we can use this quickly in Match.java
+        Globals.EventList.buildNextEvents();
     }
 
     // =============================================================================================

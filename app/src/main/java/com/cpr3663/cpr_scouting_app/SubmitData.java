@@ -1,6 +1,7 @@
 package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -23,6 +24,21 @@ public class SubmitData extends AppCompatActivity {
     // Global variables
     // =============================================================================================
     private SubmitDataBinding submitDataBinding;
+
+    // Doesn't appear to be needed on Tablet but helps on Virtual Devices.
+    @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Hide the status and action bar
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) actionBar.hide();
+    }
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override

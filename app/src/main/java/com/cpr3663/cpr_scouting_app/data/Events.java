@@ -17,14 +17,21 @@ import java.util.ArrayList;
 //              getEventId(String EventDescription)
 //                  returns the internal ID for an event
 //                  useful for logging events that don't happen on the field of play.
+//              buildNextEvents()
+//                  pre-build the list of next events (descriptions) for each event.  To be
+//                  called AFTER all events are loaded.
 // =============================================================================================
 public class Events {
     // Class Members
     private final ArrayList<EventRow> event_list;
+    private static ArrayList<String> auto_events;
+    private static ArrayList<String> teleop_events;
 
     // Constructor
     public Events() {
         event_list = new ArrayList<EventRow>();
+        auto_events = new ArrayList<String>();
+        teleop_events = new ArrayList<String>();
     }
 
     // Member Function: Add a row of event info into the list giving the data individually
@@ -34,55 +41,21 @@ public class Events {
 
     // Member Function: Return a list of Events (description) for a give phase of the match (only ones that start a sequence)
     public ArrayList<String> getEventsForPhase(String in_phase) {
-        ArrayList<String> ret = new ArrayList<String>();
+        // Return the pre-built list depending on the match_phase being asked for
+        if (in_phase.equals(Constants.PHASE_AUTO)) return auto_events;
+        if (in_phase.equals(Constants.PHASE_TELEOP)) return teleop_events;
 
-        // Error check the input and only do this if they passed in a valid parameter
-        if (in_phase.equals(Constants.PHASE_AUTO) || in_phase.equals(Constants.PHASE_TELEOP)) {
-            for (EventRow eventInfoRow : event_list) {
-                // Only build the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
-                if ((eventInfoRow.match_phase.equals(in_phase)) && (eventInfoRow.is_FOP_Event) && (eventInfoRow.is_seq_start)) {
-                    ret.add(eventInfoRow.description);
-                }
-            }
-        }
-
-        return ret;
+        return null;
     }
 
     // Member Function: Return a list of Events (description) that can follow a given EventId (next Event in the sequence)
     public ArrayList<String> getNextEvents(int in_EventId) {
-        ArrayList<String> ret = new ArrayList<String>();
-        String next_set = "";
-        String[] next_set_ids;
-
-        // Find the event in the list, and get it's list of valid next events
+        // Find the event in the list, and return it's list of valid next events
         for (EventRow er : event_list) {
-            if ((er.id == in_EventId)) {
-                next_set = er.next_event_set;
-                break;
-            }
+            if ((er.id == in_EventId)) return er.next_events_desc;
         }
 
-        // Split out the next set of event ids.
-        next_set_ids = next_set.split(":");
-
-        // Now find all events match the list of next events we can go to
-        for (EventRow er : event_list) {
-            for (int j = ret.size(); j < next_set_ids.length; j++) {
-                // If the event we're looking at (i) is in the list of valid next event ids (j) add it to the list
-                if (er.id == Integer.parseInt(next_set_ids[j])) {
-                    ret.add(er.description);
-                }
-            }
-        }
-
-        // If we didn't add anything at this point, return null
-        // This means there were no valid events that follow the one passed in
-        if (ret.size() == 0) {
-            return null;
-        }
-
-        return ret;
+        return null;
     }
 
     // Member Function: Return the Id for a given Event (needed for logging)
@@ -100,6 +73,28 @@ public class Events {
         return ret;
     }
 
+    // Member Function:
+    public void buildNextEvents() {
+        String[] next_set_ids;
+
+        // Loop through all events.
+        for (EventRow er : event_list) {
+            // Get the set of next events, split them and process the information
+            next_set_ids = er.next_event_set.split(":");
+
+            // Now find all events match the list of next events we can go to
+            for (EventRow ner : event_list) {
+                for (int j = er.next_events_desc.size(); j < next_set_ids.length; j++) {
+                    // If the event we're looking at (i) is in the list of valid next event ids (j) add it to the list
+                    if (ner.id == Integer.parseInt(next_set_ids[j])) {
+                        er.next_events_desc.add((ner.description));
+                    }
+                }
+            }
+
+        }
+    }
+
     // =============================================================================================
     // Class:       EventRow (PRIVATE)
     // Description: Defines a structure/class to hold the information for each Event
@@ -113,6 +108,7 @@ public class Events {
         private final boolean is_FOP_Event;
         private final boolean is_seq_start;
         private final String next_event_set;
+        private ArrayList<String> next_events_desc;
 
         // Constructor
         public EventRow(int in_id, String in_description, String in_phase, Boolean in_seq_start, Boolean in_FOP, String in_next_event_set) {
@@ -122,6 +118,20 @@ public class Events {
             is_FOP_Event = in_FOP;
             is_seq_start = in_seq_start;
             next_event_set = in_next_event_set;
+            next_events_desc = new ArrayList<String>();
+
+            // Manually build what events are allowed to start a sequence in each phase
+            // Only add to the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
+            if (is_FOP_Event && is_seq_start) {
+                switch (match_phase) {
+                    case Constants.PHASE_AUTO:
+                        auto_events.add(description);
+                        break;
+                    case Constants.PHASE_TELEOP:
+                        teleop_events.add(description);
+                        break;
+                }
+            }
         }
 
         // Getter
