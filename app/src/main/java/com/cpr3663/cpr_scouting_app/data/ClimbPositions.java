@@ -47,6 +47,15 @@ public class ClimbPositions {
         return ret;
     }
 
+    public String[] getDescriptionList() {
+        String[] descriptions = new String[climbPosition_list.size()];
+
+        for (int i = 0; i < descriptions.length; i++) {
+            descriptions[i] = climbPosition_list.get(i).getDescription();
+        }
+        return descriptions;
+    }
+
     // =============================================================================================
     // Class:       ClimbPositionRow
     // Description: Defines a structure/class to hold the information for each Climb Position

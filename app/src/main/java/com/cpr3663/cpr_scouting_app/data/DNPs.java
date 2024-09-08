@@ -48,6 +48,15 @@ public class DNPs {
         return ret;
     }
 
+    public String[] getDescriptionList() {
+        String[] descriptions = new String[dnp_list.size()];
+
+        for (int i = 0; i < descriptions.length; i++) {
+            descriptions[i] = dnp_list.get(i).getDescription();
+        }
+        return descriptions;
+    }
+
     // =============================================================================================
     // Class:       DNPRow
     // Description: Defines a structure/class to hold the information for each DNP reason

@@ -41,13 +41,10 @@ public class PostMatch extends AppCompatActivity {
     boolean[] selectedDNPReasons;
     //Creating an array list for the Comments
     ArrayList<Integer> CommentList = new ArrayList<>();
-    String[] CommentArray = {"Robot became disabled or stopped moving", "Robot (or part of it) broke",
-            "Robot didn't contribute much (no auto, low scoring, no defense)", "Poor human player (source)",
-            "Poor human player (amp)", "Robot got note(s) stuck in it"};
+    String[] CommentArray = Globals.CommentList.getDescriptionList();
     //Creating an array list for the DNP reasons
     ArrayList<Integer> DNPReasonsList = new ArrayList<>();
-    String[] DNPReasonsArray = {"Fouled excessively", "Red/Yellow card", 
-            "Never contributing to match", "no show"};
+    String[] DNPReasonsArray = Globals.DNPList.getDescriptionList();
 
 
 
@@ -164,7 +161,7 @@ public class PostMatch extends AppCompatActivity {
                             }
                         }
                         // set number of selected on CommentsTextView
-                        drop_Comments.setText(String.valueOf(CommentList.size()));
+                        drop_Comments.setText(CommentList.size() + " " + getResources().getString(R.string.dropdown_items_selected));
                     }
                 });
 
@@ -252,7 +249,7 @@ public class PostMatch extends AppCompatActivity {
                             }
                         }
                         // set number of selected on DNPTextView
-                        drop_DNP.setText(String.valueOf(DNPReasonsList.size()));
+                        drop_DNP.setText(DNPReasonsList.size() + " " + getResources().getString(R.string.dropdown_items_selected));
                     }
                 });
 
@@ -327,9 +324,3 @@ public class PostMatch extends AppCompatActivity {
         });
     }
 }
-
-
-
-
-
-

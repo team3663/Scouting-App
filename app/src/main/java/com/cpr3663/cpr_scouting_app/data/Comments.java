@@ -68,6 +68,15 @@ public class Comments {
         return ret;
     }
 
+    public String[] getDescriptionList() {
+        String[] descriptions = new String[comment_list.size()];
+
+        for (int i = 0; i < descriptions.length; i++) {
+            descriptions[i] = comment_list.get(i).getDescription();
+        }
+        return descriptions;
+    }
+
     // =============================================================================================
     // Class:       CommentRow
     // Description: Defines a structure/class to hold the information for each Comment

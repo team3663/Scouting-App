@@ -100,15 +100,14 @@ public class PreMatch extends AppCompatActivity {
         edit_Name.setHint("Input your name");
         edit_Name.setHintTextColor(Color.WHITE);
 
-        MatchNum++;
         if (MatchNum > 0) {
+            MatchNum++;
             // MUST CONVERT TO STRING or it crashes with out warning
             edit_Match.setText(String.valueOf(MatchNum));
             Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
             if (Match != null) {
                 int[] Teams = Match.getListOfTeams();
-                for (int team : Teams)
-                    ; // TODO Add "team" to the options in the single select dropdown
+                // TODO Set "Teams" to the options in the single select dropdown
             }
         } else edit_Match.setText("");
         edit_Match.setHint("Input the match number");
@@ -139,8 +138,8 @@ public class PreMatch extends AppCompatActivity {
             public void onClick(View view) {
                 String teamNum = String.valueOf(preMatchBinding.editOverrideTeamNum.getText());
                 if (!teamNum.isEmpty()) {
-                    // TODO make it add teamNum to the options after converting to int and
-                    //      have it auto select that one
+                    // TODO make it add teamNum to the options of single select dropdown after converting to int and
+                    //      then have it auto select that one
                 }
                 checkbox_Override.setChecked(false);
                 text_Override.setVisibility(View.INVISIBLE);
@@ -209,7 +208,7 @@ public class PreMatch extends AppCompatActivity {
                         if (Match != null) {
                             // MUST CONVERT TO STRING or it crashes with out warning
                             int[] Teams = Match.getListOfTeams();
-                            // TODO Add "team" to the options in the single select dropdown
+                            // TODO Set "Teams" to the options in the single select dropdown
                         }
                     }
                 }
