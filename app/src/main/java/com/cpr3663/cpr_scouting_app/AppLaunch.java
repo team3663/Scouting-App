@@ -106,6 +106,9 @@ public class AppLaunch extends AppCompatActivity {
                 public void run() {
                     // Make sure that we aren't coming back to the page and it is the first time running this
                     if (Globals.TeamList.size() == 0) {
+                        // First first index (zero) needs to be a "NO TEAM" entry so the rest line up when they are loaded
+                        Globals.TeamList.add(Constants.NO_TEAM);
+
                         // Load the data with a BRIEF delay between.  :)
                         try {
                             LoadDataFile("ClimbPositions", getResources().getString(R.string.file_climb_positions), getResources().getString(R.string.loading_climb_positions), getResources().getString(R.string.file_error_climb_positions));
