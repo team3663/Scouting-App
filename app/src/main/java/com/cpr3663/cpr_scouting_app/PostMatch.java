@@ -164,8 +164,8 @@ public class PostMatch extends AppCompatActivity {
                                 stringBuilder.append(", ");
                             }
                         }
-                        // set text on CommentsTextView
-                        CommentsTextView.setText(stringBuilder.toString());
+                        // set number of selected on CommentsTextView
+                        CommentsTextView.setText(String.valueOf(CommentList.size()));
                     }
                 });
 
@@ -251,7 +251,7 @@ public class PostMatch extends AppCompatActivity {
                                 stringBuilder.append(", ");
                             }
                         }
-                        // set text on DNPTextView
+                        // set number of selected on DNPTextView
                         DNPTextView.setText(String.valueOf(DNPReasonsList.size()));
                          }
                 });
