@@ -6,9 +6,11 @@ import java.util.ArrayList;
 // Class:       DNPs
 // Description: Defines a structure/class to hold the information for all DNP reasons
 // Methods:     addDNPRow()
-//                  add a row of device info
+//                  add a row of DNP info
+//              size()
+//                  return the number of DNPs we have
 //              getDNPRow()
-//                  return a MatchInfoRow item for the given match id
+//                  return a DNPInfoRow item for the given DNP id
 // =============================================================================================
 public class DNPs {
     private final ArrayList<DNPRow> dnp_list;

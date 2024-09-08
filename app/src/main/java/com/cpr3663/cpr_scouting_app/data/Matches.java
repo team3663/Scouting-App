@@ -34,7 +34,7 @@ public class Matches {
     }
 
     // =============================================================================================
-    // Class:       MatchInfoRow (PRIVATE)
+    // Class:       MatchInfoRow
     // Description: Defines a structure/class to hold the information for each Match
     // Methods:     getListOfTeams()
     //                  return an array of team numbers (6 of them) that are in this match
