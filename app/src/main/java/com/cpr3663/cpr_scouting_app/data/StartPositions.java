@@ -7,6 +7,8 @@ import java.util.ArrayList;
 // Description: Defines a structure/class to hold the information for all Start Position
 // Methods:     addStartPositionRow()
 //                  add a row of Start Position info
+//              size()
+//                  return the number of start positions we have
 //              getStartPositionRow()
 //                  return a StartPositionRow item for the given Start Position id
 // =============================================================================================
@@ -47,6 +49,10 @@ public class StartPositions {
         return ret;
     }
 
+    // Member Function: Return a list of all of the description.
+    // NOTE: If the caller needs to loop through this list, then don't use this.  Just loop through
+    // getStartPositionRow using the size() function.  Otherwise we're just looping twice instead of
+    // once.
     public String[] getDescriptionList() {
         String[] descriptions = new String[startPosition_list.size()];
 
