@@ -6,17 +6,17 @@
     <string name="button_start_teleop">Start Teleop</string>
     <string name="button_end_match">End Match</string>
 
-    <string name="loading_teams">Loading Team Data...</string>
-    <string name="loading_matches">Loading Match Data...</string>
-    <string name="loading_dnp">Loading Do Not Pick Reasons...</string>
-    <string name="loading_events_auto">Loading Auto Event Data...</string>
-    <string name="loading_events_teleop">Loading Teleop Event Data...</string>
-    <string name="loading_competitions">Loading Competition Data...</string>
-    <string name="loading_devices">Loading Device Data...</string>
-    <string name="loading_comments">Loading Comment Data...</string>
-    <string name="loading_trap_results">Loading Trap Results Data...</string>
-    <string name="loading_climb_positions">Loading Climbing Positions Data...</string>
-    <string name="loading_start_positions">Loading Starting Positions Data...</string>
+    <string name="loading_teams">Loading Team Data…</string>
+    <string name="loading_matches">Loading Match Data…</string>
+    <string name="loading_dnp">Loading Do Not Pick Reasons…</string>
+    <string name="loading_events_auto">Loading Auto Event Data…</string>
+    <string name="loading_events_teleop">Loading Teleop Event Data…</string>
+    <string name="loading_competitions">Loading Competition Data…</string>
+    <string name="loading_devices">Loading Device Data…</string>
+    <string name="loading_comments">Loading Comment Data…</string>
+    <string name="loading_trap_results">Loading Trap Results Data…</string>
+    <string name="loading_climb_positions">Loading Climbing Positions Data…</string>
+    <string name="loading_start_positions">Loading Starting Positions Data…</string>
 
     <string name="missing_data">Please fill in all fields</string>
     <string name="timer_label">Time: </string>
@@ -46,7 +46,7 @@
     <string name="pre_start_note">Did they start with a note?</string>
     <string name="pre_start_pos">Starting position:</string>
     <string name="pre_override">Override Team Number</string>
-    <string name="pre_new_team_num">Enter team number:</string>
+    <string name="pre_new_team_num">Team number:</string>
     <string name="pre_resubmit">Need to re-submit data?</string>
 
     <string name="post_heading">Post-Match Scouting Information</string>

@@ -75,7 +75,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/cpr_bkgnd"
+                android:background="@color/white"
                 android:drawableEnd="@drawable/drop_down_arrow"
                 android:gravity="end|center"
                 android:minHeight="48dp"
@@ -86,7 +86,7 @@
 
             <TextView
                 android:id="@+id/text_ClimbPositionPadding"
-                android:layout_width="400dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 tools:ignore="VisualLintBounds" />
         </LinearLayout>
@@ -112,7 +112,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/cpr_bkgnd"
+                android:background="@color/white"
                 android:drawableEnd="@drawable/drop_down_arrow"
                 android:gravity="end|center"
                 android:minHeight="48dp"
@@ -123,7 +123,7 @@
 
             <TextView
                 android:id="@+id/text_TrapPadding"
-                android:layout_width="400dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 tools:ignore="VisualLintBounds" />
         </LinearLayout>
@@ -159,7 +159,7 @@
 
             <TextView
                 android:id="@+id/text_DNPPadding"
-                android:layout_width="400dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 tools:ignore="VisualLintBounds" />
         </LinearLayout>
@@ -195,7 +195,7 @@
 
             <TextView
                 android:id="@+id/text_CommentsPadding"
-                android:layout_width="400dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 tools:ignore="VisualLintBounds" />
         </LinearLayout>
