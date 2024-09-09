@@ -114,8 +114,6 @@ public class PreMatch extends AppCompatActivity {
 
         // Create a text box to input the scouters name
         edit_Name.setText(ScouterName);
-        edit_Name.setHint("Input your name");
-        edit_Name.setHintTextColor(Color.WHITE);
 
         if (MatchNum > 0) {
             MatchNum++;
@@ -127,8 +125,6 @@ public class PreMatch extends AppCompatActivity {
                 // TODO Set "Teams" to the options in the single select dropdown
             }
         } else edit_Match.setText("");
-        edit_Match.setHint("Input the match number");
-        edit_Match.setHintTextColor(Color.GRAY);
 
         // Default checkboxes
         checkbox_DidPlay.setChecked(true);
