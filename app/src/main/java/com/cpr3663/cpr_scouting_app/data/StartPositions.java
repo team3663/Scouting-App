@@ -11,6 +11,8 @@ import java.util.ArrayList;
 //                  return the number of start positions we have
 //              getStartPositionRow()
 //                  return a StartPositionRow item for the given Start Position id
+//              getDescriptionList()
+//                  return a String Array of all of the descriptions of the Start Positions
 // =============================================================================================
 public class StartPositions {
     private final ArrayList<StartPositionRow> startPosition_list;
@@ -49,10 +51,7 @@ public class StartPositions {
         return ret;
     }
 
-    // Member Function: Return a list of all of the description.
-    // NOTE: If the caller needs to loop through this list, then don't use this.  Just loop through
-    // getStartPositionRow using the size() function.  Otherwise we're just looping twice instead of
-    // once.
+    // TODO See if we can make it return a ArrayList<String> for consistency
     public String[] getDescriptionList() {
         String[] descriptions = new String[startPosition_list.size()];
 
