@@ -42,13 +42,10 @@ public class PostMatch extends AppCompatActivity {
     boolean[] selectedDNPReasons;
     //Creating an array list for the Comments
     ArrayList<Integer> CommentList = new ArrayList<>();
-    String[] CommentArray = {"Robot became disabled or stopped moving", "Robot (or part of it) broke",
-            "Robot didn't contribute much (no auto, low scoring, no defense)", "Poor human player (source)",
-            "Poor human player (amp)", "Robot got note(s) stuck in it"};
+    String[] CommentArray = Globals.CommentList.getDescriptionList();
     //Creating an array list for the DNP reasons
     ArrayList<Integer> DNPReasonsList = new ArrayList<>();
-    String[] DNPReasonsArray = {"Fouled excessively", "Red/Yellow card", 
-            "Never contributing to match", "no show"};
+    String[] DNPReasonsArray = Globals.DNPList.getDescriptionList();
 
     // Doesn't appear to be needed on Tablet but helps on Virtual Devices.
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
@@ -84,7 +81,8 @@ public class PostMatch extends AppCompatActivity {
         //Creating the single select dropdown menu for the trap outcomes
         Spinner trapSpinner = findViewById(R.id.spinnerTrap);
         //accessing the array in strings.xml
-        ArrayAdapter<CharSequence> trapAdapter= ArrayAdapter.createFromResource(this,R.array.trap_outcomes_array, android.R.layout.simple_spinner_item);
+        // TODO make this not use the string resource
+        ArrayAdapter<CharSequence> trapAdapter= ArrayAdapter.createFromResource(this, R.array.trap_outcomes_array, android.R.layout.simple_spinner_item);
         trapAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         trapSpinner.setAdapter(trapAdapter);
 
@@ -102,7 +100,8 @@ public class PostMatch extends AppCompatActivity {
         //Creating the single select dropdown menu for the climb positions
         Spinner climbPositionSpinner = findViewById(R.id.spinnerClimbPosition);
         //accessing the array in strings.xml
-        ArrayAdapter<CharSequence> climbPositionAdapter= ArrayAdapter.createFromResource(this,R.array.climb_positions_array, android.R.layout.simple_spinner_item);
+        // TODO make this not use the string resource
+        ArrayAdapter<CharSequence> climbPositionAdapter= ArrayAdapter.createFromResource(this, R.array.climb_positions_array, android.R.layout.simple_spinner_item);
         climbPositionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         climbPositionSpinner.setAdapter(climbPositionAdapter);
 
@@ -178,7 +177,7 @@ public class PostMatch extends AppCompatActivity {
                             }
                         }
                         // set number of selected on CommentsTextView
-                        drop_Comments.setText(String.valueOf(CommentList.size()));
+                        drop_Comments.setText(CommentList.size() + " " + getResources().getString(R.string.dropdown_items_selected));
                     }
                 });
 
@@ -266,7 +265,7 @@ public class PostMatch extends AppCompatActivity {
                             }
                         }
                         // set number of selected on DNPTextView
-                        drop_DNP.setText(String.valueOf(DNPReasonsList.size()));
+                        drop_DNP.setText(DNPReasonsList.size() + " " + getResources().getString(R.string.dropdown_items_selected));
                     }
                 });
 
@@ -341,9 +340,3 @@ public class PostMatch extends AppCompatActivity {
         });
     }
 }
-
-
-
-
-
-

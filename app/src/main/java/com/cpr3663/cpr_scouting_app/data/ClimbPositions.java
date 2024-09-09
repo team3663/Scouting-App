@@ -13,6 +13,8 @@ import java.util.ArrayList;
 //                  return a ClimbPositionRow item for the given Climb Position id
 //              getClimbPositionId()
 //                  return the Id for a given description (good for logging)
+//              getDescriptionList()
+//                  return a String Array of all of the descriptions of the Climb Positions
 // =============================================================================================
 public class ClimbPositions {
     private final ArrayList<ClimbPositionRow> climbPosition_list;
@@ -49,6 +51,16 @@ public class ClimbPositions {
             }
         }
         return ret;
+    }
+
+    // TODO See if we can make it return a ArrayList<String> for consistency
+    public String[] getDescriptionList() {
+        String[] descriptions = new String[climbPosition_list.size()];
+
+        for (int i = 0; i < descriptions.length; i++) {
+            descriptions[i] = climbPosition_list.get(i).getDescription();
+        }
+        return descriptions;
     }
 
     // =============================================================================================

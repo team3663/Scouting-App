@@ -11,6 +11,8 @@ import java.util.ArrayList;
 //                  return the number of DNPs we have
 //              getDNPRow()
 //                  return a DNPInfoRow item for the given DNP id
+//              getDescriptionList()
+//                  return a String Array of all of the descriptions of the DNP Reasons
 // =============================================================================================
 public class DNPs {
     private final ArrayList<DNPRow> dnp_list;
@@ -48,6 +50,16 @@ public class DNPs {
         }
 
         return ret;
+    }
+
+    // TODO See if we can make it return a ArrayList<String> for consistency
+    public String[] getDescriptionList() {
+        String[] descriptions = new String[dnp_list.size()];
+
+        for (int i = 0; i < descriptions.length; i++) {
+            descriptions[i] = dnp_list.get(i).getDescription();
+        }
+        return descriptions;
     }
 
     // =============================================================================================
