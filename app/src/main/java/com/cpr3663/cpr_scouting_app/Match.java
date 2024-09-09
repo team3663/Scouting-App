@@ -1,6 +1,7 @@
 package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.SensorManager;
@@ -135,6 +136,21 @@ public class Match extends AppCompatActivity {
     TimerTask teleop_timertask;
     TimerTask gametime_timertask;
     TimerTask flashing_timertask;
+
+    // Doesn't appear to be needed on Tablet but helps on Virtual Devices.
+    @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Hide the status and action bar
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) actionBar.hide();
+    }
 
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
     @Override
@@ -328,15 +344,14 @@ public class Match extends AppCompatActivity {
                 is_start_of_seq = true;
             } else {
                 events_al = Globals.EventList.getNextEvents(eventPrevious);
-                if (events_al == null) {
+                if ((events_al == null) || events_al.isEmpty()) {
                     events_al = Globals.EventList.getEventsForPhase(matchPhase);
                     is_start_of_seq = true;
                 }
             }
-            events = new String[events_al.size()];
-            events = events_al.toArray(events);
+
             // Add all the events
-            for (String event : events) {
+            for (String event : events_al) {
                 menu.add(event);
             }
         }
@@ -361,6 +376,11 @@ public class Match extends AppCompatActivity {
     public void start_Match() {
         // Record the current/start time of the match to calculate elapsed time
         startTime = System.currentTimeMillis();
+
+        // Disable orientation listening if we can!  Once we start the match don't allow rotation anymore
+        if (OEL.canDetectOrientation()) {
+            OEL.disable();
+        }
 
         // Create the Timers and timer tasks
         match_Timer = new Timer();
@@ -438,11 +458,6 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint("SetTextI18n")
     public void end_match() {
-        // Disable orientation listening if we can!
-        if (OEL.canDetectOrientation()) {
-            OEL.disable();
-        }
-
         // Get rid of the Scheduled events that are over/have ended
         // Need to set match_Timer and TimerTasks to null so we can create "new" ones at the start of the next match
         if (match_Timer != null) {

@@ -6,9 +6,11 @@ import java.util.ArrayList;
 // Class:       Comments
 // Description: Defines a structure/class to hold the information for all Comments
 // Methods:     addCommentRow()
-//                  add a row of device info
+//                  add a row of comment info
+//              size()
+//                  return the number of comments we have
 //              getCommentRow()
-//                  return a MatchInfoRow item for the given match id
+//                  return a CommentInfoRow item for the given comment id
 //              getCommentList()
 //                  return an ArrayList<> of Comments
 //              getCommentId()
@@ -34,7 +36,7 @@ public class Comments {
         return comment_list.size();
     }
 
-    // Member Function: Get back a row of data for a given DNP entry
+    // Member Function: Get back a row of data for a given id
     public CommentRow getCommentRow(int in_index) {
         return comment_list.get(in_index);
     }

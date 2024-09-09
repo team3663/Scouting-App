@@ -7,6 +7,8 @@ import java.util.ArrayList;
 // Description: Defines a structure/class to hold the information for all Trap Result
 // Methods:     addTrapResultRow()
 //                  add a row of Trap Result info
+//              size()
+//                  return the number of start positions we have
 //              getTrapResultRow()
 //                  return a TrapResultRow item for the given Trap Result id
 //              getDescriptionList()

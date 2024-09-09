@@ -7,6 +7,8 @@ import java.util.ArrayList;
 // Description: Defines a structure/class to hold the information for all Start Position
 // Methods:     addStartPositionRow()
 //                  add a row of Start Position info
+//              size()
+//                  return the number of start positions we have
 //              getStartPositionRow()
 //                  return a StartPositionRow item for the given Start Position id
 //              getDescriptionList()

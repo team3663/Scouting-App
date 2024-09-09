@@ -5,16 +5,154 @@
     android:id="@+id/qr_code"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/cpr_bkgnd"
     tools:context=".SubmitData">
 
-    <Button
-        android:id="@+id/but_Done"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Done"
-        tools:layout_editor_absoluteX="173dp"
-        tools:layout_editor_absoluteY="270dp"
-        tools:ignore="MissingConstraints" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
+    <TextView
+        android:id="@+id/text_Heading"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:textColor="@color/cpr_green"
+        android:textSize="42sp"
+        android:gravity="center"
+        android:text="@string/submit_heading" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+            `
+            <TextView
+                android:id="@+id/text_Match"
+                android:layout_width="425dp"
+                android:layout_height="60dp"
+                android:gravity="end|center"
+                android:paddingEnd="50dp"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:text="@string/pre_match_num"
+                tools:ignore="RtlSymmetry" />
+
+            <EditText
+                android:id="@+id/edit_Match"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/cpr_bkgnd"
+                android:background="@color/white"
+                android:textSize="24sp"
+                tools:ignore="LabelFor"
+                android:inputType="number" />
+
+            <TextView
+                android:id="@+id/text_MatchPadding"
+                android:gravity="center"
+                android:layout_width="425dp"
+                android:layout_height="60dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_QRCodePadding"
+                android:gravity="center"
+                android:layout_width="410dp"
+                android:layout_height="60dp" />
+
+            <Button
+                android:id="@+id/but_QRCode"
+                android:layout_width="180dp"
+                android:layout_height="60dp"
+                android:text="QR Code"
+                android:textSize="24sp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginEnd="20dp"
+                android:backgroundTint="@color/white"
+                android:textColor="@color/cpr_bkgnd"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:ignore="HardcodedText,MissingConstraints" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+`
+            <TextView
+                android:id="@+id/text_BTPadding"
+                android:gravity="center"
+                android:layout_width="410dp"
+                android:layout_height="60dp" />
+
+            <Button
+                android:id="@+id/but_SendBT"
+                android:layout_width="180dp"
+                android:layout_height="60dp"
+                android:text="Bluetooth"
+                android:textSize="24sp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginEnd="20dp"
+                android:backgroundTint="@color/white"
+                android:textColor="@color/cpr_bkgnd"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:ignore="HardcodedText,MissingConstraints" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/but_Quit"
+        android:layout_width="175dp"
+        android:layout_height="60dp"
+        android:text="Quit"
+        android:textSize="24sp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="20dp"
+        android:backgroundTint="@color/red"
+        android:textColor="@color/cpr_bkgnd"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="HardcodedText,MissingConstraints" />
+
+    <Button
+        android:id="@+id/but_Next"
+        android:layout_width="175dp"
+        android:layout_height="60dp"
+        android:text="Next Match"
+        android:textSize="24sp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="20dp"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/cpr_bkgnd"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="HardcodedText,MissingConstraints" />
 </androidx.constraintlayout.widget.ConstraintLayout>

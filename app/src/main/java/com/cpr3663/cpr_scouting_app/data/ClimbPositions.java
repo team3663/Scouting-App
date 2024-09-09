@@ -7,8 +7,12 @@ import java.util.ArrayList;
 // Description: Defines a structure/class to hold the information for all Climb Position
 // Methods:     addClimbPositionRow()
 //                  add a row of Climb Position info
+//              size()
+//                  return the number of climb positions we have
 //              getClimbPositionRow()
 //                  return a ClimbPositionRow item for the given Climb Position id
+//              getClimbPositionId()
+//                  return the Id for a given description (good for logging)
 //              getDescriptionList()
 //                  return a String Array of all of the descriptions of the Climb Positions
 // =============================================================================================
