@@ -36,6 +36,7 @@ public class PreMatch extends AppCompatActivity {
     // To store the inputted name
     protected static String ScouterName;
     protected static int MatchNum = -1;
+    protected static boolean StartNote;
 
     // Doesn't appear to be needed on Tablet but helps on Virtual Devices.
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
@@ -100,6 +101,7 @@ public class PreMatch extends AppCompatActivity {
 
         Button but_AddOverrideTeamNum = preMatchBinding.butAddOverrideTeamNum;
         CheckBox checkbox_DidPlay = preMatchBinding.checkboxDidPlay;
+        CheckBox checkbox_StartNote = preMatchBinding.checkboxStartNote;
         CheckBox checkbox_Override = preMatchBinding.checkboxOverride;
         CheckBox checkbox_ReSubmit = preMatchBinding.checkboxResubmit;
         EditText edit_OverrideTeamNum = preMatchBinding.editOverrideTeamNum;
@@ -109,8 +111,9 @@ public class PreMatch extends AppCompatActivity {
         // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
         // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)
         // So add it in now.
-        checkbox_DidPlay.setText(preMatchBinding.checkboxDidPlay.getText() + Globals.CheckBoxTextPadding);
-        checkbox_ReSubmit.setText(preMatchBinding.checkboxResubmit.getText() + Globals.CheckBoxTextPadding);
+        checkbox_DidPlay.setText(checkbox_DidPlay.getText() + Globals.CheckBoxTextPadding);
+        checkbox_StartNote.setText(checkbox_StartNote.getText() + Globals.CheckBoxTextPadding);
+        checkbox_ReSubmit.setText(checkbox_ReSubmit.getText() + Globals.CheckBoxTextPadding);
 
         // Create a text box to input the scouters name
         edit_Name.setText(ScouterName);
@@ -128,12 +131,20 @@ public class PreMatch extends AppCompatActivity {
 
         // Default checkboxes
         checkbox_DidPlay.setChecked(true);
+        checkbox_StartNote.setChecked(true);
         checkbox_ReSubmit.setChecked(false);
 
         // Hide override components initially
         text_Override.setVisibility(View.INVISIBLE);
         edit_OverrideTeamNum.setVisibility(View.INVISIBLE);
         but_AddOverrideTeamNum.setVisibility(View.INVISIBLE);
+
+        checkbox_StartNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                StartNote = checkbox_StartNote.isChecked();
+            }
+        });
 
         checkbox_Override.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -43,6 +43,7 @@
     <string name="pre_team_num">Team number to scout:</string>
     <string name="pre_scouter">Scouter name:</string>
     <string name="pre_did_play">Did they play?</string>
+    <string name="pre_start_note">Did they start with a note?</string>
     <string name="pre_start_pos">Starting position:</string>
     <string name="pre_override">Override Team Number</string>
     <string name="pre_new_team_num">Enter team number:</string>
