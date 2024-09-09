@@ -106,6 +106,9 @@ public class AppLaunch extends AppCompatActivity {
                 public void run() {
                     // Make sure that we aren't coming back to the page and it is the first time running this
                     if (Globals.TeamList.size() == 0) {
+                        // First first index (zero) needs to be a "NO TEAM" entry so the rest line up when they are loaded
+                        Globals.TeamList.add(Constants.NO_TEAM);
+
                         // Load the data with a BRIEF delay between.  :)
                         try {
                             LoadDataFile("ClimbPositions", getResources().getString(R.string.file_climb_positions), getResources().getString(R.string.loading_climb_positions), getResources().getString(R.string.file_error_climb_positions));
@@ -130,6 +133,9 @@ public class AppLaunch extends AppCompatActivity {
                             Thread.sleep(SPLASH_SCREEN_DELAY);
                             LoadDataFile("TrapResults", getResources().getString(R.string.file_trap_results), getResources().getString(R.string.loading_trap_results), getResources().getString(R.string.file_error_trap_results));
                             Thread.sleep(SPLASH_SCREEN_DELAY);
+
+                            // We need to build the "Next Events" possible but needs to be done now, after all data is loaded.
+                            Globals.EventList.buildNextEvents();
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }
@@ -235,6 +241,8 @@ public class AppLaunch extends AppCompatActivity {
             // Open up the correct input stream
             InputStream is;
 
+            // If we can use the Public file, open the file, then the stream.  for the Private file, we can open the stream directly.
+            // We assume this will work (no try/catch) and if THIS fails, it's likely good that we're going to crash the app.  :(
             if (usePublic) {
                 File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_path) + "/" + in_fileName);
                 is = new FileInputStream(in_file);
@@ -249,6 +257,9 @@ public class AppLaunch extends AppCompatActivity {
                 // Split out the csv line.
                 String[] info = line.split(",");
 
+                // A bit messy but we need to know which Global to add the data to, and which fields to pass in.
+                // Switch needs a constant in the "case" expression, and complains about using getResources().
+                // TODO: change to if...else and use the in_filename so we don't have constant strings.
                 switch (in_className) {
                     case "ClimbPositions":
                         if (Boolean.parseBoolean(info[1])) Globals.ClimbPositionList.addClimbPositionRow(info[0], info[2]);

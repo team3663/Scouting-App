@@ -11,6 +11,8 @@ import java.util.ArrayList;
 //                  return the number of start positions we have
 //              getTrapResultRow()
 //                  return a TrapResultRow item for the given Trap Result id
+//              getDescriptionList()
+//                  return a String Array of all of the descriptions of the Trap Results
 // =============================================================================================
 public class TrapResults {
     private final ArrayList<TrapResultRow> trapResult_list;
@@ -47,6 +49,16 @@ public class TrapResults {
             }
         }
         return ret;
+    }
+
+    // TODO See if we can make it return a ArrayList<String> for consistency
+    public String[] getDescriptionList() {
+        String[] descriptions = new String[trapResult_list.size()];
+
+        for (int i = 0; i < descriptions.length; i++) {
+            descriptions[i] = trapResult_list.get(i).getDescription();
+        }
+        return descriptions;
     }
 
     // =============================================================================================
