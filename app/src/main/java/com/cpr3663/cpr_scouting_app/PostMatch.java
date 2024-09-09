@@ -67,7 +67,8 @@ public class PostMatch extends AppCompatActivity {
         //Creating the single select dropdown menu for the trap outcomes
         Spinner trapSpinner = findViewById(R.id.spinnerTrap);
         //accessing the array in strings.xml
-        ArrayAdapter<CharSequence> trapAdapter= ArrayAdapter.createFromResource(this,R.array.trap_outcomes_array, android.R.layout.simple_spinner_item);
+        // TODO make this not use the string resource
+        ArrayAdapter<CharSequence> trapAdapter= ArrayAdapter.createFromResource(this, R.array.trap_outcomes_array, android.R.layout.simple_spinner_item);
         trapAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         trapSpinner.setAdapter(trapAdapter);
 
@@ -85,7 +86,8 @@ public class PostMatch extends AppCompatActivity {
         //Creating the single select dropdown menu for the climb positions
         Spinner climbPositionSpinner = findViewById(R.id.spinnerClimbPosition);
         //accessing the array in strings.xml
-        ArrayAdapter<CharSequence> climbPositionAdapter= ArrayAdapter.createFromResource(this,R.array.climb_positions_array, android.R.layout.simple_spinner_item);
+        // TODO make this not use the string resource
+        ArrayAdapter<CharSequence> climbPositionAdapter= ArrayAdapter.createFromResource(this, R.array.climb_positions_array, android.R.layout.simple_spinner_item);
         climbPositionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         climbPositionSpinner.setAdapter(climbPositionAdapter);
 

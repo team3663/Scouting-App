@@ -9,6 +9,8 @@ import java.util.ArrayList;
 //                  add a row of Climb Position info
 //              getClimbPositionRow()
 //                  return a ClimbPositionRow item for the given Climb Position id
+//              getDescriptionList()
+//                  return a String Array of all of the descriptions of the Climb Positions
 // =============================================================================================
 public class ClimbPositions {
     private final ArrayList<ClimbPositionRow> climbPosition_list;
@@ -47,6 +49,7 @@ public class ClimbPositions {
         return ret;
     }
 
+    // TODO See if we can make it return a ArrayList<String> for consistency
     public String[] getDescriptionList() {
         String[] descriptions = new String[climbPosition_list.size()];
 

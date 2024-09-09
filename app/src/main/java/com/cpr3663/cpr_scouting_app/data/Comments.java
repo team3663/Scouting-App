@@ -13,6 +13,8 @@ import java.util.ArrayList;
 //                  return an ArrayList<> of Comments
 //              getCommentId()
 //                  return the comment Id for a given Comment (for logging)
+//              getDescriptionList()
+//                  return a String Array of all of the descriptions of the Comments
 // =============================================================================================
 public class Comments {
     private final ArrayList<CommentRow> comment_list;
@@ -68,6 +70,7 @@ public class Comments {
         return ret;
     }
 
+    // TODO See if we can make it return a ArrayList<String> for consistency
     public String[] getDescriptionList() {
         String[] descriptions = new String[comment_list.size()];
 

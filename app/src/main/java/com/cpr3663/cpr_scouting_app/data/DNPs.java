@@ -9,6 +9,8 @@ import java.util.ArrayList;
 //                  add a row of device info
 //              getDNPRow()
 //                  return a MatchInfoRow item for the given match id
+//              getDescriptionList()
+//                  return a String Array of all of the descriptions of the DNP Reasons
 // =============================================================================================
 public class DNPs {
     private final ArrayList<DNPRow> dnp_list;
@@ -48,6 +50,7 @@ public class DNPs {
         return ret;
     }
 
+    // TODO See if we can make it return a ArrayList<String> for consistency
     public String[] getDescriptionList() {
         String[] descriptions = new String[dnp_list.size()];
 

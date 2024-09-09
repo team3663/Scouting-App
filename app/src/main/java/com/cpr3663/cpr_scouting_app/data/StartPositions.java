@@ -9,6 +9,8 @@ import java.util.ArrayList;
 //                  add a row of Start Position info
 //              getStartPositionRow()
 //                  return a StartPositionRow item for the given Start Position id
+//              getDescriptionList()
+//                  return a String Array of all of the descriptions of the Start Positions
 // =============================================================================================
 public class StartPositions {
     private final ArrayList<StartPositionRow> startPosition_list;
@@ -47,6 +49,7 @@ public class StartPositions {
         return ret;
     }
 
+    // TODO See if we can make it return a ArrayList<String> for consistency
     public String[] getDescriptionList() {
         String[] descriptions = new String[startPosition_list.size()];
 
