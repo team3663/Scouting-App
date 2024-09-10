@@ -36,7 +36,7 @@ public class PreMatch extends AppCompatActivity {
     // To store the inputted name
     protected static String ScouterName;
     protected static int MatchNum = -1;
-    protected static boolean StartNote;
+    protected static CheckBox checkbox_StartNote; // This needs to be global so that Match.java can access it
 
     // Doesn't appear to be needed on Tablet but helps on Virtual Devices.
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
@@ -101,7 +101,7 @@ public class PreMatch extends AppCompatActivity {
 
         Button but_AddOverrideTeamNum = preMatchBinding.butAddOverrideTeamNum;
         CheckBox checkbox_DidPlay = preMatchBinding.checkboxDidPlay;
-        CheckBox checkbox_StartNote = preMatchBinding.checkboxStartNote;
+        checkbox_StartNote = preMatchBinding.checkboxStartNote;
         CheckBox checkbox_Override = preMatchBinding.checkboxOverride;
         CheckBox checkbox_ReSubmit = preMatchBinding.checkboxResubmit;
         EditText edit_OverrideTeamNum = preMatchBinding.editOverrideTeamNum;
@@ -138,13 +138,6 @@ public class PreMatch extends AppCompatActivity {
         text_Override.setVisibility(View.INVISIBLE);
         edit_OverrideTeamNum.setVisibility(View.INVISIBLE);
         but_AddOverrideTeamNum.setVisibility(View.INVISIBLE);
-
-        checkbox_StartNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                StartNote = checkbox_StartNote.isChecked();
-            }
-        });
 
         checkbox_Override.setOnClickListener(new View.OnClickListener() {
             @Override
