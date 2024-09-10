@@ -35,7 +35,7 @@
             `
             <TextView
                 android:id="@+id/text_Match"
-                android:layout_width="425dp"
+                android:layout_width="450dp"
                 android:layout_height="60dp"
                 android:gravity="end|center"
                 android:paddingEnd="50dp"
@@ -59,13 +59,13 @@
             <TextView
                 android:id="@+id/text_MatchPadding"
                 android:gravity="center"
-                android:layout_width="425dp"
+                android:layout_width="450dp"
                 android:layout_height="60dp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="40dp"
             android:orientation="horizontal">
         </LinearLayout>
 
@@ -97,7 +97,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="20dp"
             android:orientation="horizontal">
         </LinearLayout>
 
