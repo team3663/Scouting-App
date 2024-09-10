@@ -410,6 +410,11 @@ public class Match extends AppCompatActivity {
         but_MatchControl.setText(getResources().getString(R.string.button_start_teleop));
         but_MatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_yellow));
         but_MatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.start_teleop, 0);
+
+        if (PreMatch.checkbox_StartNote.isChecked()) {
+            Globals.EventLogger.LogEvent(Constants.EVENT_ID_AUTO_STARTNOTE, 0, 0, true);
+            eventPrevious = Constants.EVENT_ID_AUTO_STARTNOTE;
+        }
     }
 
     // =============================================================================================
