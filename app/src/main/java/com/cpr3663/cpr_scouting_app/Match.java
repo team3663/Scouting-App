@@ -412,8 +412,8 @@ public class Match extends AppCompatActivity {
         but_MatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.start_teleop, 0);
 
         if (PreMatch.StartNote) {
-            Globals.EventLogger.LogEvent(Globals.EventList.getEventId("Auto_StartingNote"), 0, 0, true);
-            eventPrevious = Globals.EventList.getEventId("Pickup Note");
+            Globals.EventLogger.LogEvent(Constants.EVENT_ID_AUTO_STARTNOTE, 0, 0, true);
+            eventPrevious = Constants.EVENT_ID_AUTO_STARTNOTE;
         }
     }
 
