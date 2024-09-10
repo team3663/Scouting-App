@@ -75,12 +75,10 @@ public class PreMatch extends AppCompatActivity {
 
         // Create components
         EditText edit_Match = preMatchBinding.editMatch;
-        TextView text_Match = preMatchBinding.textMatch;
         EditText edit_Team = preMatchBinding.editTeamToScout;
+        Spinner spinner = preMatchBinding.spinnerStartingPosition;
+        TextView text_Match = preMatchBinding.textMatch;
         TextView text_TeamName = preMatchBinding.textTeamToScoutName;
-
-        // creates the single select menu for the robot starting positions
-        Spinner spinner = findViewById(R.id.spinner_StartingPosition);
 
         // adds the items from the starting positions array to the list
         // TODO make this not use the string resource

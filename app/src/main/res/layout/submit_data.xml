@@ -35,7 +35,7 @@
             `
             <TextView
                 android:id="@+id/text_Match"
-                android:layout_width="450dp"
+                android:layout_width="425dp"
                 android:layout_height="60dp"
                 android:gravity="end|center"
                 android:paddingEnd="50dp"
@@ -44,22 +44,25 @@
                 android:text="@string/pre_match_num"
                 tools:ignore="RtlSymmetry" />
 
-            <EditText
-                android:id="@+id/edit_Match"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textColor="@color/cpr_bkgnd"
+            <Spinner
+                android:id="@+id/spinner_Match"
+                android:paddingEnd="50dp"
+                android:drawableEnd="@drawable/drop_down_arrow"
+                android:drawablePadding="16dp"
                 android:background="@color/white"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:paddingStart="10dp"
                 android:textSize="24sp"
-                tools:ignore="LabelFor"
-                android:inputType="number" />
+                tools:ignore="RtlSymmetry" />
 
             <TextView
-                android:id="@+id/text_MatchPadding"
-                android:gravity="center"
-                android:layout_width="450dp"
+                android:id="@+id/text_MatchMessage"
+                android:gravity="start|center"
+                android:textColor="@color/red"
+                android:paddingStart="10dp"
+                android:layout_width="425dp"
                 android:layout_height="60dp" />
         </LinearLayout>
 
