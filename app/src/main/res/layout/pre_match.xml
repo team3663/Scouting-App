@@ -211,11 +211,11 @@
 
             <Spinner
                 android:id="@+id/spinner_StartingPosition"
-                android:gravity="right|center"
-                android:paddingRight="50dp"
-                android:drawableRight="@drawable/drop_down_arrow"
+                android:gravity="end|center"
+                android:paddingEnd="50dp"
+                android:drawableEnd="@drawable/drop_down_arrow"
                 android:drawablePadding="16dp"
-                android:background="@color/cpr_bkgnd"
+                android:background="@color/white"
                 android:layout_width="0dp"
                 android:layout_height="35dp"
                 android:layout_weight="1"

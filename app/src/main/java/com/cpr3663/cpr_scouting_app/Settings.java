@@ -7,8 +7,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -35,6 +38,9 @@ public class Settings extends AppCompatActivity {
     SettingsBinding settingsBinding;
     SharedPreferences sp;
     SharedPreferences.Editor spe;
+    Spinner spinner_CompetitionId;
+    Spinner spinner_DeviceId;
+
 
     // Doesn't appear to be needed on Tablet but helps on Virtual Devices.
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
@@ -65,38 +71,81 @@ public class Settings extends AppCompatActivity {
             return insets;
         });
 
+        // Get the Shared Preferences where we save off app settings to use next time
         sp = this.getSharedPreferences(getResources().getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
         spe = sp.edit();
 
-        // Define the edit Text for entering the Competition Id
-        EditText edit_CompetitionId = settingsBinding.editCompetitionId;
-        // MUST CONVERT TO STRING or it crashes with out warning
-        edit_CompetitionId.setText(String.valueOf(sp.getInt(SP_COMPETITION_ID, -1)));
+        // Adds Competition information to spinner
+        spinner_CompetitionId = settingsBinding.spinnerCompetitionId;
+        ArrayAdapter<String> adp_CompetitionId = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item, Globals.CompetitionList.getCompetitionIdList());
+        adp_CompetitionId.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_CompetitionId.setAdapter(adp_CompetitionId);
 
-        // Define a text box for the name of the Competition to appear in when you enter the ID
-        TextView text_CompetitionName = settingsBinding.textCompetitionName;
-        String compIdStr = String.valueOf(edit_CompetitionId.getText());
-        if (!compIdStr.isEmpty()) {
-            int compId = Integer.parseInt(compIdStr);
-            Competitions.CompetitionRow competition = Globals.CompetitionList.getCompetitionRow(compId);
-            if (competition != null) text_CompetitionName.setText(competition.getDescription());
-            else text_CompetitionName.setText("");
+        // Set the selection (if there is one) to the saved one
+        int savedCompetitionId = sp.getInt(SP_COMPETITION_ID, -1);
+        if ((savedCompetitionId > -1) && (adp_CompetitionId.getCount() >= savedCompetitionId)) {
+            spinner_CompetitionId.setSelection(savedCompetitionId - 1, true);
+            settingsBinding.textCompetitionName.setText(Globals.CompetitionList.getCompetitionDescriptionById(savedCompetitionId));
         }
 
-        // Define the edit Text for entering the Device Id
-        EditText edit_DeviceId = settingsBinding.editDeviceId;
-        // MUST CONVERT TO STRING or it crashes with out warning
-        edit_DeviceId.setText(String.valueOf(sp.getInt(SP_DEVICE_ID, -1)));
+            // Define the actions when an item is selected.  Set text color and set description text
+        spinner_CompetitionId.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.cpr_bkgnd));
 
-        // Define a text box for the name of the Device to appear in when you enter the ID
-        TextView text_DeviceName = settingsBinding.textDeviceName;
-        String deviceIdStr = String.valueOf(edit_DeviceId.getText());
-        if (!deviceIdStr.isEmpty()) {
-            int deviceNumber = Integer.parseInt(deviceIdStr);
-            Devices.DeviceRow device = Globals.DeviceList.getDeviceRow(deviceNumber);
-            if (device != null) text_DeviceName.setText(device.getDescription());
-            else text_DeviceName.setText("");
+                Settings.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        settingsBinding.textCompetitionName.setText(Globals.CompetitionList.getCompetitionDescriptionById(position + 1));
+                    }
+                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        // Adds Device information to spinner
+        spinner_DeviceId = settingsBinding.spinnerDeviceId;
+        ArrayAdapter<String> adp_DeviceId = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item, Globals.DeviceList.getDeviceIdList());
+        adp_DeviceId.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_DeviceId.setAdapter(adp_DeviceId);
+
+        // Set the selection (if there is one) to the saved one
+        int savedDeviceId = sp.getInt(SP_DEVICE_ID, -1);
+        if ((savedDeviceId > -1) && (adp_DeviceId.getCount() >= savedDeviceId)) {
+            spinner_DeviceId.setSelection(savedDeviceId - 1, true);
+            Devices.DeviceRow dr = Globals.DeviceList.getDeviceRow(savedDeviceId);
+            settingsBinding.textDeviceName.setText(dr.getDescription());
+            settingsBinding.editScoutingTeam.setText(String.valueOf(dr.getTeamNumber()));
+            settingsBinding.textScoutingTeamName.setText(Globals.TeamList.get(dr.getTeamNumber()));
         }
+
+        // Define the actions when an item is selected.  Set text color and set description text
+        spinner_DeviceId.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.cpr_bkgnd));
+
+                Settings.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Devices.DeviceRow dr = Globals.DeviceList.getDeviceRow(position + 1);
+                        settingsBinding.textDeviceName.setText(dr.getDescription());
+                        settingsBinding.editScoutingTeam.setText(String.valueOf(dr.getTeamNumber()));
+                        settingsBinding.textScoutingTeamName.setText(Globals.TeamList.get(dr.getTeamNumber()));
+                    }
+                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         // Define the edit Text for entering the Device Id
         EditText edit_ScoutingTeam = settingsBinding.editScoutingTeam;
@@ -131,11 +180,11 @@ public class Settings extends AppCompatActivity {
         but_Save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String CompetitionId = String.valueOf(edit_CompetitionId.getText());
+                String CompetitionId = spinner_CompetitionId.getSelectedItem().toString();
                 if (!CompetitionId.isEmpty()) {
                     spe.putInt(SP_COMPETITION_ID, Integer.parseInt(CompetitionId));
                 }
-                String DeviceId = String.valueOf(edit_DeviceId.getText());
+                String DeviceId = spinner_DeviceId.getSelectedItem().toString();
                 if (!DeviceId.isEmpty()) {
                     spe.putInt(SP_DEVICE_ID, Integer.parseInt(DeviceId));
                 }
@@ -145,40 +194,6 @@ public class Settings extends AppCompatActivity {
                 }
                 spe.apply();
                 Exit();
-            }
-        });
-
-        edit_CompetitionId.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean focus) {
-                if (!focus) {
-                    String compIdStr = String.valueOf(edit_CompetitionId.getText());
-                    if (!compIdStr.isEmpty()) {
-                        int compId = Integer.parseInt(compIdStr);
-                        Competitions.CompetitionRow competition = Globals.CompetitionList.getCompetitionRow(compId);
-                        if (competition != null) text_CompetitionName.setText(competition.getDescription());
-                        else text_CompetitionName.setText("");
-                    }
-                }
-            }
-        });
-
-        edit_DeviceId.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean focus) {
-                if (!focus) {
-                    String deviceIdStr = String.valueOf(edit_DeviceId.getText());
-                    if (!deviceIdStr.isEmpty()) {
-                        int deviceNumber = Integer.parseInt(deviceIdStr);
-                        Devices.DeviceRow device = Globals.DeviceList.getDeviceRow(deviceNumber);
-                        if (device != null) {
-                            text_DeviceName.setText(device.getDescription());
-                            // MUST CONVERT TO STRING or it crashes with out warning
-                            settingsBinding.editScoutingTeam.setText(String.valueOf(device.getTeamNumber()));
-                            settingsBinding.textScoutingTeamName.setText(Globals.TeamList.get(device.getTeamNumber()));
-                        } else text_DeviceName.setText("");
-                    }
-                }
             }
         });
 
