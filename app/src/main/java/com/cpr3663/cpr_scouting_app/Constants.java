@@ -36,4 +36,5 @@ public class Constants {
     public static final int EVENT_ID_DEFENDED_END = 151;
     public static final int EVENT_ID_DEFENSE_START = 152;
     public static final int EVENT_ID_DEFENSE_END = 153;
+    public static final int EVENT_ID_AUTO_STARTNOTE = 0;
 }
