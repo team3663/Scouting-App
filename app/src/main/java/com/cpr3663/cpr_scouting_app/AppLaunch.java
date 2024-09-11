@@ -38,7 +38,7 @@ public class AppLaunch extends AppCompatActivity {
     // =============================================================================================
     // Define constants
     // =============================================================================================
-    private static final long SPLASH_SCREEN_DELAY = 200; // delay (ms) in between "loading" messages
+    private static final long SPLASH_SCREEN_DELAY = 100; // delay (ms) in between "loading" messages
 
     // =============================================================================================
     // Global variables

@@ -1,6 +1,7 @@
 package com.cpr3663.cpr_scouting_app.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 // =============================================================================================
 // Class:       Devices
@@ -34,12 +35,45 @@ public class Devices {
     public DeviceRow getDeviceRow(int deviceNumber) {
         DeviceRow device = null;
         for (DeviceRow deviceRow : device_list) {
-            if (deviceNumber == deviceRow.getDeviceNumber()) {
+            if (deviceNumber == deviceRow.getId()) {
                 device = deviceRow;
                 break;
             }
         }
         return device;
+    }
+
+    // Member Function: return a list of Device IDs (used for Settings page)
+    public ArrayList<String> getDeviceIdList() {
+        ArrayList<Integer> ret_int = new ArrayList<>();
+        ArrayList<String> ret = new ArrayList<>();
+
+        // If we have nothing to process, return nothing!
+        if (device_list.isEmpty()) return ret;
+
+        // Make an array list of Device Ids
+        for (DeviceRow dr : device_list) {
+            ret_int.add(dr.getId());
+        }
+
+        // Sort (numerically) the list and convert into the String ArrayList
+        Collections.sort(ret_int);
+        for (Integer i : ret_int) ret.add(i.toString());
+
+        return ret;
+    }
+
+    public String getDeviceDescriptionById(int in_Id) {
+        String ret = "";
+
+        for (DeviceRow dr : device_list) {
+            if (in_Id == dr.getId()) {
+                ret = dr.getDescription();
+                break;
+            }
+        }
+
+        return ret;
     }
 
     // =============================================================================================
@@ -54,20 +88,20 @@ public class Devices {
     // =============================================================================================
     public static class DeviceRow {
         // Class Members
-        private final int device_number;
+        private final int id;
         private final int team_number;
         private final String description;
 
         // Constructor with individual data
         public DeviceRow(String in_device_number, String in_team_number, String in_description) {
-            device_number = Integer.parseInt(in_device_number);
+            id = Integer.parseInt(in_device_number);
             team_number = Integer.parseInt(in_team_number);
             description = in_description;
         }
 
         // Getter
-        public int getDeviceNumber() {
-            return device_number;
+        public int getId() {
+            return id;
         }
 
         // Getter
