@@ -125,7 +125,6 @@ public class Logger {
             csv_header += "," + Constants.LOGKEY_DID_LEAVE_START;
             csv_header += "," + Constants.LOGKEY_CLIMB_POSITION;
             csv_header += "," + Constants.LOGKEY_TRAP;
-            csv_header += "," + Constants.LOGKEY_DNPS;
             csv_header += "," + Constants.LOGKEY_COMMENTS;
             csv_header += "," + Constants.LOGKEY_START_TIME_OFFSET;
 
@@ -137,7 +136,6 @@ public class Logger {
             csv_line += FindValueInPair(Constants.LOGKEY_DID_LEAVE_START);
             csv_line += FindValueInPair(Constants.LOGKEY_CLIMB_POSITION);
             csv_line += FindValueInPair(Constants.LOGKEY_TRAP);
-            csv_line += FindValueInPair(Constants.LOGKEY_DNPS);
             csv_line += FindValueInPair(Constants.LOGKEY_COMMENTS);
             csv_line += FindValueInPair(Constants.LOGKEY_START_TIME_OFFSET);
 

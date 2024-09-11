@@ -5,7 +5,6 @@
 
     <string name="file_teams">Teams.csv</string>
     <string name="file_competitions">Competitions.csv</string>
-    <string name="file_dnp">DNP.csv</string>
     <string name="file_matches">Matches.csv</string>
     <string name="file_devices">Devices.csv</string>
     <string name="file_events_auto">Events_Auto.csv</string>
