@@ -31,21 +31,8 @@ public class Competitions {
         return competition_list.size();
     }
 
-    // Member Function: Get back a row of data for a given id
-    public CompetitionRow getCompetitionRow(int id) {
-        CompetitionRow competition = null;
-        for (CompetitionRow competitionRow : competition_list) {
-            if (id == competitionRow.getId()) {
-                competition = competitionRow;
-                break;
-            }
-        }
-        return competition;
-    }
-
     // Member Function: return a list of Competition ID (used for Settings page)
-    public ArrayList<String> getCompetitionIdList() {
-        ArrayList<Integer> ret_int = new ArrayList<>();
+    public ArrayList<String> getCompetitionList() {
         ArrayList<String> ret = new ArrayList<>();
 
         // If we have nothing to process, return nothing!
@@ -53,21 +40,33 @@ public class Competitions {
 
         // Make an array list of Competition Ids
         for (CompetitionRow cr : competition_list) {
-            ret_int.add(cr.getId());
+            ret.add(cr.getDescription());
         }
 
-        // Sort (numerically) the list and convert into the String ArrayList
-        Collections.sort(ret_int);
-        for (Integer i : ret_int) ret.add(i.toString());
+        Collections.sort(ret);
+        return ret;
+    }
+
+    // Member Function: get the id that matches the description
+    public int getCompetitionId(String in_description) {
+        int ret = 0;
+
+        for (CompetitionRow cr : competition_list) {
+            if (in_description.equals(cr.getDescription())) {
+                ret = cr.getId();
+                break;
+            }
+        }
 
         return ret;
     }
 
-    public String getCompetitionDescriptionById(int in_Id) {
+    // Member Function: get the description that matches the id
+    public String getCompetitionDescription(int in_id) {
         String ret = "";
 
         for (CompetitionRow cr : competition_list) {
-            if (in_Id == cr.getId()) {
+            if (in_id == cr.getId()) {
                 ret = cr.getDescription();
                 break;
             }

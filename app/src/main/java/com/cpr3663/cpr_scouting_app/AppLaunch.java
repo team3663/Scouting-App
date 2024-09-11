@@ -119,8 +119,6 @@ public class AppLaunch extends AppCompatActivity {
                             Thread.sleep(SPLASH_SCREEN_DELAY);
                             LoadDataFile("Devices", getResources().getString(R.string.file_devices), getResources().getString(R.string.loading_devices), getResources().getString(R.string.file_error_devices));
                             Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile("DNPs", getResources().getString(R.string.file_dnp), getResources().getString(R.string.loading_dnp), getResources().getString(R.string.file_error_dnp));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
                             LoadDataFile("EventsAuto", getResources().getString(R.string.file_events_auto), getResources().getString(R.string.loading_events_auto), getResources().getString(R.string.file_error_events_auto));
                             Thread.sleep(SPLASH_SCREEN_DELAY);
                             LoadDataFile("EventsTeleop", getResources().getString(R.string.file_events_teleop), getResources().getString(R.string.loading_events_teleop), getResources().getString(R.string.file_error_events_teleop));
@@ -272,9 +270,6 @@ public class AppLaunch extends AppCompatActivity {
                         break;
                     case "Devices":
                         Globals.DeviceList.addDeviceRow(info[0], info[1], info[2]);
-                        break;
-                    case "DNPs":
-                        if (Boolean.parseBoolean(info[2])) Globals.DNPList.addDNPRow(info[0], info[1]);
                         break;
                     case "EventsAuto":
                         Globals.EventList.addEventRow(info[0], info[1], Constants.PHASE_AUTO, info[2], info[3], info[4]);

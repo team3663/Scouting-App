@@ -70,25 +70,33 @@
                 android:text="@string/post_climb_position"
                 tools:ignore="RtlSymmetry" />
 
-            <Spinner
-                android:id="@+id/spinnerClimbPosition"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:drawableEnd="@drawable/drop_down_arrow"
-                android:gravity="end|center"
-                android:minHeight="48dp"
-                android:paddingEnd="50dp"
-                android:textColor="@color/cpr_bkgnd"
-                android:textSize="24sp"
-                tools:ignore="RtlSymmetry" />
-
-            <TextView
-                android:id="@+id/text_ClimbPositionPadding"
+            <RelativeLayout
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                tools:ignore="VisualLintBounds" />
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/spinnerClimbPosition"
+                    android:spinnerMode="dropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:background="@color/white"
+                    android:gravity="end|center"
+                    android:paddingStart="10dp"
+                    tools:ignore="RtlSymmetry" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:paddingEnd="10dp"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/drop_down_arrow"
+                    tools:ignore="ContentDescription" />
+
+            </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -107,59 +115,33 @@
                 android:text="@string/post_trap"
                 tools:ignore="RtlSymmetry" />
 
-            <Spinner
-                android:id="@+id/spinnerTrap"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:drawableEnd="@drawable/drop_down_arrow"
-                android:gravity="end|center"
-                android:minHeight="48dp"
-                android:paddingEnd="50dp"
-                android:textSize="24sp"
-                tools:ignore="RtlSymmetry" />
-
-            <TextView
-                android:id="@+id/text_TrapPadding"
+            <RelativeLayout
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                tools:ignore="VisualLintBounds" />
-        </LinearLayout>
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:orientation="horizontal">
+                <Spinner
+                    android:id="@+id/spinnerTrap"
+                    android:spinnerMode="dropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:background="@color/white"
+                    android:gravity="end|center"
+                    android:paddingStart="10dp"
+                    tools:ignore="RtlSymmetry" />
 
-            <TextView
-                android:id="@+id/text_DNP"
-                android:layout_width="400dp"
-                android:layout_height="60dp"
-                android:gravity="end|center"
-                android:paddingEnd="50dp"
-                android:textColor="@color/white"
-                android:textSize="24sp"
-                android:text="@string/post_dnp"
-                android:paddingHorizontal="20dp"
-                tools:ignore="RtlSymmetry" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:paddingEnd="10dp"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/drop_down_arrow"
+                    tools:ignore="ContentDescription" />
 
-            <TextView
-                android:id="@+id/drop_DNP"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:drawableEnd="@drawable/drop_down_arrow"
-                android:paddingHorizontal="20dp"
-                android:textSize="24sp"
-                tools:ignore="UseCompatTextViewDrawableXml" />
-
-            <TextView
-                android:id="@+id/text_DNPPadding"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                tools:ignore="VisualLintBounds" />
+            </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -186,14 +168,14 @@
                 android:layout_weight="1"
                 android:textColor="@color/cpr_bkgnd"
                 android:background="@color/white"
-                android:textSize="24sp"
-                android:drawableEnd="@drawable/drop_down_arrow"
-                android:paddingHorizontal="20dp"
+                android:textSize="22sp"
+                android:drawableEnd="@mipmap/drop_down_arrow"
+                android:paddingHorizontal="10dp"
                 tools:ignore="UseCompatTextViewDrawableXml,VisualLintBounds" />
 
             <TextView
                 android:id="@+id/text_CommentsPadding"
-                android:layout_width="300dp"
+                android:layout_width="307dp"
                 android:layout_height="wrap_content"
                 tools:ignore="VisualLintBounds" />
         </LinearLayout>

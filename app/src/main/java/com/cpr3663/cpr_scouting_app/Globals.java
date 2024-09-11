@@ -3,7 +3,6 @@ package com.cpr3663.cpr_scouting_app;
 import com.cpr3663.cpr_scouting_app.data.ClimbPositions;
 import com.cpr3663.cpr_scouting_app.data.Comments;
 import com.cpr3663.cpr_scouting_app.data.Competitions;
-import com.cpr3663.cpr_scouting_app.data.DNPs;
 import com.cpr3663.cpr_scouting_app.data.Devices;
 import com.cpr3663.cpr_scouting_app.data.Events;
 import com.cpr3663.cpr_scouting_app.data.Matches;
@@ -17,7 +16,6 @@ public class Globals {
     public static Competitions CompetitionList = new Competitions();
     public static Matches MatchList = new Matches();
     public static Devices DeviceList = new Devices();
-    public static DNPs DNPList = new DNPs();
     public static Events EventList = new Events();
     public static Comments CommentList = new Comments();
     public static ClimbPositions ClimbPositionList = new ClimbPositions();

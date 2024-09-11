@@ -11,9 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="65dp"
-        tools:layout_editor_absoluteY="337dp">
+        android:orientation="vertical" >
 
         <TextView
             android:id="@+id/text_Heading"
@@ -94,7 +92,7 @@
                 android:layout_height="60dp"
                 android:paddingStart="20dp"
                 android:textColor="@color/light_grey"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -209,27 +207,34 @@
                 android:text="@string/pre_start_pos"
                 tools:ignore="RtlSymmetry" />
 
-            <Spinner
-                android:id="@+id/spinner_StartingPosition"
-                android:gravity="end|center"
-                android:paddingEnd="50dp"
-                android:drawableEnd="@drawable/drop_down_arrow"
-                android:drawablePadding="16dp"
-                android:background="@color/white"
-                android:layout_width="0dp"
-                android:layout_height="35dp"
-                android:layout_weight="1"
-                android:paddingStart="10dp"
-                android:textSize="24sp"
-                android:text="Single select Drop down"
-                tools:ignore="RtlSymmetry" />
+            <RelativeLayout
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/text_StartingPositionPadding"
-                android:textSize="24sp"
-                android:gravity="center"
-                android:layout_width="400dp"
-                android:layout_height="60dp" />
+                <Spinner
+                    android:id="@+id/spinner_StartingPosition"
+                    android:spinnerMode="dropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:background="@color/white"
+                    android:gravity="end|center"
+                    android:paddingStart="10dp"
+                    tools:ignore="RtlSymmetry" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:paddingEnd="10dp"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/drop_down_arrow"
+                    tools:ignore="ContentDescription" />
+
+            </RelativeLayout>
+
         </LinearLayout>
     </LinearLayout>
 
