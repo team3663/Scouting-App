@@ -82,14 +82,15 @@ public class PostMatch extends AppCompatActivity {
         Spinner trapSpinner = findViewById(R.id.spinnerTrap);
         //accessing the array in strings.xml
         // TODO make this not use the string resource
-        ArrayAdapter<CharSequence> trapAdapter= ArrayAdapter.createFromResource(this, R.array.trap_outcomes_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> trapAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item, Globals.TrapResultsList.getDescriptionList());
         trapAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         trapSpinner.setAdapter(trapAdapter);
 
         trapSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE); /* if you want your item to be white */
+                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.cpr_bkgnd));
             }
 
             @Override
@@ -101,14 +102,15 @@ public class PostMatch extends AppCompatActivity {
         Spinner climbPositionSpinner = findViewById(R.id.spinnerClimbPosition);
         //accessing the array in strings.xml
         // TODO make this not use the string resource
-        ArrayAdapter<CharSequence> climbPositionAdapter= ArrayAdapter.createFromResource(this, R.array.climb_positions_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> climbPositionAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item, Globals.ClimbPositionList.getDescriptionList());
         climbPositionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         climbPositionSpinner.setAdapter(climbPositionAdapter);
 
         climbPositionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE); /* if you want your item to be white */
+                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.cpr_bkgnd));
             }
 
             @Override

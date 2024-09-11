@@ -67,13 +67,12 @@ public class SubmitData extends AppCompatActivity {
 
         // Adds the items from the match log files array to the list
         spinner_Match = submitDataBinding.spinnerMatch;
-
-        ArrayList<String> matches_list = FindMatches();
-
         ArrayAdapter<String> adp = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item, matches_list);
+                android.R.layout.simple_spinner_dropdown_item, FindMatches());
         adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_Match.setAdapter(adp);
+        // Set the selection (if there are any) to the latest match (largest value in the list)
+        if (adp.getCount() > 0) spinner_Match.setSelection(adp.getCount() - 1, true);
 
         spinner_Match.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

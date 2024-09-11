@@ -1,6 +1,7 @@
 package com.cpr3663.cpr_scouting_app.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 // =============================================================================================
 // Class:       Competitions
@@ -40,6 +41,39 @@ public class Competitions {
             }
         }
         return competition;
+    }
+
+    // Member Function: return a list of Competition ID (used for Settings page)
+    public ArrayList<String> getCompetitionIdList() {
+        ArrayList<Integer> ret_int = new ArrayList<>();
+        ArrayList<String> ret = new ArrayList<>();
+
+        // If we have nothing to process, return nothing!
+        if (competition_list.isEmpty()) return ret;
+
+        // Make an array list of Competition Ids
+        for (CompetitionRow cr : competition_list) {
+            ret_int.add(cr.getId());
+        }
+
+        // Sort (numerically) the list and convert into the String ArrayList
+        Collections.sort(ret_int);
+        for (Integer i : ret_int) ret.add(i.toString());
+
+        return ret;
+    }
+
+    public String getCompetitionDescriptionById(int in_Id) {
+        String ret = "";
+
+        for (CompetitionRow cr : competition_list) {
+            if (in_Id == cr.getId()) {
+                ret = cr.getDescription();
+                break;
+            }
+        }
+
+        return ret;
     }
 
     // =============================================================================================
