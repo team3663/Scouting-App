@@ -210,20 +210,17 @@
             <RelativeLayout
                 android:layout_width="350dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintStart_toEndOf="@id/text_Competition"
-                app:layout_constraintTop_toTopOf="@+id/text_Competition">
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/spinner_StartingPosition"
                     android:spinnerMode="dropdown"
-                    android:gravity="end|center"
-                    android:background="@color/white"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
-                    android:layout_gravity="center_vertical"
+                    android:background="@color/white"
+                    android:gravity="end|center"
                     android:paddingStart="10dp"
-                    android:textSize="24sp"
                     tools:ignore="RtlSymmetry" />
 
                 <ImageView

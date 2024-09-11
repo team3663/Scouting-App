@@ -41,20 +41,17 @@
         <RelativeLayout
             android:layout_width="400dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toEndOf="@id/text_Competition"
-            app:layout_constraintTop_toTopOf="@+id/text_Competition">
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
 
             <Spinner
                 android:id="@+id/spinner_Competition"
                 android:spinnerMode="dropdown"
-                android:gravity="end|center"
-                android:background="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:layout_gravity="center_vertical"
+                android:background="@color/white"
+                android:gravity="end|center"
                 android:paddingStart="10dp"
-                android:textSize="24sp"
                 tools:ignore="RtlSymmetry" />
 
             <ImageView
@@ -90,20 +87,17 @@
         <RelativeLayout
             android:layout_width="400dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toEndOf="@id/text_Competition"
-            app:layout_constraintTop_toTopOf="@+id/text_Competition">
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
 
             <Spinner
                 android:id="@+id/spinner_Device"
                 android:spinnerMode="dropdown"
-                android:gravity="end|center"
-                android:background="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:layout_gravity="center_vertical"
+                android:background="@color/white"
+                android:gravity="end|center"
                 android:paddingStart="10dp"
-                android:textSize="24sp"
                 tools:ignore="RtlSymmetry" />
 
             <ImageView
@@ -122,7 +116,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:orientation="horizontal">
 
         <TextView

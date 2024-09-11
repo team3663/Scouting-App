@@ -78,8 +78,8 @@ public class Settings extends AppCompatActivity {
         // Adds Competition information to spinner
         spinner_Competition = settingsBinding.spinnerCompetition;
         ArrayAdapter<String> adp_Competition = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item, Globals.CompetitionList.getCompetitionList());
-        adp_Competition.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                R.layout.cpr_spinner, Globals.CompetitionList.getCompetitionList());
+        adp_Competition.setDropDownViewResource(R.layout.cpr_spinner_item);
         spinner_Competition.setAdapter(adp_Competition);
 
         // Set the selection (if there is one) to the saved one
@@ -102,8 +102,8 @@ public class Settings extends AppCompatActivity {
         // Adds Device information to spinner
         spinner_Device = settingsBinding.spinnerDevice;
         ArrayAdapter<String> adp_Device = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item, Globals.DeviceList.getDeviceList());
-        adp_Device.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                R.layout.cpr_spinner, Globals.DeviceList.getDeviceList());
+        adp_Device.setDropDownViewResource(R.layout.cpr_spinner_item);
         spinner_Device.setAdapter(adp_Device);
 
         // Set the selection (if there is one) to the saved one
@@ -119,8 +119,6 @@ public class Settings extends AppCompatActivity {
         spinner_Device.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.cpr_bkgnd));
-
                 Settings.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
