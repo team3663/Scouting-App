@@ -89,11 +89,11 @@
 
             <TextView
                 android:id="@+id/text_TeamToScoutName"
-                android:gravity="center"
+                android:gravity="start|center"
                 android:layout_width="500dp"
                 android:layout_height="60dp"
-                android:paddingStart="25dp"
-                android:textColor="@color/white"
+                android:paddingStart="20dp"
+                android:textColor="@color/light_grey"
                 android:textSize="20dp" />
         </LinearLayout>
 
@@ -125,7 +125,7 @@
                 android:background="@color/white"/>
 
             <TextView
-                android:id="@+id/text_ScouterNamePading"
+                android:id="@+id/text_ScouterNamePadding"
                 android:textSize="24sp"
                 android:gravity="center"
                 android:layout_width="400dp"
@@ -211,11 +211,11 @@
 
             <Spinner
                 android:id="@+id/spinner_StartingPosition"
-                android:gravity="right|center"
-                android:paddingRight="50dp"
-                android:drawableRight="@drawable/drop_down_arrow"
+                android:gravity="end|center"
+                android:paddingEnd="50dp"
+                android:drawableEnd="@drawable/drop_down_arrow"
                 android:drawablePadding="16dp"
-                android:background="@color/cpr_bkgnd"
+                android:background="@color/white"
                 android:layout_width="0dp"
                 android:layout_height="35dp"
                 android:layout_weight="1"
@@ -230,36 +230,6 @@
                 android:gravity="center"
                 android:layout_width="400dp"
                 android:layout_height="60dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/checkbox_Resubmit"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:button="@null"
-                android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
-                android:textColor="#FF5722"
-                android:gravity="end|center"
-                android:paddingEnd="0dp"
-                android:paddingStart="10dp"
-                android:textSize="24sp"
-                android:text="@string/pre_resubmit" />
-
-            <TextView
-                android:id="@+id/text_ResubmitPadding"
-                android:layout_width="555dp"
-                android:layout_height="60dp"
-                android:gravity="end|center"
-                android:paddingEnd="50dp"
-                android:textColor="@color/white"
-                android:textSize="24sp"
-                tools:ignore="RtlSymmetry" />
         </LinearLayout>
     </LinearLayout>
 
@@ -278,6 +248,20 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         tools:ignore="RtlSymmetry" />
+
+    <CheckBox
+        android:id="@+id/checkbox_Resubmit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FF5722"
+        android:gravity="bottom"
+        android:paddingStart="10dp"
+        android:paddingBottom="5dp"
+        android:layout_marginStart="20dp"
+        android:textSize="16sp"
+        android:text="@string/pre_resubmit"
+        app:layout_constraintBottom_toTopOf="@id/checkbox_Override"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
         android:id="@+id/text_Override"

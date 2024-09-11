@@ -75,23 +75,22 @@ public class PreMatch extends AppCompatActivity {
 
         // Create components
         EditText edit_Match = preMatchBinding.editMatch;
-        TextView text_Match = preMatchBinding.textMatch;
         EditText edit_Team = preMatchBinding.editTeamToScout;
+        Spinner spinner = preMatchBinding.spinnerStartingPosition;
+        TextView text_Match = preMatchBinding.textMatch;
         TextView text_TeamName = preMatchBinding.textTeamToScoutName;
-
-        // creates the single select menu for the robot starting positions
-        Spinner spinner = findViewById(R.id.spinner_StartingPosition);
 
         // adds the items from the starting positions array to the list
         // TODO make this not use the string resource
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.starting_positions_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item, Globals.StartPositionList.getDescriptionList());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE); /* if you want your item to be white */
+                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.cpr_bkgnd));
             }
 
             @Override

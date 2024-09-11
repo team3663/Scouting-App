@@ -117,7 +117,6 @@
                 android:gravity="end|center"
                 android:minHeight="48dp"
                 android:paddingEnd="50dp"
-                android:textColor="@color/cpr_bkgnd"
                 android:textSize="24sp"
                 tools:ignore="RtlSymmetry" />
 
@@ -150,7 +149,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="@color/cpr_bkgnd"
                 android:background="@color/white"
                 android:drawableEnd="@drawable/drop_down_arrow"
                 android:paddingHorizontal="20dp"
