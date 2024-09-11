@@ -20,7 +20,6 @@ public class Constants {
     public static final String LOGKEY_DID_LEAVE_START = "D_DidLeaveStart";
     public static final String LOGKEY_CLIMB_POSITION = "D_ClimbPos";
     public static final String LOGKEY_TRAP = "D_Trap";
-    public static final String LOGKEY_DNPS = "D_DNPs";
     public static final String LOGKEY_COMMENTS = "D_Comments";
     public static final String LOGKEY_START_TIME_OFFSET = "D_StartOffset";
     public static final String LOGKEY_DATA_KEY = "D_Key";
