@@ -16,9 +16,8 @@
     <TextView
         android:id="@+id/heading"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="80dp"
         android:textColor="@color/cpr_green"
-        android:textStyle="bold"
         android:textSize="42sp"
         android:gravity="center"
         android:text="@string/settings_heading" />
@@ -30,7 +29,7 @@
 
         <TextView
             android:id="@+id/text_Competition"
-            android:layout_width="400dp"
+            android:layout_width="350dp"
             android:layout_height="50dp"
             android:gravity="end|center"
             android:paddingEnd="50dp"
@@ -40,25 +39,26 @@
             tools:ignore="RtlSymmetry" />
 
         <Spinner
-            android:id="@+id/spinner_CompetitionId"
+            android:id="@+id/spinner_Competition"
+            android:gravity="end|center"
+            android:paddingEnd="50dp"
+            android:drawableEnd="@drawable/drop_down_arrow"
+            android:drawablePadding="16dp"
+            android:background="@color/white"
             android:layout_width="0dp"
             android:layout_height="35dp"
             android:layout_weight="1"
-            android:background="@color/white"
-            android:drawableEnd="@drawable/drop_down_arrow"
-            android:gravity="end|center"
-            android:paddingEnd="50dp"
+            android:layout_gravity="center_vertical"
+            android:paddingStart="10dp"
             android:textSize="24sp"
             tools:ignore="RtlSymmetry" />
 
         <TextView
-            android:id="@+id/text_CompetitionName"
-            android:layout_width="500dp"
-            android:layout_height="50dp"
-            android:gravity="start|center"
-            android:textColor="@color/light_grey"
-            android:paddingHorizontal="20dp"
-            android:textSize="20sp" />
+            android:id="@+id/text_CompetitionPadding"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:layout_width="200dp"
+            android:layout_height="60dp" />
 
     </LinearLayout>
 
@@ -69,7 +69,7 @@
 
         <TextView
             android:id="@+id/text_Device"
-            android:layout_width="400dp"
+            android:layout_width="350dp"
             android:layout_height="50dp"
             android:gravity="end|center"
             android:paddingEnd="50dp"
@@ -79,25 +79,26 @@
             tools:ignore="RtlSymmetry" />
 
         <Spinner
-            android:id="@+id/spinner_DeviceId"
+            android:id="@+id/spinner_Device"
+            android:gravity="end|center"
+            android:paddingEnd="50dp"
+            android:drawableEnd="@drawable/drop_down_arrow"
+            android:drawablePadding="16dp"
+            android:background="@color/white"
             android:layout_width="0dp"
             android:layout_height="35dp"
             android:layout_weight="1"
-            android:background="@color/white"
-            android:drawableEnd="@drawable/drop_down_arrow"
-            android:gravity="end|center"
-            android:paddingEnd="50dp"
+            android:layout_gravity="center_vertical"
+            android:paddingStart="10dp"
             android:textSize="24sp"
             tools:ignore="RtlSymmetry" />
 
         <TextView
-            android:id="@+id/text_DeviceName"
-            android:layout_width="500dp"
-            android:layout_height="50dp"
-            android:gravity="start|center"
-            android:textColor="@color/light_grey"
-            android:paddingHorizontal="20dp"
-            android:textSize="20sp" />
+            android:id="@+id/text_DevicePadding"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:layout_width="200dp"
+            android:layout_height="60dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -107,7 +108,7 @@
 
         <TextView
             android:id="@+id/text_ScoutingTeam"
-            android:layout_width="400dp"
+            android:layout_width="350dp"
             android:layout_height="50dp"
             android:gravity="end|center"
             android:paddingEnd="50dp"
@@ -118,7 +119,7 @@
 
         <EditText
             android:id="@+id/edit_ScoutingTeam"
-            android:layout_width="105dp"
+            android:layout_width="125dp"
             android:layout_height="wrap_content"
             android:autofillHints="Enter Scouting team number here"
             android:gravity="center"
@@ -135,9 +136,9 @@
             android:layout_width="500dp"
             android:layout_height="50dp"
             android:gravity="start|center"
-            android:textColor="@color/light_grey"
             android:paddingStart="20dp"
             android:paddingHorizontal="20dp"
+            android:textColor="@color/light_grey"
             android:textSize="20sp" />
     </LinearLayout>
 </LinearLayout>

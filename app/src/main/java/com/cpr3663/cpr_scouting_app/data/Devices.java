@@ -43,9 +43,8 @@ public class Devices {
         return device;
     }
 
-    // Member Function: return a list of Device IDs (used for Settings page)
-    public ArrayList<String> getDeviceIdList() {
-        ArrayList<Integer> ret_int = new ArrayList<>();
+    // Member Function: return a list of Device descriptions
+    public ArrayList<String> getDeviceList() {
         ArrayList<String> ret = new ArrayList<>();
 
         // If we have nothing to process, return nothing!
@@ -53,21 +52,48 @@ public class Devices {
 
         // Make an array list of Device Ids
         for (DeviceRow dr : device_list) {
-            ret_int.add(dr.getId());
+            ret.add(dr.getDescription());
         }
 
-        // Sort (numerically) the list and convert into the String ArrayList
-        Collections.sort(ret_int);
-        for (Integer i : ret_int) ret.add(i.toString());
+        // Sort the list
+        Collections.sort(ret);
+        return ret;
+    }
+
+    // Member Function:
+    public int getTeamNumberByDescription(String in_description) {
+        int ret = 0;
+
+        for (DeviceRow dr : device_list) {
+            if (in_description.equals(dr.getDescription())) {
+                ret = dr.getTeamNumber();
+                break;
+            }
+        }
 
         return ret;
     }
 
-    public String getDeviceDescriptionById(int in_Id) {
+    // Member Function: get the id that matches the description
+    public int getDeviceId(String in_description) {
+        int ret = 0;
+
+        for (DeviceRow dr : device_list) {
+            if (in_description.equals(dr.getDescription())) {
+                ret = dr.getId();
+                break;
+            }
+        }
+
+        return ret;
+    }
+
+    // Member Function: get the description that matches the id
+    public String getDeviceDescription(int in_id) {
         String ret = "";
 
         for (DeviceRow dr : device_list) {
-            if (in_Id == dr.getId()) {
+            if (in_id == dr.getId()) {
                 ret = dr.getDescription();
                 break;
             }

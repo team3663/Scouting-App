@@ -32,8 +32,8 @@
     <string name="file_error_start_positions">Error loading starting positions from data file!</string>
 
     <string name="settings_heading">Settings</string>
-    <string name="settings_competition">Competition ID:</string>
-    <string name="settings_device">Device ID:</string>
+    <string name="settings_competition">Competition:</string>
+    <string name="settings_device">Device:</string>
     <string name="settings_scouting_team">Scouting team number:</string>
 
     <string name="pre_heading">Pre-Match Scouting Information</string>

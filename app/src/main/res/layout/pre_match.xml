@@ -11,9 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="65dp"
-        tools:layout_editor_absoluteY="337dp">
+        android:orientation="vertical" >
 
         <TextView
             android:id="@+id/text_Heading"
@@ -94,7 +92,7 @@
                 android:layout_height="60dp"
                 android:paddingStart="20dp"
                 android:textColor="@color/light_grey"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
