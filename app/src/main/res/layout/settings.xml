@@ -38,27 +38,36 @@
             android:text="@string/settings_competition"
             tools:ignore="RtlSymmetry" />
 
-        <Spinner
-            android:id="@+id/spinner_Competition"
-            android:gravity="end|center"
-            android:paddingEnd="50dp"
-            android:drawableEnd="@drawable/drop_down_arrow"
-            android:drawablePadding="16dp"
-            android:background="@color/white"
-            android:layout_width="0dp"
-            android:layout_height="35dp"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:paddingStart="10dp"
-            android:textSize="24sp"
-            tools:ignore="RtlSymmetry" />
+        <RelativeLayout
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toEndOf="@id/text_Competition"
+            app:layout_constraintTop_toTopOf="@+id/text_Competition">
 
-        <TextView
-            android:id="@+id/text_CompetitionPadding"
-            android:textSize="24sp"
-            android:gravity="center"
-            android:layout_width="200dp"
-            android:layout_height="60dp" />
+            <Spinner
+                android:id="@+id/spinner_Competition"
+                android:spinnerMode="dropdown"
+                android:gravity="end|center"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_gravity="center_vertical"
+                android:paddingStart="10dp"
+                android:textSize="24sp"
+                tools:ignore="RtlSymmetry" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:paddingEnd="10dp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:src="@mipmap/drop_down_arrow"
+                tools:ignore="ContentDescription" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -78,27 +87,37 @@
             android:text="@string/settings_device"
             tools:ignore="RtlSymmetry" />
 
-        <Spinner
-            android:id="@+id/spinner_Device"
-            android:gravity="end|center"
-            android:paddingEnd="50dp"
-            android:drawableEnd="@drawable/drop_down_arrow"
-            android:drawablePadding="16dp"
-            android:background="@color/white"
-            android:layout_width="0dp"
-            android:layout_height="35dp"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:paddingStart="10dp"
-            android:textSize="24sp"
-            tools:ignore="RtlSymmetry" />
+        <RelativeLayout
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toEndOf="@id/text_Competition"
+            app:layout_constraintTop_toTopOf="@+id/text_Competition">
 
-        <TextView
-            android:id="@+id/text_DevicePadding"
-            android:textSize="24sp"
-            android:gravity="center"
-            android:layout_width="200dp"
-            android:layout_height="60dp" />
+            <Spinner
+                android:id="@+id/spinner_Device"
+                android:spinnerMode="dropdown"
+                android:gravity="end|center"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_gravity="center_vertical"
+                android:paddingStart="10dp"
+                android:textSize="24sp"
+                tools:ignore="RtlSymmetry" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:paddingEnd="10dp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:src="@mipmap/drop_down_arrow"
+                tools:ignore="ContentDescription" />
+
+        </RelativeLayout>
+
     </LinearLayout>
 
     <LinearLayout
