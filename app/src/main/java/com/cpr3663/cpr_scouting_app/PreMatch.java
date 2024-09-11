@@ -76,27 +76,15 @@ public class PreMatch extends AppCompatActivity {
         // Create components
         EditText edit_Match = preMatchBinding.editMatch;
         EditText edit_Team = preMatchBinding.editTeamToScout;
-        Spinner spinner = preMatchBinding.spinnerStartingPosition;
+        Spinner spinner_StartPos = preMatchBinding.spinnerStartingPosition;
         TextView text_Match = preMatchBinding.textMatch;
         TextView text_TeamName = preMatchBinding.textTeamToScoutName;
 
         // adds the items from the starting positions array to the list
-        // TODO make this not use the string resource
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item, Globals.StartPositionList.getDescriptionList());
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.cpr_bkgnd));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        ArrayAdapter<String> adp_StartPos = new ArrayAdapter<String>(this,
+                R.layout.cpr_spinner, Globals.StartPositionList.getDescriptionList());
+        adp_StartPos.setDropDownViewResource(R.layout.cpr_spinner_item);
+        spinner_StartPos.setAdapter(adp_StartPos);
 
         Button but_AddOverrideTeamNum = preMatchBinding.butAddOverrideTeamNum;
         CheckBox checkbox_DidPlay = preMatchBinding.checkboxDidPlay;

@@ -74,44 +74,20 @@ public class PostMatch extends AppCompatActivity {
         postMatchBinding.checkboxDidLeave.setChecked(true);
 
         //Creating the single select dropdown menu for the trap outcomes
-        Spinner trapSpinner = findViewById(R.id.spinnerTrap);
+        Spinner spinner_Trap = findViewById(R.id.spinnerTrap);
         //accessing the array in strings.xml
-        // TODO make this not use the string resource
-        ArrayAdapter<String> trapAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item, Globals.TrapResultsList.getDescriptionList());
-        trapAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        trapSpinner.setAdapter(trapAdapter);
-
-        trapSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.cpr_bkgnd));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        ArrayAdapter<String> adp_Trap = new ArrayAdapter<String>(this,
+                R.layout.cpr_spinner, Globals.TrapResultsList.getDescriptionList());
+        adp_Trap.setDropDownViewResource(R.layout.cpr_spinner_item);
+        spinner_Trap.setAdapter(adp_Trap);
 
         //Creating the single select dropdown menu for the climb positions
-        Spinner climbPositionSpinner = findViewById(R.id.spinnerClimbPosition);
+        Spinner spinner_ClimbPos = findViewById(R.id.spinnerClimbPosition);
         //accessing the array in strings.xml
-        // TODO make this not use the string resource
-        ArrayAdapter<String> climbPositionAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item, Globals.ClimbPositionList.getDescriptionList());
-        climbPositionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        climbPositionSpinner.setAdapter(climbPositionAdapter);
-
-        climbPositionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.cpr_bkgnd));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        ArrayAdapter<String> adp_ClimbPos = new ArrayAdapter<String>(this,
+                R.layout.cpr_spinner, Globals.ClimbPositionList.getDescriptionList());
+        adp_ClimbPos.setDropDownViewResource(R.layout.cpr_spinner_item);
+        spinner_ClimbPos.setAdapter(adp_ClimbPos);
 
         // assign variable
         drop_Comments = postMatchBinding.dropComments;

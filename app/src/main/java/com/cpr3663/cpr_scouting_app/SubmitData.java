@@ -67,18 +67,16 @@ public class SubmitData extends AppCompatActivity {
 
         // Adds the items from the match log files array to the list
         spinner_Match = submitDataBinding.spinnerMatch;
-        ArrayAdapter<String> adp = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item, FindMatches());
-        adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_Match.setAdapter(adp);
+        ArrayAdapter<String> adp_Match = new ArrayAdapter<String>(this,
+                R.layout.cpr_spinner, FindMatches());
+        adp_Match.setDropDownViewResource(R.layout.cpr_spinner_item);
+        spinner_Match.setAdapter(adp_Match);
         // Set the selection (if there are any) to the latest match (largest value in the list)
-        if (adp.getCount() > 0) spinner_Match.setSelection(adp.getCount() - 1, true);
+        if (adp_Match.getCount() > 0) spinner_Match.setSelection(adp_Match.getCount() - 1, true);
 
         spinner_Match.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.cpr_bkgnd));
-
                 // If we don't have both data files, display a message.  Otherwise clear it.
                 if (!checkDataFiles(spinner_Match.getSelectedItem().toString()))
                     submitDataBinding.textMatchMessage.setText(getResources().getString(R.string.submit_match_error));
