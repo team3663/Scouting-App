@@ -167,15 +167,15 @@ public class PreMatch extends AppCompatActivity {
                     if (String.valueOf(edit_Match.getText()).isEmpty() || String.valueOf(edit_Team.getText()).isEmpty() || String.valueOf(edit_Name.getText()).isEmpty()) {
                         Toast.makeText(PreMatch.this, R.string.missing_data, Toast.LENGTH_SHORT).show();
                     } else {
+                        // Save off the current match number (Logger needs this)
+                        Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
+
                         // Set up the Logger - if it fails, we better stop now, or we won't capture any data!
                         try {
                             Globals.EventLogger = new Logger(getApplicationContext());
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
-
-                        // Save off the current match number (Logger needs this)
-                        Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
 
                         // Log all of the data from this page
                         Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_TO_SCOUT, preMatchBinding.editTeamToScout.getText().toString());
