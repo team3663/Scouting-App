@@ -35,7 +35,6 @@ public class PreMatch extends AppCompatActivity {
     private PreMatchBinding preMatchBinding;
     // To store the inputted name
     protected static String ScouterName;
-    protected static int MatchNum = -1;
     protected static CheckBox checkbox_StartNote; // This needs to be global so that Match.java can access it
 
     // Doesn't appear to be needed on Tablet but helps on Virtual Devices.
@@ -105,11 +104,10 @@ public class PreMatch extends AppCompatActivity {
         // Create a text box to input the scouters name
         edit_Name.setText(ScouterName);
 
-        if (MatchNum > 0) {
-            MatchNum++;
+        if (Globals.CurrentMatchNumber > 0) {
             // MUST CONVERT TO STRING or it crashes with out warning
-            edit_Match.setText(String.valueOf(MatchNum));
-            Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
+            edit_Match.setText(String.valueOf(Globals.CurrentMatchNumber));
+            Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber);
             if (Match != null) {
                 int[] Teams = Match.getListOfTeams();
                 // TODO Set "Teams" to the options in the single select dropdown
@@ -161,8 +159,7 @@ public class PreMatch extends AppCompatActivity {
                 if (checkbox_ReSubmit.isChecked()) {
                     Intent GoToSubmitData = new Intent(PreMatch.this, SubmitData.class);
                     startActivity(GoToSubmitData);
-                }
-                else {
+                } else {
                     // Check we have all the fields entered that are needed.  Otherwise, pop a TOAST message instead
                     if (String.valueOf(edit_Match.getText()).isEmpty() || String.valueOf(edit_Team.getText()).isEmpty() || String.valueOf(edit_Name.getText()).isEmpty()) {
                         Toast.makeText(PreMatch.this, R.string.missing_data, Toast.LENGTH_SHORT).show();
@@ -186,7 +183,6 @@ public class PreMatch extends AppCompatActivity {
 
                         // Save off some fields for next time or later usage
                         ScouterName = String.valueOf(edit_Name.getText());
-                        MatchNum = Integer.parseInt(String.valueOf(edit_Match.getText()));
 
                         // If they didn't play skip everything else
                         if (preMatchBinding.checkboxDidPlay.isChecked()) {
@@ -196,6 +192,10 @@ public class PreMatch extends AppCompatActivity {
                             // Since we're jumping to the Submit page, we need to close the Logger first.
                             Globals.EventLogger.close();
                             Globals.EventLogger = null;
+
+                            // Increases the team number so that it auto fills for the next match correctly
+                            //  and do it after the logger is closed so that this can't mess the logger up
+                            Globals.CurrentMatchNumber++;
 
                             Intent GoToSubmitData = new Intent(PreMatch.this, SubmitData.class);
                             startActivity(GoToSubmitData);
