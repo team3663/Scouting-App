@@ -95,7 +95,7 @@ public class PostMatch extends AppCompatActivity {
         // initialize comment reasons arrays
         selectedComment = new boolean[CommentArray.length];
 
-        drop_Comments.setText("0 " + getResources().getString(R.string.dropdown_items_selected));
+        drop_Comments.setText("0 " + getString(R.string.dropdown_items_selected));
         //code for how to open the dropdown menu when clicked and select items
         drop_Comments.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,7 +148,7 @@ public class PostMatch extends AppCompatActivity {
                             }
                         }
                         // set number of selected on CommentsTextView
-                        drop_Comments.setText(CommentList.size() + " " + getResources().getString(R.string.dropdown_items_selected));
+                        drop_Comments.setText(CommentList.size() + " " + getString(R.string.dropdown_items_selected));
                     }
                 });
 
@@ -173,7 +173,7 @@ public class PostMatch extends AppCompatActivity {
                             // clear comment list
                             CommentList.clear();
                             // clear text view value
-                            drop_Comments.setText("0 " + getResources().getString(R.string.dropdown_items_selected));
+                            drop_Comments.setText("0 " + getString(R.string.dropdown_items_selected));
                         }
                     }
                 });
@@ -183,7 +183,6 @@ public class PostMatch extends AppCompatActivity {
         });
 
         // Create Components
-        // TODO: Change type for drop downs once we have the right XML and Java for it.
         CheckBox check_DidLeave = postMatchBinding.checkboxDidLeave;
         Spinner drop_ClimbPosition = postMatchBinding.spinnerClimbPosition;
         Spinner drop_Trap = postMatchBinding.spinnerTrap;

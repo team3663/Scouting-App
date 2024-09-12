@@ -72,7 +72,7 @@ public class Settings extends AppCompatActivity {
         });
 
         // Get the Shared Preferences where we save off app settings to use next time
-        sp = this.getSharedPreferences(getResources().getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+        sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
         spe = sp.edit();
 
         // Adds Competition information to spinner
