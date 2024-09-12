@@ -212,6 +212,10 @@ public class PostMatch extends AppCompatActivity {
                 Globals.EventLogger.close();
                 Globals.EventLogger = null;
 
+                // Increases the team number so that it auto fills for the next match correctly
+                //  and do it after the logger is closed so that this can't mess the logger up
+                Globals.CurrentMatchNumber++;
+
                 Intent GoToSubmitData = new Intent(PostMatch.this, SubmitData.class);
                 startActivity(GoToSubmitData);
             }
