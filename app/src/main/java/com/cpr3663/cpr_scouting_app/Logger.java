@@ -39,7 +39,7 @@ public class Logger {
 
     // Constructor: create the new files
     public Logger(Context in_context) throws IOException {
-        String path = in_context.getResources().getString(R.string.logger_path);
+        String path = in_context.getString(R.string.logger_path);
 
         // Ensure the path (if it's not blank) has a trailing delimiter
         if (!path.isEmpty()) {
@@ -104,6 +104,7 @@ public class Logger {
 
             fos_event.write(csv_header.getBytes(StandardCharsets.UTF_8));
             fos_event.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
+            fos_event.flush();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -113,7 +114,7 @@ public class Logger {
     public void close(){
         try {
             // Start the csv line with the event key
-            String csv_header = Constants.LOGKEY_EVENT_KEY;
+            String csv_header = Constants.LOGKEY_DATA_KEY;
             String csv_line = Globals.CurrentCompetitionId + ":" + Globals.CurrentMatchNumber + ":" + Globals.CurrentDeviceId;
 
             // Append to the csv line the values in the correct order
@@ -149,6 +150,9 @@ public class Logger {
             fos_event.close();
             fos_data.flush();
             fos_data.close();
+            fos_event = null;
+            fos_data = null;
+            System.gc();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

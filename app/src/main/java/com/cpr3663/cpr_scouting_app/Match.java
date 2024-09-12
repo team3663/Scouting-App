@@ -203,7 +203,7 @@ public class Match extends AppCompatActivity {
         // Map the text box variable to the actual text box
         text_Time = matchBinding.textTime;
         // Initialize the match timer textbox settings
-        text_Time.setText(getResources().getString(R.string.timer_label) + TIMER_DEFAULT_NUM);
+        text_Time.setText(getString(R.string.timer_label) + TIMER_DEFAULT_NUM);
         text_Time.setTextSize(20F);
         text_Time.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
         text_Time.setVisibility(View.INVISIBLE);
@@ -215,7 +215,7 @@ public class Match extends AppCompatActivity {
         // Map the button variable to the actual button
         but_MatchControl = matchBinding.butMatchControl;
         // Initialize the match Control Button settings
-        but_MatchControl.setText(getResources().getString(R.string.button_start_match));
+        but_MatchControl.setText(getString(R.string.button_start_match));
         but_MatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_green));
         but_MatchControl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -407,7 +407,7 @@ public class Match extends AppCompatActivity {
 
         // Set match Phase to be correct and Button text
         matchPhase = Constants.PHASE_AUTO;
-        but_MatchControl.setText(getResources().getString(R.string.button_start_teleop));
+        but_MatchControl.setText(getString(R.string.button_start_teleop));
         but_MatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_yellow));
         but_MatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.start_teleop, 0);
 
@@ -428,14 +428,14 @@ public class Match extends AppCompatActivity {
     public void start_Teleop() {
         // Set the start Time so that the Display Time will be correct
         startTime = System.currentTimeMillis() - TIMER_AUTO_LENGTH * 1_000;
-        text_Time.setText(getResources().getString(R.string.timer_label) + "0:" + String.format("%02d", TIMER_AUTO_LENGTH));
+        text_Time.setText(getString(R.string.timer_label) + "0:" + String.format("%02d", TIMER_AUTO_LENGTH));
 
         // Set timer tasks
         match_Timer.schedule(teleop_timertask, TIMER_TELEOP_LENGTH * 1_000);
 
         // Set match Phase to be correct and Button text
         matchPhase = Constants.PHASE_TELEOP;
-        but_MatchControl.setText(getResources().getString(R.string.button_end_match));
+        but_MatchControl.setText(getString(R.string.button_end_match));
         but_MatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_red));
 
         // Certain actions can't be set from a non-UI thread (like withing a TimerTask that runs on a
