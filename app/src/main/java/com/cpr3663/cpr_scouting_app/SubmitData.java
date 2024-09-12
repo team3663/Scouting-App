@@ -79,7 +79,7 @@ public class SubmitData extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // If we don't have both data files, display a message.  Otherwise clear it.
                 if (!checkDataFiles(spinner_Match.getSelectedItem().toString()))
-                    submitDataBinding.textMatchMessage.setText(getResources().getString(R.string.submit_match_error));
+                    submitDataBinding.textMatchMessage.setText(getString(R.string.submit_match_error));
                 else
                     submitDataBinding.textMatchMessage.setText("");
             }
@@ -133,7 +133,7 @@ public class SubmitData extends AppCompatActivity {
         ArrayList<String> ret = new ArrayList<>();
 
         // Open the output directory and get all filenames that end with "*d.csv"
-        String path = getResources().getString(R.string.logger_path);
+        String path = getString(R.string.logger_path);
 
         // Ensure the path (if it's not blank) has a trailing delimiter
         if (!path.isEmpty()) {
@@ -178,7 +178,7 @@ public class SubmitData extends AppCompatActivity {
     // =============================================================================================
     private Boolean checkDataFiles(String in_match) {
         // Open the output directory and get all filenames that end with "*d.csv"
-        String path = getResources().getString(R.string.logger_path);
+        String path = getString(R.string.logger_path);
 
         // Ensure the path (if it's not blank) has a trailing delimiter
         if (!path.isEmpty()) {

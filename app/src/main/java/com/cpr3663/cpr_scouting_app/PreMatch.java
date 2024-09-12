@@ -68,7 +68,7 @@ public class PreMatch extends AppCompatActivity {
 
         // Now that we are starting to scout data, set the Global values
         SharedPreferences sp;
-        sp = this.getSharedPreferences(getResources().getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+        sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
         Globals.CurrentScoutingTeam = sp.getInt(Settings.SP_SCOUTING_TEAM, 0);
         Globals.CurrentCompetitionId = sp.getInt(Settings.SP_COMPETITION_ID, 0);
         Globals.CurrentDeviceId = sp.getInt(Settings.SP_DEVICE_ID, 0);
@@ -167,15 +167,15 @@ public class PreMatch extends AppCompatActivity {
                     if (String.valueOf(edit_Match.getText()).isEmpty() || String.valueOf(edit_Team.getText()).isEmpty() || String.valueOf(edit_Name.getText()).isEmpty()) {
                         Toast.makeText(PreMatch.this, R.string.missing_data, Toast.LENGTH_SHORT).show();
                     } else {
-                        // Save off the current match number (Logger needs this)
-                        Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
-
                         // Set up the Logger - if it fails, we better stop now, or we won't capture any data!
                         try {
                             Globals.EventLogger = new Logger(getApplicationContext());
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
+
+                        // Save off the current match number (Logger needs this)
+                        Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
 
                         // Log all of the data from this page
                         Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_TO_SCOUT, preMatchBinding.editTeamToScout.getText().toString());
@@ -193,6 +193,10 @@ public class PreMatch extends AppCompatActivity {
                             Intent GoToMatch = new Intent(PreMatch.this, Match.class);
                             startActivity(GoToMatch);
                         } else {
+                            // Since we're jumping to the Submit page, we need to close the Logger first.
+                            Globals.EventLogger.close();
+                            Globals.EventLogger = null;
+
                             Intent GoToSubmitData = new Intent(PreMatch.this, SubmitData.class);
                             startActivity(GoToSubmitData);
                         }
