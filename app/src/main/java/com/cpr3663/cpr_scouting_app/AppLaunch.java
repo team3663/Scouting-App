@@ -111,25 +111,25 @@ public class AppLaunch extends AppCompatActivity {
 
                         // Load the data with a BRIEF delay between.  :)
                         try {
-                            LoadDataFile("ClimbPositions", getResources().getString(R.string.file_climb_positions), getResources().getString(R.string.loading_climb_positions), getResources().getString(R.string.file_error_climb_positions));
+                            LoadDataFile(getString(R.string.file_climb_positions), getString(R.string.loading_climb_positions), getString(R.string.file_error_climb_positions));
                             Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile("Comments", getResources().getString(R.string.file_comments), getResources().getString(R.string.loading_comments), getResources().getString(R.string.file_error_comments));
+                            LoadDataFile(getString(R.string.file_comments), getString(R.string.loading_comments), getString(R.string.file_error_comments));
                             Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile( "Competitions", getResources().getString(R.string.file_competitions), getResources().getString(R.string.loading_competitions), getResources().getString(R.string.file_error_competitions));
+                            LoadDataFile(getString(R.string.file_competitions), getString(R.string.loading_competitions), getString(R.string.file_error_competitions));
                             Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile("Devices", getResources().getString(R.string.file_devices), getResources().getString(R.string.loading_devices), getResources().getString(R.string.file_error_devices));
+                            LoadDataFile(getString(R.string.file_devices), getString(R.string.loading_devices), getString(R.string.file_error_devices));
                             Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile("EventsAuto", getResources().getString(R.string.file_events_auto), getResources().getString(R.string.loading_events_auto), getResources().getString(R.string.file_error_events_auto));
+                            LoadDataFile(getString(R.string.file_events_auto), getString(R.string.loading_events_auto), getString(R.string.file_error_events_auto));
                             Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile("EventsTeleop", getResources().getString(R.string.file_events_teleop), getResources().getString(R.string.loading_events_teleop), getResources().getString(R.string.file_error_events_teleop));
+                            LoadDataFile(getString(R.string.file_events_teleop), getString(R.string.loading_events_teleop), getString(R.string.file_error_events_teleop));
                             Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile("Matches", getResources().getString(R.string.file_matches), getResources().getString(R.string.loading_matches), getResources().getString(R.string.file_error_matches));
+                            LoadDataFile(getString(R.string.file_matches), getString(R.string.loading_matches), getString(R.string.file_error_matches));
                             Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile("StartPositions", getResources().getString(R.string.file_start_positions), getResources().getString(R.string.loading_start_positions), getResources().getString(R.string.file_error_start_positions));
+                            LoadDataFile(getString(R.string.file_start_positions), getString(R.string.loading_start_positions), getString(R.string.file_error_start_positions));
                             Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile("Teams", getResources().getString(R.string.file_teams), getResources().getString(R.string.loading_teams), getResources().getString(R.string.file_error_teams));
+                            LoadDataFile(getString(R.string.file_teams), getString(R.string.loading_teams), getString(R.string.file_error_teams));
                             Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile("TrapResults", getResources().getString(R.string.file_trap_results), getResources().getString(R.string.loading_trap_results), getResources().getString(R.string.file_error_trap_results));
+                            LoadDataFile(getString(R.string.file_trap_results), getString(R.string.loading_trap_results), getString(R.string.file_error_trap_results));
                             Thread.sleep(SPLASH_SCREEN_DELAY);
 
                             // We need to build the "Next Events" possible but needs to be done now, after all data is loaded.
@@ -219,18 +219,20 @@ public class AppLaunch extends AppCompatActivity {
     //              StartPositionList structure.
     //              If the in_PublicFileName doesn't exist, try to create if from the private one.
     //              If we can't read fromthe Public file, read from the Private one.
-    // Parameters:  in_className
-    //                  String telling us which data/class we're loading.
+    // Parameters:  in_msgLoading
+    //                  String to display to the UI that we're loading the file
+    //              in_msgError
+    //                  String to display to user if there's an error loading the file
     // Output:      void
     // =============================================================================================
-    public void LoadDataFile(String in_className, String in_fileName, String in_msgLoading, String in_msgError) {
+    public void LoadDataFile(String in_fileName, String in_msgLoading, String in_msgError) {
         boolean usePublic;
         String line = "";
         int index = 1;
 
         // Ensure the public file exists, and if not, copy the private one there.
         // Return back if we should use the private or public file.
-       usePublic = CopyPrivateToPublicFile(getResources().getString(R.string.private_path) + "/" + in_fileName, getResources().getString(R.string.public_path) + "/" + in_fileName, in_msgError);
+       usePublic = CopyPrivateToPublicFile(getString(R.string.private_path) + "/" + in_fileName, getString(R.string.public_path) + "/" + in_fileName, in_msgError);
 
         // Update the loading status
         appLaunchBinding.textStatus.setText(in_msgLoading);
@@ -242,10 +244,10 @@ public class AppLaunch extends AppCompatActivity {
             // If we can use the Public file, open the file, then the stream.  for the Private file, we can open the stream directly.
             // We assume this will work (no try/catch) and if THIS fails, it's likely good that we're going to crash the app.  :(
             if (usePublic) {
-                File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getResources().getString(R.string.public_path) + "/" + in_fileName);
+                File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getString(R.string.public_path) + "/" + in_fileName);
                 is = new FileInputStream(in_file);
             } else {
-                is = getAssets().open(getResources().getString(R.string.private_path) + "/" + in_fileName);
+                is = getAssets().open(getString(R.string.private_path) + "/" + in_fileName);
             }
 
             // Read in the data
@@ -257,50 +259,51 @@ public class AppLaunch extends AppCompatActivity {
 
                 // A bit messy but we need to know which Global to add the data to, and which fields to pass in.
                 // Switch needs a constant in the "case" expression, and complains about using getResources().
-                // TODO: change to if...else and use the in_filename so we don't have constant strings.
-                switch (in_className) {
-                    case "ClimbPositions":
-                        if (Boolean.parseBoolean(info[1])) Globals.ClimbPositionList.addClimbPositionRow(info[0], info[2]);
-                        break;
-                    case "Comments":
-                        if (Boolean.parseBoolean(info[1])) Globals.CommentList.addCommentRow(info[0], info[2], info[3]);
-                            break;
-                    case "Competitions":
-                        Globals.CompetitionList.addCompetitionRow(info[0], info[1]);
-                        break;
-                    case "Devices":
-                        Globals.DeviceList.addDeviceRow(info[0], info[1], info[2]);
-                        break;
-                    case "EventsAuto":
-                        Globals.EventList.addEventRow(info[0], info[1], Constants.PHASE_AUTO, info[2], info[3], info[4]);
-                        break;
-                    case "EventsTeleop":
-                        Globals.EventList.addEventRow(info[0], info[1], Constants.PHASE_TELEOP, info[2], info[3], info[4]);
-                        break;
-                    case "Matches":
-                        // Use only the match information that equals the competition we're in.
-                        if (Integer.parseInt(info[0]) == CompetitionId) {
-                            for (int i = index; i < Integer.parseInt(info[1]); i++) {
-                                Globals.MatchList.addMatchRow(Constants.NO_MATCH);
-                            }
-                            Globals.MatchList.addMatchRow(info[2], info[3], info[4], info[5], info[6], info[7]);
-                            index = Integer.parseInt(info[1]) + 1;
+                if (in_fileName.equals(getString(R.string.file_climb_positions))) {
+                    if (Boolean.parseBoolean(info[1]))
+                        Globals.ClimbPositionList.addClimbPositionRow(info[0], info[2]);
+                }
+                else if (in_fileName.equals(getString(R.string.file_comments))) {
+                    if (Boolean.parseBoolean(info[1]))
+                        Globals.CommentList.addCommentRow(info[0], info[2], info[3]);
+                }
+                else if (in_fileName.equals(getString(R.string.file_competitions))) {
+                    Globals.CompetitionList.addCompetitionRow(info[0], info[1]);
+                }
+                else if (in_fileName.equals(getString(R.string.file_devices))) {
+                    Globals.DeviceList.addDeviceRow(info[0], info[1], info[2]);
+                }
+                else if (in_fileName.equals(getString(R.string.file_events_auto))) {
+                    Globals.EventList.addEventRow(info[0], info[1], Constants.PHASE_AUTO, info[2], info[3], info[4]);
+                }
+                else if (in_fileName.equals(getString(R.string.file_events_teleop))) {
+                    Globals.EventList.addEventRow(info[0], info[1], Constants.PHASE_TELEOP, info[2], info[3], info[4]);
+                }
+                else if (in_fileName.equals(getString(R.string.file_matches))) {
+                    // Use only the match information that equals the competition we're in.
+                    if (Integer.parseInt(info[0]) == CompetitionId) {
+                        for (int i = index; i < Integer.parseInt(info[1]); i++) {
+                            Globals.MatchList.addMatchRow(Constants.NO_MATCH);
                         }
-                        break;
-                    case "StartPositions":
-                        if (Boolean.valueOf(info[1])) Globals.StartPositionList.addStartPositionRow(info[0], info[2]);
-                        break;
-                    case "Teams":
-                        // Need to make sure there's no gaps so the team number and index align
-                        for (int i = index; i < Integer.parseInt(info[0]); i++) {
-                            Globals.TeamList.add(Constants.NO_TEAM);
-                        }
-                        Globals.TeamList.add(info[1]);
-                        index = Integer.parseInt(info[0]) + 1;
-                        break;
-                    case "TrapResults":
-                        if (Boolean.parseBoolean(info[1])) Globals.TrapResultsList.addTrapResultRow(info[0], info[2]);
-                            break;
+                        Globals.MatchList.addMatchRow(info[2], info[3], info[4], info[5], info[6], info[7]);
+                        index = Integer.parseInt(info[1]) + 1;
+                    }
+                }
+                else if (in_fileName.equals(getString(R.string.file_start_positions))) {
+                    if (Boolean.valueOf(info[1]))
+                        Globals.StartPositionList.addStartPositionRow(info[0], info[2]);
+                }
+                else if (in_fileName.equals(getString(R.string.file_teams))) {
+                    // Need to make sure there's no gaps so the team number and index align
+                    for (int i = index; i < Integer.parseInt(info[0]); i++) {
+                        Globals.TeamList.add(Constants.NO_TEAM);
+                    }
+                    Globals.TeamList.add(info[1]);
+                    index = Integer.parseInt(info[0]) + 1;
+                    }
+                else if (in_fileName.equals(getString(R.string.file_trap_results))) {
+                    if (Boolean.parseBoolean(info[1]))
+                        Globals.TrapResultsList.addTrapResultRow(info[0], info[2]);
                 }
             }
         } catch (FileNotFoundException e) {
