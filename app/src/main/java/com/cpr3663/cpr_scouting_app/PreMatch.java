@@ -114,6 +114,7 @@ public class PreMatch extends AppCompatActivity {
                     // TODO Set "Teams" to the options in the single select dropdown
                 }
             }
+            // TODO Also need to set Team To Scout to be defaulted IF Globals.CurrentTeamToScout is > 0 (as if you hit "BACK" button from Match)
         } else edit_Match.setText("");
 
         // Default checkboxes
