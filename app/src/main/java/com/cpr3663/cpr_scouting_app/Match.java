@@ -261,17 +261,24 @@ public class Match extends AppCompatActivity {
         // Do this so that you can't mess with the switch during the wrong phases
         switch_Defense.setEnabled(false);
 
-        switch_Defense.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        // This gets called if either the switch is clicked on, or the slide toggle is flipped (covers both)
+        switch_Defense.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // If the button is being turned ON make it RED otherwise LTGRAY
-                if (switch_Defense.isChecked()) {
+                if (isChecked) {
                     Globals.EventLogger.LogEvent(Constants.EVENT_ID_DEFENSE_START, 0,0,true);
                     switch_Defense.setBackgroundColor(BUTTON_COLOR_FLASH);
                 } else {
                     Globals.EventLogger.LogEvent(Constants.EVENT_ID_DEFENSE_END, 0,0,false);
                     switch_Defense.setBackgroundColor(BUTTON_COLOR_NORMAL);
                 }
+            }
+        });
+
+        switch_Defense.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Need this listener or else the onCheckedChanged won't fire either.
             }
         });
 
@@ -284,17 +291,23 @@ public class Match extends AppCompatActivity {
         // Do this so that you can't mess with the switch during the wrong phases
         switch_Defended.setEnabled(false);
 
-        switch_Defended.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // If the button is being turned ON make it RED otherwise LTGRAY
-                if (switch_Defended.isChecked()) {
+        // This gets called if either the switch is clicked on, or the slide toggle is flipped (covers both)
+        switch_Defended.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
                     Globals.EventLogger.LogEvent(Constants.EVENT_ID_DEFENDED_START, 0,0,true);
                     switch_Defended.setBackgroundColor(BUTTON_COLOR_FLASH);
                 } else {
                     Globals.EventLogger.LogEvent(Constants.EVENT_ID_DEFENDED_END, 0,0,false);
                     switch_Defended.setBackgroundColor(BUTTON_COLOR_NORMAL);
                 }
+            }
+        });
+
+        switch_Defended.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Need this listener or else the onCheckedChanged won't fire either.
             }
         });
 
