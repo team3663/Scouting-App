@@ -202,10 +202,15 @@ public class PostMatch extends AppCompatActivity {
 
                 // Log all of the data from this page
                 Globals.EventLogger.LogData(Constants.LOGKEY_DID_LEAVE_START, String.valueOf(postMatchBinding.checkboxDidLeave.isChecked()));
-                Globals.EventLogger.LogData(Constants.LOGKEY_CLIMB_POSITION, postMatchBinding.spinnerClimbPosition.getSelectedItem().toString());
-                Globals.EventLogger.LogData(Constants.LOGKEY_TRAP, postMatchBinding.spinnerTrap.getSelectedItem().toString());
+                Globals.EventLogger.LogData(Constants.LOGKEY_CLIMB_POSITION, String.valueOf(Globals.ClimbPositionList.getClimbPositionId(postMatchBinding.spinnerClimbPosition.getSelectedItem().toString())));
+                Globals.EventLogger.LogData(Constants.LOGKEY_TRAP, String.valueOf(Globals.TrapResultsList.getTrapResultId(postMatchBinding.spinnerTrap.getSelectedItem().toString())));
                 // TODO need to know how to build a multi-selected list of IDs (delimiter will be ":")
-                Globals.EventLogger.LogData(Constants.LOGKEY_COMMENTS, postMatchBinding.dropComments.toString());
+                String comment_sep_ID = "";
+                for (String comment : CommentArray) {
+                    comment_sep_ID += (":") + (String.valueOf(Globals.CommentList.getCommentId(comment)));
+                }
+                comment_sep_ID = comment_sep_ID.substring(1);
+                Globals.EventLogger.LogData(Constants.LOGKEY_COMMENTS, comment_sep_ID);
 
                 // We're done with the logger
                 Globals.EventLogger.close();
