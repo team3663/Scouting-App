@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.text.Layout;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -373,14 +375,30 @@ public class Match extends AppCompatActivity {
             for (String event : events_al) {
                 menu.add(event);
             }
+
+            // Go through all of the items and see if we want to customize the text using a SpannableString
+            for (int i = 0; i < menu.size(); i++) {
+                MenuItem item = menu.getItem(i);
+                SpannableString ss = new SpannableString(item.getTitle());
+
+                // If this menuItem has "Miss" in the text, make it dark red
+                // If this menuItem has "Score" in the text, make it dark red
+                if (ss.toString().contains("Miss")) {
+                    ss.setSpan(new ForegroundColorSpan(getColor(R.color.dark_red)), 0, ss.length(), 0);
+                    item.setTitle(ss);
+                } else if (ss.toString().contains("Score")) {
+                    ss.setSpan(new ForegroundColorSpan(getColor(R.color.dark_green)), 0, ss.length(), 0);
+                    item.setTitle(ss);
+                }
+            }
         }
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        matchBinding.textStatus.setText("Last Event: " + item.getTitle());
-        eventPrevious = Globals.EventList.getEventId((String) item.getTitle());
+        matchBinding.textStatus.setText("Last Event: " + item.getTitle().toString());
+        eventPrevious = Globals.EventList.getEventId((String) item.getTitle().toString());
         Globals.EventLogger.LogEvent(eventPrevious, current_X_Relative, current_Y_Relative, is_start_of_seq, currentTouchTime);
         return true;
     }
