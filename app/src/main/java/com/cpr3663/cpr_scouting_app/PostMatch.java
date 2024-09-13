@@ -202,7 +202,6 @@ public class PostMatch extends AppCompatActivity {
                 Globals.EventLogger.LogData(Constants.LOGKEY_DID_LEAVE_START, String.valueOf(postMatchBinding.checkboxDidLeave.isChecked()));
                 Globals.EventLogger.LogData(Constants.LOGKEY_CLIMB_POSITION, String.valueOf(Globals.ClimbPositionList.getClimbPositionId(postMatchBinding.spinnerClimbPosition.getSelectedItem().toString())));
                 Globals.EventLogger.LogData(Constants.LOGKEY_TRAP, String.valueOf(Globals.TrapResultsList.getTrapResultId(postMatchBinding.spinnerTrap.getSelectedItem().toString())));
-                // TODO need to know how to build a multi-selected list of IDs (delimiter will be ":")
                 String comment_sep_ID = "";
                 for (Integer comment_dropID : CommentList) {
                     String comment = CommentArray[comment_dropID];
