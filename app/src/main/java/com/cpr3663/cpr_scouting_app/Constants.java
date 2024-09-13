@@ -10,7 +10,6 @@ public class Constants {
     public static final String PHASE_TELEOP = "Teleop";
     public static final String PHASE_NONE = "";
 
-    public static final int KEEP_NUMBER_OF_MATCHES = 5;
     // Logger Keys - These are also the csv column header names
     public static final String LOGKEY_DID_PLAY = "D_DidPlay";
     public static final String LOGKEY_START_POSITION = "D_StartPos";

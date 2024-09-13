@@ -69,12 +69,12 @@ public class Logger {
         }
 
         // If there's too many files, go through and delete ANY that are older than then Nth - 1
-        if (last_created.size() >= Constants.KEEP_NUMBER_OF_MATCHES) {
+        if (last_created.size() >= Globals.NumberMatchFilesKept) {
             // Sort the list and find the Nth - 1 oldest file (because we're about to create the Nth)
             Collections.sort(last_created);
             Collections.reverse(last_created);
 
-            long created_check = last_created.get(Constants.KEEP_NUMBER_OF_MATCHES - 1);
+            long created_check = last_created.get(Globals.NumberMatchFilesKept - 1);
 
             for (File file : files) {
                 if (file.isFile()) {

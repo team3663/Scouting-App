@@ -169,6 +169,7 @@ public class PreMatch extends AppCompatActivity {
                     } else {
                         // Save off the current match number (Logger needs this)
                         Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
+                        Globals.NumberMatchFilesKept = sp.getInt(Settings.SP_NUM_MATCHES, 5);
 
                         // Set up the Logger - if it fails, we better stop now, or we won't capture any data!
                         try {
