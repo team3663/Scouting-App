@@ -4,10 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -84,7 +82,7 @@ public class PostMatch extends AppCompatActivity {
         //Creating the single select dropdown menu for the climb positions
         Spinner spinner_ClimbPos = findViewById(R.id.spinnerClimbPosition);
         //accessing the array in strings.xml
-        ArrayAdapter<String> adp_ClimbPos = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> adp_ClimbPos = new ArrayAdapter<String> (this,
                 R.layout.cpr_spinner, Globals.ClimbPositionList.getDescriptionList());
         adp_ClimbPos.setDropDownViewResource(R.layout.cpr_spinner_item);
         spinner_ClimbPos.setAdapter(adp_ClimbPos);
@@ -104,7 +102,6 @@ public class PostMatch extends AppCompatActivity {
 
                 // set title for the dropdown menu
                 builder.setTitle("Select All That Apply");
-
 
                 // set dialog non cancelable
                 builder.setCancelable(false);
@@ -203,14 +200,23 @@ public class PostMatch extends AppCompatActivity {
 
                 // Log all of the data from this page
                 Globals.EventLogger.LogData(Constants.LOGKEY_DID_LEAVE_START, String.valueOf(postMatchBinding.checkboxDidLeave.isChecked()));
-//                Globals.EventLogger.LogData(Constants.LOGKEY_CLIMB_POSITION, postMatchBinding.spinnerClimbPosition.getSelectedItem().toString());
-//                Globals.EventLogger.LogData(Constants.LOGKEY_TRAP, postMatchBinding.spinnerTrap.getSelectedItem().toString());
-                // TODO : need to know how to build a multi-selected list of IDs (delimiter will be ":")
-//                Globals.EventLogger.LogData(Constants.LOGKEY_COMMENTS, postMatchBinding.dropComments.toString());
+                Globals.EventLogger.LogData(Constants.LOGKEY_CLIMB_POSITION, String.valueOf(Globals.ClimbPositionList.getClimbPositionId(postMatchBinding.spinnerClimbPosition.getSelectedItem().toString())));
+                Globals.EventLogger.LogData(Constants.LOGKEY_TRAP, String.valueOf(Globals.TrapResultsList.getTrapResultId(postMatchBinding.spinnerTrap.getSelectedItem().toString())));
+                String comment_sep_ID = "";
+                for (Integer comment_dropID : CommentList) {
+                    String comment = CommentArray[comment_dropID];
+                    comment_sep_ID += (":") + (String.valueOf(Globals.CommentList.getCommentId(comment)));
+                }
+                comment_sep_ID = comment_sep_ID.substring(1);
+                Globals.EventLogger.LogData(Constants.LOGKEY_COMMENTS, comment_sep_ID);
 
                 // We're done with the logger
                 Globals.EventLogger.close();
                 Globals.EventLogger = null;
+
+                // Increases the team number so that it auto fills for the next match correctly
+                //  and do it after the logger is closed so that this can't mess the logger up
+                Globals.CurrentMatchNumber++;
 
                 Intent GoToSubmitData = new Intent(PostMatch.this, SubmitData.class);
                 startActivity(GoToSubmitData);
