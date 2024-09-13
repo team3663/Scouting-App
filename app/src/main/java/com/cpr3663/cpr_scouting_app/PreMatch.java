@@ -107,10 +107,12 @@ public class PreMatch extends AppCompatActivity {
         if (Globals.CurrentMatchNumber > 0) {
             // MUST CONVERT TO STRING or it crashes with out warning
             edit_Match.setText(String.valueOf(Globals.CurrentMatchNumber));
-            Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber);
-            if (Match != null) {
-                int[] Teams = Match.getListOfTeams();
-                // TODO Set "Teams" to the options in the single select dropdown
+            if (Globals.CurrentMatchNumber <= Globals.MatchList.getNumberOfMatches()) {
+                Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber);
+                if (Match != null) {
+                    int[] Teams = Match.getListOfTeams();
+                    // TODO Set "Teams" to the options in the single select dropdown
+                }
             }
         } else edit_Match.setText("");
 
