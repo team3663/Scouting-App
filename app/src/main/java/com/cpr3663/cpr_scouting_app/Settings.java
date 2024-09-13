@@ -31,6 +31,7 @@ public class Settings extends AppCompatActivity {
     public static final String SP_COMPETITION_ID = "CompetitionId";
     public static final String SP_DEVICE_ID = "DeviceId";
     public static final String SP_SCOUTING_TEAM = "ScoutingTeam";
+    public static final String SP_NUM_MATCHES = "NumberOfMatches";
 
     // =============================================================================================
     // Global variables
@@ -74,6 +75,9 @@ public class Settings extends AppCompatActivity {
         // Get the Shared Preferences where we save off app settings to use next time
         sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
         spe = sp.edit();
+
+        // Restore number of files to keep from saved preferences
+        settingsBinding.editNumMatches.setText(String.valueOf(sp.getInt(SP_NUM_MATCHES, 5)));
 
         // Adds Competition information to spinner
         spinner_Competition = settingsBinding.spinnerCompetition;
@@ -179,6 +183,11 @@ public class Settings extends AppCompatActivity {
                 if (!ScoutingTeam.isEmpty()) {
                     spe.putInt(SP_SCOUTING_TEAM, Integer.parseInt(ScoutingTeam));
                 }
+
+                int NumMatches = Integer.parseInt(settingsBinding.editNumMatches.getText().toString());
+                if (NumMatches < 1) NumMatches = 1;
+                spe.putInt(SP_NUM_MATCHES, NumMatches);
+
                 spe.apply();
                 Exit();
             }

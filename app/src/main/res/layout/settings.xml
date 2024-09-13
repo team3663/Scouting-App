@@ -154,6 +154,45 @@
             android:textColor="@color/light_grey"
             android:textSize="20sp" />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_NumMatches"
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:gravity="end|center"
+            android:paddingEnd="50dp"
+            android:text="@string/settings_num_files"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            tools:ignore="RtlSymmetry" />
+
+        <EditText
+            android:id="@+id/edit_NumMatches"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:autofillHints="Enter Scouting team number here"
+            android:gravity="center"
+            android:inputType="number"
+            android:textColor="@color/cpr_bkgnd"
+            android:background="@color/white"
+            android:textColorHint="@color/black"
+            android:textSize="24sp"
+            android:paddingHorizontal="20dp"
+            tools:ignore="LabelFor" />
+
+        <TextView
+            android:id="@+id/text_NumMatchesPadding"
+            android:layout_width="500dp"
+            android:layout_height="50dp"
+            android:gravity="start|center"
+            android:textSize="20sp" />
+    </LinearLayout>
+
 </LinearLayout>
 
 <Button

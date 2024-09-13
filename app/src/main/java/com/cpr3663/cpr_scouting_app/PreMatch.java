@@ -107,11 +107,14 @@ public class PreMatch extends AppCompatActivity {
         if (Globals.CurrentMatchNumber > 0) {
             // MUST CONVERT TO STRING or it crashes with out warning
             edit_Match.setText(String.valueOf(Globals.CurrentMatchNumber));
-            Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber);
-            if (Match != null) {
-                int[] Teams = Match.getListOfTeams();
-                // TODO Set "Teams" to the options in the single select dropdown
+            if (Globals.CurrentMatchNumber <= Globals.MatchList.getNumberOfMatches()) {
+                Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber);
+                if (Match != null) {
+                    int[] Teams = Match.getListOfTeams();
+                    // TODO Set "Teams" to the options in the single select dropdown
+                }
             }
+            // TODO Also need to set Team To Scout to be defaulted IF Globals.CurrentTeamToScout is > 0 (as if you hit "BACK" button from Match)
         } else edit_Match.setText("");
 
         // Default checkboxes
@@ -166,6 +169,7 @@ public class PreMatch extends AppCompatActivity {
                     } else {
                         // Save off the current match number (Logger needs this)
                         Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
+                        Globals.NumberMatchFilesKept = sp.getInt(Settings.SP_NUM_MATCHES, 5);
 
                         // Set up the Logger - if it fails, we better stop now, or we won't capture any data!
                         try {
@@ -212,11 +216,13 @@ public class PreMatch extends AppCompatActivity {
                     String MatchNumStr = String.valueOf(edit_Match.getText());
                     if (!MatchNumStr.isEmpty()) {
                         int MatchNum = Integer.parseInt(MatchNumStr);
-                        Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
-                        if (Match != null) {
-                            // MUST CONVERT TO STRING or it crashes with out warning
-                            int[] Teams = Match.getListOfTeams();
-                            // TODO Set "Teams" to the options in the single select dropdown
+                        if (MatchNum <= Globals.MatchList.getNumberOfMatches()) {
+                            Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
+                            if (Match != null) {
+                                // MUST CONVERT TO STRING or it crashes with out warning
+                                int[] Teams = Match.getListOfTeams();
+                                // TODO Set "Teams" to the options in the single select dropdown
+                            }
                         }
                     }
                 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CPR-Scouting-App</string>
+    <string name="app_name">CPR Scouting App</string>
     <string name="preference_setting_file_key">com.cpr3663.cpr_scouting_app.PREFERENCE_FILE_KEY</string>
 
     <string name="button_start_match">Start Match</string>
@@ -35,6 +35,7 @@
     <string name="settings_competition">Competition:</string>
     <string name="settings_device">Device:</string>
     <string name="settings_scouting_team">Scouting team number:</string>
+    <string name="settings_num_files"># of matches to keep:</string>
 
     <string name="pre_heading">Pre-Match Scouting Information</string>
     <string name="pre_match_num">Match number:</string>

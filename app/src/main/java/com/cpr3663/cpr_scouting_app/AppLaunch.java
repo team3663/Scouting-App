@@ -1,7 +1,9 @@
 package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -46,8 +48,8 @@ public class AppLaunch extends AppCompatActivity {
     private AppLaunchBinding appLaunchBinding;
     private String msg_Error = "";
     private String msg_Loading = "";
-    public static int CompetitionId = 4; // THIS NEEDS TO BE READ FROM THE CONFIG FILE
     public static Timer appLaunch_timer = new Timer();
+    SharedPreferences sp;
 
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
     @Override
@@ -67,6 +69,9 @@ public class AppLaunch extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Get the Shared Preferences where we save off app settings to use next time
+        sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
 
         // Define a Image Button to open up the Settings
         ImageButton imgBut_Settings = appLaunchBinding.imgButSettings;
@@ -281,7 +286,7 @@ public class AppLaunch extends AppCompatActivity {
                 }
                 else if (in_fileName.equals(getString(R.string.file_matches))) {
                     // Use only the match information that equals the competition we're in.
-                    if (Integer.parseInt(info[0]) == CompetitionId) {
+                    if (Integer.parseInt(info[0]) == sp.getInt(Settings.SP_COMPETITION_ID, -1)) {
                         for (int i = index; i < Integer.parseInt(info[1]); i++) {
                             Globals.MatchList.addMatchRow(Constants.NO_MATCH);
                         }

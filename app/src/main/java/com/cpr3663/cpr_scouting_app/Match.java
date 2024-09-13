@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.text.Layout;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -42,7 +44,7 @@ public class Match extends AppCompatActivity {
     private static final int TIMER_AUTO_LENGTH = 15; // in seconds
     private static final int TIMER_TELEOP_LENGTH = 135; // in seconds
     private static final int TIMER_UPDATE_RATE = 1_000; // in milliseconds
-    private static final String TIMER_DEFAULT_NUM = "-:--"; // What the timer displays when there isn't a match going
+    private static final int TIMER_AUTO_TELEOP_DELAY = 3; // in seconds
     private static final int BUTTON_FLASH_INTERVAL = 1_000; // in milliseconds
     private static final int BUTTON_COLOR_FLASH = Color.RED;
     private static final int BUTTON_COLOR_NORMAL = R.color.cpr_bkgnd;
@@ -87,7 +89,14 @@ public class Match extends AppCompatActivity {
         @Override
         public void run() {
             // Get elapsed time in seconds without decimal and round to make it more accurate and not skip numbers
-            int elapsedSeconds = (int) Math.round((System.currentTimeMillis() - startTime) / 1_000.0);
+            int elapsedSeconds = 0;
+
+            if (matchPhase.equals(Constants.PHASE_AUTO)) {
+                elapsedSeconds = (int) (TIMER_AUTO_LENGTH - Math.round((System.currentTimeMillis() - startTime) / 1_000.0));
+            } else {
+                elapsedSeconds = (int) (TIMER_TELEOP_LENGTH + TIMER_AUTO_LENGTH - Math.round((System.currentTimeMillis() - startTime) / 1_000.0));
+            }
+            if (elapsedSeconds < 0) elapsedSeconds = 0;
             text_Time.setText("Time: " + elapsedSeconds / 60 + ":" + String.format("%02d", elapsedSeconds % 60));
         }
     }
@@ -203,7 +212,7 @@ public class Match extends AppCompatActivity {
         // Map the text box variable to the actual text box
         text_Time = matchBinding.textTime;
         // Initialize the match timer textbox settings
-        text_Time.setText(getString(R.string.timer_label) + TIMER_DEFAULT_NUM);
+        text_Time.setText(getString(R.string.timer_label) + TIMER_AUTO_LENGTH);
         text_Time.setTextSize(20F);
         text_Time.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
         text_Time.setVisibility(View.INVISIBLE);
@@ -261,17 +270,24 @@ public class Match extends AppCompatActivity {
         // Do this so that you can't mess with the switch during the wrong phases
         switch_Defense.setEnabled(false);
 
-        switch_Defense.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        // This gets called if either the switch is clicked on, or the slide toggle is flipped (covers both)
+        switch_Defense.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // If the button is being turned ON make it RED otherwise LTGRAY
-                if (switch_Defense.isChecked()) {
+                if (isChecked) {
                     Globals.EventLogger.LogEvent(Constants.EVENT_ID_DEFENSE_START, 0,0,true);
                     switch_Defense.setBackgroundColor(BUTTON_COLOR_FLASH);
                 } else {
                     Globals.EventLogger.LogEvent(Constants.EVENT_ID_DEFENSE_END, 0,0,false);
                     switch_Defense.setBackgroundColor(BUTTON_COLOR_NORMAL);
                 }
+            }
+        });
+
+        switch_Defense.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Need this listener or else the onCheckedChanged won't fire either.
             }
         });
 
@@ -284,17 +300,23 @@ public class Match extends AppCompatActivity {
         // Do this so that you can't mess with the switch during the wrong phases
         switch_Defended.setEnabled(false);
 
-        switch_Defended.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // If the button is being turned ON make it RED otherwise LTGRAY
-                if (switch_Defended.isChecked()) {
+        // This gets called if either the switch is clicked on, or the slide toggle is flipped (covers both)
+        switch_Defended.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
                     Globals.EventLogger.LogEvent(Constants.EVENT_ID_DEFENDED_START, 0,0,true);
                     switch_Defended.setBackgroundColor(BUTTON_COLOR_FLASH);
                 } else {
                     Globals.EventLogger.LogEvent(Constants.EVENT_ID_DEFENDED_END, 0,0,false);
                     switch_Defended.setBackgroundColor(BUTTON_COLOR_NORMAL);
                 }
+            }
+        });
+
+        switch_Defended.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Need this listener or else the onCheckedChanged won't fire either.
             }
         });
 
@@ -335,7 +357,6 @@ public class Match extends AppCompatActivity {
         // Check to make sure the game is going
         if (!matchPhase.equals(Constants.PHASE_NONE)) {
             // Get the events
-            String[] events;
             ArrayList<String> events_al;
             is_start_of_seq = false;
 
@@ -354,14 +375,30 @@ public class Match extends AppCompatActivity {
             for (String event : events_al) {
                 menu.add(event);
             }
+
+            // Go through all of the items and see if we want to customize the text using a SpannableString
+            for (int i = 0; i < menu.size(); i++) {
+                MenuItem item = menu.getItem(i);
+                SpannableString ss = new SpannableString(item.getTitle());
+
+                // If this menuItem has "Miss" in the text, make it dark red
+                // If this menuItem has "Score" in the text, make it dark red
+                if (ss.toString().contains("Miss")) {
+                    ss.setSpan(new ForegroundColorSpan(getColor(R.color.dark_red)), 0, ss.length(), 0);
+                    item.setTitle(ss);
+                } else if (ss.toString().contains("Score")) {
+                    ss.setSpan(new ForegroundColorSpan(getColor(R.color.dark_green)), 0, ss.length(), 0);
+                    item.setTitle(ss);
+                }
+            }
         }
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        matchBinding.textStatus.setText("Last Event: " + item.getTitle());
-        eventPrevious = Globals.EventList.getEventId((String) item.getTitle());
+        matchBinding.textStatus.setText("Last Event: " + item.getTitle().toString());
+        eventPrevious = Globals.EventList.getEventId((String) item.getTitle().toString());
         Globals.EventLogger.LogEvent(eventPrevious, current_X_Relative, current_Y_Relative, is_start_of_seq, currentTouchTime);
         return true;
     }
@@ -401,7 +438,7 @@ public class Match extends AppCompatActivity {
         IMAGE_HEIGHT = matchBinding.imageFieldView.getHeight();
 
         // Set timer tasks
-        match_Timer.schedule(auto_timertask, TIMER_AUTO_LENGTH * 1_000);
+        match_Timer.schedule(auto_timertask, (TIMER_AUTO_LENGTH + TIMER_AUTO_TELEOP_DELAY) * 1_000);
         match_Timer.scheduleAtFixedRate(gametime_timertask, 0, TIMER_UPDATE_RATE);
         match_Timer.scheduleAtFixedRate(flashing_timertask, 0, BUTTON_FLASH_INTERVAL);
 
@@ -428,9 +465,8 @@ public class Match extends AppCompatActivity {
     public void start_Teleop() {
         // Set the start Time so that the Display Time will be correct
         startTime = System.currentTimeMillis() - TIMER_AUTO_LENGTH * 1_000;
-        text_Time.setText(getString(R.string.timer_label) + "0:" + String.format("%02d", TIMER_AUTO_LENGTH));
+        text_Time.setText(getString(R.string.timer_label) + TIMER_TELEOP_LENGTH / 60 + ":" + String.format("%02d", TIMER_TELEOP_LENGTH % 60));
 
-        // Set timer tasks
         match_Timer.schedule(teleop_timertask, TIMER_TELEOP_LENGTH * 1_000);
 
         // Set match Phase to be correct and Button text

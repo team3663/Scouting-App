@@ -14,7 +14,7 @@ android {
         applicationId = "com.cpr3663.cpr_scouting_app"
         minSdk = 30
         targetSdk = 34
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
