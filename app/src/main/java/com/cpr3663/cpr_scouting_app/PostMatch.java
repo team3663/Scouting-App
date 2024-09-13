@@ -4,10 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -206,7 +204,8 @@ public class PostMatch extends AppCompatActivity {
                 Globals.EventLogger.LogData(Constants.LOGKEY_TRAP, String.valueOf(Globals.TrapResultsList.getTrapResultId(postMatchBinding.spinnerTrap.getSelectedItem().toString())));
                 // TODO need to know how to build a multi-selected list of IDs (delimiter will be ":")
                 String comment_sep_ID = "";
-                for (String comment : CommentArray) {
+                for (Integer comment_dropID : CommentList) {
+                    String comment = CommentArray[comment_dropID];
                     comment_sep_ID += (":") + (String.valueOf(Globals.CommentList.getCommentId(comment)));
                 }
                 comment_sep_ID = comment_sep_ID.substring(1);
