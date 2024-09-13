@@ -213,11 +213,13 @@ public class PreMatch extends AppCompatActivity {
                     String MatchNumStr = String.valueOf(edit_Match.getText());
                     if (!MatchNumStr.isEmpty()) {
                         int MatchNum = Integer.parseInt(MatchNumStr);
-                        Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
-                        if (Match != null) {
-                            // MUST CONVERT TO STRING or it crashes with out warning
-                            int[] Teams = Match.getListOfTeams();
-                            // TODO Set "Teams" to the options in the single select dropdown
+                        if (MatchNum <= Globals.MatchList.getNumberOfMatches()) {
+                            Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
+                            if (Match != null) {
+                                // MUST CONVERT TO STRING or it crashes with out warning
+                                int[] Teams = Match.getListOfTeams();
+                                // TODO Set "Teams" to the options in the single select dropdown
+                            }
                         }
                     }
                 }

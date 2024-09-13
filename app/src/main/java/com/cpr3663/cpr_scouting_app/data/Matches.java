@@ -33,6 +33,11 @@ public class Matches {
         return match_list.get(in_match_id);
     }
 
+    // Member Function: Get back a row of data for a given match
+    public int getNumberOfMatches() {
+        return match_list.size();
+    }
+
     // =============================================================================================
     // Class:       MatchInfoRow
     // Description: Defines a structure/class to hold the information for each Match
