@@ -179,7 +179,7 @@ public class PreMatch extends AppCompatActivity {
                         Globals.EventLogger.LogData(Constants.LOGKEY_SCOUTER, preMatchBinding.editScouterName.getText().toString().toUpperCase());
                         Globals.EventLogger.LogData(Constants.LOGKEY_DID_PLAY, String.valueOf(preMatchBinding.checkboxDidPlay.isChecked()));
                         Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_SCOUTING, String.valueOf(Globals.CurrentScoutingTeam));
-                        //                    Globals.EventLogger.LogData(Constants.LOGKEY_START_POSITION, preMatchBinding.spinnerStartingPosition.getSelectedItem().toString());
+                        Globals.EventLogger.LogData(Constants.LOGKEY_START_POSITION, String.valueOf(Globals.StartPositionList.getStartPositionId(preMatchBinding.spinnerStartingPosition.getSelectedItem().toString())));
 
                         // Save off some fields for next time or later usage
                         ScouterName = String.valueOf(edit_Name.getText());
