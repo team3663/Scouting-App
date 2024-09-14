@@ -384,10 +384,10 @@ public class Match extends AppCompatActivity {
                 // If this menuItem has "Miss" in the text, make it dark red
                 // If this menuItem has "Score" in the text, make it dark red
                 if (ss.toString().contains("Miss")) {
-                    ss.setSpan(new ForegroundColorSpan(getColor(R.color.dark_red)), 0, ss.length(), 0);
+                    ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColorRow(Globals.CurrentColorId - 1).getColorMiss()), 0, ss.length(), 0);
                     item.setTitle(ss);
                 } else if (ss.toString().contains("Score")) {
-                    ss.setSpan(new ForegroundColorSpan(getColor(R.color.dark_green)), 0, ss.length(), 0);
+                    ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColorRow(Globals.CurrentColorId - 1).getColorScore()), 0, ss.length(), 0);
                     item.setTitle(ss);
                 }
             }
