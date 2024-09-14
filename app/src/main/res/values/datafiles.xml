@@ -13,6 +13,7 @@
     <string name="file_trap_results">TrapResults.csv</string>
     <string name="file_climb_positions">ClimbPositions.csv</string>
     <string name="file_start_positions">StartPositions.csv</string>
+    <string name="file_colors">Colors.csv</string>
 
     <string name="logger_path">CPR-Scouting/Output</string>
 </resources>

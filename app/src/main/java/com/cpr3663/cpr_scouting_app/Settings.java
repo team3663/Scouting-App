@@ -32,6 +32,7 @@ public class Settings extends AppCompatActivity {
     public static final String SP_DEVICE_ID = "DeviceId";
     public static final String SP_SCOUTING_TEAM = "ScoutingTeam";
     public static final String SP_NUM_MATCHES = "NumberOfMatches";
+    public static final String SP_COLOR_CONTEXT_MENU = "ColorContextMenu";
 
     // =============================================================================================
     // Global variables
@@ -41,7 +42,7 @@ public class Settings extends AppCompatActivity {
     SharedPreferences.Editor spe;
     Spinner spinner_Competition;
     Spinner spinner_Device;
-
+    Spinner spinner_Color;
 
     // Doesn't appear to be needed on Tablet but helps on Virtual Devices.
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
@@ -91,7 +92,7 @@ public class Settings extends AppCompatActivity {
         if ((savedCompetitionId > -1) && (adp_Competition.getCount() > 0))
             spinner_Competition.setSelection(adp_Competition.getPosition(Globals.CompetitionList.getCompetitionDescription(savedCompetitionId)), true);
 
-            // Define the actions when an item is selected.  Set text color and set description text
+        // Define the actions when an item is selected.  Set text color and set description text
         spinner_Competition.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -131,6 +132,30 @@ public class Settings extends AppCompatActivity {
                         settingsBinding.textScoutingTeamName.setText(Globals.TeamList.get(team_num));
                     }
                 });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        // Adds Color information to spinner
+        spinner_Color = settingsBinding.spinnerColor;
+        ArrayAdapter<String> adp_Color = new ArrayAdapter<String>(this,
+                R.layout.cpr_spinner, Globals.ColorList.getDescriptionList());
+        adp_Color.setDropDownViewResource(R.layout.cpr_spinner_item);
+        spinner_Color.setAdapter(adp_Color);
+
+        // Set the selection (if there is one) to the saved one
+        int savedColorId = sp.getInt(SP_COLOR_CONTEXT_MENU, -1);
+        if ((savedColorId > -1) && (adp_Color.getCount() > 0))
+            spinner_Color.setSelection(adp_Color.getPosition(Globals.ColorList.getColorDescription(savedColorId)), true);
+
+        // Define the actions when an item is selected.  Set text color and set description text
+        spinner_Color.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.cpr_bkgnd));
             }
 
             @Override
@@ -183,10 +208,13 @@ public class Settings extends AppCompatActivity {
                 if (!ScoutingTeam.isEmpty()) {
                     spe.putInt(SP_SCOUTING_TEAM, Integer.parseInt(ScoutingTeam));
                 }
-
                 int NumMatches = Integer.parseInt(settingsBinding.editNumMatches.getText().toString());
                 if (NumMatches < 1) NumMatches = 1;
                 spe.putInt(SP_NUM_MATCHES, NumMatches);
+                int ColorId = Globals.ColorList.getColorId(spinner_Color.getSelectedItem().toString());
+                if (ColorId > 0) {
+                    spe.putInt(SP_COLOR_CONTEXT_MENU, ColorId);
+                }
 
                 spe.apply();
                 Exit();

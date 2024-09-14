@@ -118,6 +118,8 @@ public class AppLaunch extends AppCompatActivity {
                         try {
                             LoadDataFile(getString(R.string.file_climb_positions), getString(R.string.loading_climb_positions), getString(R.string.file_error_climb_positions));
                             Thread.sleep(SPLASH_SCREEN_DELAY);
+                            LoadDataFile(getString(R.string.file_colors), getString(R.string.loading_colors), getString(R.string.file_error_colors));
+                            Thread.sleep(SPLASH_SCREEN_DELAY);
                             LoadDataFile(getString(R.string.file_comments), getString(R.string.loading_comments), getString(R.string.file_error_comments));
                             Thread.sleep(SPLASH_SCREEN_DELAY);
                             LoadDataFile(getString(R.string.file_competitions), getString(R.string.loading_competitions), getString(R.string.file_error_competitions));
@@ -267,6 +269,10 @@ public class AppLaunch extends AppCompatActivity {
                 if (in_fileName.equals(getString(R.string.file_climb_positions))) {
                     if (Boolean.parseBoolean(info[1]))
                         Globals.ClimbPositionList.addClimbPositionRow(info[0], info[2]);
+                }
+                else if (in_fileName.equals(getString(R.string.file_colors))) {
+                    if (Boolean.parseBoolean(info[1]))
+                        Globals.ColorList.addColorRow(info[0], info[2], info[3], info[4]);
                 }
                 else if (in_fileName.equals(getString(R.string.file_comments))) {
                     if (Boolean.parseBoolean(info[1]))
