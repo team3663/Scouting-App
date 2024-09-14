@@ -41,8 +41,8 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     // Define constants
     // =============================================================================================
-    private static final int TIMER_AUTO_LENGTH = 15; // in seconds
-    private static final int TIMER_TELEOP_LENGTH = 135; // in seconds
+    protected static final int TIMER_AUTO_LENGTH = 15; // in seconds
+    protected static final int TIMER_TELEOP_LENGTH = 135; // in seconds
     private static final int TIMER_UPDATE_RATE = 1_000; // in milliseconds
     private static final int TIMER_AUTO_TELEOP_DELAY = 3; // in seconds
     private static final int BUTTON_FLASH_INTERVAL = 1_000; // in milliseconds
@@ -212,7 +212,7 @@ public class Match extends AppCompatActivity {
         // Map the text box variable to the actual text box
         text_Time = matchBinding.textTime;
         // Initialize the match timer textbox settings
-        text_Time.setText(getString(R.string.timer_label) + TIMER_AUTO_LENGTH);
+        text_Time.setText(getString(R.string.timer_label) + " " + TIMER_AUTO_LENGTH);
         text_Time.setTextSize(20F);
         text_Time.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
         text_Time.setVisibility(View.INVISIBLE);
@@ -465,9 +465,9 @@ public class Match extends AppCompatActivity {
     public void start_Teleop() {
         // Set the start Time so that the Display Time will be correct
         startTime = System.currentTimeMillis() - TIMER_AUTO_LENGTH * 1_000;
-        text_Time.setText(getString(R.string.timer_label) + TIMER_TELEOP_LENGTH / 60 + ":" + String.format("%02d", TIMER_TELEOP_LENGTH % 60));
+        text_Time.setText(getString(R.string.timer_label) + " " + TIMER_TELEOP_LENGTH / 60 + ":" + String.format("%02d", TIMER_TELEOP_LENGTH % 60));
 
-        match_Timer.schedule(teleop_timertask, TIMER_TELEOP_LENGTH * 1_000);
+        match_Timer.schedule(teleop_timertask, TIMER_TELEOP_LENGTH * 1_000 + 3_000);
 
         // Set match Phase to be correct and Button text
         matchPhase = Constants.PHASE_TELEOP;
@@ -513,6 +513,10 @@ public class Match extends AppCompatActivity {
 
         // Reset match phase so that the next time we hit Start Match we do the right thing
         matchPhase = Constants.PHASE_NONE;
+
+        // If either of the toggles are on turn them off
+        if (switch_Defended.isChecked()) Globals.EventLogger.LogEvent(Constants.EVENT_ID_DEFENDED_END, 0, 0, false);
+        if (switch_Defense.isChecked()) Globals.EventLogger.LogEvent(Constants.EVENT_ID_DEFENSE_END, 0, 0, false);
 
         // Go to the next page
         Intent GoToPostMatch = new Intent(Match.this, PostMatch.class);

@@ -1,5 +1,9 @@
 package com.cpr3663.cpr_scouting_app;
 
+import android.content.Context;
+import android.os.Environment;
+import android.util.Pair;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,10 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
-
-import android.content.Context;
-import android.os.Environment;
-import android.util.Pair;
 
 // =============================================================================================
 // Class:       Logger
@@ -206,7 +206,9 @@ public class Logger {
         if (!in_NewSequence) prev = String.valueOf(seq_number_prev);
 
         // Form the output line that goes in the csv file.  Round X,Y to 2 decimal places.
-        csv_line += "," + seq_number + "," + in_EventId + "," + (float) (Math.round((in_time - Match.startTime) / 100.0)) / 100.0 + "," + (float) (Math.round(in_X * 100.0)) / 100.0 + "," + (float) (Math.round(in_Y * 100.0)) / 100.0 + "," + prev;
+        double elapsed_secs = Math.round((in_time - Match.startTime) / 10.0) / 100.0;
+        elapsed_secs = Math.min(elapsed_secs, Match.TIMER_AUTO_LENGTH + Match.TIMER_TELEOP_LENGTH);
+        csv_line += "," + seq_number + "," + in_EventId + "," + elapsed_secs + "," + (float) (Math.round(in_X * 100.0)) / 100.0 + "," + (float) (Math.round(in_Y * 100.0)) / 100.0 + "," + prev;
         try {
             fos_event.write(csv_line.getBytes(StandardCharsets.UTF_8));
             fos_event.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
