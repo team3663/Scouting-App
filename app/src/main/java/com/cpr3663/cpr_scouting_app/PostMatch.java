@@ -205,9 +205,9 @@ public class PostMatch extends AppCompatActivity {
                 String comment_sep_ID = "";
                 for (Integer comment_dropID : CommentList) {
                     String comment = CommentArray[comment_dropID];
-                    comment_sep_ID += (":") + (String.valueOf(Globals.CommentList.getCommentId(comment)));
+                    comment_sep_ID += ":" + (String.valueOf(Globals.CommentList.getCommentId(comment)));
                 }
-                comment_sep_ID = comment_sep_ID.substring(1);
+                if (!comment_sep_ID.isEmpty()) comment_sep_ID = comment_sep_ID.substring(1);
                 Globals.EventLogger.LogData(Constants.LOGKEY_COMMENTS, comment_sep_ID);
 
                 // We're done with the logger
