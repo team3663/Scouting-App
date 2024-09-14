@@ -41,6 +41,9 @@ public class Logger {
     public Logger(Context in_context) throws IOException {
         String path = in_context.getString(R.string.logger_path);
 
+        // Ensure the sequence number is reset
+        seq_number = 0;
+
         // Ensure the path (if it's not blank) has a trailing delimiter
         if (!path.isEmpty()) {
             if (!path.endsWith("/")) path = path + "/";
