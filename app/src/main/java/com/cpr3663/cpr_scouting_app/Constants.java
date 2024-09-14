@@ -30,6 +30,8 @@ public class Constants {
     public static final String LOGKEY_EVENT_Y = "E_Y";
     public static final String LOGKEY_EVENT_PREVIOUS_SEQ = "E_PrevSeq";
 
+    public static final int DATA_ID_START_POS_DEFAULT = 0;
+
     public static final int EVENT_ID_DEFENDED_START = 150;
     public static final int EVENT_ID_DEFENDED_END = 151;
     public static final int EVENT_ID_DEFENSE_START = 152;
