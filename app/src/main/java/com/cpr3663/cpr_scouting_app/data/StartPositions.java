@@ -51,6 +51,20 @@ public class StartPositions {
         return ret;
     }
 
+    // Member Function: get the description that matches the id
+    public String getStartPositionDescription(int in_id) {
+        String ret = "";
+
+        for (StartPositionRow spr : startPosition_list) {
+            if (in_id == spr.getId()) {
+                ret = spr.getDescription();
+                break;
+            }
+        }
+
+        return ret;
+    }
+
     // TODO See if we can make it return a ArrayList<String> for consistency
     public String[] getDescriptionList() {
         String[] descriptions = new String[startPosition_list.size()];
