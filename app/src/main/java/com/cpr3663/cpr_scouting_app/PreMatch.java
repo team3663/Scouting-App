@@ -186,7 +186,6 @@ public class PreMatch extends AppCompatActivity {
                         Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_SCOUTING, String.valueOf(Globals.CurrentScoutingTeam));
                         if (checkbox_DidPlay.isChecked())
                             Globals.EventLogger.LogData(Constants.LOGKEY_START_POSITION, String.valueOf(Globals.StartPositionList.getStartPositionId(spinner_StartPos.getSelectedItem().toString())));
-                        else Globals.EventLogger.LogData(Constants.LOGKEY_START_POSITION, "Did Not Play");
 
                         // Save off some fields for next time or later usage
                         ScouterName = String.valueOf(edit_Name.getText());
