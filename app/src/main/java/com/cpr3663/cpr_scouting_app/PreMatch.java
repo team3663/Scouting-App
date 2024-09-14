@@ -81,8 +81,7 @@ public class PreMatch extends AppCompatActivity {
         TextView text_TeamName = preMatchBinding.textTeamToScoutName;
 
         // adds the items from the starting positions array to the list
-        ArrayAdapter<String> adp_StartPos = new ArrayAdapter<String>(this,
-                R.layout.cpr_spinner, Globals.StartPositionList.getDescriptionList());
+        ArrayAdapter<String> adp_StartPos = new ArrayAdapter<String>(this, R.layout.cpr_spinner, Globals.StartPositionList.getDescriptionList());
         adp_StartPos.setDropDownViewResource(R.layout.cpr_spinner_item);
         spinner_StartPos.setAdapter(adp_StartPos);
 
@@ -165,7 +164,8 @@ public class PreMatch extends AppCompatActivity {
                     startActivity(GoToSubmitData);
                 } else {
                     // Check we have all the fields entered that are needed.  Otherwise, pop a TOAST message instead
-                    if (String.valueOf(edit_Match.getText()).isEmpty() || String.valueOf(edit_Team.getText()).isEmpty() || String.valueOf(edit_Name.getText()).isEmpty()) {
+                    if (String.valueOf(edit_Match.getText()).isEmpty() || String.valueOf(edit_Team.getText()).isEmpty() || String.valueOf(edit_Name.getText()).isEmpty()
+                            || (spinner_StartPos.getSelectedItem().toString() == Globals.StartPositionList.getStartPositionDescription(Constants.DATA_ID_START_POS_DEFAULT) && checkbox_DidPlay.isChecked())) {
                         Toast.makeText(PreMatch.this, R.string.missing_data, Toast.LENGTH_SHORT).show();
                     } else {
                         // Save off the current match number (Logger needs this)
@@ -181,10 +181,11 @@ public class PreMatch extends AppCompatActivity {
 
                         // Log all of the data from this page
                         Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_TO_SCOUT, preMatchBinding.editTeamToScout.getText().toString());
-                        Globals.EventLogger.LogData(Constants.LOGKEY_SCOUTER, preMatchBinding.editScouterName.getText().toString().toUpperCase());
+                        Globals.EventLogger.LogData(Constants.LOGKEY_SCOUTER, preMatchBinding.editScouterName.getText().toString().toUpperCase().trim());
                         Globals.EventLogger.LogData(Constants.LOGKEY_DID_PLAY, String.valueOf(preMatchBinding.checkboxDidPlay.isChecked()));
                         Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_SCOUTING, String.valueOf(Globals.CurrentScoutingTeam));
-                        Globals.EventLogger.LogData(Constants.LOGKEY_START_POSITION, String.valueOf(Globals.StartPositionList.getStartPositionId(preMatchBinding.spinnerStartingPosition.getSelectedItem().toString())));
+                        if (checkbox_DidPlay.isChecked())
+                            Globals.EventLogger.LogData(Constants.LOGKEY_START_POSITION, String.valueOf(Globals.StartPositionList.getStartPositionId(spinner_StartPos.getSelectedItem().toString())));
 
                         // Save off some fields for next time or later usage
                         ScouterName = String.valueOf(edit_Name.getText());

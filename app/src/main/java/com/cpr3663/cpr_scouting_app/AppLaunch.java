@@ -311,7 +311,7 @@ public class AppLaunch extends AppCompatActivity {
                     }
                     Globals.TeamList.add(info[1]);
                     index = Integer.parseInt(info[0]) + 1;
-                    }
+                }
                 else if (in_fileName.equals(getString(R.string.file_trap_results))) {
                     if (Boolean.parseBoolean(info[1]))
                         Globals.TrapResultsList.addTrapResultRow(info[0], info[2]);
