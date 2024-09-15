@@ -1,6 +1,7 @@
 package com.cpr3663.cpr_scouting_app;
 
 import com.cpr3663.cpr_scouting_app.data.ClimbPositions;
+import com.cpr3663.cpr_scouting_app.data.Colors;
 import com.cpr3663.cpr_scouting_app.data.Comments;
 import com.cpr3663.cpr_scouting_app.data.Competitions;
 import com.cpr3663.cpr_scouting_app.data.Devices;
@@ -21,13 +22,17 @@ public class Globals {
     public static ClimbPositions ClimbPositionList = new ClimbPositions();
     public static TrapResults TrapResultsList = new TrapResults();
     public static StartPositions StartPositionList = new StartPositions();
+    public static Colors ColorList = new Colors();
 
     public static int CurrentCompetitionId;
     public static int CurrentMatchNumber;
     public static int CurrentScoutingTeam;
     public static int CurrentDeviceId;
+    public static int CurrentColorId;
 
     public static String CheckBoxTextPadding = "       ";
 
     public static Logger EventLogger;
+
+    public static int NumberMatchFilesKept;
 }

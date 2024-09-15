@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CPR-Scouting-App</string>
+    <string name="app_name">CPR Scouting App</string>
     <string name="preference_setting_file_key">com.cpr3663.cpr_scouting_app.PREFERENCE_FILE_KEY</string>
 
     <string name="button_start_match">Start Match</string>
@@ -16,6 +16,7 @@
     <string name="loading_trap_results">Loading Trap Results Data…</string>
     <string name="loading_climb_positions">Loading Climbing Positions Data…</string>
     <string name="loading_start_positions">Loading Starting Positions Data…</string>
+    <string name="loading_colors">Loading Color Data…</string>
 
     <string name="missing_data">Please fill in all fields</string>
     <string name="timer_label">Time: </string>
@@ -30,11 +31,14 @@
     <string name="file_error_trap_results">Error loading trap results from data file!</string>
     <string name="file_error_climb_positions">Error loading climbing positions from data file!</string>
     <string name="file_error_start_positions">Error loading starting positions from data file!</string>
+    <string name="file_error_colors">Error loading colors from data file!</string>
 
     <string name="settings_heading">Settings</string>
     <string name="settings_competition">Competition:</string>
     <string name="settings_device">Device:</string>
     <string name="settings_scouting_team">Scouting team number:</string>
+    <string name="settings_num_files"># of matches to keep:</string>
+    <string name="settings_color">Color palette:</string>
 
     <string name="pre_heading">Pre-Match Scouting Information</string>
     <string name="pre_match_num">Match number:</string>

@@ -83,8 +83,10 @@ public class Events {
             next_set_ids = er.next_event_set.split(":");
 
             // Now find all events match the list of next events we can go to
-            for (EventRow ner : event_list) {
-                for (int j = er.next_events_desc.size(); j < next_set_ids.length; j++) {
+            // Outer loop needs to be the next_set_ids so we build the list so we can have the context
+            // menu be "in order".
+            for (int j = er.next_events_desc.size(); j < next_set_ids.length; j++) {
+                for (EventRow ner : event_list) {
                     // If the event we're looking at (i) is in the list of valid next event ids (j) add it to the list
                     if (ner.id == Integer.parseInt(next_set_ids[j])) {
                         er.next_events_desc.add((ner.description));

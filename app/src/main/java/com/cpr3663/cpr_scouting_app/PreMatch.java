@@ -35,7 +35,6 @@ public class PreMatch extends AppCompatActivity {
     private PreMatchBinding preMatchBinding;
     // To store the inputted name
     protected static String ScouterName;
-    protected static int MatchNum = -1;
     protected static CheckBox checkbox_StartNote; // This needs to be global so that Match.java can access it
 
     // Doesn't appear to be needed on Tablet but helps on Virtual Devices.
@@ -72,6 +71,7 @@ public class PreMatch extends AppCompatActivity {
         Globals.CurrentScoutingTeam = sp.getInt(Settings.SP_SCOUTING_TEAM, 0);
         Globals.CurrentCompetitionId = sp.getInt(Settings.SP_COMPETITION_ID, 0);
         Globals.CurrentDeviceId = sp.getInt(Settings.SP_DEVICE_ID, 0);
+        Globals.CurrentColorId = sp.getInt(Settings.SP_COLOR_CONTEXT_MENU, 1);
 
         // Create components
         EditText edit_Match = preMatchBinding.editMatch;
@@ -81,8 +81,7 @@ public class PreMatch extends AppCompatActivity {
         TextView text_TeamName = preMatchBinding.textTeamToScoutName;
 
         // adds the items from the starting positions array to the list
-        ArrayAdapter<String> adp_StartPos = new ArrayAdapter<String>(this,
-                R.layout.cpr_spinner, Globals.StartPositionList.getDescriptionList());
+        ArrayAdapter<String> adp_StartPos = new ArrayAdapter<String>(this, R.layout.cpr_spinner, Globals.StartPositionList.getDescriptionList());
         adp_StartPos.setDropDownViewResource(R.layout.cpr_spinner_item);
         spinner_StartPos.setAdapter(adp_StartPos);
 
@@ -105,15 +104,17 @@ public class PreMatch extends AppCompatActivity {
         // Create a text box to input the scouters name
         edit_Name.setText(ScouterName);
 
-        if (MatchNum > 0) {
-            MatchNum++;
+        if (Globals.CurrentMatchNumber > 0) {
             // MUST CONVERT TO STRING or it crashes with out warning
-            edit_Match.setText(String.valueOf(MatchNum));
-            Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
-            if (Match != null) {
-                int[] Teams = Match.getListOfTeams();
-                // TODO Set "Teams" to the options in the single select dropdown
+            edit_Match.setText(String.valueOf(Globals.CurrentMatchNumber));
+            if (Globals.CurrentMatchNumber <= Globals.MatchList.getNumberOfMatches()) {
+                Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber);
+                if (Match != null) {
+                    int[] Teams = Match.getListOfTeams();
+                    // TODO Set "Teams" to the options in the single select dropdown
+                }
             }
+            // TODO Also need to set Team To Scout to be defaulted IF Globals.CurrentTeamToScout is > 0 (as if you hit "BACK" button from Match)
         } else edit_Match.setText("");
 
         // Default checkboxes
@@ -161,12 +162,16 @@ public class PreMatch extends AppCompatActivity {
                 if (checkbox_ReSubmit.isChecked()) {
                     Intent GoToSubmitData = new Intent(PreMatch.this, SubmitData.class);
                     startActivity(GoToSubmitData);
-                }
-                else {
+                } else {
                     // Check we have all the fields entered that are needed.  Otherwise, pop a TOAST message instead
-                    if (String.valueOf(edit_Match.getText()).isEmpty() || String.valueOf(edit_Team.getText()).isEmpty() || String.valueOf(edit_Name.getText()).isEmpty()) {
+                    if (String.valueOf(edit_Match.getText()).isEmpty() || String.valueOf(edit_Team.getText()).isEmpty() || String.valueOf(edit_Name.getText()).isEmpty()
+                            || (spinner_StartPos.getSelectedItem().toString() == Globals.StartPositionList.getStartPositionDescription(Constants.DATA_ID_START_POS_DEFAULT) && checkbox_DidPlay.isChecked())) {
                         Toast.makeText(PreMatch.this, R.string.missing_data, Toast.LENGTH_SHORT).show();
                     } else {
+                        // Save off the current match number (Logger needs this)
+                        Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
+                        Globals.NumberMatchFilesKept = sp.getInt(Settings.SP_NUM_MATCHES, 5);
+
                         // Set up the Logger - if it fails, we better stop now, or we won't capture any data!
                         try {
                             Globals.EventLogger = new Logger(getApplicationContext());
@@ -174,19 +179,16 @@ public class PreMatch extends AppCompatActivity {
                             throw new RuntimeException(e);
                         }
 
-                        // Save off the current match number (Logger needs this)
-                        Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
-
                         // Log all of the data from this page
                         Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_TO_SCOUT, preMatchBinding.editTeamToScout.getText().toString());
-                        Globals.EventLogger.LogData(Constants.LOGKEY_SCOUTER, preMatchBinding.editScouterName.getText().toString().toUpperCase());
+                        Globals.EventLogger.LogData(Constants.LOGKEY_SCOUTER, preMatchBinding.editScouterName.getText().toString().toUpperCase().trim());
                         Globals.EventLogger.LogData(Constants.LOGKEY_DID_PLAY, String.valueOf(preMatchBinding.checkboxDidPlay.isChecked()));
                         Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_SCOUTING, String.valueOf(Globals.CurrentScoutingTeam));
-                        //                    Globals.EventLogger.LogData(Constants.LOGKEY_START_POSITION, preMatchBinding.spinnerStartingPosition.getSelectedItem().toString());
+                        if (checkbox_DidPlay.isChecked())
+                            Globals.EventLogger.LogData(Constants.LOGKEY_START_POSITION, String.valueOf(Globals.StartPositionList.getStartPositionId(spinner_StartPos.getSelectedItem().toString())));
 
                         // Save off some fields for next time or later usage
                         ScouterName = String.valueOf(edit_Name.getText());
-                        MatchNum = Integer.parseInt(String.valueOf(edit_Match.getText()));
 
                         // If they didn't play skip everything else
                         if (preMatchBinding.checkboxDidPlay.isChecked()) {
@@ -196,6 +198,10 @@ public class PreMatch extends AppCompatActivity {
                             // Since we're jumping to the Submit page, we need to close the Logger first.
                             Globals.EventLogger.close();
                             Globals.EventLogger = null;
+
+                            // Increases the team number so that it auto fills for the next match correctly
+                            //  and do it after the logger is closed so that this can't mess the logger up
+                            Globals.CurrentMatchNumber++;
 
                             Intent GoToSubmitData = new Intent(PreMatch.this, SubmitData.class);
                             startActivity(GoToSubmitData);
@@ -212,11 +218,13 @@ public class PreMatch extends AppCompatActivity {
                     String MatchNumStr = String.valueOf(edit_Match.getText());
                     if (!MatchNumStr.isEmpty()) {
                         int MatchNum = Integer.parseInt(MatchNumStr);
-                        Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
-                        if (Match != null) {
-                            // MUST CONVERT TO STRING or it crashes with out warning
-                            int[] Teams = Match.getListOfTeams();
-                            // TODO Set "Teams" to the options in the single select dropdown
+                        if (MatchNum <= Globals.MatchList.getNumberOfMatches()) {
+                            Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
+                            if (Match != null) {
+                                // MUST CONVERT TO STRING or it crashes with out warning
+                                int[] Teams = Match.getListOfTeams();
+                                // TODO Set "Teams" to the options in the single select dropdown
+                            }
                         }
                     }
                 }

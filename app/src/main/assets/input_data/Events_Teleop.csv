@@ -1,6 +1,6 @@
 ﻿Events_Id,Events_Name,Events_StartOfSeq,Events_AppliesToFOP,Events_NextSet
-50,Pickup Note,True,True,52:53:54:55:56:57:100
-51,Steal Note,True,True,52:53:54:55:56:57:100
+50,Pickup Note,True,True,54:55:56:57:53:52:100
+51,Steal Note,True,True,54:55:56:57:53:52:100
 52,Drop Note,False,True,:
 53,Pass Note,False,True,:
 54,Speaker Score,False,True,:
