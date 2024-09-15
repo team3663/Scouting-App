@@ -38,7 +38,7 @@ public class Colors {
 
     // Member Function: Get back a row of data for a given Color entry
     public ColorRow getColorRow(int in_index) {
-        if (in_index < color_list.size()) return color_list.get(in_index);
+        if ((in_index < color_list.size()) && (in_index >= 0)) return color_list.get(in_index);
 
         return null;
     }
