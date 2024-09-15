@@ -30,6 +30,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.cpr3663.cpr_scouting_app.data.Colors;
 import com.cpr3663.cpr_scouting_app.databinding.MatchBinding;
 
 import java.util.ArrayList;
@@ -381,14 +382,19 @@ public class Match extends AppCompatActivity {
                 MenuItem item = menu.getItem(i);
                 SpannableString ss = new SpannableString(item.getTitle());
 
-                // If this menuItem has "Miss" in the text, make it dark red
-                // If this menuItem has "Score" in the text, make it dark red
+                // If this menuItem has "Miss" or Score in the text, see if we should use a special color
                 if (ss.toString().contains("Miss")) {
-                    ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColorRow(Globals.CurrentColorId - 1).getColorMiss()), 0, ss.length(), 0);
-                    item.setTitle(ss);
+                    Colors.ColorRow cr = Globals.ColorList.getColorRow(Globals.CurrentColorId - 1);
+                    if (cr != null) {
+                        ss.setSpan(new ForegroundColorSpan(cr.getColorMiss()), 0, ss.length(), 0);
+                        item.setTitle(ss);
+                    }
                 } else if (ss.toString().contains("Score")) {
-                    ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColorRow(Globals.CurrentColorId - 1).getColorScore()), 0, ss.length(), 0);
-                    item.setTitle(ss);
+                    Colors.ColorRow cr = Globals.ColorList.getColorRow(Globals.CurrentColorId - 1);
+                    if (cr != null) {
+                        ss.setSpan(new ForegroundColorSpan(cr.getColorScore()), 0, ss.length(), 0);
+                        item.setTitle(ss);
+                    }
                 }
             }
         }
