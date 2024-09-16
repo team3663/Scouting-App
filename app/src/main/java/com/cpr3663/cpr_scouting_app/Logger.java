@@ -202,7 +202,7 @@ public class Logger {
                 seq_number_prev_common = ++seq_number;
         }
 
-        String prev="";
+        String prev = "";
         String csv_line = Globals.CurrentCompetitionId + ":" + Globals.CurrentMatchNumber + ":" + Globals.CurrentDeviceId;
 
         // If this is NOT a new sequence, we need to write out the previous event id that goes with this one

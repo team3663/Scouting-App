@@ -473,7 +473,7 @@ public class Match extends AppCompatActivity {
         startTime = System.currentTimeMillis() - TIMER_AUTO_LENGTH * 1_000;
         text_Time.setText(getString(R.string.timer_label) + " " + TIMER_TELEOP_LENGTH / 60 + ":" + String.format("%02d", TIMER_TELEOP_LENGTH % 60));
 
-        match_Timer.schedule(teleop_timertask, TIMER_TELEOP_LENGTH * 1_000 + 3_000);
+        match_Timer.schedule(teleop_timertask, TIMER_TELEOP_LENGTH * 1_000);
 
         // Set match Phase to be correct and Button text
         matchPhase = Constants.PHASE_TELEOP;
