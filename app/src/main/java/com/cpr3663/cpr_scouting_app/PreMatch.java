@@ -71,7 +71,7 @@ public class PreMatch extends AppCompatActivity {
         Globals.CurrentScoutingTeam = sp.getInt(Settings.SP_SCOUTING_TEAM, 0);
         Globals.CurrentCompetitionId = sp.getInt(Settings.SP_COMPETITION_ID, 0);
         Globals.CurrentDeviceId = sp.getInt(Settings.SP_DEVICE_ID, 0);
-        Globals.CurrentColorId = sp.getInt(Settings.SP_COLOR_CONTEXT_MENU, 0);
+        Globals.CurrentColorId = sp.getInt(Settings.SP_COLOR_CONTEXT_MENU, 1);
 
         // Create components
         EditText edit_Match = preMatchBinding.editMatch;
