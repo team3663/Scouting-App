@@ -221,7 +221,7 @@ public class Logger {
         if (string_x.endsWith(".0")) string_x = string_x.substring(0, string_x.length() - 2);
         if (string_y.endsWith(".0")) string_y = string_y.substring(0, string_y.length() - 2);
         if (string_time.endsWith(".0")) string_time = string_time.substring(0, string_time.length() - 2);
-
+        
         // Form the output line that goes in the csv file.
         csv_line += "," + seq_number + "," + in_EventId + "," + string_time + "," + string_x + "," + string_y + "," + prev;
         try {

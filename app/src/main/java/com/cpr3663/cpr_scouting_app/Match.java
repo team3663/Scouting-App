@@ -523,6 +523,8 @@ public class Match extends AppCompatActivity {
         // If either of the toggles are on turn them off
         if (switch_Defended.isChecked()) Globals.EventLogger.LogEvent(Constants.EVENT_ID_DEFENDED_END, 0, 0, false);
         if (switch_Defense.isChecked()) Globals.EventLogger.LogEvent(Constants.EVENT_ID_DEFENSE_END, 0, 0, false);
+        switch_Defense.setChecked(false);
+        switch_Defended.setChecked(false);
 
         // Go to the next page
         Intent GoToPostMatch = new Intent(Match.this, PostMatch.class);
