@@ -207,16 +207,14 @@ public class Logger {
 
         // If this is NOT a new sequence, we need to write out the previous event id that goes with this one
         if (!in_NewSequence) prev = String.valueOf(seq_number_prev);
-
-        // If the elapsed time is greater than the match length just log the match length
-        double time = Math.round((in_time - Match.startTime) / 10.0) / 100.0;
-        time = Math.min(time, Match.TIMER_AUTO_LENGTH + Match.TIMER_TELEOP_LENGTH);
         
         // Determine string values for x, y and time. Round them to 1 decimal places.
         // If they happen to be whole numbers, trim off the ".0"
-        String string_x = String.valueOf((float) (Math.round(in_X * 100.0)) / 100.0);
-        String string_y = String.valueOf((float) (Math.round(in_Y * 100.0)) / 100.0);
-        String string_time = String.valueOf(time);
+        String string_x = String.valueOf((float) Math.round(in_X * 100.0) / 100.0);
+        String string_y = String.valueOf((float) Math.round(in_Y * 100.0) / 100.0);
+        // Determine elapsed time and round to 1 decimal places and match length
+        // Get min of elapsed time and match length in order to essentially cap the time that will be recorded
+        String string_time = String.valueOf(Math.min(Math.round((in_time - Match.startTime) / 10.0) / 100.0, Match.TIMER_AUTO_LENGTH + Match.TIMER_TELEOP_LENGTH));
 
         if (string_x.endsWith(".0")) string_x = string_x.substring(0, string_x.length() - 2);
         if (string_y.endsWith(".0")) string_y = string_y.substring(0, string_y.length() - 2);
