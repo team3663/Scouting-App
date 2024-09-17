@@ -27,6 +27,8 @@ import com.cpr3663.cpr_scouting_app.data.Matches;
 import com.cpr3663.cpr_scouting_app.databinding.PreMatchBinding;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class PreMatch extends AppCompatActivity {
     // =============================================================================================
@@ -75,7 +77,7 @@ public class PreMatch extends AppCompatActivity {
 
         // Create components
         EditText edit_Match = preMatchBinding.editMatch;
-        EditText edit_Team = preMatchBinding.editTeamToScout;
+        Spinner spinner_Team = preMatchBinding.spinnerTeamToScout;
         Spinner spinner_StartPos = preMatchBinding.spinnerStartingPosition;
         TextView text_Match = preMatchBinding.textMatch;
         TextView text_TeamName = preMatchBinding.textTeamToScoutName;
@@ -84,6 +86,19 @@ public class PreMatch extends AppCompatActivity {
         ArrayAdapter<String> adp_StartPos = new ArrayAdapter<String>(this, R.layout.cpr_spinner, Globals.StartPositionList.getDescriptionList());
         adp_StartPos.setDropDownViewResource(R.layout.cpr_spinner_item);
         spinner_StartPos.setAdapter(adp_StartPos);
+
+        // adds teams in match to the spinner
+        // Create an ArrayAdapter using the string array and a default spinner layout.
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+//                this,
+//                R.array.teamsList,
+//                android.R.layout.simple_spinner_item
+//        );
+//// Specify the layout to use when the list of choices appears.
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//// Apply the adapter to the spinner.
+//        spinner_Team.setAdapter(adapter);
+        //TODO FINISH THIS!
 
         Button but_AddOverrideTeamNum = preMatchBinding.butAddOverrideTeamNum;
         CheckBox checkbox_DidPlay = preMatchBinding.checkboxDidPlay;
@@ -111,6 +126,14 @@ public class PreMatch extends AppCompatActivity {
                 Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber);
                 if (Match != null) {
                     int[] Teams = Match.getListOfTeams();
+                    String[] teamsInMatch = new String[Teams.length];
+                    for (int i = 0; i < Teams.length; i++) {
+                        teamsInMatch[i] = String.valueOf(Teams[i]);
+                    }
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, teamsInMatch);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    // Apply the adapter to the spinner.
+                    spinner_Team.setAdapter(adapter);
                     // TODO Set "Teams" to the options in the single select dropdown
                 }
             }
@@ -164,7 +187,8 @@ public class PreMatch extends AppCompatActivity {
                     startActivity(GoToSubmitData);
                 } else {
                     // Check we have all the fields entered that are needed.  Otherwise, pop a TOAST message instead
-                    if (String.valueOf(edit_Match.getText()).isEmpty() || String.valueOf(edit_Team.getText()).isEmpty() || String.valueOf(edit_Name.getText()).isEmpty()
+                    if (String.valueOf(edit_Match.getText()).isEmpty() || spinner_Team.getSelectedItemPosition() < 0 || String.valueOf(edit_Name.getText()).isEmpty()
+                            //PREVIOUS CODE - if (String.valueOf(edit_Match.getText()).isEmpty() || String.valueOf(spinner_Team.getText()).isEmpty() || String.valueOf(edit_Name.getText()).isEmpty()
                             || (spinner_StartPos.getSelectedItem().toString() == Globals.StartPositionList.getStartPositionDescription(Constants.DATA_ID_START_POS_DEFAULT) && checkbox_DidPlay.isChecked())) {
                         Toast.makeText(PreMatch.this, R.string.missing_data, Toast.LENGTH_SHORT).show();
                     } else {
@@ -180,7 +204,7 @@ public class PreMatch extends AppCompatActivity {
                         }
 
                         // Log all of the data from this page
-                        Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_TO_SCOUT, preMatchBinding.editTeamToScout.getText().toString());
+                        Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_TO_SCOUT, preMatchBinding.spinnerTeamToScout.getSelectedItem().toString());
                         Globals.EventLogger.LogData(Constants.LOGKEY_SCOUTER, preMatchBinding.editScouterName.getText().toString().toUpperCase().trim());
                         Globals.EventLogger.LogData(Constants.LOGKEY_DID_PLAY, String.valueOf(preMatchBinding.checkboxDidPlay.isChecked()));
                         Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_SCOUTING, String.valueOf(Globals.CurrentScoutingTeam));
@@ -223,6 +247,14 @@ public class PreMatch extends AppCompatActivity {
                             if (Match != null) {
                                 // MUST CONVERT TO STRING or it crashes with out warning
                                 int[] Teams = Match.getListOfTeams();
+                                String[] teamsInMatch = new String[Teams.length];
+                                for (int i = 0; i < Teams.length; i++) {
+                                    teamsInMatch[i] = String.valueOf(Teams[i]);
+                                }
+                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_spinner_item, teamsInMatch);
+                                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                // Apply the adapter to the spinner.
+                                spinner_Team.setAdapter(adapter);
                                 // TODO Set "Teams" to the options in the single select dropdown
                             }
                         }
@@ -231,11 +263,20 @@ public class PreMatch extends AppCompatActivity {
             }
         });
 
-        edit_Team.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        //              OLD CODE
+        //                                Integer[] teamsInMatch = new Integer[Teams.length];
+//                                int i = 0;
+//                                for (int value : Teams) {
+//                                    teamsInMatch[i++] = Integer.valueOf(value);
+//                                }
+        //Integer[] teamsInMatch = Integer.valueOf(Teams);
+
+
+        spinner_Team.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean focus) {
                 if (!focus) {
-                    String TeamToScoutStr = String.valueOf(edit_Team.getText());
+                    String TeamToScoutStr = String.valueOf(spinner_Team.getSelectedItem());
                     if (!TeamToScoutStr.isEmpty()) {
                         int TeamToScout = Integer.parseInt(TeamToScoutStr);
                         if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size()) {
@@ -250,11 +291,11 @@ public class PreMatch extends AppCompatActivity {
             }
         });
 
-        edit_Team.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        spinner_Team.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean focus) {
                 if (!focus) {
-                    String TeamToScoutStr = String.valueOf(edit_Team.getText());
+                    String TeamToScoutStr = String.valueOf(spinner_Team.getSelectedItem());
                     if (!TeamToScoutStr.isEmpty()) {
                         int TeamToScout = Integer.parseInt(TeamToScoutStr);
                         if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size()) {
