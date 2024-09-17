@@ -1,5 +1,9 @@
 package com.cpr3663.cpr_scouting_app;
 
+import android.content.Context;
+import android.os.Environment;
+import android.util.Pair;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,10 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
-
-import android.content.Context;
-import android.os.Environment;
-import android.util.Pair;
 
 // =============================================================================================
 // Class:       Logger
@@ -202,22 +202,26 @@ public class Logger {
                 seq_number_prev_common = ++seq_number;
         }
 
-        String prev="";
+        String prev = "";
         String csv_line = Globals.CurrentCompetitionId + ":" + Globals.CurrentMatchNumber + ":" + Globals.CurrentDeviceId;
 
         // If this is NOT a new sequence, we need to write out the previous event id that goes with this one
         if (!in_NewSequence) prev = String.valueOf(seq_number_prev);
 
+        // If the elapsed time is greater than the match length just log the match length
+        double time = Math.round((in_time - Match.startTime) / 10.0) / 100.0;
+        time = Math.min(time, Match.TIMER_AUTO_LENGTH + Match.TIMER_TELEOP_LENGTH);
+        
         // Determine string values for x, y and time. Round them to 1 decimal places.
         // If they happen to be whole numbers, trim off the ".0"
         String string_x = String.valueOf((float) (Math.round(in_X * 100.0)) / 100.0);
         String string_y = String.valueOf((float) (Math.round(in_Y * 100.0)) / 100.0);
-        String string_time = String.valueOf((float) (Math.round((in_time - Match.startTime) / 100.0)) / 100.0);
+        String string_time = String.valueOf(time);
 
         if (string_x.endsWith(".0")) string_x = string_x.substring(0, string_x.length() - 2);
         if (string_y.endsWith(".0")) string_y = string_y.substring(0, string_y.length() - 2);
         if (string_time.endsWith(".0")) string_time = string_time.substring(0, string_time.length() - 2);
-
+        
         // Form the output line that goes in the csv file.
         csv_line += "," + seq_number + "," + in_EventId + "," + string_time + "," + string_x + "," + string_y + "," + prev;
         try {
