@@ -1,14 +1,10 @@
 package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -37,21 +33,6 @@ public class PreMatch extends AppCompatActivity {
     protected static String ScouterName;
     protected static CheckBox checkbox_StartNote; // This needs to be global so that Match.java can access it
 
-    // Doesn't appear to be needed on Tablet but helps on Virtual Devices.
-    @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // Hide the status and action bar
-        View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) actionBar.hide();
-    }
-
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +57,6 @@ public class PreMatch extends AppCompatActivity {
         EditText edit_Match = preMatchBinding.editMatch;
         EditText edit_Team = preMatchBinding.editTeamToScout;
         Spinner spinner_StartPos = preMatchBinding.spinnerStartingPosition;
-        TextView text_Match = preMatchBinding.textMatch;
         TextView text_TeamName = preMatchBinding.textTeamToScoutName;
 
         // adds the items from the starting positions array to the list
@@ -109,7 +89,6 @@ public class PreMatch extends AppCompatActivity {
             if (Globals.CurrentMatchNumber <= Globals.MatchList.getNumberOfMatches()) {
                 Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber);
                 if (Match != null) {
-                    int[] Teams = Match.getListOfTeams();
                     // TODO Set "Teams" to the options in the single select dropdown
                 }
             }
@@ -164,7 +143,7 @@ public class PreMatch extends AppCompatActivity {
                 } else {
                     // Check we have all the fields entered that are needed.  Otherwise, pop a TOAST message instead
                     if (String.valueOf(edit_Match.getText()).isEmpty() || String.valueOf(edit_Team.getText()).isEmpty() || String.valueOf(edit_Name.getText()).isEmpty()
-                            || (spinner_StartPos.getSelectedItem().toString() == Globals.StartPositionList.getStartPositionDescription(Constants.DATA_ID_START_POS_DEFAULT) && checkbox_DidPlay.isChecked())) {
+                            || (spinner_StartPos.getSelectedItem().toString().equals(Globals.StartPositionList.getStartPositionDescription(Constants.DATA_ID_START_POS_DEFAULT)) && checkbox_DidPlay.isChecked())) {
                         Toast.makeText(PreMatch.this, R.string.missing_data, Toast.LENGTH_SHORT).show();
                     } else {
                         // Save off the current match number (Logger needs this)

@@ -1,7 +1,6 @@
 package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -35,21 +33,6 @@ public class SubmitData extends AppCompatActivity {
     // =============================================================================================
     private SubmitDataBinding submitDataBinding;
     Spinner spinner_Match;
-
-    // Doesn't appear to be needed on Tablet but helps on Virtual Devices.
-    @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // Hide the status and action bar
-        View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) actionBar.hide();
-    }
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -189,8 +172,6 @@ public class SubmitData extends AppCompatActivity {
         File e_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), path + Globals.CurrentCompetitionId + "_" + in_match + "_" + Globals.CurrentDeviceId + "_e.csv" );
 
         // Ensure the directory structure exists first - if not, return nothing
-        if ((e_file == null) || !e_file.exists() || !e_file.isFile()) return false;
-
-        return true;
+        return e_file.exists() && e_file.isFile();
     }
 }

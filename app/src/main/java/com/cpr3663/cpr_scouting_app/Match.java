@@ -1,7 +1,6 @@
 package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.SensorManager;
@@ -9,7 +8,6 @@ import android.os.Bundle;
 import android.text.Layout;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.DisplayMetrics;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -147,28 +145,9 @@ public class Match extends AppCompatActivity {
     TimerTask gametime_timertask;
     TimerTask flashing_timertask;
 
-    // Doesn't appear to be needed on Tablet but helps on Virtual Devices.
-    @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // Hide the status and action bar
-        View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) actionBar.hide();
-    }
-
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Capture screen size. Need to use WindowManager to populate a Point that holds the screen size.
-        DisplayMetrics screen = new DisplayMetrics();
-        Objects.requireNonNull(this.getDisplay()).getRealMetrics(screen);
-
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         matchBinding = MatchBinding.inflate(getLayoutInflater());
@@ -218,9 +197,6 @@ public class Match extends AppCompatActivity {
         text_Time.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
         text_Time.setVisibility(View.INVISIBLE);
         text_Time.setBackgroundColor(Color.TRANSPARENT);
-
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         // Map the button variable to the actual button
         but_MatchControl = matchBinding.butMatchControl;
@@ -403,7 +379,7 @@ public class Match extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        matchBinding.textStatus.setText("Last Event: " + item.getTitle().toString());
+        matchBinding.textStatus.setText("Last Event: " + Objects.requireNonNull(item.getTitle()).toString());
         eventPrevious = Globals.EventList.getEventId((String) item.getTitle().toString());
         Globals.EventLogger.LogEvent(eventPrevious, current_X_Relative, current_Y_Relative, is_start_of_seq, currentTouchTime);
         return true;

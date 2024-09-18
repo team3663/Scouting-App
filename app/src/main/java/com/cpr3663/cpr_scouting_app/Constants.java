@@ -44,5 +44,4 @@ public class Constants {
     public static final String SP_SCOUTING_TEAM = "ScoutingTeam";
     public static final String SP_NUM_MATCHES = "NumberOfMatches";
     public static final String SP_COLOR_CONTEXT_MENU = "ColorContextMenu";
-    public static final String SP_PUBLIC_DOCUMENTS_URI = "DocumentsURI";
 }
