@@ -9,6 +9,8 @@ import java.util.ArrayList;
 // Description: Defines a structure/class to hold the information for all Matches
 // Methods:     getMatchInfoRow()
 //                  return a MatchInfoRow item for the given match id
+//              clear()
+//                  empties out the list
 // =============================================================================================
 public class Matches {
     private final ArrayList<MatchRow> match_list;
@@ -36,6 +38,11 @@ public class Matches {
     // Member Function: Get back a row of data for a given match
     public int getNumberOfMatches() {
         return match_list.size();
+    }
+
+    // Member Function: Empties out the list
+    public void clear() {
+        match_list.clear();
     }
 
     // =============================================================================================

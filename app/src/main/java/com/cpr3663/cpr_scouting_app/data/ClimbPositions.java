@@ -15,6 +15,8 @@ import java.util.ArrayList;
 //                  return the Id for a given description (good for logging)
 //              getDescriptionList()
 //                  return a String Array of all of the descriptions of the Climb Positions
+//              clear()
+//                  empties out the list
 // =============================================================================================
 public class ClimbPositions {
     private final ArrayList<ClimbPositionRow> climbPosition_list;
@@ -53,6 +55,7 @@ public class ClimbPositions {
         return ret;
     }
 
+    // Member Function: Return a string list of all records
     // TODO See if we can make it return a ArrayList<String> for consistency
     public String[] getDescriptionList() {
         String[] descriptions = new String[climbPosition_list.size()];
@@ -61,6 +64,11 @@ public class ClimbPositions {
             descriptions[i] = climbPosition_list.get(i).getDescription();
         }
         return descriptions;
+    }
+
+    // Member Function: Empties out the list
+    public void clear() {
+        climbPosition_list.clear();
     }
 
     // =============================================================================================

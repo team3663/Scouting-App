@@ -12,6 +12,8 @@ import java.util.Collections;
 //                  return the number of competitions we have
 //              getCompetitionInfoRow()
 //                  return a CompetitionInfoRow item for the given competition id
+//              clear()
+//                  empties out the list
 // =============================================================================================
 public class Competitions {
     private final ArrayList<CompetitionRow> competition_list;
@@ -73,6 +75,11 @@ public class Competitions {
         }
 
         return ret;
+    }
+
+    // Member Function: Empties out the list
+    public void clear() {
+        competition_list.clear();
     }
 
     // =============================================================================================

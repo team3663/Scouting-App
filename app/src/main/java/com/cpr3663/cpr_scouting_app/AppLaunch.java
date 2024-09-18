@@ -97,44 +97,68 @@ public class AppLaunch extends AppCompatActivity {
         });
 
         // Make sure that we aren't coming back to the page and it is the first time running this
-        if (Globals.TeamList.isEmpty()) {
+        if (Globals.NeedToLoadData) {
             // Set a TimerTask to load the data shortly AFTER this OnCreate finishes
             appLaunch_timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     // Make sure that we aren't coming back to the page and it is the first time running this
-                    if (Globals.TeamList.isEmpty()) {
-                        // First first index (zero) needs to be a "NO TEAM" entry so the rest line up when they are loaded
-                        Globals.TeamList.add(Constants.NO_TEAM);
+                    if (Globals.NeedToLoadData) {
+                        Globals.NeedToLoadData = false;
+
+                        // If we need to Load Data, this might be a "re-load".  Some Data files don't need to load if
+                        // there's already data in it.  Some will always need to reload.  We'll check if there's data by
+                        // looking at the TeamsList.
+                        Globals.MatchList.clear();
                         Globals.MatchList.addMatchRow(Constants.NO_MATCH);
+
+                        if (Globals.TeamList.isEmpty()) {
+                            // Force all lists to be empty (just to be sure)
+                            Globals.ClimbPositionList.clear();
+                            Globals.ColorList.clear();
+                            Globals.CommentList.clear();
+                            Globals.CompetitionList.clear();
+                            Globals.DeviceList.clear();
+                            Globals.EventList.clear();
+                            Globals.StartPositionList.clear();
+                            Globals.TeamList.clear();
+                            Globals.TrapResultsList.clear();
+                        }
 
                         // Load the data with a BRIEF delay between.  :)
                         try {
-                            LoadDataFile(getString(R.string.file_climb_positions), getString(R.string.loading_climb_positions), getString(R.string.file_error_climb_positions));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile(getString(R.string.file_colors), getString(R.string.loading_colors), getString(R.string.file_error_colors));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile(getString(R.string.file_comments), getString(R.string.loading_comments), getString(R.string.file_error_comments));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile(getString(R.string.file_competitions), getString(R.string.loading_competitions), getString(R.string.file_error_competitions));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile(getString(R.string.file_devices), getString(R.string.loading_devices), getString(R.string.file_error_devices));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile(getString(R.string.file_events_auto), getString(R.string.loading_events_auto), getString(R.string.file_error_events_auto));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile(getString(R.string.file_events_teleop), getString(R.string.loading_events_teleop), getString(R.string.file_error_events_teleop));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
                             LoadDataFile(getString(R.string.file_matches), getString(R.string.loading_matches), getString(R.string.file_error_matches));
                             Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile(getString(R.string.file_start_positions), getString(R.string.loading_start_positions), getString(R.string.file_error_start_positions));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile(getString(R.string.file_teams), getString(R.string.loading_teams), getString(R.string.file_error_teams));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile(getString(R.string.file_trap_results), getString(R.string.loading_trap_results), getString(R.string.file_error_trap_results));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
 
-                            // We need to build the "Next Events" possible but needs to be done now, after all data is loaded.
-                            Globals.EventList.buildNextEvents();
+                            // Again, if TeamList is empty this is a full load.
+                            if (Globals.TeamList.isEmpty()) {
+                                // First index (zero) needs to be a "NO TEAM" entry so the rest line up when they are loaded
+                                Globals.TeamList.add(Constants.NO_TEAM);
+
+                                LoadDataFile(getString(R.string.file_climb_positions), getString(R.string.loading_climb_positions), getString(R.string.file_error_climb_positions));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_colors), getString(R.string.loading_colors), getString(R.string.file_error_colors));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_comments), getString(R.string.loading_comments), getString(R.string.file_error_comments));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_competitions), getString(R.string.loading_competitions), getString(R.string.file_error_competitions));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_devices), getString(R.string.loading_devices), getString(R.string.file_error_devices));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_events_auto), getString(R.string.loading_events_auto), getString(R.string.file_error_events_auto));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_events_teleop), getString(R.string.loading_events_teleop), getString(R.string.file_error_events_teleop));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_start_positions), getString(R.string.loading_start_positions), getString(R.string.file_error_start_positions));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_teams), getString(R.string.loading_teams), getString(R.string.file_error_teams));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_trap_results), getString(R.string.loading_trap_results), getString(R.string.file_error_trap_results));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+
+                                // We need to build the "Next Events" possible but needs to be done now, after all data is loaded.
+                                Globals.EventList.buildNextEvents();
+                            }
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }

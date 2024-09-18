@@ -17,6 +17,8 @@ import java.util.ArrayList;
 //                  return the Id for a given description
 //              getDescriptionList()
 //                  return a String Array of all of the descriptions of the Colors
+//              clear()
+//                  empties out the list
 // =============================================================================================
 public class Colors {
     private final ArrayList<ColorRow> color_list;
@@ -72,6 +74,7 @@ public class Colors {
         return ret;
     }
 
+    // Member Function: Return a string list of all records
     public ArrayList<String> getDescriptionList() {
         ArrayList<String> ret = new ArrayList<>();
 
@@ -80,6 +83,11 @@ public class Colors {
         }
 
         return ret;
+    }
+
+    // Member Function: Empties out the list
+    public void clear() {
+        color_list.clear();
     }
 
     // =============================================================================================

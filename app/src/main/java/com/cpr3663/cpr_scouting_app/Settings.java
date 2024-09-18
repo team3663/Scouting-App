@@ -29,6 +29,7 @@ public class Settings extends AppCompatActivity {
     Spinner spinner_Competition;
     Spinner spinner_Device;
     Spinner spinner_Color;
+    int savedCompetitionId;
 
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceType"})
     @Override
@@ -59,7 +60,7 @@ public class Settings extends AppCompatActivity {
         spinner_Competition.setAdapter(adp_Competition);
 
         // Set the selection (if there is one) to the saved one
-        int savedCompetitionId = Globals.sp.getInt(Constants.SP_COMPETITION_ID, -1);
+        savedCompetitionId = Globals.sp.getInt(Constants.SP_COMPETITION_ID, -1);
         if ((savedCompetitionId > -1) && (adp_Competition.getCount() > 0))
             spinner_Competition.setSelection(adp_Competition.getPosition(Globals.CompetitionList.getCompetitionDescription(savedCompetitionId)), true);
 
@@ -172,6 +173,8 @@ public class Settings extends AppCompatActivity {
             public void onClick(View view) {
                 int CompetitionId = Globals.CompetitionList.getCompetitionId(spinner_Competition.getSelectedItem().toString());
                 if (CompetitionId > 0) {
+                    // If we changed the CompetitionId, set Global flag to reload some of the data
+                    if (CompetitionId != savedCompetitionId) Globals.NeedToLoadData = true;
                     Globals.spe.putInt(Constants.SP_COMPETITION_ID, CompetitionId);
                 }
                 int DeviceId = Globals.DeviceList.getDeviceId(spinner_Device.getSelectedItem().toString());
