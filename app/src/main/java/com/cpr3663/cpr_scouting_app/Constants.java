@@ -37,4 +37,11 @@ public class Constants {
     public static final int EVENT_ID_DEFENSE_START = 152;
     public static final int EVENT_ID_DEFENSE_END = 153;
     public static final int EVENT_ID_AUTO_STARTNOTE = 0;
+
+    // Shared Preferences Keys
+    public static final String SP_COMPETITION_ID = "CompetitionId";
+    public static final String SP_DEVICE_ID = "DeviceId";
+    public static final String SP_SCOUTING_TEAM = "ScoutingTeam";
+    public static final String SP_NUM_MATCHES = "NumberOfMatches";
+    public static final String SP_COLOR_CONTEXT_MENU = "ColorContextMenu";
 }

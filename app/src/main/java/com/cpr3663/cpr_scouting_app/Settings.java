@@ -1,10 +1,8 @@
 package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,44 +18,17 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.cpr3663.cpr_scouting_app.data.Competitions;
 import com.cpr3663.cpr_scouting_app.data.Devices;
 import com.cpr3663.cpr_scouting_app.databinding.SettingsBinding;
 
 public class Settings extends AppCompatActivity {
     // =============================================================================================
-    // Define Constants
-    // =============================================================================================
-    public static final String SP_COMPETITION_ID = "CompetitionId";
-    public static final String SP_DEVICE_ID = "DeviceId";
-    public static final String SP_SCOUTING_TEAM = "ScoutingTeam";
-    public static final String SP_NUM_MATCHES = "NumberOfMatches";
-    public static final String SP_COLOR_CONTEXT_MENU = "ColorContextMenu";
-
-    // =============================================================================================
     // Global variables
     // =============================================================================================
     SettingsBinding settingsBinding;
-    SharedPreferences sp;
-    SharedPreferences.Editor spe;
     Spinner spinner_Competition;
     Spinner spinner_Device;
     Spinner spinner_Color;
-
-    // Doesn't appear to be needed on Tablet but helps on Virtual Devices.
-    @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // Hide the status and action bar
-        View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) actionBar.hide();
-    }
 
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceType"})
     @Override
@@ -74,11 +45,11 @@ public class Settings extends AppCompatActivity {
         });
 
         // Get the Shared Preferences where we save off app settings to use next time
-        sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
-        spe = sp.edit();
+        if (Globals.sp == null) Globals.sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+        if (Globals.spe == null) Globals.spe = Globals.sp.edit();
 
         // Restore number of files to keep from saved preferences
-        settingsBinding.editNumMatches.setText(String.valueOf(sp.getInt(SP_NUM_MATCHES, 5)));
+        settingsBinding.editNumMatches.setText(String.valueOf(Globals.sp.getInt(Constants.SP_NUM_MATCHES, 5)));
 
         // Adds Competition information to spinner
         spinner_Competition = settingsBinding.spinnerCompetition;
@@ -88,7 +59,7 @@ public class Settings extends AppCompatActivity {
         spinner_Competition.setAdapter(adp_Competition);
 
         // Set the selection (if there is one) to the saved one
-        int savedCompetitionId = sp.getInt(SP_COMPETITION_ID, -1);
+        int savedCompetitionId = Globals.sp.getInt(Constants.SP_COMPETITION_ID, -1);
         if ((savedCompetitionId > -1) && (adp_Competition.getCount() > 0))
             spinner_Competition.setSelection(adp_Competition.getPosition(Globals.CompetitionList.getCompetitionDescription(savedCompetitionId)), true);
 
@@ -96,7 +67,7 @@ public class Settings extends AppCompatActivity {
         spinner_Competition.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.cpr_bkgnd));
+                ((TextView) parent.getChildAt(0)).setTextColor(getColor(R.color.cpr_bkgnd));
             }
 
             @Override
@@ -112,7 +83,7 @@ public class Settings extends AppCompatActivity {
         spinner_Device.setAdapter(adp_Device);
 
         // Set the selection (if there is one) to the saved one
-        int savedDeviceId = sp.getInt(SP_DEVICE_ID, -1);
+        int savedDeviceId = Globals.sp.getInt(Constants.SP_DEVICE_ID, -1);
         if ((savedDeviceId > -1) && (adp_Device.getCount() >0)) {
             spinner_Device.setSelection(adp_Device.getPosition(Globals.DeviceList.getDeviceDescription(savedDeviceId)), true);
             Devices.DeviceRow dr = Globals.DeviceList.getDeviceRow(savedDeviceId);
@@ -146,8 +117,11 @@ public class Settings extends AppCompatActivity {
         adp_Color.setDropDownViewResource(R.layout.cpr_spinner_item);
         spinner_Color.setAdapter(adp_Color);
 
+        //CustomSpinnerAdapter adp_Color = new CustomSpinnerAdapter(this,
+//        R.layout.cpr_spinner, Globals.CompetitionList.getCompetitionList());
+
         // Set the selection (if there is one) to the saved one
-        int savedColorId = sp.getInt(SP_COLOR_CONTEXT_MENU, -1);
+        int savedColorId = Globals.sp.getInt(Constants.SP_COLOR_CONTEXT_MENU, -1);
         if ((savedColorId > -1) && (adp_Color.getCount() > 0))
             spinner_Color.setSelection(adp_Color.getPosition(Globals.ColorList.getColorDescription(savedColorId)), true);
 
@@ -155,7 +129,7 @@ public class Settings extends AppCompatActivity {
         spinner_Color.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.cpr_bkgnd));
+                ((TextView) parent.getChildAt(0)).setTextColor(getColor(R.color.cpr_bkgnd));
             }
 
             @Override
@@ -166,7 +140,7 @@ public class Settings extends AppCompatActivity {
         // Define the edit Text for entering the Device Id
         EditText edit_ScoutingTeam = settingsBinding.editScoutingTeam;
         // MUST CONVERT TO STRING or it crashes with out warning
-        edit_ScoutingTeam.setText(String.valueOf(sp.getInt(SP_SCOUTING_TEAM, -1)));
+        edit_ScoutingTeam.setText(String.valueOf(Globals.sp.getInt(Constants.SP_SCOUTING_TEAM, -1)));
 
         // Define a text box for the name of the Team to appear in when you enter the Number
         TextView text_ScoutingTeamName = settingsBinding.textScoutingTeamName;
@@ -198,25 +172,25 @@ public class Settings extends AppCompatActivity {
             public void onClick(View view) {
                 int CompetitionId = Globals.CompetitionList.getCompetitionId(spinner_Competition.getSelectedItem().toString());
                 if (CompetitionId > 0) {
-                    spe.putInt(SP_COMPETITION_ID, CompetitionId);
+                    Globals.spe.putInt(Constants.SP_COMPETITION_ID, CompetitionId);
                 }
                 int DeviceId = Globals.DeviceList.getDeviceId(spinner_Device.getSelectedItem().toString());
                 if (DeviceId > 0) {
-                    spe.putInt(SP_DEVICE_ID, DeviceId);
+                    Globals.spe.putInt(Constants.SP_DEVICE_ID, DeviceId);
                 }
                 String ScoutingTeam = String.valueOf(edit_ScoutingTeam.getText());
                 if (!ScoutingTeam.isEmpty()) {
-                    spe.putInt(SP_SCOUTING_TEAM, Integer.parseInt(ScoutingTeam));
+                    Globals.spe.putInt(Constants.SP_SCOUTING_TEAM, Integer.parseInt(ScoutingTeam));
                 }
                 int NumMatches = Integer.parseInt(settingsBinding.editNumMatches.getText().toString());
                 if (NumMatches < 1) NumMatches = 1;
-                spe.putInt(SP_NUM_MATCHES, NumMatches);
+                Globals.spe.putInt(Constants.SP_NUM_MATCHES, NumMatches);
                 int ColorId = Globals.ColorList.getColorId(spinner_Color.getSelectedItem().toString());
                 if (ColorId > 0) {
-                    spe.putInt(SP_COLOR_CONTEXT_MENU, ColorId);
+                    Globals.spe.putInt(Constants.SP_COLOR_CONTEXT_MENU, ColorId);
                 }
 
-                spe.apply();
+                Globals.spe.apply();
                 Exit();
             }
         });
