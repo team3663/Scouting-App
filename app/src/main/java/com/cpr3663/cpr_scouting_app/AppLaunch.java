@@ -97,12 +97,16 @@ public class AppLaunch extends AppCompatActivity {
         });
 
         // Make sure that we aren't coming back to the page and it is the first time running this
+        // This is defaulted to TRUE and reset to FALSE below.  In Settings, this can be set back to
+        // TRUE if we need to (re)load some data again.
         if (Globals.NeedToLoadData) {
             // Set a TimerTask to load the data shortly AFTER this OnCreate finishes
             appLaunch_timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     // Make sure that we aren't coming back to the page and it is the first time running this
+                    // This is defaulted to TRUE and reset to FALSE below.  In Settings, this can be set back to
+                    // TRUE if we need to (re)load some data again.
                     if (Globals.NeedToLoadData) {
                         Globals.NeedToLoadData = false;
 
@@ -112,6 +116,7 @@ public class AppLaunch extends AppCompatActivity {
                         Globals.MatchList.clear();
                         Globals.MatchList.addMatchRow(Constants.NO_MATCH);
 
+                        // If the TeamList is empty that indicates we need to load ALL data.
                         if (Globals.TeamList.isEmpty()) {
                             // Force all lists to be empty (just to be sure)
                             Globals.ClimbPositionList.clear();
