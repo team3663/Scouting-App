@@ -45,7 +45,6 @@ public class Competitions {
             ret.add(cr.getDescription());
         }
 
-        Collections.sort(ret);
         return ret;
     }
 
