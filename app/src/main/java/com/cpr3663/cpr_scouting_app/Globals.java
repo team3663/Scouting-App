@@ -1,5 +1,7 @@
 package com.cpr3663.cpr_scouting_app;
 
+import android.content.SharedPreferences;
+
 import com.cpr3663.cpr_scouting_app.data.ClimbPositions;
 import com.cpr3663.cpr_scouting_app.data.Colors;
 import com.cpr3663.cpr_scouting_app.data.Comments;
@@ -35,4 +37,7 @@ public class Globals {
     public static Logger EventLogger;
 
     public static int NumberMatchFilesKept;
+
+    public static SharedPreferences sp;
+    public static SharedPreferences.Editor spe;
 }

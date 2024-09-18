@@ -1,14 +1,12 @@
 package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -39,21 +37,6 @@ public class PostMatch extends AppCompatActivity {
     //Creating an array list for the Comments
     ArrayList<Integer> CommentList = new ArrayList<>();
     String[] CommentArray = Globals.CommentList.getDescriptionList();
-
-    // Doesn't appear to be needed on Tablet but helps on Virtual Devices.
-    @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // Hide the status and action bar
-        View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) actionBar.hide();
-    }
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -178,12 +161,6 @@ public class PostMatch extends AppCompatActivity {
                 builder.show();
             }
         });
-
-        // Create Components
-        CheckBox check_DidLeave = postMatchBinding.checkboxDidLeave;
-        Spinner drop_ClimbPosition = postMatchBinding.spinnerClimbPosition;
-        Spinner drop_Trap = postMatchBinding.spinnerTrap;
-        TextView drop_Comments = postMatchBinding.dropComments;
 
         // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
         // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)

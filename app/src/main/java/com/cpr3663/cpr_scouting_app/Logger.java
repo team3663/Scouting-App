@@ -3,6 +3,7 @@ package com.cpr3663.cpr_scouting_app;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Pair;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 
 // =============================================================================================
 // Class:       Logger
@@ -25,10 +27,6 @@ import java.util.Collections;
 //                  finish logging any/all events, and flush/close the log files
 // =============================================================================================
 public class Logger {
-    private static File file_data;
-    private static File file_event;
-    private static String filename_data;
-    private static String filename_event;
     private static FileOutputStream fos_data;
     private static FileOutputStream fos_event;
     private static int seq_number = 0; // Track the current sequence number for events
@@ -40,6 +38,7 @@ public class Logger {
     // Constructor: create the new files
     public Logger(Context in_context) throws IOException {
         String path = in_context.getString(R.string.logger_path);
+        boolean rc = true;
 
         // Ensure the sequence number is reset
         seq_number = 0;
@@ -50,24 +49,29 @@ public class Logger {
         }
 
         // Define the filenames/files to be used for this logger
-        filename_data =  path + Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_d.csv";
-        filename_event = path + Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_e.csv";
+        String filename_data = path + Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_d.csv";
+        String filename_event = path + Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_e.csv";
 
         File file_data = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), filename_data);
         File file_event = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), filename_event);
 
         // Ensure the directory structure exists first - only need to do one
-        file_data.getParentFile().mkdirs();
+        if (!Objects.requireNonNull(file_data.getParentFile()).exists()) {
+            rc = Objects.requireNonNull(file_data.getParentFile()).mkdirs();
+            if (!rc) Toast.makeText(in_context.getApplicationContext(), "Failed to create directory: " + file_data.getParentFile().getName(), Toast.LENGTH_SHORT).show();
+        }
 
         // Delete files to ensure we're not creating more than Constants.KEEP_NUMBER_OF_MATCHES
         // Only look at _d.csv files, ensure it's a file, and store off CreationTime attribute
         File[] files = file_data.getParentFile().listFiles();
         ArrayList<Long> last_created = new ArrayList<>();
 
-        for (File file : files) {
-            if (file.isFile() && file.getName().endsWith("d.csv")) {
-                BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-                last_created.add(attrs.creationTime().toMillis());
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile() && file.getName().endsWith("d.csv")) {
+                    BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+                    last_created.add(attrs.creationTime().toMillis());
+                }
             }
         }
 
@@ -79,18 +83,23 @@ public class Logger {
 
             long created_check = last_created.get(Globals.NumberMatchFilesKept - 1);
 
-            for (File file : files) {
-                if (file.isFile()) {
-                    BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-                    if (attrs.creationTime().toMillis() < created_check) file.delete();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+                        if (attrs.creationTime().toMillis() < created_check) rc = file.delete();
+                        if (!rc) Toast.makeText(in_context.getApplicationContext(), "Failed to delete file: " + file.getName(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
         }
 
         // If the output file doesn't exist, output a stream to it and copy contents over
-        if (!file_data.exists()) file_data.createNewFile();
-        if (!file_event.exists()) file_event.createNewFile();
+        if (!file_data.exists()) rc = file_data.createNewFile();
+        if (!rc) Toast.makeText(in_context.getApplicationContext(), "Failed to create file: " + file_data.getName(), Toast.LENGTH_SHORT).show();
+        if (!file_event.exists()) rc = file_event.createNewFile();
+        if (!rc) Toast.makeText(in_context.getApplicationContext(), "Failed to create file: " + file_event.getName(), Toast.LENGTH_SHORT).show();
 
         try {
             fos_data = new FileOutputStream(file_data);
