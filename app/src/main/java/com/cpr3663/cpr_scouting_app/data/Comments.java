@@ -17,6 +17,8 @@ import java.util.ArrayList;
 //                  return the comment Id for a given Comment (for logging)
 //              getDescriptionList()
 //                  return a String Array of all of the descriptions of the Comments
+//              clear()
+//                  empties out the list
 // =============================================================================================
 public class Comments {
     private final ArrayList<CommentRow> comment_list;
@@ -72,6 +74,7 @@ public class Comments {
         return ret;
     }
 
+    // Member Function: Return a string list of all records
     // TODO See if we can make it return a ArrayList<String> for consistency
     public String[] getDescriptionList() {
         String[] descriptions = new String[comment_list.size()];
@@ -80,6 +83,11 @@ public class Comments {
             descriptions[i] = comment_list.get(i).getDescription();
         }
         return descriptions;
+    }
+
+    // Member Function: Empties out the list
+    public void clear() {
+        comment_list.clear();
     }
 
     // =============================================================================================

@@ -13,6 +13,8 @@ import java.util.ArrayList;
 //                  return a TrapResultRow item for the given Trap Result id
 //              getDescriptionList()
 //                  return a String Array of all of the descriptions of the Trap Results
+//              clear()
+//                  empties out the list
 // =============================================================================================
 public class TrapResults {
     private final ArrayList<TrapResultRow> trapResult_list;
@@ -51,6 +53,7 @@ public class TrapResults {
         return ret;
     }
 
+    // Member Function: Return a string list of all records
     // TODO See if we can make it return a ArrayList<String> for consistency
     public String[] getDescriptionList() {
         String[] descriptions = new String[trapResult_list.size()];
@@ -59,6 +62,11 @@ public class TrapResults {
             descriptions[i] = trapResult_list.get(i).getDescription();
         }
         return descriptions;
+    }
+
+    // Member Function: Empties out the list
+    public void clear() {
+        trapResult_list.clear();
     }
 
     // =============================================================================================
