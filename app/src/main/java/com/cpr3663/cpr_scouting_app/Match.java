@@ -506,6 +506,7 @@ public class Match extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     public void end_Teleop() {
         but_MatchControl.setText(getString(R.string.button_match_next));
+        but_MatchControl.setTextColor(getColor(R.color.black));
         but_MatchControl.setBackgroundColor(getColor(R.color.white));
 
         // Certain actions can't be set from a non-UI thread (like withing a TimerTask that runs on a
