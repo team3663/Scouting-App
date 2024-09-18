@@ -1,15 +1,20 @@
 package com.cpr3663.cpr_scouting_app;
 
+//import static java.security.AccessController.getContext;
+
 import android.annotation.SuppressLint;
+//import android.content.ContentResolver;
+//import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.UriPermission;
+//import android.content.UriPermission;
 import android.graphics.Point;
-import android.net.Uri;
+//import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.DocumentsContract;
+//import android.provider.DocumentsContract;
+//import android.provider.MediaStore;
 import android.view.Display;
 import android.view.View;
 import android.widget.Button;
@@ -24,15 +29,18 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.cpr3663.cpr_scouting_app.databinding.AppLaunchBinding;
+import com.cpr3663.cpr_scouting_app.Settings;
 
 import java.io.BufferedReader;
 import java.io.File;
+//import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+//import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.List;
+//import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -47,21 +55,19 @@ public class AppLaunch extends AppCompatActivity {
     // =============================================================================================
     private AppLaunchBinding appLaunchBinding;
     public static Timer appLaunch_timer = new Timer();
-    SharedPreferences sp;
-    SharedPreferences.Editor spe;
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 3663 && resultCode == RESULT_OK) {
-            Uri treeUri = data.getData();
-            if (treeUri != null) {
-                getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                spe.putString(Settings.SP_PUBLIC_DOCUMENTS_URI, treeUri.toString());
-                spe.apply();
-            }
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == 3663 && resultCode == RESULT_OK) {
+//            Uri treeUri = data.getData();
+//            if (treeUri != null) {
+//                getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//                spe.putString(Settings.SP_PUBLIC_DOCUMENTS_URI, treeUri.toString());
+//                spe.apply();
+//            }
+//        }
+//    }
 
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
     @Override
@@ -83,32 +89,54 @@ public class AppLaunch extends AppCompatActivity {
         });
 
         // Get the Shared Preferences where we save off app settings to use next time
-        sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
-        spe = sp.edit();
+        if (Globals.sp == null) Globals.sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+        if (Globals.spe == null) Globals.spe = Globals.sp.edit();
 
         // Ask the user to allow permissions to the public/shared files.
-        String uri = sp.getString(Settings.SP_PUBLIC_DOCUMENTS_URI, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toURI().toString());
-        Uri uri2 = Uri.parse(uri);
+//        String uri = sp.getString(Settings.SP_PUBLIC_DOCUMENTS_URI, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toURI().toString());
+//        String uri = sp.getString(Settings.SP_PUBLIC_DOCUMENTS_URI, Environment.getExternalStorageDirectory().toURI().toString());
+//        String uri = Environment.getExternalStorageDirectory().toURI().toString();
+//        Uri uri2 = Uri.parse(uri);
+//        MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+//
+//        ContentResolver contentresolver = this.getContentResolver();
+//        ContentValues contentvalues = new ContentValues();
+//        contentvalues.put(MediaStore.MediaColumns.DISPLAY_NAME, "CPR Scouting/Input/test.csv");
+//        contentvalues.put(MediaStore.MediaColumns.MIME_TYPE, "plain/text");
+////        contentvalues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS);
+//        OutputStream out;
+//        try {
+//            Uri testuri = contentresolver.insert(MediaStore.Files.getContentUri("external"), contentvalues);
+//            out = contentresolver.openOutputStream((testuri));
+//        } catch (FileNotFoundException e) {
+//            throw new RuntimeException(e);
+//        }
+//        try {
+//            out.write("this is a test".getBytes(StandardCharsets.UTF_8));
+//            out.close();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
 
         // Check if we have permissions already.  since we're only asking for 1 permission, if the list
         // has anything in it (size > 0) then we're going to be okay.
-        List<UriPermission> permissions = getContentResolver().getPersistedUriPermissions();
-        boolean perm_found = false;
-        for (UriPermission permission : permissions) {
-            if (permission.getUri().equals(uri2) && permission.isReadPermission() && permission.isWritePermission()) {
-                perm_found = true;
-                break;
-            }
-        }
+//        List<UriPermission> permissions = getContentResolver().getPersistedUriPermissions();
+//        boolean perm_found = false;
+//        for (UriPermission permission : permissions) {
+//            if (permission.getUri().equals(uri2) && permission.isReadPermission() && permission.isWritePermission()) {
+//                perm_found = true;
+//                break;
+//            }
+//        }
 
         // If we don't have permissions, prompt the user to grant it.
-        if (!perm_found) {
-            // Choose a directory using the system's file picker.
-            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-            intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, uri);
-            startActivityForResult(intent, 3663);
-        }
+//        if (!perm_found) {
+//            // Choose a directory using the system's file picker.
+//            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+//            intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+//            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, uri);
+//            startActivityForResult(intent, 3663);
+//        }
 
         // Define a Image Button to open up the Settings
         ImageButton imgBut_Settings = appLaunchBinding.imgButSettings;
@@ -150,6 +178,7 @@ public class AppLaunch extends AppCompatActivity {
                     if (Globals.TeamList.isEmpty()) {
                         // First first index (zero) needs to be a "NO TEAM" entry so the rest line up when they are loaded
                         Globals.TeamList.add(Constants.NO_TEAM);
+                        Globals.MatchList.addMatchRow(Constants.NO_MATCH);
 
                         // Load the data with a BRIEF delay between.  :)
                         try {
@@ -330,7 +359,7 @@ public class AppLaunch extends AppCompatActivity {
                 }
                 else if (in_fileName.equals(getString(R.string.file_matches))) {
                     // Use only the match information that equals the competition we're in.
-                    if (Integer.parseInt(info[0]) == sp.getInt(Settings.SP_COMPETITION_ID, -1)) {
+                    if (Integer.parseInt(info[0]) == Globals.sp.getInt(Constants.SP_COMPETITION_ID, -1)) {
                         for (int i = index; i < Integer.parseInt(info[1]); i++) {
                             Globals.MatchList.addMatchRow(Constants.NO_MATCH);
                         }

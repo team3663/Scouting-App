@@ -66,12 +66,11 @@ public class PreMatch extends AppCompatActivity {
         });
 
         // Now that we are starting to scout data, set the Global values
-        SharedPreferences sp;
-        sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
-        Globals.CurrentScoutingTeam = sp.getInt(Settings.SP_SCOUTING_TEAM, 0);
-        Globals.CurrentCompetitionId = sp.getInt(Settings.SP_COMPETITION_ID, 0);
-        Globals.CurrentDeviceId = sp.getInt(Settings.SP_DEVICE_ID, 0);
-        Globals.CurrentColorId = sp.getInt(Settings.SP_COLOR_CONTEXT_MENU, 1);
+        if (Globals.sp == null) Globals.sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+        Globals.CurrentScoutingTeam = Globals.sp.getInt(Constants.SP_SCOUTING_TEAM, 0);
+        Globals.CurrentCompetitionId = Globals.sp.getInt(Constants.SP_COMPETITION_ID, 0);
+        Globals.CurrentDeviceId = Globals.sp.getInt(Constants.SP_DEVICE_ID, 0);
+        Globals.CurrentColorId = Globals.sp.getInt(Constants.SP_COLOR_CONTEXT_MENU, 1);
 
         // Create components
         EditText edit_Match = preMatchBinding.editMatch;
@@ -170,7 +169,7 @@ public class PreMatch extends AppCompatActivity {
                     } else {
                         // Save off the current match number (Logger needs this)
                         Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
-                        Globals.NumberMatchFilesKept = sp.getInt(Settings.SP_NUM_MATCHES, 5);
+                        Globals.NumberMatchFilesKept = Globals.sp.getInt(Constants.SP_NUM_MATCHES, 5);
 
                         // Set up the Logger - if it fails, we better stop now, or we won't capture any data!
                         try {
