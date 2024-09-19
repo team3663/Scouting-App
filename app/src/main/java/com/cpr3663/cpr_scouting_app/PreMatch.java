@@ -159,7 +159,7 @@ public class PreMatch extends AppCompatActivity {
             public void onClick(View view) {
                 String teamNum = String.valueOf(preMatchBinding.editOverrideTeamNum.getText());
                 if (!teamNum.isEmpty()) {
-                    Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber);
+                    Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Integer.parseInt(preMatchBinding.editMatch.getText().toString()));
                     int[] Teams = Match.getListOfTeams();
                     String[] teamsInMatch = new String[Teams.length + 1];
                     for (int i = 0; i < Teams.length; i++) {
