@@ -216,30 +216,14 @@ public class PreMatch extends AppCompatActivity {
                     String TeamToScoutStr = String.valueOf(edit_Team.getText());
                     if (!TeamToScoutStr.isEmpty()) {
                         int TeamToScout = Integer.parseInt(TeamToScoutStr);
-                        if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size()) {
+                        // Since TeamList always has a NO_TEAM entry at index=0, need to check size-1
+                        if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size() - 1) {
                             // This will crash the app instead of returning null if you pass it an invalid num
                             String ScoutingTeamName = Globals.TeamList.get(TeamToScout);
                             text_TeamName.setText(ScoutingTeamName);
                         } else {
                             text_TeamName.setText("");
                         }
-                    }
-                }
-            }
-        });
-
-        edit_Team.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean focus) {
-                if (!focus) {
-                    String TeamToScoutStr = String.valueOf(edit_Team.getText());
-                    if (!TeamToScoutStr.isEmpty()) {
-                        int TeamToScout = Integer.parseInt(TeamToScoutStr);
-                        if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size()) {
-                            // This will crash the app instead of returning null if you pass it an invalid num
-                            String ScoutingTeamName = Globals.TeamList.get(TeamToScout);
-                            text_TeamName.setText(ScoutingTeamName);
-                        } else text_TeamName.setText("");
                     }
                 }
             }
