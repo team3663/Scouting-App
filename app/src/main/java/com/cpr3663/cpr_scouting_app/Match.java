@@ -379,8 +379,8 @@ public class Match extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        matchBinding.textStatus.setText("Last Event: " + Objects.requireNonNull(item.getTitle()).toString());
-        eventPrevious = Globals.EventList.getEventId((String) item.getTitle().toString());
+        matchBinding.textStatus.setText("Last Event: " + Objects.requireNonNull(item.getTitle()));
+        eventPrevious = Globals.EventList.getEventId(item.getTitle().toString());
         Globals.EventLogger.LogEvent(eventPrevious, current_X_Relative, current_Y_Relative, is_start_of_seq, currentTouchTime);
         return true;
     }
