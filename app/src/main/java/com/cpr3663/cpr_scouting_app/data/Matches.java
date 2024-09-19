@@ -37,7 +37,7 @@ public class Matches {
 
     // Member Function: Get back a row of data for a given match
     public int getNumberOfMatches() {
-        return match_list.size();
+        return match_list.size() - 1;
     }
 
     // Member Function: Empties out the list
