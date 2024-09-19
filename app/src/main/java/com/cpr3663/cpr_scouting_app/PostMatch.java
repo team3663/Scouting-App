@@ -182,7 +182,7 @@ public class PostMatch extends AppCompatActivity {
                 String comment_sep_ID = "";
                 for (Integer comment_dropID : CommentList) {
                     String comment = CommentArray[comment_dropID];
-                    comment_sep_ID += ":" + (String.valueOf(Globals.CommentList.getCommentId(comment)));
+                    comment_sep_ID += ":" + String.valueOf(Globals.CommentList.getCommentId(comment));
                 }
                 if (!comment_sep_ID.isEmpty()) comment_sep_ID = comment_sep_ID.substring(1);
                 Globals.EventLogger.LogData(Constants.LOGKEY_COMMENTS, comment_sep_ID);
@@ -194,6 +194,9 @@ public class PostMatch extends AppCompatActivity {
                 // Increases the team number so that it auto fills for the next match correctly
                 //  and do it after the logger is closed so that this can't mess the logger up
                 Globals.CurrentMatchNumber++;
+
+                // Reset the Saved Start position so that you have to choose it again
+                Globals.CurrentStartPosition = 0;
 
                 Intent GoToSubmitData = new Intent(PostMatch.this, SubmitData.class);
                 startActivity(GoToSubmitData);
