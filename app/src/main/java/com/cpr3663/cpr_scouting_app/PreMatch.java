@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -270,24 +271,25 @@ public class PreMatch extends AppCompatActivity {
             }
         });
 
-        spinner_Team.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        spinner_Team.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onFocusChange(View view, boolean focus) {
-                if (!focus) {
-                    String TeamToScoutStr = String.valueOf(spinner_Team.getSelectedItem());
-                    if (!TeamToScoutStr.isEmpty()) {
-                        int TeamToScout = Integer.parseInt(TeamToScoutStr);
-                        // Since TeamList always has a NO_TEAM entry at index=0, need to check size-1
-                        if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size() - 1) {
-                            // This will crash the app instead of returning null if you pass it an invalid num
-                            String ScoutingTeamName = Globals.TeamList.get(TeamToScout);
-                            text_TeamName.setText(ScoutingTeamName);
-                        } else {
-                            text_TeamName.setText("");
-                        }
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String TeamToScoutStr = String.valueOf(spinner_Team.getSelectedItem());
+                if (!TeamToScoutStr.isEmpty() && !TeamToScoutStr.equals("None")) {
+                    int TeamToScout = Integer.parseInt(TeamToScoutStr);
+                    // Since TeamList always has a NO_TEAM entry at index=0, need to check size-1
+                    if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size() - 1) {
+                        // This will crash the app instead of returning null if you pass it an invalid num
+                        String ScoutingTeamName = Globals.TeamList.get(TeamToScout);
+                        text_TeamName.setText(ScoutingTeamName);
+                    } else {
+                        text_TeamName.setText("");
                     }
                 }
             }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
         });
     }
 }
