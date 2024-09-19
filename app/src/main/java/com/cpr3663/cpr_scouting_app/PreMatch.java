@@ -79,16 +79,17 @@ public class PreMatch extends AppCompatActivity {
 
         // adds teams in match to the spinner
         // Create an ArrayAdapter using the string array and a default spinner layout.
-//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-//                this,
-//                R.array.teamsList,
-//                android.R.layout.simple_spinner_item
-//        );
-//// Specify the layout to use when the list of choices appears.
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//// Apply the adapter to the spinner.
-//        spinner_Team.setAdapter(adapter);
-        //TODO FINISH THIS!
+        int[] x = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber).getListOfTeams();
+        String[] z = new String[x.length];
+        for (int i = 0; i < x.length; i++) {
+            z[i] = String.valueOf(x[i]);
+        }
+        if (z[0].equals("0")) {
+            z = new String[]{"None"};
+        }
+        ArrayAdapter<String> adp_Team = new ArrayAdapter<String>(this, R.layout.cpr_spinner, z);
+        adp_Team.setDropDownViewResource(R.layout.cpr_spinner_item);
+        spinner_Team.setAdapter(adp_Team);
 
         Button but_AddOverrideTeamNum = preMatchBinding.butAddOverrideTeamNum;
         CheckBox checkbox_DidPlay = preMatchBinding.checkboxDidPlay;
@@ -238,35 +239,36 @@ public class PreMatch extends AppCompatActivity {
                     String MatchNumStr = String.valueOf(edit_Match.getText());
                     if (!MatchNumStr.isEmpty()) {
                         int MatchNum = Integer.parseInt(MatchNumStr);
-                        if (MatchNum <= Globals.MatchList.getNumberOfMatches()) {
-                            Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
-                            if (Match != null) {
-                                // MUST CONVERT TO STRING or it crashes with out warning
-                                int[] Teams = Match.getListOfTeams();
-                                String[] teamsInMatch = new String[Teams.length];
-                                for (int i = 0; i < Teams.length; i++) {
-                                    teamsInMatch[i] = String.valueOf(Teams[i]);
-                                }
-                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_spinner_item, teamsInMatch);
-                                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                // Apply the adapter to the spinner.
-                                spinner_Team.setAdapter(adapter);
-                                // TODO Set "Teams" to the options in the single select dropdown
+                        if (MatchNum < Globals.MatchList.getNumberOfMatches()) {
+//                            Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
+//                            if (Match != null) {
+//                                // MUST CONVERT TO STRING or it crashes with out warning
+//                                int[] Teams = Match.getListOfTeams();
+//                                String[] teamsInMatch = new String[Teams.length];
+//                                for (int i = 0; i < Teams.length; i++) {
+//                                    teamsInMatch[i] = String.valueOf(Teams[i]);
+//                            }
+//                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_spinner_item, teamsInMatch);
+//                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                            // Apply the adapter to the spinner.
+//                            spinner_Team.setAdapter(adapter);
+//                            // TODO Set "Teams" to the options in the single select dropdown
+                            int[] x = Globals.MatchList.getMatchInfoRow(MatchNum).getListOfTeams();
+                            String[] z = new String[x.length];
+                            for (int i = 0; i < x.length; i++) {
+                                z[i] = String.valueOf(x[i]);
                             }
+                            if (z[0].equals("0")) {
+                                z = new String[]{"None"};
+                            }
+                            ArrayAdapter<String> adp_Team = new ArrayAdapter<String>(view.getContext(), R.layout.cpr_spinner, z);
+                            adp_Team.setDropDownViewResource(R.layout.cpr_spinner_item);
+                            spinner_Team.setAdapter(adp_Team);
                         }
                     }
                 }
             }
         });
-
-        //              OLD CODE
-        //                                Integer[] teamsInMatch = new Integer[Teams.length];
-//                                int i = 0;
-//                                for (int value : Teams) {
-//                                    teamsInMatch[i++] = Integer.valueOf(value);
-//                                }
-        //Integer[] teamsInMatch = Integer.valueOf(Teams);
-
 
         spinner_Team.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
