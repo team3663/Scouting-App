@@ -47,6 +47,8 @@
             <Spinner
                 android:id="@+id/spinner_Competition"
                 android:spinnerMode="dropdown"
+                android:verticalScrollbarPosition="left"
+                android:scrollbarThumbVertical="@drawable/scrollbar_style"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:background="@color/white"
