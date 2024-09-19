@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -23,6 +24,8 @@ import com.cpr3663.cpr_scouting_app.data.Matches;
 import com.cpr3663.cpr_scouting_app.databinding.PreMatchBinding;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class PreMatch extends AppCompatActivity {
     // =============================================================================================
@@ -56,7 +59,7 @@ public class PreMatch extends AppCompatActivity {
 
         // Create components
         EditText edit_Match = preMatchBinding.editMatch;
-        EditText edit_Team = preMatchBinding.editTeamToScout;
+        Spinner spinner_Team = preMatchBinding.spinnerTeamToScout;
         Spinner spinner_StartPos = preMatchBinding.spinnerStartingPosition;
         TextView text_TeamName = preMatchBinding.textTeamToScoutName;
 
@@ -74,6 +77,20 @@ public class PreMatch extends AppCompatActivity {
             }
         }
         spinner_StartPos.setSelection(start_Pos_DropId);
+
+        // adds teams in match to the spinner
+        // Create an ArrayAdapter using the string array and a default spinner layout.
+        int[] teams = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber).getListOfTeams();
+        String[] teams_Str = new String[teams.length];
+        for (int i = 0; i < teams.length; i++) {
+            teams_Str[i] = String.valueOf(teams[i]);
+        }
+        if (teams_Str[0].equals("0")) {
+            teams_Str = new String[]{"None"};
+        }
+        ArrayAdapter<String> adp_Team = new ArrayAdapter<String>(this, R.layout.cpr_spinner, teams_Str);
+        adp_Team.setDropDownViewResource(R.layout.cpr_spinner_item);
+        spinner_Team.setAdapter(adp_Team);
 
         Button but_AddOverrideTeamNum = preMatchBinding.butAddOverrideTeamNum;
         CheckBox checkbox_DidPlay = preMatchBinding.checkboxDidPlay;
@@ -100,6 +117,15 @@ public class PreMatch extends AppCompatActivity {
             if (Globals.CurrentMatchNumber < Globals.MatchList.size()) {
                 Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber);
                 if (Match != null) {
+                    int[] Teams = Match.getListOfTeams();
+                    String[] teamsInMatch = new String[Teams.length];
+                    for (int i = 0; i < Teams.length; i++) {
+                        teamsInMatch[i] = String.valueOf(Teams[i]);
+                    }
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, teamsInMatch);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    // Apply the adapter to the spinner.
+                    spinner_Team.setAdapter(adapter);
                     // TODO Set "Teams" to the options in the single select dropdown
                 }
             }
@@ -153,8 +179,9 @@ public class PreMatch extends AppCompatActivity {
                     startActivity(GoToSubmitData);
                 } else {
                     // Check we have all the fields entered that are needed.  Otherwise, pop a TOAST message instead
-                    if (String.valueOf(edit_Match.getText()).isEmpty() || String.valueOf(edit_Team.getText()).isEmpty() || String.valueOf(edit_Name.getText()).isEmpty()
-                            || (spinner_StartPos.getSelectedItem().toString().equals(Globals.StartPositionList.getStartPositionDescription(Constants.DATA_ID_START_POS_DEFAULT)) && checkbox_DidPlay.isChecked())) {
+                    if (String.valueOf(edit_Match.getText()).isEmpty() || spinner_Team.getSelectedItemPosition() < 0 || String.valueOf(edit_Name.getText()).isEmpty()
+                            //PREVIOUS CODE - if (String.valueOf(edit_Match.getText()).isEmpty() || String.valueOf(spinner_Team.getText()).isEmpty() || String.valueOf(edit_Name.getText()).isEmpty()
+                            || (spinner_StartPos.getSelectedItem().toString() == Globals.StartPositionList.getStartPositionDescription(Constants.DATA_ID_START_POS_DEFAULT) && checkbox_DidPlay.isChecked())) {
                         Toast.makeText(PreMatch.this, R.string.missing_data, Toast.LENGTH_SHORT).show();
                     } else {
                         // Save off the current match number (Logger needs this)
@@ -169,7 +196,7 @@ public class PreMatch extends AppCompatActivity {
                         }
 
                         // Log all of the data from this page
-                        Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_TO_SCOUT, preMatchBinding.editTeamToScout.getText().toString());
+                        Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_TO_SCOUT, preMatchBinding.spinnerTeamToScout.getSelectedItem().toString());
                         Globals.EventLogger.LogData(Constants.LOGKEY_SCOUTER, preMatchBinding.editScouterName.getText().toString().toUpperCase().trim());
                         Globals.EventLogger.LogData(Constants.LOGKEY_DID_PLAY, String.valueOf(preMatchBinding.checkboxDidPlay.isChecked()));
                         Globals.EventLogger.LogData(Constants.LOGKEY_TEAM_SCOUTING, String.valueOf(Globals.CurrentScoutingTeam));
@@ -217,33 +244,41 @@ public class PreMatch extends AppCompatActivity {
                             Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
                             if (Match != null) {
                                 // MUST CONVERT TO STRING or it crashes with out warning
-                                int[] Teams = Match.getListOfTeams();
-                                // TODO Set "Teams" to the options in the single select dropdown
+                            String[] teams_Str = new String[teams.length];
+                            for (int i = 0; i < teams.length; i++) {
+                                teams_Str[i] = String.valueOf(teams[i]);
                             }
+                            if (teams_Str[0].equals("0")) {
+                                teams_Str = new String[]{"None"};
+                            }
+                            ArrayAdapter<String> adp_Team = new ArrayAdapter<String>(view.getContext(), R.layout.cpr_spinner, teams_Str);
+                            adp_Team.setDropDownViewResource(R.layout.cpr_spinner_item);
+                            spinner_Team.setAdapter(adp_Team);
                         }
                     }
                 }
             }
         });
 
-        edit_Team.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        spinner_Team.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onFocusChange(View view, boolean focus) {
-                if (!focus) {
-                    String TeamToScoutStr = String.valueOf(edit_Team.getText());
-                    if (!TeamToScoutStr.isEmpty()) {
-                        int TeamToScout = Integer.parseInt(TeamToScoutStr);
-                        // Since TeamList always has a NO_TEAM entry at index=0, need to check size-1
-                        if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size()) {
-                            // This will crash the app instead of returning null if you pass it an invalid num
-                            String ScoutingTeamName = Globals.TeamList.get(TeamToScout);
-                            text_TeamName.setText(ScoutingTeamName);
-                        } else {
-                            text_TeamName.setText("");
-                        }
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String TeamToScoutStr = String.valueOf(spinner_Team.getSelectedItem());
+                if (!TeamToScoutStr.isEmpty() && !TeamToScoutStr.equals("None")) {
+                    int TeamToScout = Integer.parseInt(TeamToScoutStr);
+                    // Since TeamList always has a NO_TEAM entry at index=0, need to check size-1
+                    if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size() - 1) {
+                        // This will crash the app instead of returning null if you pass it an invalid num
+                        String ScoutingTeamName = Globals.TeamList.get(TeamToScout);
+                        text_TeamName.setText(ScoutingTeamName);
+                    } else {
+                        text_TeamName.setText("");
                     }
                 }
             }
+            
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
         });
     }
 }
