@@ -35,9 +35,14 @@ public class Matches {
         return match_list.get(in_match_id);
     }
 
-    // Member Function: Get back a row of data for a given match
+    // Member Function: Return the number of matches (so it doesn't include the index 0)
     public int getNumberOfMatches() {
         return match_list.size() - 1;
+    }
+
+    // Member Function: Return the size of the list of Matches
+    public int size() {
+        return match_list.size();
     }
 
     // Member Function: Empties out the list
