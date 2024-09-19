@@ -114,7 +114,7 @@ public class PreMatch extends AppCompatActivity {
         if (Globals.CurrentMatchNumber > 0) {
             // MUST CONVERT TO STRING or it crashes with out warning
             edit_Match.setText(String.valueOf(Globals.CurrentMatchNumber));
-            if (Globals.CurrentMatchNumber <= Globals.MatchList.getNumberOfMatches()) {
+            if (Globals.CurrentMatchNumber < Globals.MatchList.size()) {
                 Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber);
                 if (Match != null) {
                     int[] Teams = Match.getListOfTeams();
@@ -240,21 +240,10 @@ public class PreMatch extends AppCompatActivity {
                     String MatchNumStr = String.valueOf(edit_Match.getText());
                     if (!MatchNumStr.isEmpty()) {
                         int MatchNum = Integer.parseInt(MatchNumStr);
-                        if (MatchNum < Globals.MatchList.getNumberOfMatches()) {
-//                            Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
-//                            if (Match != null) {
-//                                // MUST CONVERT TO STRING or it crashes with out warning
-//                                int[] Teams = Match.getListOfTeams();
-//                                String[] teamsInMatch = new String[Teams.length];
-//                                for (int i = 0; i < Teams.length; i++) {
-//                                    teamsInMatch[i] = String.valueOf(Teams[i]);
-//                            }
-//                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_spinner_item, teamsInMatch);
-//                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                            // Apply the adapter to the spinner.
-//                            spinner_Team.setAdapter(adapter);
-//                            // TODO Set "Teams" to the options in the single select dropdown
-                            int[] teams = Globals.MatchList.getMatchInfoRow(MatchNum).getListOfTeams();
+                        if (MatchNum > 0 && MatchNum < Globals.MatchList.size()) {
+                            Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
+                            if (Match != null) {
+                                // MUST CONVERT TO STRING or it crashes with out warning
                             String[] teams_Str = new String[teams.length];
                             for (int i = 0; i < teams.length; i++) {
                                 teams_Str[i] = String.valueOf(teams[i]);
@@ -287,7 +276,7 @@ public class PreMatch extends AppCompatActivity {
                     }
                 }
             }
-
+            
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {}
         });
