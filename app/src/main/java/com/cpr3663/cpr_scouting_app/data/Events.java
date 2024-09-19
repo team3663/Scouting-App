@@ -20,6 +20,8 @@ import java.util.ArrayList;
 //              buildNextEvents()
 //                  pre-build the list of next events (descriptions) for each event.  To be
 //                  called AFTER all events are loaded.
+//              clear()
+//                  empties out the list
 // =============================================================================================
 public class Events {
     // Class Members
@@ -95,6 +97,11 @@ public class Events {
             }
 
         }
+    }
+
+    // Member Function: Empties out the list
+    public void clear() {
+        event_list.clear();
     }
 
     // =============================================================================================

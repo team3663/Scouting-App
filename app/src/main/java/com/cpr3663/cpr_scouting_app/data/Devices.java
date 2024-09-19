@@ -12,6 +12,8 @@ import java.util.Collections;
 //                  return the number of devices we have
 //              getDeviceInfoRow()
 //                  return a DeviceInfoRow item for the given device id
+//              clear()
+//                  empties out the list
 // =============================================================================================
 public class Devices {
     private final ArrayList<DeviceRow> device_list;
@@ -100,6 +102,11 @@ public class Devices {
         }
 
         return ret;
+    }
+
+    // Member Function: Empties out the list
+    public void clear() {
+        device_list.clear();
     }
 
     // =============================================================================================

@@ -3,8 +3,6 @@ package com.cpr3663.cpr_scouting_app;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,18 +14,15 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.cpr3663.cpr_scouting_app.data.ClimbPositions;
 import com.cpr3663.cpr_scouting_app.databinding.AppLaunchBinding;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -46,10 +41,7 @@ public class AppLaunch extends AppCompatActivity {
     // Global variables
     // =============================================================================================
     private AppLaunchBinding appLaunchBinding;
-    private String msg_Error = "";
-    private String msg_Loading = "";
     public static Timer appLaunch_timer = new Timer();
-    SharedPreferences sp;
 
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
     @Override
@@ -71,7 +63,8 @@ public class AppLaunch extends AppCompatActivity {
         });
 
         // Get the Shared Preferences where we save off app settings to use next time
-        sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+        if (Globals.sp == null) Globals.sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+        if (Globals.spe == null) Globals.spe = Globals.sp.edit();
 
         // Define a Image Button to open up the Settings
         ImageButton imgBut_Settings = appLaunchBinding.imgButSettings;
@@ -104,43 +97,73 @@ public class AppLaunch extends AppCompatActivity {
         });
 
         // Make sure that we aren't coming back to the page and it is the first time running this
-        if (Globals.TeamList.size() == 0) {
+        // This is defaulted to TRUE and reset to FALSE below.  In Settings, this can be set back to
+        // TRUE if we need to (re)load some data again.
+        if (Globals.NeedToLoadData) {
             // Set a TimerTask to load the data shortly AFTER this OnCreate finishes
             appLaunch_timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     // Make sure that we aren't coming back to the page and it is the first time running this
-                    if (Globals.TeamList.size() == 0) {
-                        // First first index (zero) needs to be a "NO TEAM" entry so the rest line up when they are loaded
-                        Globals.TeamList.add(Constants.NO_TEAM);
+                    // This is defaulted to TRUE and reset to FALSE below.  In Settings, this can be set back to
+                    // TRUE if we need to (re)load some data again.
+                    if (Globals.NeedToLoadData) {
+                        Globals.NeedToLoadData = false;
+
+                        // If we need to Load Data, this might be a "re-load".  Some Data files don't need to load if
+                        // there's already data in it.  Some will always need to reload.  We'll check if there's data by
+                        // looking at the TeamsList.
+                        Globals.MatchList.clear();
+                        Globals.MatchList.addMatchRow(Constants.NO_MATCH);
+
+                        // If the TeamList is empty that indicates we need to load ALL data.
+                        if (Globals.TeamList.isEmpty()) {
+                            // Force all lists to be empty (just to be sure)
+                            Globals.ClimbPositionList.clear();
+                            Globals.ColorList.clear();
+                            Globals.CommentList.clear();
+                            Globals.CompetitionList.clear();
+                            Globals.DeviceList.clear();
+                            Globals.EventList.clear();
+                            Globals.StartPositionList.clear();
+                            Globals.TeamList.clear();
+                            Globals.TrapResultsList.clear();
+                        }
 
                         // Load the data with a BRIEF delay between.  :)
                         try {
-                            LoadDataFile(getString(R.string.file_climb_positions), getString(R.string.loading_climb_positions), getString(R.string.file_error_climb_positions));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile(getString(R.string.file_colors), getString(R.string.loading_colors), getString(R.string.file_error_colors));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile(getString(R.string.file_comments), getString(R.string.loading_comments), getString(R.string.file_error_comments));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile(getString(R.string.file_competitions), getString(R.string.loading_competitions), getString(R.string.file_error_competitions));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile(getString(R.string.file_devices), getString(R.string.loading_devices), getString(R.string.file_error_devices));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile(getString(R.string.file_events_auto), getString(R.string.loading_events_auto), getString(R.string.file_error_events_auto));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile(getString(R.string.file_events_teleop), getString(R.string.loading_events_teleop), getString(R.string.file_error_events_teleop));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
                             LoadDataFile(getString(R.string.file_matches), getString(R.string.loading_matches), getString(R.string.file_error_matches));
                             Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile(getString(R.string.file_start_positions), getString(R.string.loading_start_positions), getString(R.string.file_error_start_positions));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile(getString(R.string.file_teams), getString(R.string.loading_teams), getString(R.string.file_error_teams));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
-                            LoadDataFile(getString(R.string.file_trap_results), getString(R.string.loading_trap_results), getString(R.string.file_error_trap_results));
-                            Thread.sleep(SPLASH_SCREEN_DELAY);
 
-                            // We need to build the "Next Events" possible but needs to be done now, after all data is loaded.
-                            Globals.EventList.buildNextEvents();
+                            // Again, if TeamList is empty this is a full load.
+                            if (Globals.TeamList.isEmpty()) {
+                                // First index (zero) needs to be a "NO TEAM" entry so the rest line up when they are loaded
+                                Globals.TeamList.add(Constants.NO_TEAM);
+
+                                LoadDataFile(getString(R.string.file_climb_positions), getString(R.string.loading_climb_positions), getString(R.string.file_error_climb_positions));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_colors), getString(R.string.loading_colors), getString(R.string.file_error_colors));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_comments), getString(R.string.loading_comments), getString(R.string.file_error_comments));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_competitions), getString(R.string.loading_competitions), getString(R.string.file_error_competitions));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_devices), getString(R.string.loading_devices), getString(R.string.file_error_devices));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_events_auto), getString(R.string.loading_events_auto), getString(R.string.file_error_events_auto));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_events_teleop), getString(R.string.loading_events_teleop), getString(R.string.file_error_events_teleop));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_start_positions), getString(R.string.loading_start_positions), getString(R.string.file_error_start_positions));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_teams), getString(R.string.loading_teams), getString(R.string.file_error_teams));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_trap_results), getString(R.string.loading_trap_results), getString(R.string.file_error_trap_results));
+                                Thread.sleep(SPLASH_SCREEN_DELAY);
+
+                                // We need to build the "Next Events" possible but needs to be done now, after all data is loaded.
+                                Globals.EventList.buildNextEvents();
+                            }
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }
@@ -196,13 +219,14 @@ public class AppLaunch extends AppCompatActivity {
 
             // If the output file doesn't exist, output a stream to it and copy contents over
             if (!out_file.exists()) {
-                out_file.createNewFile();
-                OutputStream out = new FileOutputStream(out_file);
+                if (out_file.createNewFile()) {
+                    OutputStream out = Files.newOutputStream(out_file.toPath());
 
-                byte[] buffer = new byte[1024];
-                int read;
-                while ((read = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, read);
+                    byte[] buffer = new byte[1024];
+                    int read;
+                    while ((read = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, read);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -252,7 +276,7 @@ public class AppLaunch extends AppCompatActivity {
             // We assume this will work (no try/catch) and if THIS fails, it's likely good that we're going to crash the app.  :(
             if (usePublic) {
                 File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getString(R.string.public_path) + "/" + in_fileName);
-                is = new FileInputStream(in_file);
+                is = Files.newInputStream(in_file.toPath());
             } else {
                 is = getAssets().open(getString(R.string.private_path) + "/" + in_fileName);
             }
@@ -292,7 +316,7 @@ public class AppLaunch extends AppCompatActivity {
                 }
                 else if (in_fileName.equals(getString(R.string.file_matches))) {
                     // Use only the match information that equals the competition we're in.
-                    if (Integer.parseInt(info[0]) == sp.getInt(Settings.SP_COMPETITION_ID, -1)) {
+                    if (Integer.parseInt(info[0]) == Globals.sp.getInt(Constants.SP_COMPETITION_ID, -1)) {
                         for (int i = index; i < Integer.parseInt(info[1]); i++) {
                             Globals.MatchList.addMatchRow(Constants.NO_MATCH);
                         }
@@ -301,7 +325,7 @@ public class AppLaunch extends AppCompatActivity {
                     }
                 }
                 else if (in_fileName.equals(getString(R.string.file_start_positions))) {
-                    if (Boolean.valueOf(info[1]))
+                    if (Boolean.parseBoolean(info[1]))
                         Globals.StartPositionList.addStartPositionRow(info[0], info[2]);
                 }
                 else if (in_fileName.equals(getString(R.string.file_teams))) {
@@ -317,8 +341,6 @@ public class AppLaunch extends AppCompatActivity {
                         Globals.TrapResultsList.addTrapResultRow(info[0], info[2]);
                 }
             }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

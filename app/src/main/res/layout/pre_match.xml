@@ -240,9 +240,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:paddingEnd="10dp"
+                    android:paddingStart="10dp"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
-                    android:src="@mipmap/drop_down_arrow"
+                    android:src="@drawable/cpr_drop_down_arrow"
                     tools:ignore="ContentDescription" />
 
             </RelativeLayout>
