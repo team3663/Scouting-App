@@ -8,25 +8,50 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.CPRScoutingApp"
-        tools:targetApi="31">
+        tools:targetApi="34">
         <activity
             android:name=".AppLaunch"
-            android:exported="true">
+            android:screenOrientation="sensorLandscape"
+            android:exported="true"
+            tools:ignore="DiscouragedApi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".Match"
-            android:exported="true">
+            android:name=".Settings"
+            android:screenOrientation="sensorLandscape"
+            android:exported="true"
+            tools:ignore="DiscouragedApi">
         </activity>
         <activity
             android:name=".PreMatch"
-            android:exported="true">
+            android:screenOrientation="sensorLandscape"
+            android:exported="true"
+            tools:ignore="DiscouragedApi">
+        </activity>
+        <activity
+            android:name=".Match"
+            android:screenOrientation="sensorLandscape"
+            android:exported="true"
+            android:configChanges="orientation|screenSize"
+            tools:ignore="DiscouragedApi">
+        </activity>
+        <activity
+            android:name=".PostMatch"
+            android:screenOrientation="sensorLandscape"
+            android:exported="true"
+            tools:ignore="DiscouragedApi">
+        </activity>
+        <activity
+            android:name=".SubmitData"
+            android:screenOrientation="sensorLandscape"
+            android:exported="true"
+            tools:ignore="DiscouragedApi">
         </activity>
     </application>
 </manifest>

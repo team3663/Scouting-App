@@ -1,13 +1,13 @@
 ﻿Events_Id,Events_Name,Events_StartOfSeq,Events_AppliesToFOP,Events_NextSet
-50,Pickup Note,True,True,52:53:54:55:56:57:100
-51,Steal Note,True,True,52:53:54:55:56:57:100
+50,Pickup Note,True,True,54:55:56:57:53:52:100
+51,Steal Note,True,True,54:55:56:57:53:52:100
 52,Drop Note,False,True,:
 53,Pass Note,False,True,:
 54,Speaker Score,False,True,:
 55,Speaker Miss,False,True,:
 56,Amp Score,False,True,:
 57,Amp Miss,False,True,:
-58,Teleop_AutoNote,True,True,:
+58,Teleop_AutoNote,True,False,:
 100,Climb Start,True,True,101:102
 101,Climb Success,False,True,:
 102,Climb Failed,False,True,:

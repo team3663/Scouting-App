@@ -1,6 +1,6 @@
 ﻿Events_Id,Events_Name,Events_StartOfSeq,Events_AppliesToFOP,Events_NextSet
-0,Auto_StartingNote,True,False,2:3:4:5:6
-1,Pickup Note,True,True,2:3:4:5:6
+0,Auto_StartingNote,True,False,3:4:5:6:2
+1,Pickup Note,True,True,3:4:5:6:2
 2,Drop Note,False,True,:
 3,Speaker Score,False,True,:
 4,Speaker Miss,False,True,:
