@@ -53,7 +53,7 @@
             <TextView
                 android:id="@+id/text_MatchPadding"
                 android:gravity="center"
-                android:layout_width="500dp"
+                android:layout_width="481dp"
                 android:layout_height="60dp" />
 
         </LinearLayout>
@@ -74,25 +74,43 @@
                 android:text="@string/pre_team_num"
                 tools:ignore="RtlSymmetry" />
 
-            <EditText
-                android:id="@+id/edit_TeamToScout"
-                android:layout_width="0dp"
+            <RelativeLayout
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="24sp"
-                android:gravity="center"
-                android:inputType="number"
-                android:textColor="@color/cpr_bkgnd"
-                android:background="@color/white" />
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/spinner_TeamToScout"
+                    android:spinnerMode="dropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:background="@color/white"
+                    android:gravity="end|center"
+                    android:paddingStart="10dp"
+                    tools:ignore="RtlSymmetry" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:paddingEnd="10dp"
+                    android:paddingStart="10dp"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:src="@drawable/cpr_drop_down_arrow"
+                    tools:ignore="ContentDescription" />
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/text_TeamToScoutName"
-                android:gravity="start|center"
-                android:layout_width="500dp"
+                android:layout_width="fill_parent"
                 android:layout_height="60dp"
-                android:paddingStart="20dp"
-                android:textColor="@color/light_grey"
-                android:textSize="20sp" />
+                android:gravity="start|center"
+                android:paddingStart="50dp"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                tools:ignore="RtlSymmetry" />
         </LinearLayout>
 
         <LinearLayout
@@ -134,7 +152,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:orientation="horizontal">
-          
+
             <CheckBox
                 android:id="@+id/checkbox_DidPlay"
                 android:layout_width="0dp"
