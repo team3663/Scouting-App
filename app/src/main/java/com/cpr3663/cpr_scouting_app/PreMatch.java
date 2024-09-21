@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -83,20 +84,29 @@ public class PreMatch extends AppCompatActivity {
         for (int i = 0; i < teams.length; i++) {
             teams_Str[i] = String.valueOf(teams[i]);
         }
-        if (teams_Str[0].equals("0")) {
+        if (teams_Str[0].equals("0") || teams_Str[0].equals(null)) {
             teams_Str = new String[]{getString(R.string.dropdown_no_items)};
         }
         ArrayAdapter<String> adp_Team = new ArrayAdapter<String>(this, R.layout.cpr_spinner, teams_Str);
         adp_Team.setDropDownViewResource(R.layout.cpr_spinner_item);
         spinner_Team.setAdapter(adp_Team);
         int team_DropId = 0;
-        for (int i = 0; i < teams.length; i++) {
-            if (teams[i] == Globals.CurrentTeamToScout) {
-                team_DropId = i;
-                break;
+        if (!teams_Str[0].equals(getString(R.string.dropdown_no_items))) {
+            for (int i = 0; i < teams.length; i++) {
+                if (teams[i] == Globals.CurrentTeamToScout) {
+                    team_DropId = i;
+                    break;
+                }
             }
         }
-        spinner_Team.setSelection(team_DropId);
+        // Run it from a handler because it doesn't like to work and it will just do absolutely nothing if you don't
+        // Create a new variable so it wont change before the handler is called cause that will mess it up (Even though its only 1 millisecond)
+        int finalTeam_DropId = team_DropId;
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                spinner_Team.setSelection(finalTeam_DropId);
+            }
+        }, 1);
 
         Button but_AddOverrideTeamNum = preMatchBinding.butAddOverrideTeamNum;
         CheckBox checkbox_DidPlay = preMatchBinding.checkboxDidPlay;
@@ -252,7 +262,7 @@ public class PreMatch extends AppCompatActivity {
                                 for (int i = 0; i < teams.length; i++) {
                                     teams_Str[i] = String.valueOf(teams[i]);
                                 }
-                                if (teams_Str[0].equals("0")) {
+                                if (teams_Str[0].equals("0") || teams_Str[0].equals(null)) {
                                     teams_Str = new String[]{getString(R.string.dropdown_no_items)};
                                 }
                                 ArrayAdapter<String> adp_Team = new ArrayAdapter<String>(view.getContext(), R.layout.cpr_spinner, teams_Str);
@@ -271,7 +281,6 @@ public class PreMatch extends AppCompatActivity {
                 String TeamToScoutStr = String.valueOf(spinner_Team.getSelectedItem());
                 if (!TeamToScoutStr.isEmpty() && !TeamToScoutStr.equals(getString(R.string.dropdown_no_items))) {
                     int TeamToScout = Integer.parseInt(TeamToScoutStr);
-                    // Since TeamList always has a NO_TEAM entry at index=0, need to check size-1
                     if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size()) {
                         // This will crash the app instead of returning null if you pass it an invalid num
                         String ScoutingTeamName = Globals.TeamList.get(TeamToScout);
@@ -279,6 +288,9 @@ public class PreMatch extends AppCompatActivity {
                     } else {
                         text_TeamName.setText("");
                     }
+
+                    // Save off what you selected for if you go to the match and then back
+                    Globals.CurrentTeamToScout = TeamToScout;
                 }
             }
 
