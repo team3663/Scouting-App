@@ -80,6 +80,7 @@ public class PreMatch extends AppCompatActivity {
 
 
 
+
         Button but_AddOverrideTeamNum = preMatchBinding.butAddOverrideTeamNum;
         CheckBox checkbox_DidPlay = preMatchBinding.checkboxDidPlay;
         checkbox_StartNote = preMatchBinding.checkboxStartNote;
@@ -114,23 +115,13 @@ public class PreMatch extends AppCompatActivity {
                     adapter.setDropDownViewResource(R.layout.cpr_spinner_item);
                     // Apply the adapter to the spinner.
                     spinner_Team.setAdapter(adapter);
-                    Globals.CurrentTeamToScout = spinner_Team.getSelectedItemPosition();
-                    // TODO Set "Teams" to the options in the single select dropdown
-                }
+                    Globals.CurrentTeamToScout = spinner_Team.getSelectedItemPosition();}
             }
             if (Globals.CurrentTeamToScout > 0) {
-//                int TeamToScoutID = 0;
-//                Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber);
-//                int[] Teams = Match.getListOfTeams();
-//                for (int i = 0; i < Teams.length; i++) {
-//                    if (Teams[i] == Globals.CurrentTeamToScout.getListOf(Globals.CurrentStartPosition)) {
-//                        TeamToScoutID = i;
-//                        break;
-//                    }
-//                }
-//                spinner_StartPos.setSelection(start_Pos_DropId);
+                    spinner_Team.setSelection(Globals.CurrentTeamToScout);
             }
             // TODO Also need to set Team To Scout to be defaulted IF Globals.CurrentTeamToScout is > 0 (as if you hit "BACK" button from Match)
+
         } else edit_Match.setText("");
 
         // Default checkboxes
@@ -172,8 +163,6 @@ public class PreMatch extends AppCompatActivity {
                     spinner_Team.setAdapter(adapter);
                     spinner_Team.setSelection(Teams.length);
 
-                    // TODO make it add teamNum to the options of single select dropdown after converting to int and
-                    //      then have it auto select that one
                 }
                 checkbox_Override.setChecked(false);
                 text_Override.setVisibility(View.INVISIBLE);
