@@ -98,7 +98,7 @@ public class Match extends AppCompatActivity {
                 elapsedSeconds = (int) (TIMER_TELEOP_LENGTH + TIMER_AUTO_LENGTH - Math.round((System.currentTimeMillis() - startTime) / 1_000.0));
             }
             if (elapsedSeconds < 0) elapsedSeconds = 0;
-            text_Time.setText("Time: " + elapsedSeconds / 60 + ":" + String.format("%02d", elapsedSeconds % 60));
+            text_Time.setText(getString(R.string.timer_label) + " " + elapsedSeconds / 60 + ":" + String.format("%02d", elapsedSeconds % 60));
         }
     }
 
@@ -221,19 +221,19 @@ public class Match extends AppCompatActivity {
                     case Constants.PHASE_TELEOP:
                         if (startTime + (TIMER_AUTO_LENGTH + TIMER_TELEOP_LENGTH) * 1000 > System.currentTimeMillis())
                             new AlertDialog.Builder(view.getContext())
-                            .setTitle("End match")
-                            .setMessage("Are you sure you want to End the Match early?")
+                            .setTitle(getString(R.string.alert_endMatch_title))
+                            .setMessage(getString(R.string.alert_endMatch_message))
 
                             // Specifying a listener allows you to take an action before dismissing the dialog.
                             // The dialog is automatically dismissed when a dialog button is clicked.
-                            .setPositiveButton("End", new DialogInterface.OnClickListener() {
+                            .setPositiveButton(getString(R.string.alert_endMatch_positive), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     end_Match();
                                 }
                             })
 
                             // A null listener allows the button to dismiss the dialog and take no further action.
-                            .setNegativeButton("Cancel", null)
+                            .setNegativeButton(getString(R.string.alert_cancel), null)
                             // TODO make the icon work
 //                          .setIcon(getDrawable(android.R.attr.alertDialogIcon))
                             .show();
