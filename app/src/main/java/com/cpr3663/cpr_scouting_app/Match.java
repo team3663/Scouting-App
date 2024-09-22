@@ -1,6 +1,8 @@
 package com.cpr3663.cpr_scouting_app;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.SensorManager;
@@ -217,7 +219,25 @@ public class Match extends AppCompatActivity {
                         start_Teleop();
                         break;
                     case Constants.PHASE_TELEOP:
-                        end_Match();
+                        if (startTime + (TIMER_AUTO_LENGTH + TIMER_TELEOP_LENGTH) * 1000 > System.currentTimeMillis())
+                            new AlertDialog.Builder(view.getContext())
+                            .setTitle("End match")
+                            .setMessage("Are you sure you want to End the Match early?")
+
+                            // Specifying a listener allows you to take an action before dismissing the dialog.
+                            // The dialog is automatically dismissed when a dialog button is clicked.
+                            .setPositiveButton("End", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    end_Match();
+                                }
+                            })
+
+                            // A null listener allows the button to dismiss the dialog and take no further action.
+                            .setNegativeButton("Cancel", null)
+                            // TODO make the icon work
+//                          .setIcon(getDrawable(android.R.attr.alertDialogIcon))
+                            .show();
+                        else end_Match();
                         break;
                 }
             }
@@ -230,8 +250,8 @@ public class Match extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Go to the previous page
-                Intent GoToNextPage = new Intent(Match.this, PreMatch.class);
-                startActivity(GoToNextPage);
+                Intent GoToPreviousPage = new Intent(Match.this, PreMatch.class);
+                startActivity(GoToPreviousPage);
             }
         });
 
