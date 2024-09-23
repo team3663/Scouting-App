@@ -32,7 +32,10 @@ public class Matches {
 
     // Member Function: Get back a row of data for a given match
     public MatchRow getMatchInfoRow(int in_match_id) {
-        return match_list.get(in_match_id);
+        if (in_match_id > 0 && in_match_id < match_list.size())
+            return match_list.get(in_match_id);
+
+        return null;
     }
 
     // Member Function: Return the number of matches (so it doesn't include the index 0)
@@ -58,12 +61,12 @@ public class Matches {
     // =============================================================================================
     public static class MatchRow {
         // Class Members
-        private int red1 = 0;
-        private int red2 = 0;
-        private int red3 = 0;
-        private int blue1 = 0;
-        private int blue2 = 0;
-        private int blue3 = 0;
+        private String red1 = "";
+        private String red2 = "";
+        private String red3 = "";
+        private String blue1 = "";
+        private String blue2 = "";
+        private String blue3 = "";
 
         // Constructor with a csv string
         public MatchRow(String in_csvRow) {
@@ -72,29 +75,38 @@ public class Matches {
 
                 // Validate we have enough values otherwise this was a bad row and we'll get an out-of-bounds exception
                 if (data.length == 8) {
-                    red1 = Integer.parseInt(data[2]);
-                    red2 = Integer.parseInt(data[3]);
-                    red3 = Integer.parseInt(data[4]);
-                    blue1 = Integer.parseInt(data[5]);
-                    blue2 = Integer.parseInt(data[6]);
-                    blue3 = Integer.parseInt(data[7]);
+                    red1 = data[2].trim();
+                    red2 = data[3].trim();
+                    red3 = data[4].trim();
+                    blue1 = data[5].trim();
+                    blue2 = data[6].trim();
+                    blue3 = data[7].trim();
                 }
             }
         }
 
         // Constructor with individual data
         public MatchRow(String in_red1, String in_red2, String in_red3, String in_blue1, String in_blue2, String in_blue3) {
-            red1 = Integer.parseInt(in_red1);
-            red2 = Integer.parseInt(in_red2);
-            red3 = Integer.parseInt(in_red3);
-            blue1 = Integer.parseInt(in_blue1);
-            blue2 = Integer.parseInt(in_blue2);
-            blue3 = Integer.parseInt(in_blue3);
+            red1 = in_red1.trim();
+            red2 = in_red2.trim();
+            red3 = in_red3.trim();
+            blue1 = in_blue1.trim();
+            blue2 = in_blue2.trim();
+            blue3 = in_blue3.trim();
         }
 
         // Member Function: Return a list of team numbers for this match
-        public int[] getListOfTeams() {
-            return new int[] {red1, red2, red3, blue1, blue2, blue3};
+        public ArrayList<String> getListOfTeams() {
+            ArrayList<String> ret = new ArrayList<>();
+
+            ret.add(red1);
+            ret.add(red2);
+            ret.add(red3);
+            ret.add(blue1);
+            ret.add(blue2);
+            ret.add(blue3);
+
+            return ret;
         }
     }
 }

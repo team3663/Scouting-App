@@ -9,6 +9,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.text.Layout;
 import android.text.SpannableString;
+import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -319,6 +320,7 @@ public class Match extends AppCompatActivity {
 
         // Define a context menu
         RelativeLayout ContextMenu = matchBinding.ContextMenu;
+
         // This is required it will not run without it
         registerForContextMenu(image_Field);
         // So that it activates on a normal click instead of a long click
@@ -377,21 +379,22 @@ public class Match extends AppCompatActivity {
             for (int i = 0; i < menu.size(); i++) {
                 MenuItem item = menu.getItem(i);
                 SpannableString ss = new SpannableString(item.getTitle());
+                ss.setSpan(new AbsoluteSizeSpan(24), 0, ss.length(), 0);
 
                 // If this menuItem has "Miss" or Score in the text, see if we should use a special color
                 if (ss.toString().contains("Miss")) {
                     Colors.ColorRow cr = Globals.ColorList.getColorRow(Globals.CurrentColorId - 1);
                     if (cr != null) {
                         ss.setSpan(new ForegroundColorSpan(cr.getColorMiss()), 0, ss.length(), 0);
-                        item.setTitle(ss);
                     }
                 } else if (ss.toString().contains("Score")) {
                     Colors.ColorRow cr = Globals.ColorList.getColorRow(Globals.CurrentColorId - 1);
                     if (cr != null) {
                         ss.setSpan(new ForegroundColorSpan(cr.getColorScore()), 0, ss.length(), 0);
-                        item.setTitle(ss);
                     }
                 }
+
+                item.setTitle(ss);
             }
         }
     }
