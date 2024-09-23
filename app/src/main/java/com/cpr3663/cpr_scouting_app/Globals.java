@@ -29,6 +29,7 @@ public class Globals {
     public static int CurrentTeamToScout;
     public static int CurrentCompetitionId;
     public static int CurrentMatchNumber;
+    public static int CurrentTeamToScout;
     public static int CurrentScoutingTeam;
     public static int CurrentDeviceId;
     public static int CurrentStartPosition;

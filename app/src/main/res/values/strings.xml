@@ -62,4 +62,13 @@
     <string name="submit_match_error">Incomplete data files found!</string>
 
     <string name="dropdown_items_selected">selected</string>
+    <string name="dropdown_no_items">None</string>
+
+    <string name="alert_quit_title">Quit app</string>
+    <string name="alert_quit_message">Are you sure you want to Quit the app?</string>
+    <string name="alert_quit_positive">Quit</string>
+    <string name="alert_endMatch_title">End Match</string>
+    <string name="alert_endMatch_message">Are you sure you want to End the Match early? This cannot be undone.</string>
+    <string name="alert_endMatch_positive">End</string>
+    <string name="alert_cancel">Cancel</string>
 </resources>
