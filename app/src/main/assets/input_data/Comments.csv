@@ -5,4 +5,8 @@
 4,True,5,Poor human player (source)
 5,True,6,Poor human player (amp)
 6,True,4,Robot had note(s) stuck in it
-7,False,,They were mean
+7,True,7,Evaded defense well
+8,True,8,Ineffective defense
+9,True,9,Committed a G-424 foul
+10,True,10,Clearly struggled to pick up a note
+11,True,11,Climb didn't count
