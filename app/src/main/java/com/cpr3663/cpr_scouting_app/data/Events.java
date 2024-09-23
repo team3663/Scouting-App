@@ -117,7 +117,7 @@ public class Events {
         private final boolean is_FOP_Event;
         private final boolean is_seq_start;
         private final String next_event_set;
-        private ArrayList<String> next_events_desc;
+        private final ArrayList<String> next_events_desc;
 
         // Constructor
         public EventRow(int in_id, String in_description, String in_phase, Boolean in_seq_start, Boolean in_FOP, String in_next_event_set) {

@@ -182,7 +182,7 @@ public class PostMatch extends AppCompatActivity {
                 String comment_sep_ID = "";
                 for (Integer comment_dropID : CommentList) {
                     String comment = CommentArray[comment_dropID];
-                    comment_sep_ID += ":" + String.valueOf(Globals.CommentList.getCommentId(comment));
+                    comment_sep_ID += ":" + Globals.CommentList.getCommentId(comment);
                 }
                 if (!comment_sep_ID.isEmpty()) comment_sep_ID = comment_sep_ID.substring(1);
                 Globals.EventLogger.LogData(Constants.LOGKEY_COMMENTS, comment_sep_ID);

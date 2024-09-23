@@ -236,7 +236,7 @@ public class AppLaunch extends AppCompatActivity {
             AppLaunch.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(AppLaunch.this, (CharSequence) in_msgError, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AppLaunch.this, in_msgError, Toast.LENGTH_SHORT).show();
                 }
             });
         }
