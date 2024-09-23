@@ -26,18 +26,21 @@
             android:name=".Settings"
             android:screenOrientation="sensorLandscape"
             android:exported="true"
+            android:noHistory="true"
             tools:ignore="DiscouragedApi">
         </activity>
         <activity
             android:name=".PreMatch"
             android:screenOrientation="sensorLandscape"
             android:exported="true"
+            android:noHistory="true"
             tools:ignore="DiscouragedApi">
         </activity>
         <activity
             android:name=".Match"
             android:screenOrientation="sensorLandscape"
             android:exported="true"
+            android:noHistory="true"
             android:configChanges="orientation|screenSize"
             tools:ignore="DiscouragedApi">
         </activity>
@@ -45,12 +48,14 @@
             android:name=".PostMatch"
             android:screenOrientation="sensorLandscape"
             android:exported="true"
+            android:noHistory="true"
             tools:ignore="DiscouragedApi">
         </activity>
         <activity
             android:name=".SubmitData"
             android:screenOrientation="sensorLandscape"
             android:exported="true"
+            android:noHistory="true"
             tools:ignore="DiscouragedApi">
         </activity>
     </application>

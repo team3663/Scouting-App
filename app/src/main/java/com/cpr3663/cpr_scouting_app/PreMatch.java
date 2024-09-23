@@ -269,8 +269,6 @@ public class PreMatch extends AppCompatActivity {
             }
         });
 
-
-
         spinner_Team.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean focus) {
