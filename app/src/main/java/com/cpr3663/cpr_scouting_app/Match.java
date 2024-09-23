@@ -356,22 +356,22 @@ public class Match extends AppCompatActivity {
         // Check to make sure the game is going
         if (!matchPhase.equals(Constants.PHASE_NONE)) {
             // Get the events
-            ArrayList<String> events_al;
+            ArrayList<String> events;
             is_start_of_seq = false;
 
             if (eventPrevious == -1) {
-                events_al = Globals.EventList.getEventsForPhase(matchPhase);
+                events = Globals.EventList.getEventsForPhase(matchPhase);
                 is_start_of_seq = true;
             } else {
-                events_al = Globals.EventList.getNextEvents(eventPrevious);
-                if ((events_al == null) || events_al.isEmpty()) {
-                    events_al = Globals.EventList.getEventsForPhase(matchPhase);
+                events = Globals.EventList.getNextEvents(eventPrevious);
+                if ((events == null) || events.isEmpty()) {
+                    events = Globals.EventList.getEventsForPhase(matchPhase);
                     is_start_of_seq = true;
                 }
             }
 
             // Add all the events
-            for (String event : events_al) {
+            for (String event : events) {
                 menu.add(event);
             }
 

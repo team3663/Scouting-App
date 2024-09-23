@@ -92,21 +92,21 @@ public class PreMatch extends AppCompatActivity {
 
         // adds teams in match to the spinner
         // Create an ArrayAdapter using the string array and a default spinner layout.
-        int[] teams = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber).getListOfTeams();
-        String[] teams_Str = new String[teams.length];
-        for (int i = 0; i < teams.length; i++) {
-            teams_Str[i] = String.valueOf(teams[i]);
+        Matches.MatchRow match = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber);
+        ArrayList<String> teams;
+        if (match == null) {
+            teams = new ArrayList<String>();
+            teams.add(getString(R.string.dropdown_no_items));
+        } else {
+            teams = match.getListOfTeams();
         }
-        if (teams_Str[0].equals("0") || teams_Str[0].equals(null)) {
-            teams_Str = new String[]{getString(R.string.dropdown_no_items)};
-        }
-        ArrayAdapter<String> adp_Team = new ArrayAdapter<String>(this, R.layout.cpr_spinner, teams_Str);
+        ArrayAdapter<String> adp_Team = new ArrayAdapter<String>(this, R.layout.cpr_spinner, teams);
         adp_Team.setDropDownViewResource(R.layout.cpr_spinner_item);
         spinner_Team.setAdapter(adp_Team);
         int team_DropId = 0;
-        if (!teams_Str[0].equals(getString(R.string.dropdown_no_items))) {
-            for (int i = 0; i < teams.length; i++) {
-                if (teams[i] == Globals.CurrentTeamToScout) {
+        if (!teams.get(0).equals(getString(R.string.dropdown_no_items))) {
+            for (int i = 0; i < teams.size(); i++) {
+                if (teams.get(i).equals(Globals.CurrentTeamToScout)) {
                     team_DropId = i;
                     break;
                 }
@@ -120,15 +120,6 @@ public class PreMatch extends AppCompatActivity {
                 spinner_Team.setSelection(finalTeam_DropId);
             }
         }, 1);
-
-        Button but_AddOverrideTeamNum = preMatchBinding.butAddOverrideTeamNum;
-        CheckBox checkbox_DidPlay = preMatchBinding.checkboxDidPlay;
-        checkbox_StartNote = preMatchBinding.checkboxStartNote;
-        CheckBox checkbox_Override = preMatchBinding.checkboxOverride;
-        CheckBox checkbox_ReSubmit = preMatchBinding.checkboxResubmit;
-        EditText edit_OverrideTeamNum = preMatchBinding.editOverrideTeamNum;
-        EditText edit_Name = preMatchBinding.editScouterName;
-        TextView text_Override = preMatchBinding.textOverride;
 
         // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
         // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)
