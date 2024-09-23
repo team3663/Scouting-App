@@ -61,8 +61,19 @@ public class PreMatch extends AppCompatActivity {
         Spinner spinner_Team = preMatchBinding.spinnerTeamToScout;
         Spinner spinner_StartPos = preMatchBinding.spinnerStartingPosition;
         TextView text_TeamName = preMatchBinding.textTeamToScoutName;
+        Button but_AddOverrideTeamNum = preMatchBinding.butAddOverrideTeamNum;
+        CheckBox checkbox_DidPlay = preMatchBinding.checkboxDidPlay;
+        checkbox_StartNote = preMatchBinding.checkboxStartNote;
+        CheckBox checkbox_Override = preMatchBinding.checkboxOverride;
+        CheckBox checkbox_ReSubmit = preMatchBinding.checkboxResubmit;
+        EditText edit_OverrideTeamNum = preMatchBinding.editOverrideTeamNum;
+        EditText edit_Name = preMatchBinding.editScouterName;
+        TextView text_Override = preMatchBinding.textOverride;
 
-        // adds the items from the starting positions array to the list
+        // Default the override button to disabled
+        checkbox_Override.setEnabled(false);
+
+        // Adds the items from the starting positions array to the list
         ArrayAdapter<String> adp_StartPos = new ArrayAdapter<String>(this, R.layout.cpr_spinner, Start_Positions);
         adp_StartPos.setDropDownViewResource(R.layout.cpr_spinner_item);
         spinner_StartPos.setAdapter(adp_StartPos);
@@ -77,15 +88,6 @@ public class PreMatch extends AppCompatActivity {
         }
         spinner_StartPos.setSelection(start_Pos_DropId);
 
-        Button but_AddOverrideTeamNum = preMatchBinding.butAddOverrideTeamNum;
-        CheckBox checkbox_DidPlay = preMatchBinding.checkboxDidPlay;
-        checkbox_StartNote = preMatchBinding.checkboxStartNote;
-        CheckBox checkbox_Override = preMatchBinding.checkboxOverride;
-        CheckBox checkbox_ReSubmit = preMatchBinding.checkboxResubmit;
-        EditText edit_OverrideTeamNum = preMatchBinding.editOverrideTeamNum;
-        EditText edit_Name = preMatchBinding.editScouterName;
-        TextView text_Override = preMatchBinding.textOverride;
-
         // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
         // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)
         // So add it in now.
@@ -96,41 +98,52 @@ public class PreMatch extends AppCompatActivity {
         // Create a text box to input the scouters name
         edit_Name.setText(ScouterName);
 
+        // When we load the page, if we have a match number (can happen if we hit the BACK button from Match)
+        // load the team information for the match
         if (Globals.CurrentMatchNumber > 0) {
+            // If we have a match number, enable the override
+            checkbox_Override.setEnabled(true);
+
             // MUST CONVERT TO STRING or it crashes with out warning
             edit_Match.setText(String.valueOf(Globals.CurrentMatchNumber));
-            if (Globals.CurrentMatchNumber < Globals.MatchList.size()) {
-                // TODO getMatchInfoRow() should check for a valid matchNumber. We check for a Null Match right after this,
-                //  so why do we need to check Globals.CurrentMatchNumber < Global.MatchList.size()
-                //  it would be cleaner code to trust the class to protect itself, also better in case someone forgets to check somewhere else!
-                Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber);
-                if (Match != null) {
-                    int[] Teams = Match.getListOfTeams();
-                    String[] teamsInMatch = new String[Teams.length];
-                    for (int i = 0; i < Teams.length; i++) {
-                        teamsInMatch[i] = String.valueOf(Teams[i]);
+            // TODO it seems we do this twice.  once at load if we saved a match number, and again
+            // TODO if they type in a match number.  should be in a function?
+            Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber);
+
+            // If we got match data, get the list of teams from it
+            if (Match != null) {
+                ArrayList<String> teamsInMatch = Match.getListOfTeams();
+                boolean found = false;
+                int position = 0;
+
+                // See if there's a current team to scout (can happen if we hit the BACK button from Match
+                if (Globals.CurrentTeamToScout > 0) {
+                    // See if the current team is already in the list
+                    for (String ct : teamsInMatch) {
+                        if (ct.equals(String.valueOf(Globals.CurrentTeamToScout))) {
+                            found = true;
+                            break;
+                        }
+                        else position++;
                     }
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.cpr_spinner, teamsInMatch);
-                    adapter.setDropDownViewResource(R.layout.cpr_spinner_item);
-                    //TODO I assume we can't have an ArrayAdapter<int> ??
-                    // We don't do this often so no biggie, but if we really need a String[], we should have a class
-                    // function called "getStringListOfTeams" that returns String[]. The class can store 6 extra members
-                    // as String str_red1, etc. (so the class doesn't have to computer them over and over again).
-                    // Also, if this is the ONLY place getListOfTeams is called, then just convert this to return String[].
-                    // Perhaps we can even store them in the Class as String if no one else uses it.
 
-                    // Apply the adapter to the spinner.
-                    spinner_Team.setAdapter(adapter);
-                    Globals.CurrentTeamToScout = spinner_Team.getSelectedItemPosition();}
-            }
-            if (Globals.CurrentTeamToScout > 0) {
-                    spinner_Team.setSelection(Globals.CurrentTeamToScout);
-            }
-            // TODO Also need to set Team To Scout to be defaulted IF Globals.CurrentTeamToScout is > 0 (as if you hit "BACK" button from Match)
+                    // If we didn't find the team we're scouting in the list of teams, add it (it was an override)
+                    if (!found) teamsInMatch.add(String.valueOf(Globals.CurrentTeamToScout));
+                }
 
+                // Create and apply the adapter to the spinner.
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.cpr_spinner, teamsInMatch);
+                adapter.setDropDownViewResource(R.layout.cpr_spinner_item);
+                spinner_Team.setAdapter(adapter);
+
+                // Set the spinner to the right selection
+                if (found) spinner_Team.setSelection(position);
+                else spinner_Team.setSelection(teamsInMatch.size() - 1);
+            }
         } else edit_Match.setText("");
 
         // Default checkboxes
+        // TODO shouldn't we save these values off as well in case they hit the BACK button?
         checkbox_DidPlay.setChecked(true);
         checkbox_StartNote.setChecked(true);
         checkbox_ReSubmit.setChecked(false);
@@ -157,18 +170,17 @@ public class PreMatch extends AppCompatActivity {
                 String teamNum = String.valueOf(preMatchBinding.editOverrideTeamNum.getText());
                 if (!teamNum.isEmpty()) {
                     Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Integer.parseInt(preMatchBinding.editMatch.getText().toString()));
-                    int[] Teams = Match.getListOfTeams();
-                    String[] teamsInMatch = new String[Teams.length + 1];
-                    for (int i = 0; i < Teams.length; i++) {
-                        teamsInMatch[i] = String.valueOf(Teams[i]);
+                    if (Match != null) {
+                        ArrayList<String> teamsInMatch = Match.getListOfTeams();
+                        teamsInMatch.add(teamNum);
+                        ArrayAdapter<String> adp_Team = new ArrayAdapter<String>(view.getContext(), R.layout.cpr_spinner, teamsInMatch);
+                        adp_Team.setDropDownViewResource(R.layout.cpr_spinner_item);
+                        // Apply the adapter to the spinner
+                        spinner_Team.setAdapter(adp_Team);
+                        spinner_Team.setSelection(teamsInMatch.size() - 1);
+                        // Set CurrentTeamToScout to be the overridden value
+                        Globals.CurrentTeamToScout = Integer.parseInt(teamNum);
                     }
-                    teamsInMatch[Teams.length] = teamNum;
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(view.getContext(), R.layout.cpr_spinner, teamsInMatch);
-                    adapter.setDropDownViewResource(R.layout.cpr_spinner_item);
-                    // Apply the adapter to the spinner.
-                    spinner_Team.setAdapter(adapter);
-                    spinner_Team.setSelection(Teams.length);
-
                 }
                 checkbox_Override.setChecked(false);
                 text_Override.setVisibility(View.INVISIBLE);
@@ -195,6 +207,7 @@ public class PreMatch extends AppCompatActivity {
                     } else {
                         Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
                         Globals.NumberMatchFilesKept = Globals.sp.getInt(Constants.SP_NUM_MATCHES, 5);
+                        Globals.CurrentTeamToScout = Integer.parseInt(spinner_Team.getSelectedItem().toString());
 
                         // Set up the Logger - if it fails, we better stop now, or we won't capture any data!
                         try {
@@ -226,7 +239,7 @@ public class PreMatch extends AppCompatActivity {
                             Globals.EventLogger.close();
                             Globals.EventLogger = null;
 
-                            // Increases the team number so that it auto fills for the next match correctly
+                            // Increases the match number so that it auto fills for the next match correctly
                             //  and do it after the logger is closed so that this can't mess the logger up
                             Globals.CurrentMatchNumber++;
 
@@ -247,16 +260,15 @@ public class PreMatch extends AppCompatActivity {
                 if (!focus) {
                     String MatchNumStr = String.valueOf(edit_Match.getText());
                     if (!MatchNumStr.isEmpty()) {
+                        // Enable the override
+                        checkbox_Override.setEnabled(true);
+
                         int MatchNum = Integer.parseInt(MatchNumStr);
                         if (MatchNum > 0 && MatchNum < Globals.MatchList.size()) {
                             Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
                             if (Match != null) {
                                 // MUST CONVERT TO STRING or it crashes with out warning
-                                int[] Teams = Match.getListOfTeams();
-                                String[] teamsInMatch = new String[Teams.length];
-                                for (int i = 0; i < Teams.length; i++) {
-                                    teamsInMatch[i] = String.valueOf(Teams[i]);
-                                }
+                                ArrayList<String> teamsInMatch = Match.getListOfTeams();
                                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(view.getContext(), R.layout.cpr_spinner, teamsInMatch);
                                 adapter.setDropDownViewResource(R.layout.cpr_spinner_item);
                                 // Apply the adapter to the spinner.
