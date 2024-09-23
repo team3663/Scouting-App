@@ -77,10 +77,6 @@ public class PreMatch extends AppCompatActivity {
         }
         spinner_StartPos.setSelection(start_Pos_DropId);
 
-
-
-
-
         Button but_AddOverrideTeamNum = preMatchBinding.butAddOverrideTeamNum;
         CheckBox checkbox_DidPlay = preMatchBinding.checkboxDidPlay;
         checkbox_StartNote = preMatchBinding.checkboxStartNote;
@@ -104,6 +100,9 @@ public class PreMatch extends AppCompatActivity {
             // MUST CONVERT TO STRING or it crashes with out warning
             edit_Match.setText(String.valueOf(Globals.CurrentMatchNumber));
             if (Globals.CurrentMatchNumber < Globals.MatchList.size()) {
+                // TODO getMatchInfoRow() should check for a valid matchNumber. We check for a Null Match right after this,
+                //  so why do we need to check Globals.CurrentMatchNumber < Global.MatchList.size()
+                //  it would be cleaner code to trust the class to protect itself, also better in case someone forgets to check somewhere else!
                 Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber);
                 if (Match != null) {
                     int[] Teams = Match.getListOfTeams();
@@ -113,6 +112,13 @@ public class PreMatch extends AppCompatActivity {
                     }
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.cpr_spinner, teamsInMatch);
                     adapter.setDropDownViewResource(R.layout.cpr_spinner_item);
+                    //TODO I assume we can't have an ArrayAdapter<int> ??
+                    // We don't do this often so no biggie, but if we really need a String[], we should have a class
+                    // function called "getStringListOfTeams" that returns String[]. The class can store 6 extra members
+                    // as String str_red1, etc. (so the class doesn't have to computer them over and over again).
+                    // Also, if this is the ONLY place getListOfTeams is called, then just convert this to return String[].
+                    // Perhaps we can even store them in the Class as String if no one else uses it.
+
                     // Apply the adapter to the spinner.
                     spinner_Team.setAdapter(adapter);
                     Globals.CurrentTeamToScout = spinner_Team.getSelectedItemPosition();}
@@ -184,10 +190,9 @@ public class PreMatch extends AppCompatActivity {
                     // Check we have all the fields entered that are needed.  Otherwise, pop a TOAST message instead
                     if (String.valueOf(edit_Match.getText()).isEmpty() || spinner_Team.getSelectedItemPosition() < 0 || String.valueOf(edit_Name.getText()).isEmpty()
                             //PREVIOUS CODE - if (String.valueOf(edit_Match.getText()).isEmpty() || String.valueOf(spinner_Team.getText()).isEmpty() || String.valueOf(edit_Name.getText()).isEmpty()
-                            || (spinner_StartPos.getSelectedItem().toString() == Globals.StartPositionList.getStartPositionDescription(Constants.DATA_ID_START_POS_DEFAULT) && checkbox_DidPlay.isChecked())) {
+                            || (spinner_StartPos.getSelectedItem().toString().equals(Globals.StartPositionList.getStartPositionDescription(Constants.DATA_ID_START_POS_DEFAULT)) && checkbox_DidPlay.isChecked())) {
                         Toast.makeText(PreMatch.this, R.string.missing_data, Toast.LENGTH_SHORT).show();
                     } else {
-                        // Save off the current match number (Logger needs this)
                         Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
                         Globals.NumberMatchFilesKept = Globals.sp.getInt(Constants.SP_NUM_MATCHES, 5);
 
