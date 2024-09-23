@@ -103,21 +103,12 @@ public class PreMatch extends AppCompatActivity {
         ArrayAdapter<String> adp_Team = new ArrayAdapter<String>(this, R.layout.cpr_spinner, teams);
         adp_Team.setDropDownViewResource(R.layout.cpr_spinner_item);
         spinner_Team.setAdapter(adp_Team);
-        int team_DropId = 0;
-        if (!teams.get(0).equals(getString(R.string.dropdown_no_items))) {
-            for (int i = 0; i < teams.size(); i++) {
-                if (teams.get(i).equals(Globals.CurrentTeamToScout)) {
-                    team_DropId = i;
-                    break;
-                }
-            }
-        }
+
         // Run it from a handler because it doesn't like to work and it will just do absolutely nothing if you don't
         // Create a new variable so it wont change before the handler is called cause that will mess it up (Even though its only 1 millisecond)
-        int finalTeam_DropId = team_DropId;
         new Handler().postDelayed(new Runnable() {
             public void run() {
-                spinner_Team.setSelection(finalTeam_DropId);
+                spinner_Team.setSelection(Globals.CurrentTeamToScout);
             }
         }, 1);
 
@@ -146,23 +137,6 @@ public class PreMatch extends AppCompatActivity {
             // If we got match data, get the list of teams from it
             if (Match != null) {
                 ArrayList<String> teamsInMatch = Match.getListOfTeams();
-                boolean found = false;
-                int position = 0;
-
-                // See if there's a current team to scout (can happen if we hit the BACK button from Match
-                if (Globals.CurrentTeamToScout > 0) {
-                    // See if the current team is already in the list
-                    for (String ct : teamsInMatch) {
-                        if (ct.equals(String.valueOf(Globals.CurrentTeamToScout))) {
-                            found = true;
-                            break;
-                        }
-                        else position++;
-                    }
-
-                    // If we didn't find the team we're scouting in the list of teams, add it (it was an override)
-                    if (!found) teamsInMatch.add(String.valueOf(Globals.CurrentTeamToScout));
-                }
 
                 // Create and apply the adapter to the spinner.
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.cpr_spinner, teamsInMatch);
@@ -170,7 +144,7 @@ public class PreMatch extends AppCompatActivity {
                 spinner_Team.setAdapter(adapter);
 
                 // Set the spinner to the right selection
-                if (found) spinner_Team.setSelection(position);
+                if (Globals.CurrentTeamToScout > 0) spinner_Team.setSelection(Globals.CurrentTeamToScout);
                 else spinner_Team.setSelection(teamsInMatch.size() - 1);
             }
         } else edit_Match.setText("");
@@ -212,7 +186,7 @@ public class PreMatch extends AppCompatActivity {
                         spinner_Team.setAdapter(adp_Team);
                         spinner_Team.setSelection(teamsInMatch.size() - 1);
                         // Set CurrentTeamToScout to be the overridden value
-                        Globals.CurrentTeamToScout = Integer.parseInt(teamNum);
+                        Globals.CurrentTeamToScout = spinner_Team.getSelectedItemPosition();
                     }
                 }
                 checkbox_Override.setChecked(false);
@@ -240,7 +214,7 @@ public class PreMatch extends AppCompatActivity {
                     } else {
                         Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
                         Globals.NumberMatchFilesKept = Globals.sp.getInt(Constants.SP_NUM_MATCHES, 5);
-                        Globals.CurrentTeamToScout = Integer.parseInt(spinner_Team.getSelectedItem().toString());
+                        Globals.CurrentTeamToScout = spinner_Team.getSelectedItemPosition();
 
                         // Set up the Logger - if it fails, we better stop now, or we won't capture any data!
                         try {
