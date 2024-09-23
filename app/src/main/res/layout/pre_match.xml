@@ -53,7 +53,7 @@
             <TextView
                 android:id="@+id/text_MatchPadding"
                 android:gravity="center"
-                android:layout_width="500dp"
+                android:layout_width="481dp"
                 android:layout_height="60dp" />
 
         </LinearLayout>
@@ -74,28 +74,34 @@
                 android:text="@string/pre_team_num"
                 tools:ignore="RtlSymmetry" />
 
-            <Spinner
-                android:id="@+id/spinner_TeamToScout"
-                android:layout_width="387dp"
-                android:layout_height="44dp"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:gravity="center"
-                android:paddingStart="10dp"
-                android:spinnerMode="dropdown"
-                android:textColor="@color/cpr_bkgnd"
-                android:textSize="24sp"
-                tools:ignore="RtlSymmetry" />
+            <RelativeLayout
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="22dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:paddingEnd="10dp"
-                android:src="@mipmap/drop_down_arrow"
-                tools:ignore="ContentDescription" />
+                <Spinner
+                    android:id="@+id/spinner_TeamToScout"
+                    android:spinnerMode="dropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:background="@color/white"
+                    android:gravity="end|center"
+                    android:paddingStart="10dp"
+                    tools:ignore="RtlSymmetry" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:paddingEnd="10dp"
+                    android:paddingStart="10dp"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:src="@drawable/cpr_drop_down_arrow"
+                    tools:ignore="ContentDescription" />
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/text_TeamToScoutName"
