@@ -103,7 +103,7 @@ public class PreMatch extends AppCompatActivity {
         if (Globals.CurrentMatchNumber > 0) {
             // MUST CONVERT TO STRING or it crashes with out warning
             edit_Match.setText(String.valueOf(Globals.CurrentMatchNumber));
-            if (Globals.CurrentMatchNumber <= Globals.MatchList.getNumberOfMatches()) {
+            if (Globals.CurrentMatchNumber < Globals.MatchList.size()) {
                 Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber);
                 if (Match != null) {
                     int[] Teams = Match.getListOfTeams();
@@ -243,7 +243,7 @@ public class PreMatch extends AppCompatActivity {
                     String MatchNumStr = String.valueOf(edit_Match.getText());
                     if (!MatchNumStr.isEmpty()) {
                         int MatchNum = Integer.parseInt(MatchNumStr);
-                        if (MatchNum <= Globals.MatchList.getNumberOfMatches()) {
+                        if (MatchNum > 0 && MatchNum < Globals.MatchList.size()) {
                             Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
                             if (Match != null) {
                                 // MUST CONVERT TO STRING or it crashes with out warning
@@ -274,7 +274,7 @@ public class PreMatch extends AppCompatActivity {
                     if (!TeamToScoutStr.isEmpty()) {
                         int TeamToScout = Integer.parseInt(TeamToScoutStr);
                         // Since TeamList always has a NO_TEAM entry at index=0, need to check size-1
-                        if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size() - 1) {
+                        if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size()) {
                             // This will crash the app instead of returning null if you pass it an invalid num
                             String ScoutingTeamName = Globals.TeamList.get(TeamToScout);
                             text_TeamName.setText(ScoutingTeamName);
