@@ -26,7 +26,6 @@ import com.cpr3663.cpr_scouting_app.databinding.PreMatchBinding;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class PreMatch extends AppCompatActivity {
     // =============================================================================================
@@ -37,6 +36,7 @@ public class PreMatch extends AppCompatActivity {
     protected static String ScouterName;
     protected static CheckBox checkbox_StartNote; // This needs to be global so that Match.java can access it
     private static final String[] Start_Positions = Globals.StartPositionList.getDescriptionList();
+    public static int CurrentTeamToScoutPosition;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -108,7 +108,7 @@ public class PreMatch extends AppCompatActivity {
         // Create a new variable so it wont change before the handler is called cause that will mess it up (Even though its only 1 millisecond)
         new Handler().postDelayed(new Runnable() {
             public void run() {
-                spinner_Team.setSelection(Globals.CurrentTeamToScout);
+                spinner_Team.setSelection(CurrentTeamToScoutPosition);
             }
         }, 1);
 
@@ -144,7 +144,7 @@ public class PreMatch extends AppCompatActivity {
                 spinner_Team.setAdapter(adapter);
 
                 // Set the spinner to the right selection
-                if (Globals.CurrentTeamToScout > 0) spinner_Team.setSelection(Globals.CurrentTeamToScout);
+                if (CurrentTeamToScoutPosition > 0) spinner_Team.setSelection(CurrentTeamToScoutPosition);
                 else spinner_Team.setSelection(teamsInMatch.size() - 1);
             }
         } else edit_Match.setText("");
@@ -185,8 +185,8 @@ public class PreMatch extends AppCompatActivity {
                         // Apply the adapter to the spinner
                         spinner_Team.setAdapter(adp_Team);
                         spinner_Team.setSelection(teamsInMatch.size() - 1);
-                        // Set CurrentTeamToScout to be the overridden value
-                        Globals.CurrentTeamToScout = spinner_Team.getSelectedItemPosition();
+                        // Set CurrentTeamToScoutPosition to be the overridden value
+                        CurrentTeamToScoutPosition = spinner_Team.getSelectedItemPosition();
                     }
                 }
                 checkbox_Override.setChecked(false);
@@ -214,7 +214,7 @@ public class PreMatch extends AppCompatActivity {
                     } else {
                         Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
                         Globals.NumberMatchFilesKept = Globals.sp.getInt(Constants.SP_NUM_MATCHES, 5);
-                        Globals.CurrentTeamToScout = spinner_Team.getSelectedItemPosition();
+                        CurrentTeamToScoutPosition = spinner_Team.getSelectedItemPosition();
 
                         // Set up the Logger - if it fails, we better stop now, or we won't capture any data!
                         try {
@@ -280,7 +280,7 @@ public class PreMatch extends AppCompatActivity {
                                 adapter.setDropDownViewResource(R.layout.cpr_spinner_item);
                                 // Apply the adapter to the spinner.
                                 spinner_Team.setAdapter(adapter);
-                                Globals.CurrentTeamToScout = spinner_Team.getSelectedItemPosition();
+                                CurrentTeamToScoutPosition = spinner_Team.getSelectedItemPosition();
                             }
                         }
                     }
@@ -291,7 +291,7 @@ public class PreMatch extends AppCompatActivity {
         spinner_Team.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String TeamToScoutStr = String.valueOf(spinner_Team.getSelectedItem());
+                String TeamToScoutStr = spinner_Team.getSelectedItem().toString();
                 if (!TeamToScoutStr.isEmpty() && !TeamToScoutStr.equals(getString(R.string.dropdown_no_items))) {
                     int TeamToScout = Integer.parseInt(TeamToScoutStr);
                     if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size()) {
@@ -303,7 +303,7 @@ public class PreMatch extends AppCompatActivity {
                     }
 
                     // Save off what you selected for if you go to the match and then back
-                    Globals.CurrentTeamToScout = spinner_Team.getSelectedItemPosition();
+                    CurrentTeamToScoutPosition = spinner_Team.getSelectedItemPosition();
                 }
             }
 
