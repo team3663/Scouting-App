@@ -29,20 +29,35 @@
 
             <TextView
                 android:id="@+id/textPadding1"
-                android:layout_width="50dp"
+                android:layout_width="20dp"
                 android:layout_height="65dp"
                 tools:textSize="20sp" />
 
             <TextView
                 android:id="@+id/text_Status"
-                android:layout_width="230dp"
+                android:layout_width="160dp"
                 android:layout_height="65dp"
                 android:gravity="left|center"
                 tools:textSize="20sp" />
 
             <Switch
+                android:id="@+id/switchNotMoving"
+                android:layout_width="150dp"
+                android:layout_height="65dp"
+                android:clickable="false"
+                tools:textSize="20sp"
+                android:textColor="@color/white"
+                android:text="Not Moving"/>
+
+            <TextView
+                android:id="@+id/textPadding2"
+                android:layout_width="20dp"
+                android:layout_height="65dp"
+                tools:textSize="20sp" />
+
+            <Switch
                 android:id="@+id/switchDefended"
-                android:layout_width="160dp"
+                android:layout_width="150dp"
                 android:layout_height="65dp"
                 android:clickable="false"
                 tools:textSize="20sp"
@@ -50,14 +65,14 @@
                 android:text="Is Defended"/>
 
             <TextView
-                android:id="@+id/textPadding2"
-                android:layout_width="50dp"
+                android:id="@+id/textPadding3"
+                android:layout_width="20dp"
                 android:layout_height="65dp"
                 tools:textSize="20sp" />
 
             <Switch
                 android:id="@+id/switchDefense"
-                android:layout_width="160dp"
+                android:layout_width="150dp"
                 android:layout_height="65dp"
                 android:clickable="false"
                 android:textColor="@color/white"
@@ -65,8 +80,8 @@
                 tools:textSize="20sp" />
 
             <TextView
-                android:id="@+id/textPadding3"
-                android:layout_width="50dp"
+                android:id="@+id/textPadding4"
+                android:layout_width="15dp"
                 android:layout_height="65dp"
                 tools:textSize="20sp" />
 

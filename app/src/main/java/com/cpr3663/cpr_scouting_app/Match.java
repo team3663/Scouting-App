@@ -49,7 +49,7 @@ public class Match extends AppCompatActivity {
     private static final int TIMER_AUTO_TELEOP_DELAY = 3; // in seconds
     private static final int BUTTON_FLASH_INTERVAL = 1_000; // in milliseconds
     private static final int BUTTON_COLOR_FLASH = Color.RED;
-    private static final int BUTTON_COLOR_NORMAL = R.color.cpr_bkgnd;
+    private static final int BUTTON_COLOR_NORMAL = Color.TRANSPARENT;
     private static final int BUTTON_TEXT_COLOR_DISABLED = Color.LTGRAY;
     private static final String ORIENTATION_LANDSCAPE = "l";
     private static final String ORIENTATION_LANDSCAPE_REVERSE = "lr";
@@ -110,7 +110,8 @@ public class Match extends AppCompatActivity {
     public class FlashingTimerTask extends TimerTask {
         @Override
         public void run() {
-            // Flashes both "switch_Defense" and "toggle_Defended"
+            // Flashes "switch_NotMoving", "switch_Defense", and "toggle_Defended"
+            flash_button(switch_NotMoving);
             flash_button(switch_Defense);
             flash_button(switch_Defended);
         }
@@ -135,6 +136,8 @@ public class Match extends AppCompatActivity {
     // Define the buttons on the page
     Button but_MatchControl;
     Button but_Back;
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    Switch switch_NotMoving;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     Switch switch_Defense;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -258,6 +261,36 @@ public class Match extends AppCompatActivity {
 
         // Define a field image
         ImageView image_Field = matchBinding.imageFieldView;
+
+        // Map the Not Moving Switch to the actual switch
+        switch_NotMoving = matchBinding.switchNotMoving;
+        // Initialize the Not Moving Switch settings
+        switch_NotMoving.setTextColor(BUTTON_TEXT_COLOR_DISABLED);
+        switch_NotMoving.setBackgroundColor(BUTTON_COLOR_NORMAL);
+        switch_NotMoving.setVisibility(View.INVISIBLE);
+        // Do this so that you can't mess with the switch during the wrong phases
+        switch_NotMoving.setEnabled(false);
+
+        // This gets called if either the switch is clicked on, or the slide toggle is flipped (covers both)
+        switch_NotMoving.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // If the button is being turned ON make it RED otherwise LTGRAY
+                if (isChecked) {
+                    Globals.EventLogger.LogEvent(Constants.EVENT_ID_NOT_MOVING_START, 0,0,true);
+                    switch_NotMoving.setBackgroundColor(BUTTON_COLOR_FLASH);
+                } else {
+                    Globals.EventLogger.LogEvent(Constants.EVENT_ID_NOT_MOVING_END, 0,0,false);
+                    switch_NotMoving.setBackgroundColor(BUTTON_COLOR_NORMAL);
+                }
+            }
+        });
+
+        switch_NotMoving.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Need this listener or else the onCheckedChanged won't fire either.
+            }
+        });
 
         // Map the Defense Switch to the actual switch
         switch_Defense = matchBinding.switchDefense;
@@ -402,7 +435,7 @@ public class Match extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        matchBinding.textStatus.setText("Last Event: " + Objects.requireNonNull(item.getTitle()));
+        matchBinding.textStatus.setText(getString(R.string.status_text_label) + Objects.requireNonNull(item.getTitle()));
         eventPrevious = Globals.EventList.getEventId(item.getTitle().toString());
         Globals.EventLogger.LogEvent(eventPrevious, current_X_Relative, current_Y_Relative, is_start_of_seq, currentTouchTime);
         return true;
@@ -484,12 +517,15 @@ public class Match extends AppCompatActivity {
         Match.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                switch_NotMoving.setEnabled(true);
+                switch_NotMoving.setTextColor(Color.WHITE);
+                switch_NotMoving.setVisibility(View.VISIBLE);
                 switch_Defense.setEnabled(true);
                 switch_Defense.setTextColor(Color.WHITE);
+                switch_Defense.setVisibility(View.VISIBLE);
                 switch_Defended.setEnabled(true);
                 switch_Defended.setTextColor(Color.WHITE);
                 switch_Defended.setVisibility(View.VISIBLE);
-                switch_Defense.setVisibility(View.VISIBLE);
 
                 but_MatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.stop_match, 0);
             }
@@ -505,7 +541,7 @@ public class Match extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     public void end_Teleop() {
         but_MatchControl.setText(getString(R.string.button_match_next));
-        but_MatchControl.setTextColor(getColor(R.color.cpr_bkgnd));
+        but_MatchControl.setTextColor(Color.TRANSPARENT);
         but_MatchControl.setBackgroundColor(getColor(R.color.white));
 
         // Certain actions can't be set from a non-UI thread (like withing a TimerTask that runs on a
@@ -542,8 +578,10 @@ public class Match extends AppCompatActivity {
         matchPhase = Constants.PHASE_NONE;
 
         // If either of the toggles are on turn them off
-        if (switch_Defended.isChecked()) Globals.EventLogger.LogEvent(Constants.EVENT_ID_DEFENDED_END, 0, 0, false);
+        if (switch_NotMoving.isChecked()) Globals.EventLogger.LogEvent(Constants.EVENT_ID_NOT_MOVING_END, 0, 0, false);
         if (switch_Defense.isChecked()) Globals.EventLogger.LogEvent(Constants.EVENT_ID_DEFENSE_END, 0, 0, false);
+        if (switch_Defended.isChecked()) Globals.EventLogger.LogEvent(Constants.EVENT_ID_DEFENDED_END, 0, 0, false);
+        switch_NotMoving.setChecked(false);
         switch_Defense.setChecked(false);
         switch_Defended.setChecked(false);
 

@@ -15,3 +15,5 @@
 151,Defended_End,False,False,:
 152,PlayDefense_Start,True,False,153
 153,PlayDefense_End,False,False,:
+154,NotMoving_Start,True,False,155
+155,NotMoving_End,False,False,:
