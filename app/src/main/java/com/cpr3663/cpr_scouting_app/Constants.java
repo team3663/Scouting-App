@@ -35,6 +35,8 @@ public class Constants {
     public static final int EVENT_ID_DEFENDED_END = 151;
     public static final int EVENT_ID_DEFENSE_START = 152;
     public static final int EVENT_ID_DEFENSE_END = 153;
+    public static final int EVENT_ID_NOT_MOVING_START = 154;
+    public static final int EVENT_ID_NOT_MOVING_END = 155;
     public static final int EVENT_ID_AUTO_STARTNOTE = 0;
 
     // Shared Preferences Keys

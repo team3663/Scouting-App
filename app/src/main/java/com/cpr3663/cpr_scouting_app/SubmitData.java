@@ -76,12 +76,12 @@ public class SubmitData extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 new AlertDialog.Builder(view.getContext())
-                .setTitle("Quit app")
-                .setMessage("Are you sure you want to Quit the app?")
+                .setTitle(getString(R.string.alert_quit_title))
+                .setMessage(getString(R.string.alert_quit_message))
 
                 // Specifying a listener allows you to take an action before dismissing the dialog.
                 // The dialog is automatically dismissed when a dialog button is clicked.
-                .setPositiveButton("Quit", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.alert_quit_positive), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         SubmitData.this.finishAffinity();
                         System.exit(0);
@@ -89,7 +89,7 @@ public class SubmitData extends AppCompatActivity {
                 })
 
                 // A null listener allows the button to dismiss the dialog and take no further action.
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(getString(R.string.alert_cancel), null)
                 // TODO make the icon work
 //                .setIcon(getDrawable(android.R.attr.alertDialogIcon))
                 .show();
