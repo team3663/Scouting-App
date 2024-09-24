@@ -100,17 +100,17 @@
                     android:layout_gravity="center"
                     android:src="@drawable/cpr_drop_down_arrow"
                     tools:ignore="ContentDescription" />
-
             </RelativeLayout>
 
             <TextView
                 android:id="@+id/text_TeamToScoutName"
-                android:gravity="start|center"
-                android:layout_width="500dp"
+                android:layout_width="fill_parent"
                 android:layout_height="60dp"
-                android:paddingStart="20dp"
-                android:textColor="@color/light_grey"
-                android:textSize="20sp" />
+                android:gravity="start|center"
+                android:paddingStart="50dp"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                tools:ignore="RtlSymmetry" />
         </LinearLayout>
 
         <LinearLayout
@@ -152,7 +152,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:orientation="horizontal">
-          
+
             <CheckBox
                 android:id="@+id/checkbox_DidPlay"
                 android:layout_width="0dp"

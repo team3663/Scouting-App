@@ -26,7 +26,6 @@ public class Globals {
     public static StartPositions StartPositionList = new StartPositions();
     public static Colors ColorList = new Colors();
 
-    public static int CurrentTeamToScout;
     public static int CurrentCompetitionId;
     public static int CurrentMatchNumber;
     public static int CurrentScoutingTeam;
