@@ -45,9 +45,10 @@
                 android:layout_width="150dp"
                 android:layout_height="65dp"
                 android:clickable="false"
+                android:gravity="center"
                 tools:textSize="20sp"
                 android:textColor="@color/white"
-                android:text="Not Moving"/>
+                android:text="Not\nMoving"/>
 
             <TextView
                 android:id="@+id/textPadding2"
@@ -60,9 +61,10 @@
                 android:layout_width="150dp"
                 android:layout_height="65dp"
                 android:clickable="false"
+                android:gravity="center"
                 tools:textSize="20sp"
                 android:textColor="@color/white"
-                android:text="Is Defended"/>
+                android:text="Is\nDefended"/>
 
             <TextView
                 android:id="@+id/textPadding3"
@@ -75,8 +77,9 @@
                 android:layout_width="150dp"
                 android:layout_height="65dp"
                 android:clickable="false"
+                android:gravity="center"
                 android:textColor="@color/white"
-                android:text="On Defense"
+                android:text="On\nDefense"
                 tools:textSize="20sp" />
 
             <TextView
