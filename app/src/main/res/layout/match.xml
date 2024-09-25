@@ -23,19 +23,21 @@
                 android:layout_width="180dp"
                 android:layout_height="65dp"
                 android:layout_marginStart="5dp"
+                android:layout_gravity="center_vertical"
                 android:drawableEnd="@drawable/start_match"
                 android:text="@string/button_start_match"
-                tools:textSize="20sp" />
+                tools:textSize="18sp" />
 
             <TextView
                 android:id="@+id/textPadding1"
                 android:layout_width="20dp"
                 android:layout_height="65dp"
+                android:layout_gravity="center_vertical"
                 tools:textSize="20sp" />
 
             <TextView
                 android:id="@+id/text_Status"
-                android:layout_width="160dp"
+                android:layout_width="165dp"
                 android:layout_height="65dp"
                 android:gravity="left|center"
                 tools:textSize="20sp" />
@@ -46,7 +48,8 @@
                 android:layout_height="65dp"
                 android:clickable="false"
                 android:gravity="center"
-                tools:textSize="20sp"
+                android:layout_gravity="center_vertical"
+                tools:textSize="18sp"
                 android:textColor="@color/white"
                 android:text="Not\nMoving"/>
 
@@ -54,6 +57,7 @@
                 android:id="@+id/textPadding2"
                 android:layout_width="20dp"
                 android:layout_height="65dp"
+                android:layout_gravity="center_vertical"
                 tools:textSize="20sp" />
 
             <Switch
@@ -62,7 +66,8 @@
                 android:layout_height="65dp"
                 android:clickable="false"
                 android:gravity="center"
-                tools:textSize="20sp"
+                android:layout_gravity="center_vertical"
+                tools:textSize="18sp"
                 android:textColor="@color/white"
                 android:text="Is\nDefended"/>
 
@@ -70,6 +75,7 @@
                 android:id="@+id/textPadding3"
                 android:layout_width="20dp"
                 android:layout_height="65dp"
+                android:layout_gravity="center_vertical"
                 tools:textSize="20sp" />
 
             <Switch
@@ -78,22 +84,25 @@
                 android:layout_height="65dp"
                 android:clickable="false"
                 android:gravity="center"
+                android:layout_gravity="center_vertical"
                 android:textColor="@color/white"
                 android:text="On\nDefense"
-                tools:textSize="20sp" />
+                tools:textSize="18sp" />
 
             <TextView
                 android:id="@+id/textPadding4"
-                android:layout_width="15dp"
+                android:layout_width="20dp"
                 android:layout_height="65dp"
+                android:layout_gravity="center_vertical"
                 tools:textSize="20sp" />
 
             <TextView
                 android:id="@+id/text_Time"
                 android:layout_width="120dp"
                 android:layout_height="65dp"
+                android:gravity="end|center"
+                android:layout_gravity="center_vertical"
                 android:textColor="@color/white"
-                android:text="Time: 0"
                 tools:textSize="20sp" />
         </LinearLayout>
       
@@ -118,7 +127,7 @@
                 tools:ignore="MissingConstraints,UselessLeaf" />
         </FrameLayout>
     </LinearLayout>
-      
+
     <Button
         android:id="@+id/but_Back"
         android:layout_width="150dp"
@@ -130,5 +139,5 @@
         android:drawableEnd="@drawable/back_button"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        tools:textSize="20sp" />
+        tools:textSize="18sp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

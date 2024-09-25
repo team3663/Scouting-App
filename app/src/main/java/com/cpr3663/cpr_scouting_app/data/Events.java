@@ -31,9 +31,9 @@ public class Events {
 
     // Constructor
     public Events() {
-        event_list = new ArrayList<EventRow>();
-        auto_events = new ArrayList<String>();
-        teleop_events = new ArrayList<String>();
+        event_list = new ArrayList<>();
+        auto_events = new ArrayList<>();
+        teleop_events = new ArrayList<>();
     }
 
     // Member Function: Add a row of event info into the list giving the data individually
@@ -127,7 +127,7 @@ public class Events {
             is_FOP_Event = in_FOP;
             is_seq_start = in_seq_start;
             next_event_set = in_next_event_set;
-            next_events_desc = new ArrayList<String>();
+            next_events_desc = new ArrayList<>();
 
             // Manually build what events are allowed to start a sequence in each phase
             // Only add to the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence

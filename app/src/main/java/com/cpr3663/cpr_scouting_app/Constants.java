@@ -21,6 +21,7 @@ public class Constants {
     public static final String LOGKEY_COMMENTS = "D_Comments";
     public static final String LOGKEY_START_TIME_OFFSET = "D_StartOffset";
     public static final String LOGKEY_DATA_KEY = "D_Key";
+    public static final String LOGKEY_START_TIME = "D_Start";
     public static final String LOGKEY_EVENT_KEY = "E_Key";
     public static final String LOGKEY_EVENT_SEQ = "E_Seq";
     public static final String LOGKEY_EVENT_ID = "E_ID";
