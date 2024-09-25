@@ -487,6 +487,9 @@ public class Match extends AppCompatActivity {
         but_Back.setClickable(false);
         but_Back.setVisibility(View.INVISIBLE);
 
+        // Clear out the team to override (kept it in case they hit the Back button)
+        Globals.CurrentTeamOverrideNum = 0;
+
         // Show the time
         text_Time.setVisibility(View.VISIBLE);
 
@@ -552,7 +555,7 @@ public class Match extends AppCompatActivity {
     }
 
     // =============================================================================================
-    // Function:    end_match
+    // Function:    end_Teleop
     // Description: Ends teleop, but not the match so that you can still finish up
     // Output:      void
     // Parameters:  N/A

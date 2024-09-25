@@ -38,7 +38,6 @@ public class PreMatch extends AppCompatActivity {
     protected static CheckBox checkbox_StartNote; // This needs to be global so that Match.java can access it
     private static final String[] Start_Positions = Globals.StartPositionList.getDescriptionList();
     public static int CurrentTeamToScoutPosition;
-    public static int CurrentMatchNumber = -1;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -124,7 +123,7 @@ public class PreMatch extends AppCompatActivity {
         // Create a text box to input the scouters name
         edit_Name.setText(ScouterName);
 
-        // When we load the page, if we have a match number (can happen if we hit the BACK button from Match)
+        // When we load the page, if we have a match number (can happen if we hit the BACK button from Match or it's the next match)
         // load the team information for the match
         if (Globals.CurrentMatchNumber > 0) {
             // If we have a match number, enable the override
@@ -135,20 +134,27 @@ public class PreMatch extends AppCompatActivity {
             // TODO it seems we do this twice.  once at load if we saved a match number, and again
             // TODO if they type in a match number.  should be in a function?
             Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Globals.CurrentMatchNumber);
+            ArrayList<String> teamsInMatch;
 
             // If we got match data, get the list of teams from it
-            if (Match != null) {
-                ArrayList<String> teamsInMatch = Match.getListOfTeams();
-
-                // Create and apply the adapter to the spinner.
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.cpr_spinner, teamsInMatch);
-                adapter.setDropDownViewResource(R.layout.cpr_spinner_item);
-                spinner_Team.setAdapter(adapter);
-
-                // Set the spinner to the right selection
-                if (CurrentTeamToScoutPosition > 0) spinner_Team.setSelection(CurrentTeamToScoutPosition);
-                else spinner_Team.setSelection(teamsInMatch.size() - 1);
+            if (Match != null)
+                teamsInMatch = Match.getListOfTeams();
+            else {
+                teamsInMatch = new ArrayList<>();
+                teamsInMatch.add(getString(R.string.dropdown_no_items));
             }
+
+            // If there's an override set, add it to the spinner
+            if (Globals.CurrentTeamOverrideNum > 0) teamsInMatch.add(String.valueOf(Globals.CurrentTeamOverrideNum));
+
+            // Create and apply the adapter to the spinner.
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.cpr_spinner, teamsInMatch);
+            adapter.setDropDownViewResource(R.layout.cpr_spinner_item);
+            spinner_Team.setAdapter(adapter);
+
+            // Set the spinner to the right selection
+            if (CurrentTeamToScoutPosition > 0) spinner_Team.setSelection(CurrentTeamToScoutPosition);
+            else spinner_Team.setSelection(teamsInMatch.size() - 1);
         } else edit_Match.setText("");
 
         // Default checkboxes
@@ -182,8 +188,10 @@ public class PreMatch extends AppCompatActivity {
                     Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(Integer.parseInt(preMatchBinding.editMatch.getText().toString()));
                     if (Match != null)
                         teamsInMatch = Match.getListOfTeams();
-                    else
+                    else {
                         teamsInMatch = new ArrayList<>();
+                        teamsInMatch.add(getString(R.string.dropdown_no_items));
+                    }
 
                     teamsInMatch.add(teamNum);
                     ArrayAdapter<String> adp_Team = new ArrayAdapter<String>(view.getContext(), R.layout.cpr_spinner, teamsInMatch);
@@ -193,6 +201,7 @@ public class PreMatch extends AppCompatActivity {
                     spinner_Team.setSelection(teamsInMatch.size() - 1);
                     // Set CurrentTeamToScoutPosition to be the overridden value
                     CurrentTeamToScoutPosition = spinner_Team.getSelectedItemPosition();
+                    Globals.CurrentTeamOverrideNum = Integer.parseInt(teamNum);
                 }
                 checkbox_Override.setChecked(false);
                 text_Override.setVisibility(View.INVISIBLE);
@@ -281,16 +290,20 @@ public class PreMatch extends AppCompatActivity {
                     if (MatchNumStr.isEmpty()) {
                         // Disable the override
                         checkbox_Override.setEnabled(false);
-                        CurrentMatchNumber = -1;
+                        Globals.CurrentMatchNumber = -1;
+                        Globals.CurrentTeamOverrideNum = 0;
+                        CurrentTeamToScoutPosition = -1;
 
                         ArrayList<String> noTeams = new ArrayList<>();
+                        noTeams.add(getString(R.string.dropdown_no_items));
                         ArrayAdapter<String> adapter = new ArrayAdapter<String>(view.getContext(), R.layout.cpr_spinner, noTeams);
                         adapter.setDropDownViewResource(R.layout.cpr_spinner_item);
                         spinner_Team.setAdapter(adapter);
-                    } else if (MatchNum != CurrentMatchNumber) {
+                    } else if (MatchNum != Globals.CurrentMatchNumber) {
                         // Enable the override
                         checkbox_Override.setEnabled(true);
-                        CurrentMatchNumber = MatchNum;
+                        Globals.CurrentMatchNumber = MatchNum;
+                        Globals.CurrentTeamOverrideNum = 0;
 
                         if (MatchNum > 0 && MatchNum < Globals.MatchList.size()) {
                             Matches.MatchRow Match = Globals.MatchList.getMatchInfoRow(MatchNum);
@@ -303,6 +316,7 @@ public class PreMatch extends AppCompatActivity {
                             CurrentTeamToScoutPosition = spinner_Team.getSelectedItemPosition();
                         } else {
                             ArrayList<String> noTeams = new ArrayList<>();
+                            noTeams.add(getString(R.string.dropdown_no_items));
                             ArrayAdapter<String> adapter = new ArrayAdapter<String>(view.getContext(), R.layout.cpr_spinner, noTeams);
                             adapter.setDropDownViewResource(R.layout.cpr_spinner_item);
                             spinner_Team.setAdapter(adapter);

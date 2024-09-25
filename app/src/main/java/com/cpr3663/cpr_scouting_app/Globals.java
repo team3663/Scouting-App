@@ -32,6 +32,7 @@ public class Globals {
     public static int CurrentDeviceId;
     public static int CurrentStartPosition;
     public static int CurrentColorId;
+    public static int CurrentTeamOverrideNum;
 
     public static String CheckBoxTextPadding = "       ";
 
