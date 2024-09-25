@@ -34,6 +34,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.cpr3663.cpr_scouting_app.data.Colors;
 import com.cpr3663.cpr_scouting_app.databinding.MatchBinding;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Timer;
@@ -47,7 +49,8 @@ public class Match extends AppCompatActivity {
     protected static final int TIMER_TELEOP_LENGTH = 135; // in seconds
     private static final int TIMER_UPDATE_RATE = 1_000; // in milliseconds
     private static final int TIMER_AUTO_TELEOP_DELAY = 3; // in seconds
-    private static final int BUTTON_FLASH_INTERVAL = 1_000; // in milliseconds
+    private static final int BUTTON_FLASH_INTERVAL = 2_000; // in milliseconds
+    private static final int BUTTON_FLASH_BLINK_INTERVAL = 250; // in milliseconds
     private static final int BUTTON_COLOR_FLASH = Color.RED;
     private static final int BUTTON_COLOR_NORMAL = Color.TRANSPARENT;
     private static final int BUTTON_TEXT_COLOR_DISABLED = Color.LTGRAY;
@@ -99,7 +102,7 @@ public class Match extends AppCompatActivity {
                 elapsedSeconds = (int) (TIMER_TELEOP_LENGTH + TIMER_AUTO_LENGTH - Math.round((System.currentTimeMillis() - startTime) / 1_000.0));
             }
             if (elapsedSeconds < 0) elapsedSeconds = 0;
-            text_Time.setText(getString(R.string.timer_label) + " " + elapsedSeconds / 60 + ":" + String.format("%02d", elapsedSeconds % 60));
+            text_Time.setText(elapsedSeconds / 60 + ":" + String.format("%02d", elapsedSeconds % 60));
         }
     }
 
@@ -110,10 +113,23 @@ public class Match extends AppCompatActivity {
     public class FlashingTimerTask extends TimerTask {
         @Override
         public void run() {
-            // Flashes "switch_NotMoving", "switch_Defense", and "toggle_Defended"
-            flash_button(switch_NotMoving);
-            flash_button(switch_Defense);
-            flash_button(switch_Defended);
+            // If the button is ON then toggle the background color between COLOR_FLASH and COLOR_NORMAL
+            // Always start by setting it to "normal" to avoid the case where you toggle it off during the Thread.sleep
+            // since it will remain BUTTON_COLOR_FLASH even though it's off.
+            switch_NotMoving.setBackgroundColor(BUTTON_COLOR_NORMAL);
+            switch_Defense.setBackgroundColor(BUTTON_COLOR_NORMAL);
+            switch_Defended.setBackgroundColor(BUTTON_COLOR_NORMAL);
+
+            try {
+                Thread.sleep(BUTTON_FLASH_BLINK_INTERVAL);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            // If it's checked, wait a bit then make it BUTTON_COLOR_FLASH
+            if (switch_NotMoving.isChecked()) switch_NotMoving.setBackgroundColor(BUTTON_COLOR_FLASH);
+            if (switch_Defense.isChecked()) switch_Defense.setBackgroundColor(BUTTON_COLOR_FLASH);
+            if (switch_Defended.isChecked()) switch_Defended.setBackgroundColor(BUTTON_COLOR_FLASH);
         }
     }
 
@@ -198,7 +214,7 @@ public class Match extends AppCompatActivity {
         // Map the text box variable to the actual text box
         text_Time = matchBinding.textTime;
         // Initialize the match timer textbox settings
-        text_Time.setText(getString(R.string.timer_label) + " " + TIMER_AUTO_LENGTH);
+        text_Time.setText(String.valueOf(TIMER_AUTO_LENGTH));
         text_Time.setTextSize(20F);
         text_Time.setTextAlignment(Layout.Alignment.ALIGN_CENTER.ordinal() + 2);
         text_Time.setVisibility(View.INVISIBLE);
@@ -452,6 +468,9 @@ public class Match extends AppCompatActivity {
         // Record the current/start time of the match to calculate elapsed time
         startTime = System.currentTimeMillis();
 
+        // Log the starting time
+        Globals.EventLogger.LogData(Constants.LOGKEY_START_TIME, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss")));
+
         // Disable orientation listening if we can!  Once we start the match don't allow rotation anymore
         if (OEL.canDetectOrientation()) {
             OEL.disable();
@@ -503,7 +522,7 @@ public class Match extends AppCompatActivity {
     public void start_Teleop() {
         // Set the start Time so that the Display Time will be correct
         startTime = System.currentTimeMillis() - TIMER_AUTO_LENGTH * 1_000;
-        text_Time.setText(getString(R.string.timer_label) + " " + TIMER_TELEOP_LENGTH / 60 + ":" + String.format("%02d", TIMER_TELEOP_LENGTH % 60));
+        text_Time.setText(TIMER_TELEOP_LENGTH / 60 + ":" + String.format("%02d", TIMER_TELEOP_LENGTH % 60));
 
         match_Timer.schedule(teleop_timertask, TIMER_TELEOP_LENGTH * 1_000);
 
@@ -588,23 +607,5 @@ public class Match extends AppCompatActivity {
         // Go to the next page
         Intent GoToPostMatch = new Intent(Match.this, PostMatch.class);
         startActivity(GoToPostMatch);
-    }
-
-    // =============================================================================================
-    // Function:    flash_button
-    // Description: Flash the background color of the button.  Since all toggle-able buttons extend
-    //              from CompoundButton, we can use that as the param type.
-    // Output:      void
-    // Parameters:  in_button - specific the button you want to flash.
-    // =============================================================================================
-    @SuppressLint("ResourceAsColor")
-    public void flash_button(@NonNull CompoundButton in_button) {
-        // If the button is ON then toggle the background color between COLOR_FLASH and COLOR_NORMAL
-        if (in_button.isChecked()) {
-            if (System.currentTimeMillis() / BUTTON_FLASH_INTERVAL % 2 == 0)
-                in_button.setBackgroundColor(BUTTON_COLOR_NORMAL);
-            else
-                in_button.setBackgroundColor(BUTTON_COLOR_FLASH);
-        }
     }
 }

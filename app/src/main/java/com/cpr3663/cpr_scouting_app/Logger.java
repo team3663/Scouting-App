@@ -140,6 +140,7 @@ public class Logger {
             csv_header += "," + Constants.LOGKEY_TRAP;
             csv_header += "," + Constants.LOGKEY_COMMENTS;
             csv_header += "," + Constants.LOGKEY_START_TIME_OFFSET;
+            csv_header += "," + Constants.LOGKEY_START_TIME;
 
             csv_line += FindValueInPair(Constants.LOGKEY_TEAM_TO_SCOUT);
             csv_line += FindValueInPair(Constants.LOGKEY_TEAM_SCOUTING);
@@ -151,6 +152,7 @@ public class Logger {
             csv_line += FindValueInPair(Constants.LOGKEY_TRAP);
             csv_line += FindValueInPair(Constants.LOGKEY_COMMENTS);
             csv_line += FindValueInPair(Constants.LOGKEY_START_TIME_OFFSET);
+            csv_line += FindValueInPair(Constants.LOGKEY_START_TIME);
 
             // Write out the data
             fos_data.write(csv_header.getBytes(StandardCharsets.UTF_8));
@@ -217,16 +219,14 @@ public class Logger {
         // If this is NOT a new sequence, we need to write out the previous event id that goes with this one
         if (!in_NewSequence) prev = String.valueOf(seq_number_prev);
         
-        // Determine string values for x, y and time. Round them to 1 decimal places.
+        // Determine string values for x, y and time. Truncate them.
         // If they happen to be whole numbers, trim off the ".0"
-        String string_x = String.valueOf((float) Math.round(in_X * 100.0) / 100.0);
-        String string_y = String.valueOf((float) Math.round(in_Y * 100.0) / 100.0);
-        // Determine elapsed time and round to 1 decimal places and match length
+        String string_x = String.valueOf((int) in_X);
+        String string_y = String.valueOf((int) in_Y);
+        // Determine elapsed time and round to 1 decimal places
         // Get min of elapsed time and match length in order to essentially cap the time that will be recorded
-        String string_time = String.valueOf(Math.min(Math.round((in_time - Match.startTime) / 10.0) / 100.0, Match.TIMER_AUTO_LENGTH + Match.TIMER_TELEOP_LENGTH));
+        String string_time = String.valueOf(Math.min(Math.round((in_time - Match.startTime) / 100.0) / 10.0, Match.TIMER_AUTO_LENGTH + Match.TIMER_TELEOP_LENGTH));
 
-        if (string_x.endsWith(".0")) string_x = string_x.substring(0, string_x.length() - 2);
-        if (string_y.endsWith(".0")) string_y = string_y.substring(0, string_y.length() - 2);
         if (string_time.endsWith(".0")) string_time = string_time.substring(0, string_time.length() - 2);
         
         // Form the output line that goes in the csv file.
