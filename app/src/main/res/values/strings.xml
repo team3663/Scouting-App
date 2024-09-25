@@ -20,7 +20,6 @@
     <string name="loading_colors">Loading Color Data…</string>
 
     <string name="missing_data">Please fill in all fields</string>
-    <string name="timer_label">Time:</string>
     <string name="status_text_label">Last event:\n</string>
 
     <string name="file_error_teams">Error loading teams from data file!</string>
