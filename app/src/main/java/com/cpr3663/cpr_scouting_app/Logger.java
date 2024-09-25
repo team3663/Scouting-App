@@ -220,7 +220,6 @@ public class Logger {
         if (!in_NewSequence) prev = String.valueOf(seq_number_prev);
         
         // Determine string values for x, y and time. Truncate them.
-        // If they happen to be whole numbers, trim off the ".0"
         String string_x = String.valueOf((int) in_X);
         String string_y = String.valueOf((int) in_Y);
         // Determine elapsed time and round to 1 decimal places
