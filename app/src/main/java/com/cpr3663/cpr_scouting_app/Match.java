@@ -430,13 +430,13 @@ public class Match extends AppCompatActivity {
                 SpannableString ss = new SpannableString(item.getTitle());
                 ss.setSpan(new AbsoluteSizeSpan(24), 0, ss.length(), 0);
 
-                // If this menuItem has "Miss" or Score in the text, see if we should use a special color
-                if (ss.toString().contains("Miss")) {
+                // If this menuItem has "Miss"/"Failed" or "Score"/"Success" in the text, see if we should use a special color
+                if ((ss.toString().contains("Miss")) || (ss.toString().contains("Failed"))) {
                     Colors.ColorRow cr = Globals.ColorList.getColorRow(Globals.CurrentColorId - 1);
                     if (cr != null) {
                         ss.setSpan(new ForegroundColorSpan(cr.getColorMiss()), 0, ss.length(), 0);
                     }
-                } else if (ss.toString().contains("Score")) {
+                } else if ((ss.toString().contains("Score")) || (ss.toString().contains("Success"))) {
                     Colors.ColorRow cr = Globals.ColorList.getColorRow(Globals.CurrentColorId - 1);
                     if (cr != null) {
                         ss.setSpan(new ForegroundColorSpan(cr.getColorScore()), 0, ss.length(), 0);
