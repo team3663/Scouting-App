@@ -289,7 +289,7 @@ public class AppLaunch extends AppCompatActivity {
             line = br.readLine();
             while ((line = br.readLine()) != null) {
                 // Split out the csv line.
-                String[] info = line.split(",");
+                String[] info = line.split(",", -1);
 
                 // A bit messy but we need to know which Global to add the data to, and which fields to pass in.
                 // Switch needs a constant in the "case" expression, and complains about using getResources().

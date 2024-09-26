@@ -84,18 +84,19 @@ public class Events {
             // Get the set of next events, split them and process the information
             next_set_ids = er.next_event_set.split(":");
 
-            // Now find all events match the list of next events we can go to
-            // Outer loop needs to be the next_set_ids so we build the list so we can have the context
-            // menu be "in order".
-            for (int j = er.next_events_desc.size(); j < next_set_ids.length; j++) {
-                for (EventRow ner : event_list) {
-                    // If the event we're looking at (i) is in the list of valid next event ids (j) add it to the list
-                    if (ner.id == Integer.parseInt(next_set_ids[j])) {
-                        er.next_events_desc.add((ner.description));
+            if (next_set_ids.length > 0 && !next_set_ids[0].isEmpty()) {
+                // Now find all events match the list of next events we can go to
+                // Outer loop needs to be the next_set_ids so we build the list so we can have the context
+                // menu be "in order".
+                for (int j = er.next_events_desc.size(); j < next_set_ids.length; j++) {
+                    for (EventRow ner : event_list) {
+                        // If the event we're looking at (i) is in the list of valid next event ids (j) add it to the list
+                        if (ner.id == Integer.parseInt(next_set_ids[j])) {
+                            er.next_events_desc.add((ner.description));
+                        }
                     }
                 }
             }
-
         }
     }
 
