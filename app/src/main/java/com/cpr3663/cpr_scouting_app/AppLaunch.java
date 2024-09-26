@@ -90,6 +90,9 @@ public class AppLaunch extends AppCompatActivity {
                 appLaunch_timer.cancel();
                 appLaunch_timer.purge();
 
+                // Default Globals
+                Globals.CurrentTeamOverrideNum = 0;
+
                 // Go to the first page
                 Intent GoToPreMatch = new Intent(AppLaunch.this, PreMatch.class);
                 startActivity(GoToPreMatch);
