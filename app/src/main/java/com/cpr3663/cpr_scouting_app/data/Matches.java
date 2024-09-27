@@ -108,5 +108,39 @@ public class Matches {
 
             return ret;
         }
+
+        // Member Function: Return the team that is in a certain position
+        public String getTeamInPosition(String in_position) {
+            String ret = "";
+
+            switch (in_position.toUpperCase()) {
+                case "BLUE 1":
+                case "BLUE1":
+                    ret = blue1;
+                    break;
+                case "BLUE 2":
+                case "BLUE2":
+                    ret = blue2;
+                    break;
+                case "BLUE 3":
+                case "BLUE3":
+                    ret = blue3;
+                    break;
+                case "RED 1":
+                case "RED1":
+                    ret = red1;
+                    break;
+                case "RED 2":
+                case "RED2":
+                    ret = red2;
+                    break;
+                case "RED 3":
+                case "RED3":
+                    ret = red3;
+                    break;
+            }
+
+            return ret;
+        }
     }
 }

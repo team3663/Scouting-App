@@ -58,6 +58,7 @@ public class PreMatch extends AppCompatActivity {
         Globals.CurrentCompetitionId = Globals.sp.getInt(Constants.SP_COMPETITION_ID, 0);
         Globals.CurrentDeviceId = Globals.sp.getInt(Constants.SP_DEVICE_ID, 0);
         Globals.CurrentColorId = Globals.sp.getInt(Constants.SP_COLOR_CONTEXT_MENU, 1);
+        Globals.CurrentPrefTeamPos = Globals.sp.getInt(Constants.SP_PREF_TEAM_POS, 0);
 
         // Create components
         EditText edit_Match = preMatchBinding.editMatch;
@@ -313,6 +314,14 @@ public class PreMatch extends AppCompatActivity {
 
                             // Apply the adapter to the spinner.
                             spinner_Team.setAdapter(adapter);
+
+                            // If there's a default position, select the right team
+                            if (Globals.CurrentPrefTeamPos > 0) {
+                                String prefTeam = Match.getTeamInPosition(Constants.SETTINGS_PREF_TEAM_POS[Globals.CurrentPrefTeamPos]);
+                                int prefPos = teamsInMatch.indexOf(prefTeam);
+                                spinner_Team.setSelection(prefPos);
+                            }
+
                             CurrentTeamToScoutPosition = spinner_Team.getSelectedItemPosition();
                         } else {
                             ArrayList<String> noTeams = new ArrayList<>();
