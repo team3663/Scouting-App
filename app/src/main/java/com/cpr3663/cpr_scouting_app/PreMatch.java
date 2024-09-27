@@ -69,6 +69,7 @@ public class PreMatch extends AppCompatActivity {
         CheckBox checkbox_DidPlay = preMatchBinding.checkboxDidPlay;
         checkbox_StartNote = preMatchBinding.checkboxStartNote;
         CheckBox checkbox_Override = preMatchBinding.checkboxOverride;
+        CheckBox checkbox_Practice = preMatchBinding.checkboxPractice;
         CheckBox checkbox_ReSubmit = preMatchBinding.checkboxResubmit;
         EditText edit_OverrideTeamNum = preMatchBinding.editOverrideTeamNum;
         EditText edit_Name = preMatchBinding.editScouterName;
@@ -119,7 +120,6 @@ public class PreMatch extends AppCompatActivity {
         // So add it in now.
         checkbox_DidPlay.setText(checkbox_DidPlay.getText() + Globals.CheckBoxTextPadding);
         checkbox_StartNote.setText(checkbox_StartNote.getText() + Globals.CheckBoxTextPadding);
-        checkbox_ReSubmit.setText(checkbox_ReSubmit.getText() + Globals.CheckBoxTextPadding);
 
         // Create a text box to input the scouters name
         edit_Name.setText(ScouterName);
@@ -163,6 +163,7 @@ public class PreMatch extends AppCompatActivity {
         checkbox_DidPlay.setChecked(true);
         checkbox_StartNote.setChecked(true);
         checkbox_ReSubmit.setChecked(false);
+        checkbox_Practice.setChecked(false);
 
         // Hide override components initially
         text_Override.setVisibility(View.INVISIBLE);
@@ -177,6 +178,13 @@ public class PreMatch extends AppCompatActivity {
                 text_Override.setVisibility(state);
                 edit_OverrideTeamNum.setVisibility(state);
                 but_AddOverrideTeamNum.setVisibility(state);
+            }
+        });
+
+        checkbox_Practice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Globals.isPractice = checkbox_Practice.isChecked();
             }
         });
 

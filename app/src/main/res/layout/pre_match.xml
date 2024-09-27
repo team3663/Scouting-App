@@ -50,11 +50,25 @@
                 tools:ignore="LabelFor"
                 android:inputType="number" />
 
-            <TextView
-                android:id="@+id/text_MatchPadding"
-                android:gravity="center"
+            <RelativeLayout
                 android:layout_width="481dp"
-                android:layout_height="60dp" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/checkbox_Practice"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="center|end"
+                    android:paddingEnd="20dp"
+                    android:paddingBottom="5dp"
+                    android:text="@string/pre_practice"
+                    android:textColor="@color/dark_green"
+                    android:textSize="16sp" />
+
+            </RelativeLayout>
 
         </LinearLayout>
 
