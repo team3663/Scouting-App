@@ -37,7 +37,7 @@
     <string name="settings_heading">Settings</string>
     <string name="settings_competition">Competition:</string>
     <string name="settings_device">Device:</string>
-    <string name="settings_team_pref">Team preference:</string>
+    <string name="settings_team_pref">Preferred team position:</string>
     <string name="settings_scouting_team">Scouting team number:</string>
     <string name="settings_num_files"># of matches to keep:</string>
     <string name="settings_color">Color palette:</string>
@@ -52,6 +52,7 @@
     <string name="pre_override">Override Team Number</string>
     <string name="pre_new_team_num">Team number:</string>
     <string name="pre_resubmit">Need to re-submit data?</string>
+    <string name="pre_practice">Practice?</string>
 
     <string name="post_heading">Post-Match Scouting Information</string>
     <string name="post_left_start_zone">Left the starting zone?</string>

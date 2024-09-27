@@ -1,5 +1,5 @@
 Color_Id,Color_Active,Color_Name,Color_Score,Color_Miss
 1,TRUE,Normal,#FF43B02A,#FFFF0000
-2,TRUE,Blue-Orange,#FF2196F3,#FFFF5722
-3,TRUE,Blue-Brown,#FF2196F3,#FF573D34
+2,TRUE,Blue - Orange,#FF2196F3,#FFFF5722
+3,TRUE,Blue - Brown,#FF2196F3,#FF573D34
 4,TRUE,No Colors,#FFFFFFFF,#FFFFFFFF

@@ -33,7 +33,7 @@ public class Logger {
     private static int seq_number_prev_common = 0; // Track previous sequence number for all common events
     private static int seq_number_prev_defended = 0; // Track previous sequence number for just defended toggle
     private static int seq_number_prev_defense = 0; // Track previous sequence number for just defense toggle
-    private static final ArrayList<Pair<String, String>> match_data = new ArrayList<Pair<String, String>>();
+    private static final ArrayList<Pair<String, String>> match_log_data = new ArrayList<Pair<String, String>>();
 
     // Constructor: create the new files
     public Logger(Context in_context) throws IOException {
@@ -42,6 +42,9 @@ public class Logger {
 
         // Ensure the sequence number is reset
         seq_number = 0;
+
+        // If this is a practice, just exit
+        if (Globals.isPractice) return;
 
         // Ensure the path (if it's not blank) has a trailing delimiter
         if (!path.isEmpty()) {
@@ -124,6 +127,9 @@ public class Logger {
 
     // Member Function: Close out the logger.  Write out all of the non-time based match data and close the files.
     public void close(){
+        // If this is a practice, there's nothing to do
+        if (Globals.isPractice) return;
+
         try {
             // Start the csv line with the event key
             String csv_header = Constants.LOGKEY_DATA_KEY;
@@ -177,7 +183,7 @@ public class Logger {
         String ret = ",";
 
         // loop through the pairs and stop if you find a key match.  Append the value if found.
-        for(Pair<String, String> p : match_data) {
+        for(Pair<String, String> p : match_log_data) {
             if (p.first.equals(in_Key)) {
                 ret += p.second;
                 break;
@@ -189,6 +195,9 @@ public class Logger {
 
     // Member Function: Log a time-based event
     public void LogEvent(int in_EventId, float in_X, float in_Y, boolean in_NewSequence, double in_time) {
+        // If this is a practice, there's nothing to do
+        if (Globals.isPractice) return;
+
         int seq_number_prev = 0;
 
         // We need to special case the toggle switches.  We must preserve their own "previous" eventID but still
@@ -240,11 +249,17 @@ public class Logger {
 
     // Member Function: Log a time-based event (with no time passed in)
     public void LogEvent(int in_EventId, float in_X, float in_Y, boolean in_NewSequence){
+        // If this is a practice, there's nothing to do
+        if (Globals.isPractice) return;
+
         LogEvent(in_EventId, in_X, in_Y, in_NewSequence, System.currentTimeMillis());
     }
 
     // Member Function: Log a non-time based event - just store this for later.
     public void LogData(String in_Key, String in_Value) {
-        match_data.add(new Pair<String, String>(in_Key, in_Value));
+        // If this is a practice, there's nothing to do
+        if (Globals.isPractice) return;
+
+        match_log_data.add(new Pair<>(in_Key, in_Value));
     }
 }

@@ -29,6 +29,7 @@ public class Settings extends AppCompatActivity {
     Spinner spinner_Competition;
     Spinner spinner_Device;
     Spinner spinner_Color;
+    Spinner spinner_PrefTeamPos;
     int savedCompetitionId;
 
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceType"})
@@ -111,15 +112,40 @@ public class Settings extends AppCompatActivity {
             }
         });
 
+        // Adds PreferredTeamPosition information to spinner
+        spinner_PrefTeamPos = settingsBinding.spinnerPrefTeamPos;
+        ArrayAdapter<String> adp_PrefTeamPos = new ArrayAdapter<String>(this,
+                R.layout.cpr_spinner, Constants.SETTINGS_PREF_TEAM_POS);
+        adp_PrefTeamPos.setDropDownViewResource(R.layout.cpr_spinner_item);
+        spinner_PrefTeamPos.setAdapter(adp_PrefTeamPos);
+
+        // Set the selection (if there is one) to the saved one
+        int savedPrefTeamPos = Globals.sp.getInt(Constants.SP_PREF_TEAM_POS, 0);
+        spinner_PrefTeamPos.setSelection(savedPrefTeamPos, true);
+
+        // Define the actions when an item is selected.  Set text color and set description text
+        spinner_PrefTeamPos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Settings.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
         // Adds Color information to spinner
         spinner_Color = settingsBinding.spinnerColor;
         ArrayAdapter<String> adp_Color = new ArrayAdapter<String>(this,
                 R.layout.cpr_spinner, Globals.ColorList.getDescriptionList());
         adp_Color.setDropDownViewResource(R.layout.cpr_spinner_item);
         spinner_Color.setAdapter(adp_Color);
-
-        //CustomSpinnerAdapter adp_Color = new CustomSpinnerAdapter(this,
-//        R.layout.cpr_spinner, Globals.CompetitionList.getCompetitionList());
 
         // Set the selection (if there is one) to the saved one
         int savedColorId = Globals.sp.getInt(Constants.SP_COLOR_CONTEXT_MENU, -1);
@@ -192,7 +218,8 @@ public class Settings extends AppCompatActivity {
                 if (ColorId > 0) {
                     Globals.spe.putInt(Constants.SP_COLOR_CONTEXT_MENU, ColorId);
                 }
-
+                Globals.CurrentPrefTeamPos = spinner_PrefTeamPos.getSelectedItemPosition();
+                Globals.spe.putInt(Constants.SP_PREF_TEAM_POS, Globals.CurrentPrefTeamPos);
                 Globals.spe.apply();
                 Exit();
             }

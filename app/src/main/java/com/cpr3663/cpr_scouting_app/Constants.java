@@ -46,5 +46,7 @@ public class Constants {
     public static final String SP_SCOUTING_TEAM = "ScoutingTeam";
     public static final String SP_NUM_MATCHES = "NumberOfMatches";
     public static final String SP_COLOR_CONTEXT_MENU = "ColorContextMenu";
-    public static final String SP_TEAM_PREF = "TeamPreference";
+    public static final String SP_PREF_TEAM_POS = "PreferredTeamPosition";
+
+    public static final String[] SETTINGS_PREF_TEAM_POS = new String[]{"No Preference", "Blue 1", "Blue 2", "Blue 3", "Red 1", "Red 2", "Red 3"};
 }
