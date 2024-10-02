@@ -220,6 +220,9 @@ public class Match extends AppCompatActivity {
         text_Time.setVisibility(View.INVISIBLE);
         text_Time.setBackgroundColor(Color.TRANSPARENT);
 
+        // If this is a practice, put a message in the Status
+        matchBinding.textStatus.setText(getString(R.string.status_practice));
+
         // Map the button variable to the actual button
         but_MatchControl = matchBinding.butMatchControl;
         // Initialize the match Control Button settings
