@@ -39,7 +39,7 @@
                 android:id="@+id/text_Status"
                 android:layout_width="165dp"
                 android:layout_height="65dp"
-                android:gravity="left|center"
+                android:gravity="start|center"
                 tools:textSize="20sp" />
 
             <Switch
@@ -51,7 +51,8 @@
                 android:layout_gravity="center_vertical"
                 tools:textSize="18sp"
                 android:textColor="@color/white"
-                android:text="Not\nMoving"/>
+                android:text="@string/switch_not_moving"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
             <TextView
                 android:id="@+id/textPadding2"
@@ -69,7 +70,8 @@
                 android:layout_gravity="center_vertical"
                 tools:textSize="18sp"
                 android:textColor="@color/white"
-                android:text="Is\nDefended"/>
+                android:text="@string/switch_is_defended"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
             <TextView
                 android:id="@+id/textPadding3"
@@ -86,8 +88,9 @@
                 android:gravity="center"
                 android:layout_gravity="center_vertical"
                 android:textColor="@color/white"
-                android:text="On\nDefense"
-                tools:textSize="18sp" />
+                android:text="@string/switch_on_defense"
+                tools:textSize="18sp"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
             <TextView
                 android:id="@+id/textPadding4"
@@ -123,7 +126,6 @@
                 android:id="@+id/ContextMenu"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:background="@color/transparent"
                 tools:ignore="MissingConstraints,UselessLeaf" />
         </FrameLayout>
     </LinearLayout>
@@ -135,7 +137,7 @@
         android:layout_marginEnd="5dp"
         android:backgroundTint="@color/light_grey"
         android:textColor="@color/cpr_bkgnd"
-        android:text="Back"
+        android:text="@string/button_back"
         android:drawableEnd="@drawable/back_button"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"

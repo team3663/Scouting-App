@@ -6,6 +6,10 @@
     <string name="button_start_teleop">Start Teleop</string>
     <string name="button_end_match">End Match</string>
     <string name="button_match_next">Next</string>
+    <string name="button_back">Back</string>
+    <string name="switch_on_defense">On\nDefense</string>
+    <string name="switch_is_defended">Is\nDefended</string>
+    <string name="switch_not_moving">Not\nMoving</string>
 
     <string name="loading_teams">Loading Team Data…</string>
     <string name="loading_matches">Loading Match Data…</string>
@@ -21,6 +25,7 @@
 
     <string name="missing_data">Please fill in all fields</string>
     <string name="status_text_label">Last event:\n</string>
+    <string name="status_practice">-=-=- PRACTICE MODE -=-=-</string>
 
     <string name="file_error_teams">Error loading teams from data file!</string>
     <string name="file_error_matches">Error loading matches from data file!</string>

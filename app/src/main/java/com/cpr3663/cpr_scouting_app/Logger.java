@@ -33,15 +33,16 @@ public class Logger {
     private static int seq_number_prev_common = 0; // Track previous sequence number for all common events
     private static int seq_number_prev_defended = 0; // Track previous sequence number for just defended toggle
     private static int seq_number_prev_defense = 0; // Track previous sequence number for just defense toggle
-    private static final ArrayList<Pair<String, String>> match_log_data = new ArrayList<Pair<String, String>>();
+    private static final ArrayList<Pair<String, String>> match_log_data = new ArrayList<>();
 
     // Constructor: create the new files
     public Logger(Context in_context) throws IOException {
         String path = in_context.getString(R.string.logger_path);
         boolean rc = true;
 
-        // Ensure the sequence number is reset
+        // Ensure the things are reset
         seq_number = 0;
+        match_log_data.clear();
 
         // If this is a practice, just exit
         if (Globals.isPractice) return;
@@ -260,6 +261,6 @@ public class Logger {
         // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;
 
-        match_log_data.add(new Pair<>(in_Key, in_Value));
+        match_log_data.add(new Pair<>(in_Key, in_Value.trim()));
     }
 }
