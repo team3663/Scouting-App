@@ -3,6 +3,8 @@ package com.cpr3663.cpr_scouting_app;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Environment;
@@ -61,6 +63,14 @@ public class AppLaunch extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        appLaunchBinding.textVersion.setText(getString(R.string.app_version) + " " + pInfo.versionName);
 
         // Get the Shared Preferences where we save off app settings to use next time
         if (Globals.sp == null) Globals.sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);

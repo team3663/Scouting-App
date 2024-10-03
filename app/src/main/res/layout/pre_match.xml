@@ -29,7 +29,7 @@
 
             <TextView
                 android:id="@+id/text_Match"
-                android:layout_width="425dp"
+                android:layout_width="350dp"
                 android:layout_height="60dp"
                 android:gravity="end|center"
                 android:paddingEnd="50dp"
@@ -58,7 +58,7 @@
 
                 <CheckBox
                     android:id="@+id/checkbox_Practice"
-                    android:layout_width="130dp"
+                    android:layout_width="160dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:gravity="center|end"
@@ -79,7 +79,7 @@
 
             <TextView
                 android:id="@+id/text_TeamToScout"
-                android:layout_width="425dp"
+                android:layout_width="350dp"
                 android:layout_height="60dp"
                 android:gravity="end|center"
                 android:paddingEnd="50dp"
@@ -134,7 +134,7 @@
 
             <TextView
                 android:id="@+id/text_ScouterName"
-                android:layout_width="425dp"
+                android:layout_width="350dp"
                 android:layout_height="60dp"
                 android:gravity="end|center"
                 android:paddingEnd="50dp"
@@ -183,7 +183,7 @@
 
             <TextView
                 android:id="@+id/text_DidPlayPadding"
-                android:layout_width="555dp"
+                android:layout_width="630dp"
                 android:layout_height="60dp"
                 android:gravity="end|center"
                 android:paddingEnd="50dp"
@@ -213,7 +213,7 @@
 
             <TextView
                 android:id="@+id/text_StartNotePadding"
-                android:layout_width="555dp"
+                android:layout_width="630dp"
                 android:layout_height="60dp"
                 android:gravity="end|center"
                 android:paddingEnd="50dp"
@@ -229,7 +229,7 @@
 
             <TextView
                 android:id="@+id/text_StartingPosition"
-                android:layout_width="425dp"
+                android:layout_width="350dp"
                 android:layout_height="60dp"
                 android:gravity="end|center"
                 android:paddingEnd="50dp"
