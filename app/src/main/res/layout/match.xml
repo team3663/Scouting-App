@@ -32,12 +32,11 @@
                 android:id="@+id/textPadding1"
                 android:layout_width="20dp"
                 android:layout_height="65dp"
-                android:layout_gravity="center_vertical"
-                tools:textSize="20sp" />
+                android:layout_gravity="center_vertical"/>
 
             <TextView
                 android:id="@+id/text_Status"
-                android:layout_width="165dp"
+                android:layout_width="215dp"
                 android:layout_height="65dp"
                 android:gravity="start|center"
                 tools:textSize="20sp" />
@@ -58,8 +57,7 @@
                 android:id="@+id/textPadding2"
                 android:layout_width="20dp"
                 android:layout_height="65dp"
-                android:layout_gravity="center_vertical"
-                tools:textSize="20sp" />
+                android:layout_gravity="center_vertical" />
 
             <Switch
                 android:id="@+id/switchDefended"
@@ -77,8 +75,7 @@
                 android:id="@+id/textPadding3"
                 android:layout_width="20dp"
                 android:layout_height="65dp"
-                android:layout_gravity="center_vertical"
-                tools:textSize="20sp" />
+                android:layout_gravity="center_vertical"/>
 
             <Switch
                 android:id="@+id/switchDefense"
@@ -96,17 +93,17 @@
                 android:id="@+id/textPadding4"
                 android:layout_width="20dp"
                 android:layout_height="65dp"
-                android:layout_gravity="center_vertical"
-                tools:textSize="20sp" />
+                android:layout_gravity="center_vertical"/>
 
             <TextView
                 android:id="@+id/text_Time"
-                android:layout_width="120dp"
+                android:layout_width="75dp"
                 android:layout_height="65dp"
                 android:gravity="end|center"
+                android:paddingEnd="10dp"
                 android:layout_gravity="center_vertical"
                 android:textColor="@color/white"
-                tools:textSize="20sp" />
+                tools:textSize="22sp" />
         </LinearLayout>
       
         <FrameLayout

@@ -59,6 +59,7 @@ public class PreMatch extends AppCompatActivity {
         Globals.CurrentDeviceId = Globals.sp.getInt(Constants.SP_DEVICE_ID, 0);
         Globals.CurrentColorId = Globals.sp.getInt(Constants.SP_COLOR_CONTEXT_MENU, 1);
         Globals.CurrentPrefTeamPos = Globals.sp.getInt(Constants.SP_PREF_TEAM_POS, 0);
+        Globals.isPractice = false;
 
         // Create components
         EditText edit_Match = preMatchBinding.editMatch;
@@ -240,10 +241,16 @@ public class PreMatch extends AppCompatActivity {
                         CurrentTeamToScoutPosition = spinner_Team.getSelectedItemPosition();
 
                         // Set up the Logger - if it fails, we better stop now, or we won't capture any data!
-                        try {
-                            Globals.EventLogger = new Logger(getApplicationContext());
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
+                        // Only if we don't have one set up already (could be there if BACK button was hit on Match)
+                        // otherwise, clear out any saved data from before.
+                        if (Globals.EventLogger == null) {
+                            try {
+                                Globals.EventLogger = new Logger(getApplicationContext());
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            Globals.EventLogger.clear();
                         }
 
                         // Log all of the data from this page

@@ -27,14 +27,14 @@ import java.util.Objects;
 //                  finish logging any/all events, and flush/close the log files
 // =============================================================================================
 public class Logger {
-    private static FileOutputStream fos_data;
-    private static FileOutputStream fos_event;
-    private static int seq_number = 0; // Track the current sequence number for events
-    private static int seq_number_prev_common = 0; // Track previous sequence number for all common events
-    private static int seq_number_prev_defended = 0; // Track previous sequence number for just defended toggle
-    private static int seq_number_prev_defense = 0; // Track previous sequence number for just defense toggle
-    private static final ArrayList<Pair<String, String>> match_log_data = new ArrayList<>();
-    private static Context appContext;
+    private FileOutputStream fos_data;
+    private FileOutputStream fos_event;
+    private int seq_number = 0; // Track the current sequence number for events
+    private int seq_number_prev_common = 0; // Track previous sequence number for all common events
+    private int seq_number_prev_defended = 0; // Track previous sequence number for just defended toggle
+    private int seq_number_prev_defense = 0; // Track previous sequence number for just defense toggle
+    private final ArrayList<Pair<String, String>> match_log_data = new ArrayList<>();
+    private final Context appContext;
 
     // Constructor: create the new files
     public Logger(Context in_context) throws IOException {
@@ -44,7 +44,7 @@ public class Logger {
 
         // Ensure the things are reset
         seq_number = 0;
-        match_log_data.clear();
+        this.clear();
 
         // If this is a practice, just exit
         if (Globals.isPractice) return;
@@ -137,7 +137,12 @@ public class Logger {
         }
     }
 
-    // Member Function: Close out the logger.  Write out all of the non-time based match data and close the files.
+    // Member Function: Clear out any saved data from the logger.
+    public void clear() {
+        match_log_data.clear();
+    }
+
+        // Member Function: Close out the logger.  Write out all of the non-time based match data and close the files.
     public void close(){
         // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;

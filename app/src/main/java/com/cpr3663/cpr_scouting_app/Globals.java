@@ -37,7 +37,7 @@ public class Globals {
 
     public static String CheckBoxTextPadding = "       ";
 
-    public static Logger EventLogger;
+    public static Logger EventLogger = null;
 
     public static int NumberMatchFilesKept;
 

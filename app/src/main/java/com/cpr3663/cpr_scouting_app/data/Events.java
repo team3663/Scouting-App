@@ -26,8 +26,8 @@ import java.util.ArrayList;
 public class Events {
     // Class Members
     private final ArrayList<EventRow> event_list;
-    private static ArrayList<String> auto_events;
-    private static ArrayList<String> teleop_events;
+    private ArrayList<String> auto_events;
+    private ArrayList<String> teleop_events;
 
     // Constructor
     public Events() {

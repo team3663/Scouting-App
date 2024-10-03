@@ -25,7 +25,7 @@
 
     <string name="missing_data">Please fill in all fields</string>
     <string name="status_text_label">Last event:\n</string>
-    <string name="status_practice">-=-=- PRACTICE MODE -=-=-</string>
+    <string name="status_practice">-=- PRACTICE MODE -=-</string>
 
     <string name="file_error_teams">Error loading teams from data file!</string>
     <string name="file_error_matches">Error loading matches from data file!</string>
