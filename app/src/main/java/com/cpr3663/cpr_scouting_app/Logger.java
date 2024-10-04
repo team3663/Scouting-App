@@ -27,22 +27,24 @@ import java.util.Objects;
 //                  finish logging any/all events, and flush/close the log files
 // =============================================================================================
 public class Logger {
-    private static FileOutputStream fos_data;
-    private static FileOutputStream fos_event;
-    private static int seq_number = 0; // Track the current sequence number for events
-    private static int seq_number_prev_common = 0; // Track previous sequence number for all common events
-    private static int seq_number_prev_defended = 0; // Track previous sequence number for just defended toggle
-    private static int seq_number_prev_defense = 0; // Track previous sequence number for just defense toggle
-    private static final ArrayList<Pair<String, String>> match_log_data = new ArrayList<>();
+    private FileOutputStream fos_data;
+    private FileOutputStream fos_event;
+    private int seq_number = 0; // Track the current sequence number for events
+    private int seq_number_prev_common = 0; // Track previous sequence number for all common events
+    private int seq_number_prev_defended = 0; // Track previous sequence number for just defended toggle
+    private int seq_number_prev_defense = 0; // Track previous sequence number for just defense toggle
+    private final ArrayList<Pair<String, String>> match_log_data = new ArrayList<>();
+    private final Context appContext;
 
     // Constructor: create the new files
     public Logger(Context in_context) throws IOException {
-        String path = in_context.getString(R.string.logger_path);
+        appContext = in_context;
+        String path = appContext.getString(R.string.logger_path);
         boolean rc = true;
 
         // Ensure the things are reset
         seq_number = 0;
-        match_log_data.clear();
+        this.clear();
 
         // If this is a practice, just exit
         if (Globals.isPractice) return;
@@ -62,7 +64,7 @@ public class Logger {
         // Ensure the directory structure exists first - only need to do one
         if (!Objects.requireNonNull(file_data.getParentFile()).exists()) {
             rc = Objects.requireNonNull(file_data.getParentFile()).mkdirs();
-            if (!rc) Toast.makeText(in_context.getApplicationContext(), "Failed to create directory: " + file_data.getParentFile().getName(), Toast.LENGTH_SHORT).show();
+            if (!rc) Toast.makeText(appContext, "Failed to create directory: " + file_data.getParentFile().getName(), Toast.LENGTH_LONG).show();
         }
 
         // Delete files to ensure we're not creating more than Constants.KEEP_NUMBER_OF_MATCHES
@@ -80,34 +82,42 @@ public class Logger {
         }
 
         // If there's too many files, go through and delete ANY that are older than then Nth - 1
-        if (last_created.size() >= Globals.NumberMatchFilesKept) {
+        if ((files != null) && (last_created.size() >= Globals.NumberMatchFilesKept)) {
             // Sort the list and find the Nth - 1 oldest file (because we're about to create the Nth)
             Collections.sort(last_created);
             Collections.reverse(last_created);
 
             long created_check = last_created.get(Globals.NumberMatchFilesKept - 1);
 
-            if (files != null) {
-                for (File file : files) {
-                    if (file.isFile()) {
-                        BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-                        if (attrs.creationTime().toMillis() < created_check) rc = file.delete();
-                        if (!rc) Toast.makeText(in_context.getApplicationContext(), "Failed to delete file: " + file.getName(), Toast.LENGTH_SHORT).show();
-                    }
+            for (File file : files) {
+                if (file.isFile()) {
+                    BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+                    if (attrs.creationTime().toMillis() < created_check) rc = file.delete();
+                    if (!rc) Toast.makeText(appContext, "Failed to delete file: " + file.getName(), Toast.LENGTH_LONG).show();
                 }
             }
-
         }
 
         // If the output file doesn't exist, output a stream to it and copy contents over
-        if (!file_data.exists()) rc = file_data.createNewFile();
-        if (!rc) Toast.makeText(in_context.getApplicationContext(), "Failed to create file: " + file_data.getName(), Toast.LENGTH_SHORT).show();
-        if (!file_event.exists()) rc = file_event.createNewFile();
-        if (!rc) Toast.makeText(in_context.getApplicationContext(), "Failed to create file: " + file_event.getName(), Toast.LENGTH_SHORT).show();
+        if (file_data.exists())
+            Toast.makeText(appContext, "File already exists: " + file_data.getName(), Toast.LENGTH_LONG).show();
+        else {
+            rc = file_data.createNewFile();
+            if (!rc) Toast.makeText(appContext, "Failed to create file: " + file_data.getName(), Toast.LENGTH_LONG).show();
+        }
+        if (file_event.exists())
+            Toast.makeText(appContext, "File already exists: " + file_event.getName(), Toast.LENGTH_LONG).show();
+        else {
+            rc = file_event.createNewFile();
+            if (!rc) Toast.makeText(appContext, "Failed to create file: " + file_event.getName(), Toast.LENGTH_LONG).show();
+        }
+
+        if (!file_data.canWrite()) Toast.makeText(appContext, "File not writeable: " + file_data.getName(), Toast.LENGTH_LONG).show();
+        if (!file_event.canWrite()) Toast.makeText(appContext, "File not writeable: " + file_event.getName(), Toast.LENGTH_LONG).show();
 
         try {
-            fos_data = new FileOutputStream(file_data);
-            fos_event = new FileOutputStream(file_event);
+            fos_data = new FileOutputStream(file_data,false);
+            fos_event = new FileOutputStream(file_event, false);
 
             // Write out the header for for the file_event csv file
             String csv_header = Constants.LOGKEY_EVENT_KEY;
@@ -122,11 +132,17 @@ public class Logger {
             fos_event.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
             fos_event.flush();
         } catch (Exception e) {
+            Toast.makeText(appContext, "Failed to create output stream: " + file_data.getParentFile().getName() + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
             throw new RuntimeException(e);
         }
     }
 
-    // Member Function: Close out the logger.  Write out all of the non-time based match data and close the files.
+    // Member Function: Clear out any saved data from the logger.
+    public void clear() {
+        match_log_data.clear();
+    }
+
+        // Member Function: Close out the logger.  Write out all of the non-time based match data and close the files.
     public void close(){
         // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;
@@ -175,6 +191,7 @@ public class Logger {
             fos_data = null;
             System.gc();
         } catch (IOException e) {
+            Toast.makeText(appContext, "Failed to close out log files. (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
             throw new RuntimeException(e);
         }
     }
@@ -223,15 +240,16 @@ public class Logger {
                 seq_number_prev_common = ++seq_number;
         }
 
-        String prev = "";
         String csv_line = Globals.CurrentCompetitionId + ":" + Globals.CurrentMatchNumber + ":" + Globals.CurrentDeviceId;
 
         // If this is NOT a new sequence, we need to write out the previous event id that goes with this one
+        String prev = "";
         if (!in_NewSequence) prev = String.valueOf(seq_number_prev);
         
-        // Determine string values for x, y and time. Truncate them.
+        // Determine string values for x, y. Truncate them.
         String string_x = String.valueOf((int) in_X);
         String string_y = String.valueOf((int) in_Y);
+
         // Determine elapsed time and round to 1 decimal places
         // Get min of elapsed time and match length in order to essentially cap the time that will be recorded
         String string_time = String.valueOf(Math.min(Math.round((in_time - Match.startTime) / 100.0) / 10.0, Match.TIMER_AUTO_LENGTH + Match.TIMER_TELEOP_LENGTH));
@@ -244,6 +262,7 @@ public class Logger {
             fos_event.write(csv_line.getBytes(StandardCharsets.UTF_8));
             fos_event.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
+            Toast.makeText(appContext, "Failed to write out event data: " + csv_line + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
             throw new RuntimeException(e);
         }
     }

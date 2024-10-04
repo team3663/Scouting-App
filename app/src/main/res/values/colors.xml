@@ -12,4 +12,5 @@
     <color name="red_highlight">#66FF0000</color>
     <color name="transparent">#00000000</color>
     <color name="spinner_context_bkgnd">#FFBBBBBB</color>
+    <color name="light_blue">#0086C3</color>
 </resources>

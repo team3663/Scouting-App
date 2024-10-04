@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">CPR Scouting App</string>
+    <string name="app_version">Version:</string>
     <string name="preference_setting_file_key">com.cpr3663.cpr_scouting_app.PREFERENCE_FILE_KEY</string>
 
     <string name="button_start_match">Start Match</string>
@@ -25,7 +26,7 @@
 
     <string name="missing_data">Please fill in all fields</string>
     <string name="status_text_label">Last event:\n</string>
-    <string name="status_practice">-=-=- PRACTICE MODE -=-=-</string>
+    <string name="status_practice">-=- PRACTICE MODE -=-</string>
 
     <string name="file_error_teams">Error loading teams from data file!</string>
     <string name="file_error_matches">Error loading matches from data file!</string>
@@ -56,8 +57,8 @@
     <string name="pre_start_pos">Starting position:</string>
     <string name="pre_override">Override Team Number</string>
     <string name="pre_new_team_num">Team number:</string>
-    <string name="pre_resubmit">Need to re-submit data?</string>
-    <string name="pre_practice">Practice?</string>
+    <string name="pre_resubmit">Need to re-submit data? (or Quit?)</string>
+    <string name="pre_practice">Practice Mode</string>
 
     <string name="post_heading">Post-Match Scouting Information</string>
     <string name="post_left_start_zone">Left the starting zone?</string>

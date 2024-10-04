@@ -8,6 +8,18 @@
     android:background="@color/cpr_bkgnd"
     tools:context=".AppLaunch">
 
+    <TextView
+        android:id="@+id/text_Version"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:textColor="@color/light_blue"
+        android:textSize="12sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="MissingConstraints" />
+
     <ImageView
         android:id="@+id/image_CPR3663"
         android:layout_width="502dp"
