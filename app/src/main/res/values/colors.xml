@@ -13,4 +13,5 @@
     <color name="transparent">#00000000</color>
     <color name="spinner_context_bkgnd">#FFBBBBBB</color>
     <color name="light_blue">#0086C3</color>
+    <color name="transparent30_grey">#4DF0F0F0</color>
 </resources>

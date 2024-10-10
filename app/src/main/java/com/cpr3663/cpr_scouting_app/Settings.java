@@ -221,7 +221,7 @@ public class Settings extends AppCompatActivity {
                 Globals.CurrentPrefTeamPos = spinner_PrefTeamPos.getSelectedItemPosition();
                 Globals.spe.putInt(Constants.SP_PREF_TEAM_POS, Globals.CurrentPrefTeamPos);
                 Globals.spe.apply();
-                Exit();
+                finish();
             }
         });
 

@@ -34,13 +34,28 @@
                 android:layout_height="65dp"
                 android:layout_gravity="center_vertical"/>
 
-            <TextView
-                android:id="@+id/text_Status"
+            <LinearLayout
                 android:layout_width="215dp"
-                android:layout_height="65dp"
-                android:gravity="start|center"
-                tools:textSize="20sp" />
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/text_Team"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:gravity="start|center"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/text_Status"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:gravity="start|center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:textSize="12sp" />
+
+            </LinearLayout>
             <Switch
                 android:id="@+id/switchNotMoving"
                 android:layout_width="150dp"
@@ -124,6 +139,18 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 tools:ignore="MissingConstraints,UselessLeaf" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:id="@+id/text_Practice"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center"
+                    android:textColor="@color/transparent30_grey" />
+            </RelativeLayout>
         </FrameLayout>
     </LinearLayout>
 

@@ -27,26 +27,41 @@ import java.util.Objects;
 //                  finish logging any/all events, and flush/close the log files
 // =============================================================================================
 public class Logger {
-    private FileOutputStream fos_data;
-    private FileOutputStream fos_event;
-    private int seq_number = 0; // Track the current sequence number for events
+    private int seq_number; // Track the current sequence number for events
     private int seq_number_prev_common = 0; // Track previous sequence number for all common events
     private int seq_number_prev_defended = 0; // Track previous sequence number for just defended toggle
     private int seq_number_prev_defense = 0; // Track previous sequence number for just defense toggle
     private final ArrayList<Pair<String, String>> match_log_data = new ArrayList<>();
     private final Context appContext;
+    private final ArrayList<LoggerEventRow> match_log_events = new ArrayList<>();
 
     // Constructor: create the new files
-    public Logger(Context in_context) throws IOException {
+    public Logger(Context in_context) {
         appContext = in_context;
-        String path = appContext.getString(R.string.logger_path);
-        boolean rc = true;
 
         // Ensure the things are reset
         seq_number = 0;
         this.clear();
 
         // If this is a practice, just exit
+        if (Globals.isPractice) return;
+
+        // Add an empty logging row so that Seq# is the same as the index
+        match_log_events.add(new LoggerEventRow(0, "", "", "", ""));
+    }
+
+    // Member Function: Clear out any saved data from the logger.
+    public void clear() {
+        match_log_events.clear();
+        match_log_data.clear();
+    }
+
+    // Member Function: Close out the logger.  Write out all of the non-time based match data and close the files.
+    public void close() {
+        String path = appContext.getString(R.string.logger_path);
+        boolean rc = true;
+
+        // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;
 
         // Ensure the path (if it's not blank) has a trailing delimiter
@@ -61,7 +76,7 @@ public class Logger {
         File file_data = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), filename_data);
         File file_event = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), filename_event);
 
-        // Ensure the directory structure exists first - only need to do one
+        // Ensure the directory structure exists first - only need to check with one file
         if (!Objects.requireNonNull(file_data.getParentFile()).exists()) {
             rc = Objects.requireNonNull(file_data.getParentFile()).mkdirs();
             if (!rc) Toast.makeText(appContext, "Failed to create directory: " + file_data.getParentFile().getName(), Toast.LENGTH_LONG).show();
@@ -75,7 +90,12 @@ public class Logger {
         if (files != null) {
             for (File file : files) {
                 if (file.isFile() && file.getName().endsWith("d.csv")) {
-                    BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+                    BasicFileAttributes attrs;
+                    try {
+                        attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     last_created.add(attrs.creationTime().toMillis());
                 }
             }
@@ -91,109 +111,22 @@ public class Logger {
 
             for (File file : files) {
                 if (file.isFile()) {
-                    BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+                    BasicFileAttributes attrs;
+                    try {
+                        attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     if (attrs.creationTime().toMillis() < created_check) rc = file.delete();
                     if (!rc) Toast.makeText(appContext, "Failed to delete file: " + file.getName(), Toast.LENGTH_LONG).show();
                 }
             }
         }
 
-        // If the output file doesn't exist, output a stream to it and copy contents over
-        if (file_data.exists())
-            Toast.makeText(appContext, "File already exists: " + file_data.getName(), Toast.LENGTH_LONG).show();
-        else {
-            rc = file_data.createNewFile();
-            if (!rc) Toast.makeText(appContext, "Failed to create file: " + file_data.getName(), Toast.LENGTH_LONG).show();
-        }
-        if (file_event.exists())
-            Toast.makeText(appContext, "File already exists: " + file_event.getName(), Toast.LENGTH_LONG).show();
-        else {
-            rc = file_event.createNewFile();
-            if (!rc) Toast.makeText(appContext, "Failed to create file: " + file_event.getName(), Toast.LENGTH_LONG).show();
-        }
-
-        if (!file_data.canWrite()) Toast.makeText(appContext, "File not writeable: " + file_data.getName(), Toast.LENGTH_LONG).show();
-        if (!file_event.canWrite()) Toast.makeText(appContext, "File not writeable: " + file_event.getName(), Toast.LENGTH_LONG).show();
-
-        try {
-            fos_data = new FileOutputStream(file_data,false);
-            fos_event = new FileOutputStream(file_event, false);
-
-            // Write out the header for for the file_event csv file
-            String csv_header = Constants.LOGKEY_EVENT_KEY;
-            csv_header += "," + Constants.LOGKEY_EVENT_SEQ;
-            csv_header += "," + Constants.LOGKEY_EVENT_ID;
-            csv_header += "," + Constants.LOGKEY_EVENT_TIME;
-            csv_header += "," + Constants.LOGKEY_EVENT_X;
-            csv_header += "," + Constants.LOGKEY_EVENT_Y;
-            csv_header += "," + Constants.LOGKEY_EVENT_PREVIOUS_SEQ;
-
-            fos_event.write(csv_header.getBytes(StandardCharsets.UTF_8));
-            fos_event.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
-            fos_event.flush();
-        } catch (Exception e) {
-            Toast.makeText(appContext, "Failed to create output stream: " + file_data.getParentFile().getName() + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
-            throw new RuntimeException(e);
-        }
-    }
-
-    // Member Function: Clear out any saved data from the logger.
-    public void clear() {
-        match_log_data.clear();
-    }
-
-        // Member Function: Close out the logger.  Write out all of the non-time based match data and close the files.
-    public void close(){
-        // If this is a practice, there's nothing to do
-        if (Globals.isPractice) return;
-
-        try {
-            // Start the csv line with the event key
-            String csv_header = Constants.LOGKEY_DATA_KEY;
-            String csv_line = Globals.CurrentCompetitionId + ":" + Globals.CurrentMatchNumber + ":" + Globals.CurrentDeviceId;
-
-            // Append to the csv line the values in the correct order
-            csv_header += "," + Constants.LOGKEY_TEAM_TO_SCOUT;
-            csv_header += "," + Constants.LOGKEY_TEAM_SCOUTING;
-            csv_header += "," + Constants.LOGKEY_SCOUTER;
-            csv_header += "," + Constants.LOGKEY_DID_PLAY;
-            csv_header += "," + Constants.LOGKEY_START_POSITION;
-            csv_header += "," + Constants.LOGKEY_DID_LEAVE_START;
-            csv_header += "," + Constants.LOGKEY_CLIMB_POSITION;
-            csv_header += "," + Constants.LOGKEY_TRAP;
-            csv_header += "," + Constants.LOGKEY_COMMENTS;
-            csv_header += "," + Constants.LOGKEY_START_TIME_OFFSET;
-            csv_header += "," + Constants.LOGKEY_START_TIME;
-
-            csv_line += FindValueInPair(Constants.LOGKEY_TEAM_TO_SCOUT);
-            csv_line += FindValueInPair(Constants.LOGKEY_TEAM_SCOUTING);
-            csv_line += FindValueInPair(Constants.LOGKEY_SCOUTER);
-            csv_line += FindValueInPair(Constants.LOGKEY_DID_PLAY);
-            csv_line += FindValueInPair(Constants.LOGKEY_START_POSITION);
-            csv_line += FindValueInPair(Constants.LOGKEY_DID_LEAVE_START);
-            csv_line += FindValueInPair(Constants.LOGKEY_CLIMB_POSITION);
-            csv_line += FindValueInPair(Constants.LOGKEY_TRAP);
-            csv_line += FindValueInPair(Constants.LOGKEY_COMMENTS);
-            csv_line += FindValueInPair(Constants.LOGKEY_START_TIME_OFFSET);
-            csv_line += FindValueInPair(Constants.LOGKEY_START_TIME);
-
-            // Write out the data
-            fos_data.write(csv_header.getBytes(StandardCharsets.UTF_8));
-            fos_data.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
-            fos_data.write(csv_line.getBytes(StandardCharsets.UTF_8));
-            fos_data.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
-
-            fos_event.flush();
-            fos_event.close();
-            fos_data.flush();
-            fos_data.close();
-            fos_event = null;
-            fos_data = null;
-            System.gc();
-        } catch (IOException e) {
-            Toast.makeText(appContext, "Failed to close out log files. (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
-            throw new RuntimeException(e);
-        }
+        // Write out the log files
+        WriteOutDataFile(file_data);
+        WriteOutEventFile(file_event);
+        this.clear();
     }
 
     // Member Function: Find the correct data in the Key/Value Pair variable
@@ -209,6 +142,138 @@ public class Logger {
         }
 
         return ret;
+    }
+
+    // Member Function: Write out the "D" file
+    private void WriteOutDataFile(File in_File_Data) {
+        boolean rc;
+
+        // If the output file doesn't exist, output a stream to it and copy contents over
+        if (in_File_Data.exists())
+            Toast.makeText(appContext, "File already exists: " + in_File_Data.getName(), Toast.LENGTH_LONG).show();
+        else {
+            try {
+                rc = in_File_Data.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            if (!rc) Toast.makeText(appContext, "Failed to create file: " + in_File_Data.getName(), Toast.LENGTH_LONG).show();
+        }
+
+        if (!in_File_Data.canWrite()) Toast.makeText(appContext, "File not writeable: " + in_File_Data.getName(), Toast.LENGTH_LONG).show();
+
+        FileOutputStream fos_data;
+
+        try {
+            fos_data = new FileOutputStream(in_File_Data,false);
+        } catch (Exception e) {
+            Toast.makeText(appContext, "Failed to create output stream: " + in_File_Data.getName() + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
+            throw new RuntimeException(e);
+        }
+
+        // Start the csv line with the event key
+        String csv_header = Constants.LOGKEY_DATA_KEY;
+        String csv_line = Globals.CurrentCompetitionId + ":" + Globals.CurrentMatchNumber + ":" + Globals.CurrentDeviceId;
+
+        // Append to the csv line the values in the correct order
+        csv_header += "," + Constants.LOGKEY_TEAM_TO_SCOUT;
+        csv_header += "," + Constants.LOGKEY_TEAM_SCOUTING;
+        csv_header += "," + Constants.LOGKEY_SCOUTER;
+        csv_header += "," + Constants.LOGKEY_DID_PLAY;
+        csv_header += "," + Constants.LOGKEY_START_POSITION;
+        csv_header += "," + Constants.LOGKEY_DID_LEAVE_START;
+        csv_header += "," + Constants.LOGKEY_CLIMB_POSITION;
+        csv_header += "," + Constants.LOGKEY_TRAP;
+        csv_header += "," + Constants.LOGKEY_COMMENTS;
+        csv_header += "," + Constants.LOGKEY_START_TIME_OFFSET;
+        csv_header += "," + Constants.LOGKEY_START_TIME;
+
+        csv_line += FindValueInPair(Constants.LOGKEY_TEAM_TO_SCOUT);
+        csv_line += FindValueInPair(Constants.LOGKEY_TEAM_SCOUTING);
+        csv_line += FindValueInPair(Constants.LOGKEY_SCOUTER);
+        csv_line += FindValueInPair(Constants.LOGKEY_DID_PLAY);
+        csv_line += FindValueInPair(Constants.LOGKEY_START_POSITION);
+        csv_line += FindValueInPair(Constants.LOGKEY_DID_LEAVE_START);
+        csv_line += FindValueInPair(Constants.LOGKEY_CLIMB_POSITION);
+        csv_line += FindValueInPair(Constants.LOGKEY_TRAP);
+        csv_line += FindValueInPair(Constants.LOGKEY_COMMENTS);
+        csv_line += FindValueInPair(Constants.LOGKEY_START_TIME_OFFSET);
+        csv_line += FindValueInPair(Constants.LOGKEY_START_TIME);
+
+        try {
+            // Write out the data
+            fos_data.write(csv_header.getBytes(StandardCharsets.UTF_8));
+            fos_data.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
+            fos_data.write(csv_line.getBytes(StandardCharsets.UTF_8));
+            fos_data.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
+
+            fos_data.flush();
+            fos_data.close();
+            System.gc();
+        } catch (IOException e) {
+            Toast.makeText(appContext, "Failed to close out data log file. (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Member Function: Write out the "E" file
+    private void WriteOutEventFile(File in_File_Event) {
+        boolean rc;
+
+        if (in_File_Event.exists())
+            Toast.makeText(appContext, "File already exists: " + in_File_Event.getName(), Toast.LENGTH_LONG).show();
+        else {
+            try {
+                rc = in_File_Event.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            if (!rc) Toast.makeText(appContext, "Failed to create file: " + in_File_Event.getName(), Toast.LENGTH_LONG).show();
+        }
+
+        if (!in_File_Event.canWrite()) Toast.makeText(appContext, "File not writeable: " + in_File_Event.getName(), Toast.LENGTH_LONG).show();
+
+        FileOutputStream fos_event;
+        try {
+            fos_event = new FileOutputStream(in_File_Event, false);
+
+            // Write out the header for for the file_event csv file
+            String csv_header = Constants.LOGKEY_EVENT_KEY;
+            csv_header += "," + Constants.LOGKEY_EVENT_SEQ;
+            csv_header += "," + Constants.LOGKEY_EVENT_ID;
+            csv_header += "," + Constants.LOGKEY_EVENT_TIME;
+            csv_header += "," + Constants.LOGKEY_EVENT_X;
+            csv_header += "," + Constants.LOGKEY_EVENT_Y;
+            csv_header += "," + Constants.LOGKEY_EVENT_PREVIOUS_SEQ;
+
+            fos_event.write(csv_header.getBytes(StandardCharsets.UTF_8));
+            fos_event.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            Toast.makeText(appContext, "Failed to create output stream: " + in_File_Event.getName() + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
+            throw new RuntimeException(e);
+        }
+
+        // Form the output line that goes in the csv file.
+        for (int i = 1; i < match_log_events.size(); ++i) {
+            LoggerEventRow ler = match_log_events.get(i);
+            String csv_line = Globals.CurrentCompetitionId + ":" + Globals.CurrentMatchNumber + ":" + Globals.CurrentDeviceId;
+            csv_line += "," + i + "," + ler.EventId + "," + ler.LogTime + "," + ler.X + "," + ler.Y + "," + ler.PrevSeq;
+            try {
+                fos_event.write(csv_line.getBytes(StandardCharsets.UTF_8));
+                fos_event.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
+            } catch (IOException e) {
+                Toast.makeText(appContext, "Failed to write out event data: " + csv_line + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
+                throw new RuntimeException(e);
+            }
+        }
+
+        try {
+            fos_event.flush();
+            fos_event.close();
+        } catch (IOException e) {
+            Toast.makeText(appContext, "Failed to close out event log file. (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
+            throw new RuntimeException(e);
+        }
     }
 
     // Member Function: Log a time-based event
@@ -240,8 +305,6 @@ public class Logger {
                 seq_number_prev_common = ++seq_number;
         }
 
-        String csv_line = Globals.CurrentCompetitionId + ":" + Globals.CurrentMatchNumber + ":" + Globals.CurrentDeviceId;
-
         // If this is NOT a new sequence, we need to write out the previous event id that goes with this one
         String prev = "";
         if (!in_NewSequence) prev = String.valueOf(seq_number_prev);
@@ -255,16 +318,8 @@ public class Logger {
         String string_time = String.valueOf(Math.min(Math.round((in_time - Match.startTime) / 100.0) / 10.0, Match.TIMER_AUTO_LENGTH + Match.TIMER_TELEOP_LENGTH));
 
         if (string_time.endsWith(".0")) string_time = string_time.substring(0, string_time.length() - 2);
-        
-        // Form the output line that goes in the csv file.
-        csv_line += "," + seq_number + "," + in_EventId + "," + string_time + "," + string_x + "," + string_y + "," + prev;
-        try {
-            fos_event.write(csv_line.getBytes(StandardCharsets.UTF_8));
-            fos_event.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            Toast.makeText(appContext, "Failed to write out event data: " + csv_line + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
-            throw new RuntimeException(e);
-        }
+
+        match_log_events.add(new LoggerEventRow(in_EventId, string_time, string_x, string_y, prev));
     }
 
     // Member Function: Log a time-based event (with no time passed in)
@@ -281,5 +336,28 @@ public class Logger {
         if (Globals.isPractice) return;
 
         match_log_data.add(new Pair<>(in_Key, in_Value.trim()));
+    }
+
+    // =============================================================================================
+    // Class:       LoggerEventRow
+    // Description: Contains all data for a single log event
+    // Methods:
+    // =============================================================================================
+    protected class LoggerEventRow {
+        int EventId;
+        String LogTime;
+        String X;
+        String Y;
+        String PrevSeq;
+
+        // Constructor: create a new LogEventRow
+        public LoggerEventRow(int in_EventId, String in_Time, String in_X, String in_Y, String in_PrevSeq) {
+            EventId = in_EventId;
+            LogTime = in_Time;
+            X = in_X;
+            Y = in_Y;
+            PrevSeq = in_PrevSeq;
+        }
+
     }
 }
