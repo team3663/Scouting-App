@@ -187,7 +187,7 @@ public class Settings extends AppCompatActivity {
         but_Cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Exit();
+                finish();
             }
         });
 
@@ -241,10 +241,5 @@ public class Settings extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    private void Exit() {
-        Intent GoBackToLaunch = new Intent(Settings.this, AppLaunch.class);
-        startActivity(GoBackToLaunch);
     }
 }
