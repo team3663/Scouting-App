@@ -51,8 +51,9 @@ public class PostMatch extends AppCompatActivity {
             return insets;
         });
 
-        // Default them to leaving
+        // Default values
         postMatchBinding.checkboxDidLeave.setChecked(true);
+        postMatchBinding.checkboxReset.setChecked(false);
 
         //Creating the single select dropdown menu for the trap outcomes
         Spinner spinner_Trap = findViewById(R.id.spinnerTrap);
@@ -175,33 +176,53 @@ public class PostMatch extends AppCompatActivity {
             public void onClick(View view) {
                 String multi_values = "";
 
-                // Log all of the data from this page
-                Globals.EventLogger.LogData(Constants.LOGKEY_DID_LEAVE_START, String.valueOf(postMatchBinding.checkboxDidLeave.isChecked()));
-                Globals.EventLogger.LogData(Constants.LOGKEY_CLIMB_POSITION, String.valueOf(Globals.ClimbPositionList.getClimbPositionId(postMatchBinding.spinnerClimbPosition.getSelectedItem().toString())));
-                Globals.EventLogger.LogData(Constants.LOGKEY_TRAP, String.valueOf(Globals.TrapResultsList.getTrapResultId(postMatchBinding.spinnerTrap.getSelectedItem().toString())));
-                String comment_sep_ID = "";
-                for (Integer comment_dropID : CommentList) {
-                    String comment = CommentArray[comment_dropID];
-                    comment_sep_ID += ":" + Globals.CommentList.getCommentId(comment);
+                // If we need to reset the match, abort it all and go back
+                if (postMatchBinding.checkboxReset.isChecked()) {
+                    Globals.EventLogger.clear();
+
+                    Intent GoToPreMatch = new Intent(PostMatch.this, PreMatch.class);
+                    startActivity(GoToPreMatch);
+                } else {
+                    // Log all of the data from this page
+                    Globals.EventLogger.LogData(Constants.LOGKEY_DID_LEAVE_START, String.valueOf(postMatchBinding.checkboxDidLeave.isChecked()));
+                    Globals.EventLogger.LogData(Constants.LOGKEY_CLIMB_POSITION, String.valueOf(Globals.ClimbPositionList.getClimbPositionId(postMatchBinding.spinnerClimbPosition.getSelectedItem().toString())));
+                    Globals.EventLogger.LogData(Constants.LOGKEY_TRAP, String.valueOf(Globals.TrapResultsList.getTrapResultId(postMatchBinding.spinnerTrap.getSelectedItem().toString())));
+                    String comment_sep_ID = "";
+                    for (Integer comment_dropID : CommentList) {
+                        String comment = CommentArray[comment_dropID];
+                        comment_sep_ID += ":" + Globals.CommentList.getCommentId(comment);
+                    }
+                    if (!comment_sep_ID.isEmpty()) comment_sep_ID = comment_sep_ID.substring(1);
+                    Globals.EventLogger.LogData(Constants.LOGKEY_COMMENTS, comment_sep_ID);
+
+                    // We're done with the logger
+                    Globals.EventLogger.close();
+                    Globals.EventLogger = null;
+
+                    // Increases the team number so that it auto fills for the next match correctly
+                    //  and do it after the logger is closed so that this can't mess the logger up
+                    Globals.CurrentMatchNumber++;
+
+                    // Reset the Saved Start position so that you have to choose it again
+                    Globals.CurrentStartPosition = 0;
+
+                    Intent GoToSubmitData = new Intent(PostMatch.this, SubmitData.class);
+                    startActivity(GoToSubmitData);
+
                 }
-                if (!comment_sep_ID.isEmpty()) comment_sep_ID = comment_sep_ID.substring(1);
-                Globals.EventLogger.LogData(Constants.LOGKEY_COMMENTS, comment_sep_ID);
-
-                // We're done with the logger
-                Globals.EventLogger.close();
-                Globals.EventLogger = null;
-
-                // Increases the team number so that it auto fills for the next match correctly
-                //  and do it after the logger is closed so that this can't mess the logger up
-                Globals.CurrentMatchNumber++;
-
-                // Reset the Saved Start position so that you have to choose it again
-                Globals.CurrentStartPosition = 0;
-
-                Intent GoToSubmitData = new Intent(PostMatch.this, SubmitData.class);
-                startActivity(GoToSubmitData);
 
                 finish();
+            }
+        });
+
+        postMatchBinding.checkboxReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (postMatchBinding.checkboxReset.isChecked()) {
+                    postMatchBinding.butNext.setText(getString(R.string.post_but_reset));
+                } else {
+                    postMatchBinding.butNext.setText(getString(R.string.post_but_submit));
+                }
             }
         });
     }

@@ -66,6 +66,9 @@
     <string name="post_climb_position">Climbing position:</string>
     <string name="post_trap">Trap outcome:</string>
     <string name="post_comments">Comments:</string>
+    <string name="post_reset">Field Fault - Reset Match</string>
+    <string name="post_but_reset">Reset</string>
+    <string name="post_but_submit">Submit</string>
 
     <string name="submit_heading">Submit Scouting Data</string>
     <string name="submit_match_error">Incomplete data files found!</string>

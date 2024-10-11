@@ -338,12 +338,21 @@ public class Logger {
         match_log_data.add(new Pair<>(in_Key, in_Value.trim()));
     }
 
+    // Member Function: Log a non-time based event - just store this for later.
+    public boolean LookupEvent(int in_EventId) {
+        for (LoggerEventRow ler : match_log_events) {
+            if (ler.EventId == in_EventId) return true;
+        }
+
+        return false;
+    }
+
     // =============================================================================================
     // Class:       LoggerEventRow
     // Description: Contains all data for a single log event
     // Methods:
     // =============================================================================================
-    protected class LoggerEventRow {
+    protected static class LoggerEventRow {
         int EventId;
         String LogTime;
         String X;
@@ -358,6 +367,5 @@ public class Logger {
             Y = in_Y;
             PrevSeq = in_PrevSeq;
         }
-
     }
 }

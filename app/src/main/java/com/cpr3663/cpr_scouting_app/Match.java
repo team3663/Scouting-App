@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.text.Layout;
 import android.text.SpannableString;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
@@ -33,7 +32,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.cpr3663.cpr_scouting_app.data.Colors;
 import com.cpr3663.cpr_scouting_app.databinding.MatchBinding;
-import com.cpr3663.cpr_scouting_app.databinding.PreMatchBinding;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -95,7 +93,7 @@ public class Match extends AppCompatActivity {
         @Override
         public void run() {
             // Get elapsed time in seconds without decimal and round to make it more accurate and not skip numbers
-            int elapsedSeconds = 0;
+            int elapsedSeconds;
 
             if (matchPhase.equals(Constants.PHASE_AUTO)) {
                 elapsedSeconds = (int) (TIMER_AUTO_LENGTH - Math.round((System.currentTimeMillis() - startTime) / 1_000.0));
@@ -230,7 +228,7 @@ public class Match extends AppCompatActivity {
             matchBinding.textPractice.setText("");
         }
 
-        matchBinding.textTeam.setText(String.valueOf(Globals.CurrentTeamToScout) + " - " + Globals.TeamList.get(Globals.CurrentTeamToScout));
+        matchBinding.textTeam.setText(Globals.CurrentTeamToScout + " - " + Globals.TeamList.get(Globals.CurrentTeamToScout));
         matchBinding.textTeam.setTextColor(Color.WHITE);
 
         // Map the button variable to the actual button
@@ -529,8 +527,8 @@ public class Match extends AppCompatActivity {
         but_MatchControl.setBackgroundColor(getColor(R.color.dark_yellow));
         but_MatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.start_teleop, 0);
 
-        if (PreMatch.checkbox_StartNote.isChecked()) {
-            Globals.EventLogger.LogEvent(Constants.EVENT_ID_AUTO_STARTNOTE, 0, 0, true);
+        // If we logged that we started with a note, then set the eventPrevious to it.
+        if (Globals.EventLogger.LookupEvent(Constants.EVENT_ID_AUTO_STARTNOTE)) {
             eventPrevious = Constants.EVENT_ID_AUTO_STARTNOTE;
         }
     }
