@@ -11,6 +11,7 @@
     <string name="switch_on_defense">On\nDefense</string>
     <string name="switch_is_defended">Is\nDefended</string>
     <string name="switch_not_moving">Not\nMoving</string>
+    <string name="practice">PRACTICE</string>
 
     <string name="loading_teams">Loading Team Data…</string>
     <string name="loading_matches">Loading Match Data…</string>
@@ -25,7 +26,7 @@
     <string name="loading_colors">Loading Color Data…</string>
 
     <string name="missing_data">Please fill in all fields</string>
-    <string name="status_text_label">Last event:\n</string>
+    <string name="status_text_label">Last event:</string>
     <string name="status_practice">-=- PRACTICE MODE -=-</string>
 
     <string name="file_error_teams">Error loading teams from data file!</string>

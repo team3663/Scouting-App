@@ -101,6 +101,8 @@ public class SubmitData extends AppCompatActivity {
             public void onClick(View view) {
                 Intent GoToPreMatch = new Intent(SubmitData.this, PreMatch.class);
                 startActivity(GoToPreMatch);
+
+                finish();
             }
         });
     }

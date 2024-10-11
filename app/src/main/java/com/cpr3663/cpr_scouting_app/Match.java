@@ -219,15 +219,19 @@ public class Match extends AppCompatActivity {
         text_Time.setBackgroundColor(Color.TRANSPARENT);
         text_Time.setTextSize(24F);
 
-        // If this is a practice, put a message in the Status
+        // If this is a practice, put a message in the Status and set the image to Practice mode
         if (Globals.isPractice) {
             matchBinding.textStatus.setTextColor(Color.YELLOW);
-            matchBinding.textStatus.setTextSize(20F);
             matchBinding.textStatus.setText(getString(R.string.status_practice));
+            matchBinding.textPractice.setText(getString(R.string.practice));
+            matchBinding.textPractice.setTextSize(210);
         } else {
             matchBinding.textStatus.setTextColor(Color.LTGRAY);
-            matchBinding.textStatus.setTextSize(16F);
+            matchBinding.textPractice.setText("");
         }
+
+        matchBinding.textTeam.setText(String.valueOf(Globals.CurrentTeamToScout) + " - " + Globals.TeamList.get(Globals.CurrentTeamToScout));
+        matchBinding.textTeam.setTextColor(Color.WHITE);
 
         // Map the button variable to the actual button
         but_MatchControl = matchBinding.butMatchControl;
@@ -287,6 +291,8 @@ public class Match extends AppCompatActivity {
                 // Go to the previous page
                 Intent GoToPreviousPage = new Intent(Match.this, PreMatch.class);
                 startActivity(GoToPreviousPage);
+
+                finish();
             }
         });
 
@@ -466,7 +472,7 @@ public class Match extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        if (!Globals.isPractice) matchBinding.textStatus.setText(getString(R.string.status_text_label) + Objects.requireNonNull(item.getTitle()));
+        if (!Globals.isPractice) matchBinding.textStatus.setText(getString(R.string.status_text_label) + " " + Objects.requireNonNull(item.getTitle()));
         eventPrevious = Globals.EventList.getEventId(item.getTitle().toString());
         Globals.EventLogger.LogEvent(eventPrevious, current_X_Relative, current_Y_Relative, is_start_of_seq, currentTouchTime);
         return true;
@@ -625,5 +631,7 @@ public class Match extends AppCompatActivity {
         // Go to the next page
         Intent GoToPostMatch = new Intent(Match.this, PostMatch.class);
         startActivity(GoToPostMatch);
+
+        finish();
     }
 }

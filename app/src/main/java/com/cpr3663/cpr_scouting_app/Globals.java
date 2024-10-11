@@ -34,6 +34,7 @@ public class Globals {
     public static int CurrentColorId;
     public static int CurrentTeamOverrideNum;
     public static int CurrentPrefTeamPos;
+    public static int CurrentTeamToScout;
 
     public static String CheckBoxTextPadding = "       ";
 

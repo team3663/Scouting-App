@@ -200,6 +200,8 @@ public class PostMatch extends AppCompatActivity {
 
                 Intent GoToSubmitData = new Intent(PostMatch.this, SubmitData.class);
                 startActivity(GoToSubmitData);
+
+                finish();
             }
         });
     }

@@ -106,6 +106,8 @@ public class AppLaunch extends AppCompatActivity {
                 // Go to the first page
                 Intent GoToPreMatch = new Intent(AppLaunch.this, PreMatch.class);
                 startActivity(GoToPreMatch);
+
+                finish();
             }
         });
 
