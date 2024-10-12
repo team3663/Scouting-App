@@ -151,6 +151,7 @@ public class Match extends AppCompatActivity {
     // Define the buttons on the page
     Button but_MatchControl;
     Button but_Back;
+    Button but_Undo;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     Switch switch_NotMoving;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -291,6 +292,33 @@ public class Match extends AppCompatActivity {
                 startActivity(GoToPreviousPage);
 
                 finish();
+            }
+        });
+
+        // Map the button variable to the actual button
+        but_Undo = matchBinding.butUndo;
+        but_Undo.setVisibility(View.INVISIBLE);
+        but_Undo.setEnabled(false);
+
+        // If clicked, undo the last event selected
+        but_Undo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                eventPrevious = Globals.EventLogger.UndoLastEvent();
+                matchBinding.textStatus.setText(Globals.EventList.getEventDescription(eventPrevious));
+
+                // If there are no events left to undo, hide the button
+                if (eventPrevious == -1) {
+                    // Certain actions can't be set from a non-UI thread
+                    // So we need to make a Runner that will execute on the UI thread to set this.
+                    Match.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            but_Undo.setVisibility(View.INVISIBLE);
+                            but_Undo.setEnabled(false);
+                        }
+                    });
+                }
             }
         });
 
@@ -473,6 +501,8 @@ public class Match extends AppCompatActivity {
         if (!Globals.isPractice) matchBinding.textStatus.setText(getString(R.string.status_text_label) + " " + Objects.requireNonNull(item.getTitle()));
         eventPrevious = Globals.EventList.getEventId(item.getTitle().toString());
         Globals.EventLogger.LogEvent(eventPrevious, current_X_Relative, current_Y_Relative, is_start_of_seq, currentTouchTime);
+        but_Undo.setVisibility(View.VISIBLE);
+        but_Undo.setEnabled(true);
         return true;
     }
 
@@ -550,10 +580,8 @@ public class Match extends AppCompatActivity {
 
         // Set match Phase to be correct and Button text
         matchPhase = Constants.PHASE_TELEOP;
-        but_MatchControl.setText(getString(R.string.button_end_match));
-        but_MatchControl.setBackgroundColor(getColor(R.color.dark_red));
 
-        // Certain actions can't be set from a non-UI thread (like withing a TimerTask that runs on a
+        // Certain actions can't be set from a non-UI thread (like within a TimerTask that runs on a
         // separate thread). So we need to make a Runner that will execute on the UI thread to set this.
         Match.this.runOnUiThread(new Runnable() {
             @Override
@@ -568,6 +596,8 @@ public class Match extends AppCompatActivity {
                 switch_Defended.setTextColor(Color.WHITE);
                 switch_Defended.setVisibility(View.VISIBLE);
 
+                but_MatchControl.setText(getString(R.string.button_end_match));
+                but_MatchControl.setBackgroundColor(getColor(R.color.dark_red));
                 but_MatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.stop_match, 0);
             }
         });
@@ -581,15 +611,14 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint("SetTextI18n")
     public void end_Teleop() {
-        but_MatchControl.setText(getString(R.string.button_match_next));
-        but_MatchControl.setTextColor(Color.TRANSPARENT);
-        but_MatchControl.setBackgroundColor(getColor(R.color.white));
-
-        // Certain actions can't be set from a non-UI thread (like withing a TimerTask that runs on a
+        // Certain actions can't be set from a non-UI thread (like within a TimerTask that runs on a
         // separate thread). So we need to make a Runner that will execute on the UI thread to set this.
         Match.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                but_MatchControl.setText(getString(R.string.button_match_next));
+                but_MatchControl.setTextColor(Color.TRANSPARENT);
+                but_MatchControl.setBackgroundColor(getColor(R.color.white));
                 but_MatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.next_button, 0);
             }
         });

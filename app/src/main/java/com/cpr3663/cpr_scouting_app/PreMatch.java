@@ -257,9 +257,10 @@ public class PreMatch extends AppCompatActivity {
                             Globals.CurrentStartPosition = startPos;
                         }
 
-                        // Log if they started with a note
+                        // Log if they started with a note (the match hasn't started so we need to specify a "0" time
+                        // or else it will log as max match time which wastes 2 log characters for no benefit)
                         if (checkbox_StartNote.isChecked()) {
-                            Globals.EventLogger.LogEvent(Constants.EVENT_ID_AUTO_STARTNOTE, 0, 0, true);
+                            Globals.EventLogger.LogEvent(Constants.EVENT_ID_AUTO_STARTNOTE, 0, 0, true, 0);
                         }
 
                         // Save off some fields for next time or later usage

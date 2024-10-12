@@ -25,6 +25,14 @@ import java.util.Objects;
 //                  used for logging a specific non-time-based scouting piece of data
 //              close()
 //                  finish logging any/all events, and flush/close the log files
+//              clear()
+//                  clears out any stored data/events that were logged
+//              LookupEvent(int EventId)
+//                  check whether an event has previously been logged
+//              isLastEventAnOrphan()
+//                  see if the last FOP logged event has any possible "next events" (orphaned)
+//              UndoLastEvent()
+//                  UNDO the last FOP event recorded
 // =============================================================================================
 public class Logger {
     private int seq_number; // Track the current sequence number for events
@@ -338,13 +346,84 @@ public class Logger {
         match_log_data.add(new Pair<>(in_Key, in_Value.trim()));
     }
 
-    // Member Function: Log a non-time based event - just store this for later.
+    // Member Function: Determine if an Event (for Id) was logged already
     public boolean LookupEvent(int in_EventId) {
         for (LoggerEventRow ler : match_log_events) {
             if (ler.EventId == in_EventId) return true;
         }
 
         return false;
+    }
+
+    // Member Function: Check if the last logged event is an orphan
+    public boolean isLastEventAnOrphan() {
+        boolean foundLast = false;
+        LoggerEventRow ler = null;
+        // Check for a no-op
+        if (match_log_events.isEmpty()) return false;
+
+        // See if the last FOP logged event has "next events" that can happen (ie: an orphan)
+        for (int i = match_log_events.size() - 1; i >=0 && !foundLast; --i) {
+            ler = match_log_events.get(i);
+
+            switch (ler.EventId) {
+                case Constants.EVENT_ID_DEFENDED_START:
+                case Constants.EVENT_ID_DEFENDED_END:
+                case Constants.EVENT_ID_DEFENSE_START:
+                case Constants.EVENT_ID_DEFENSE_END:
+                case Constants.EVENT_ID_NOT_MOVING_START:
+                case Constants.EVENT_ID_NOT_MOVING_END:
+                    break;
+                default:
+                    foundLast = true;
+            }
+        }
+
+        // If we didn't find a last row worth looking at, just return now
+        if (!foundLast) return false;
+
+        // Return value based on whether there are any Next Events (orphan) or not.
+        return !Globals.EventList.getNextEvents(ler.EventId).isEmpty();
+    }
+
+    // Member Function: Undo the last logged Event and return the previous EventId
+    public int UndoLastEvent() {
+        int lastIndex = -1;
+        LoggerEventRow ler;
+
+        // Check for a no-op
+        if (match_log_events.isEmpty()) return -1;
+
+        // Find the last FOP logged event
+        for (int i = match_log_events.size() - 1; i >=0 && lastIndex < 0; --i) {
+            if (Globals.EventList.isEventInFOP(match_log_events.get(i).EventId)) lastIndex = i;
+        }
+
+        // If we didn't find the last logged event (that's bad) show a Toast and return
+        if (lastIndex < 0) {
+            Toast.makeText(appContext, R.string.match_bad_undo, Toast.LENGTH_SHORT).show();
+            return -1;
+        }
+
+        // In order to UNDO this event, we need to find what the new last event is and return it
+        // after we remove the one we need to undo.
+        match_log_events.remove(lastIndex);
+
+        // For any events AFTER this removed event, we need to decrement the "PrevSeq" since they all
+        // shifted up one slot IF it pointed to something AFTER where we removed
+        for (int i = lastIndex; i < match_log_events.size(); ++i){
+            ler = match_log_events.get(i);
+            if (!ler.PrevSeq.isEmpty() && (Integer.parseInt(ler.PrevSeq) > lastIndex)) {
+                ler.PrevSeq = String.valueOf(Integer.parseInt(ler.PrevSeq) - 1);
+            }
+        }
+
+        // Find the (new) last FOP logged event
+        for (int i = match_log_events.size() - 1; i >=0; --i) {
+            if (Globals.EventList.isEventInFOP(match_log_events.get(i).EventId)) return match_log_events.get(i).EventId;
+        }
+
+        return -1;
     }
 
     // =============================================================================================
