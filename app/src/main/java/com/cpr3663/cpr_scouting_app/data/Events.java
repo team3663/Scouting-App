@@ -22,12 +22,16 @@ import java.util.ArrayList;
 //                  called AFTER all events are loaded.
 //              clear()
 //                  empties out the list
+//              isEventInFOP(int EventId)
+//                  returns a boolean depending on if the EventId is a Field-Of0Play (FOP) event
+//              getEventDescription(int EventId)
+//                  returns the text description for the event
 // =============================================================================================
 public class Events {
     // Class Members
     private final ArrayList<EventRow> event_list;
-    private ArrayList<String> auto_events;
-    private ArrayList<String> teleop_events;
+    private final ArrayList<String> auto_events;
+    private final ArrayList<String> teleop_events;
 
     // Constructor
     public Events() {
@@ -105,6 +109,26 @@ public class Events {
         event_list.clear();
     }
 
+
+    // Member Function: Is this EventId one that happens in the FOP
+    public boolean isEventInFOP(int in_EventId) {
+        for (EventRow er : event_list) {
+            if (er.id == in_EventId) return er.is_FOP_Event;
+        }
+
+        // default to NOT in FOP event
+        return false;
+    }
+
+    // Member Function: Return the description for this Event
+    public String getEventDescription(int in_EventId) {
+        for (EventRow er : event_list) {
+            if (er.id == in_EventId) return er.description;
+        }
+
+        return "";
+    }
+
     // =============================================================================================
     // Class:       EventRow (PRIVATE)
     // Description: Defines a structure/class to hold the information for each Event
@@ -112,13 +136,13 @@ public class Events {
     // =============================================================================================
     private class EventRow {
         // Class Members
-        private final int id;
-        private final String description;
-        private final String match_phase;
-        private final boolean is_FOP_Event;
-        private final boolean is_seq_start;
-        private final String next_event_set;
-        private final ArrayList<String> next_events_desc;
+        final int id;
+        final String description;
+        final String match_phase;
+        final boolean is_FOP_Event;
+        final boolean is_seq_start;
+        final String next_event_set;
+        final ArrayList<String> next_events_desc;
 
         // Constructor
         public EventRow(int in_id, String in_description, String in_phase, Boolean in_seq_start, Boolean in_FOP, String in_next_event_set) {
