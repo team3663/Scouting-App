@@ -137,7 +137,8 @@ public class Events {
     private class EventRow {
         // Class Members
         final int id;
-        final String description;final String match_phase;
+        final String description;
+        final String match_phase;
         final boolean is_FOP_Event;
         final boolean is_seq_start;
         final String next_event_set;
