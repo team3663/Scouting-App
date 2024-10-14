@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -47,6 +49,15 @@ public class SubmitData extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Keep Achievements invisible
+        submitDataBinding.imageAchievement.setVisibility(View.INVISIBLE);
+        submitDataBinding.textAchievement.setVisibility(View.INVISIBLE);
+
+//        Animation animation = AnimationUtils.loadAnimation(getApplicationContext()
+//                , R.anim.blink);
+//        submitDataBinding.imageAchievement.startAnimation(animation);
+//        submitDataBinding.imageAchievement.clearAnimation();
 
         // Adds the items from the match log files array to the list
         spinner_Match = submitDataBinding.spinnerMatch;
