@@ -15,7 +15,11 @@ android {
         minSdk = 30
         targetSdk = 34
         versionCode = 9
+<<<<<<< Updated upstream
         versionName = "1.2.0"
+=======
+        versionName = "1.1.2"
+>>>>>>> Stashed changes
         setProperty("archivesBaseName", "CPR-Scout-$versionName")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
