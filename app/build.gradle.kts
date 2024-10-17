@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.cpr3663.cpr_scouting_app"
+    namespace = "com.team3663.scouting_app"
     compileSdk = 34
 
     buildFeatures {
@@ -11,15 +11,12 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.cpr3663.cpr_scouting_app"
+        applicationId = "com.team3663.scouting_app"
         minSdk = 30
         targetSdk = 34
         versionCode = 9
-<<<<<<< Updated upstream
         versionName = "1.2.0"
-=======
-        versionName = "1.1.2"
->>>>>>> Stashed changes
+
         setProperty("archivesBaseName", "CPR-Scout-$versionName")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

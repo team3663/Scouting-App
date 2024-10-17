@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="button_start_match">Start Match</string>
+    <string name="button_start_teleop">Start Teleop</string>
+    <string name="button_end_match">End Match</string>
+    <string name="button_match_next">Next</string>
+    <string name="button_back">Back</string>
+    <string name="switch_on_defense">On\nDefense</string>
+    <string name="switch_is_defended">Is\nDefended</string>
+    <string name="switch_not_moving">Not\nMoving</string>
+    <string name="button_undo">Undo</string>
+
+    <string name="match_practice_watermark">PRACTICE</string>
+    <string name="match_status_practice">-=- PRACTICE MODE -=-</string>
+    <string name="match_bad_undo">Unable to UNDO the last event!</string>
+    <string name="match_alert_cancel">Cancel</string>
+    <string name="match_alert_endMatch_title">End Match</string>
+    <string name="match_alert_endMatch_message">Are you sure you want to End the Match early? This cannot be undone.</string>
+    <string name="match_alert_endMatch_positive">End</string>
+</resources>

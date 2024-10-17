@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.cpr3663.cpr_scouting_app",
+  "applicationId": "com.team3663.scouting_app",
   "variantName": "release",
   "elements": [
     {
