@@ -79,7 +79,7 @@ public class AppLaunch extends AppCompatActivity {
         });
 
         // Display app version
-        PackageInfo pInfo = null;
+        PackageInfo pInfo;
         try {
             pInfo = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0);
         } catch (PackageManager.NameNotFoundException e) {

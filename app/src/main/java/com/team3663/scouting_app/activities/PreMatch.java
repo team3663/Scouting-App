@@ -236,7 +236,8 @@ public class PreMatch extends AppCompatActivity {
 
         preMatchBinding.checkboxOverride.setOnClickListener(view -> {
             int state = View.VISIBLE;
-            if (!preMatchBinding.checkboxOverride.isChecked()) state = View.INVISIBLE;                    preMatchBinding.textOverride.setVisibility(state);
+            if (!preMatchBinding.checkboxOverride.isChecked()) state = View.INVISIBLE;
+            preMatchBinding.textOverride.setVisibility(state);
             preMatchBinding.editOverrideTeamNum.setVisibility(state);
             preMatchBinding.butAddOverrideTeamNum.setVisibility(state);
         });
