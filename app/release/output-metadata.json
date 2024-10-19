@@ -4,16 +4,16 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.cpr3663.cpr_scouting_app",
+  "applicationId": "com.team3663.scouting_app",
   "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 8,
-      "versionName": "1.1.1",
-      "outputFile": "CPR-Scout-1.1.1-release.apk"
+      "versionCode": 9,
+      "versionName": "1.1.2",
+      "outputFile": "CPR-Scout-1.1.2-release.apk"
     }
   ],
   "elementType": "File",
@@ -22,14 +22,14 @@
       "minApi": 28,
       "maxApi": 30,
       "baselineProfiles": [
-        "baselineProfiles/1/CPR-Scout-1.1.1-release.dm"
+        "baselineProfiles/1/CPR-Scout-1.1.2-release.dm"
       ]
     },
     {
       "minApi": 31,
       "maxApi": 2147483647,
       "baselineProfiles": [
-        "baselineProfiles/0/CPR-Scout-1.1.1-release.dm"
+        "baselineProfiles/0/CPR-Scout-1.1.2-release.dm"
       ]
     }
   ],

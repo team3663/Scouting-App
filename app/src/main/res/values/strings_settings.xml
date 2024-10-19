@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_heading">Settings</string>
+    <string name="settings_competition">Competition:</string>
+    <string name="settings_device">Device:</string>
+    <string name="settings_team_pref">Preferred team position:</string>
+    <string name="settings_scouting_team">Scouting team number:</string>
+    <string name="settings_num_files"># of matches to keep:</string>
+    <string name="settings_color">Color palette:</string>
+</resources>

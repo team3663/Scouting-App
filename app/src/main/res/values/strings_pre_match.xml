@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pre_heading">Pre-Match Scouting Information</string>
+    <string name="pre_match_num">Match number:</string>
+    <string name="pre_team_num">Team number to scout:</string>
+    <string name="pre_scouter">Scouter name:</string>
+    <string name="pre_did_play">Did they play?</string>
+    <string name="pre_start_note">Starting with a note?</string>
+    <string name="pre_start_pos">Starting position:</string>
+    <string name="pre_override">Override Team Number</string>
+    <string name="pre_new_team_num">Team number:</string>
+    <string name="pre_resubmit">Need to re-submit data? (or Quit?)</string>
+    <string name="pre_practice">Practice Mode</string>
+    <string name="pre_missing_data">Please fill in all fields</string>
+    <string name="pre_dropdown_no_items">None</string>
+</resources>
