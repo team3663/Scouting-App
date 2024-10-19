@@ -34,8 +34,8 @@ public class PostMatch extends AppCompatActivity {
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle in_savedInstanceState) {
+        super.onCreate(in_savedInstanceState);
         EdgeToEdge.enable(this);
         postMatchBinding = PostMatchBinding.inflate(getLayoutInflater());
         setContentView(postMatchBinding.getRoot());
@@ -45,10 +45,22 @@ public class PostMatch extends AppCompatActivity {
             return insets;
         });
 
-        // Default values
-        postMatchBinding.checkboxDidLeave.setChecked(true);
-        postMatchBinding.checkboxReset.setChecked(false);
+        // Initialize activity components
+        initDidLeave();
+        initClimbingPos();
+        initTrap();
+        initComments();
+        initReset();
+        initSubmit();
+    }
 
+    // =============================================================================================
+    // Function:    initTrap
+    // Description: Initialize the Trap field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initTrap() {
         //Creating the single select dropdown menu for the trap outcomes
         Spinner spinner_Trap = findViewById(R.id.spinnerTrap);
         //accessing the array in strings.xml
@@ -56,7 +68,15 @@ public class PostMatch extends AppCompatActivity {
                 R.layout.cpr_spinner, Globals.TrapResultsList.getDescriptionList());
         adp_Trap.setDropDownViewResource(R.layout.cpr_spinner_item);
         spinner_Trap.setAdapter(adp_Trap);
+    }
 
+    // =============================================================================================
+    // Function:    initClimbingPos
+    // Description: Initialize the Climbing Position field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initClimbingPos() {
         //Creating the single select dropdown menu for the climb positions
         Spinner spinner_ClimbPos = findViewById(R.id.spinnerClimbPosition);
         //accessing the array in strings.xml
@@ -64,11 +84,20 @@ public class PostMatch extends AppCompatActivity {
                 R.layout.cpr_spinner, Globals.ClimbPositionList.getDescriptionList());
         adp_ClimbPos.setDropDownViewResource(R.layout.cpr_spinner_item);
         spinner_ClimbPos.setAdapter(adp_ClimbPos);
+    }
 
+    // =============================================================================================
+    // Function:    initComments
+    // Description: Initialize the Comments field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initComments() {
         // initialize comment reasons arrays
         selectedComment = new boolean[CommentArray.size()];
 
-        postMatchBinding.dropComments.setText("0 " + getString(R.string.post_dropdown_items_selected));
+        String new_text = "0 " + getString(R.string.post_dropdown_items_selected);
+        postMatchBinding.dropComments.setText(new_text);
         //code for how to open the dropdown menu when clicked and select items
         postMatchBinding.dropComments.setOnClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(PostMatch.this);
@@ -115,7 +144,8 @@ public class PostMatch extends AppCompatActivity {
                     }
                 }
                 // set number of selected on CommentsTextView
-                postMatchBinding.dropComments.setText(CommentList.size() + " " + getString(R.string.post_dropdown_items_selected));
+                String new_text2 = CommentList.size() + " " + getString(R.string.post_dropdown_items_selected);
+                postMatchBinding.dropComments.setText(new_text2);
             });
 
             //adds the "cancel" button to the dropdown menu
@@ -134,22 +164,61 @@ public class PostMatch extends AppCompatActivity {
                     // clear comment list
                     CommentList.clear();
                     // clear text view value
-                    postMatchBinding.dropComments.setText("0 " + getString(R.string.post_dropdown_items_selected));
+                    String new_text3 = "0 " + getString(R.string.post_dropdown_items_selected);
+                    postMatchBinding.dropComments.setText(new_text3);
                 }
             });
             // show dialog
             builder.show();
         });
+    }
+
+    // =============================================================================================
+    // Function:    initDidLeave
+    // Description: Initialize the Did Leave field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initDidLeave() {
+        // Default values
+        postMatchBinding.checkboxDidLeave.setChecked(true);
 
         // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
         // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)
         // So add it in now.
-        postMatchBinding.checkboxDidLeave.setText(postMatchBinding.checkboxDidLeave.getText() + Globals.CheckBoxTextPadding);
+        String new_text = postMatchBinding.checkboxDidLeave.getText() + Globals.CheckBoxTextPadding;
+        postMatchBinding.checkboxDidLeave.setText(new_text);
+    }
 
+    // =============================================================================================
+    // Function:    initReset
+    // Description: Initialize the Reset Match field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initReset() {
+        // Default values
+        postMatchBinding.checkboxReset.setChecked(false);
+
+        postMatchBinding.checkboxReset.setOnClickListener(view -> {
+            if (postMatchBinding.checkboxReset.isChecked()) {
+                postMatchBinding.butNext.setText(getString(R.string.post_but_reset));
+            } else {
+                postMatchBinding.butNext.setText(getString(R.string.post_but_submit));
+            }
+        });
+    }
+
+    // =============================================================================================
+    // Function:    initSubmit
+    // Description: Initialize the Submit button
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initSubmit() {
         // Create a button for when you are done inputting info
         // finishes scouting the team and submits info
-        Button but_Next = postMatchBinding.butNext;
-        but_Next.setOnClickListener(view -> {
+        postMatchBinding.butNext.setOnClickListener(view -> {
             // If we need to reset the match, abort it all and go back
             if (postMatchBinding.checkboxReset.isChecked()) {
                 Globals.EventLogger.clear();
@@ -185,14 +254,6 @@ public class PostMatch extends AppCompatActivity {
             }
 
             finish();
-        });
-
-        postMatchBinding.checkboxReset.setOnClickListener(view -> {
-            if (postMatchBinding.checkboxReset.isChecked()) {
-                postMatchBinding.butNext.setText(getString(R.string.post_but_reset));
-            } else {
-                postMatchBinding.butNext.setText(getString(R.string.post_but_submit));
-            }
         });
     }
 }

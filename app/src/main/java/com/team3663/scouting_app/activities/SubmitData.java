@@ -2,7 +2,6 @@ package com.team3663.scouting_app.activities;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -31,8 +30,8 @@ public class SubmitData extends AppCompatActivity {
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle in_savedInstanceState) {
+        super.onCreate(in_savedInstanceState);
         EdgeToEdge.enable(this);
         submitDataBinding = SubmitDataBinding.inflate(getLayoutInflater());
         View page_root_view = submitDataBinding.getRoot();
@@ -43,61 +42,13 @@ public class SubmitData extends AppCompatActivity {
             return insets;
         });
 
-        // Keep Achievements invisible
-        submitDataBinding.imageAchievement.setVisibility(View.INVISIBLE);
-        submitDataBinding.textAchievement.setVisibility(View.INVISIBLE);
-
-//        Animation animation = AnimationUtils.loadAnimation(getApplicationContext()
-//                , R.anim.blink);
-//        submitDataBinding.imageAchievement.startAnimation(animation);
-//        submitDataBinding.imageAchievement.clearAnimation();
-
-        // Adds the items from the match log files array to the list
-        ArrayAdapter<String> adp_Match = new ArrayAdapter<String>(this,
-                R.layout.cpr_spinner, FindMatches());
-        adp_Match.setDropDownViewResource(R.layout.cpr_spinner_item);
-        submitDataBinding.spinnerMatch.setAdapter(adp_Match);
-        // Set the selection (if there are any) to the latest match (largest value in the list)
-        if (adp_Match.getCount() > 0) submitDataBinding.spinnerMatch.setSelection(adp_Match.getCount() - 1, true);
-
-        submitDataBinding.spinnerMatch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // If we don't have both data files, display a message.  Otherwise clear it.
-                if (!checkDataFiles(submitDataBinding.spinnerMatch.getSelectedItem().toString()))
-                    submitDataBinding.textMatchMessage.setText(getString(R.string.submit_match_error));
-                else
-                    submitDataBinding.textMatchMessage.setText("");
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        submitDataBinding.butQuit.setOnClickListener(view -> new AlertDialog.Builder(view.getContext())
-        .setTitle(getString(R.string.submit_alert_quit_title))
-        .setMessage(getString(R.string.submit_alert_quit_message))
-
-        // Specifying a listener allows you to take an action before dismissing the dialog.
-        // The dialog is automatically dismissed when a dialog button is clicked.
-        .setPositiveButton(getString(R.string.submit_alert_quit_positive), (dialog, which) -> {
-            SubmitData.this.finishAffinity();
-            System.exit(0);
-        })
-
-        // A null listener allows the button to dismiss the dialog and take no further action.
-        .setNegativeButton(getString(R.string.submit_alert_cancel), null)
-        // TODO make the icon work
-//                .setIcon(getDrawable(android.R.attr.alertDialogIcon))
-        .show());
-
-        submitDataBinding.butNext.setOnClickListener(view -> {
-            Intent GoToPreMatch = new Intent(SubmitData.this, PreMatch.class);
-            startActivity(GoToPreMatch);
-
-            finish();
-        });
+        // Initialize activity components
+        initAchievements();
+        initMatch();
+        initQR();
+        initBluetooth();
+        initQuit();
+        initNext();
     }
 
     // =============================================================================================
@@ -169,5 +120,114 @@ public class SubmitData extends AppCompatActivity {
 
         // Ensure the directory structure exists first - if not, return nothing
         return e_file.exists() && e_file.isFile();
+    }
+
+    // =============================================================================================
+    // Function:    initAchievements
+    // Description: Initialize the Achievements system
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initAchievements() {
+        // Keep Achievements invisible
+        submitDataBinding.imageAchievement.setVisibility(View.INVISIBLE);
+        submitDataBinding.textAchievement.setVisibility(View.INVISIBLE);
+
+//        Animation animation = AnimationUtils.loadAnimation(getApplicationContext()
+//                , R.anim.blink);
+//        submitDataBinding.imageAchievement.startAnimation(animation);
+//        submitDataBinding.imageAchievement.clearAnimation();
+    }
+
+    // =============================================================================================
+    // Function:    initMatch
+    // Description: Initialize the Match field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initMatch() {
+        // Adds the items from the match log files array to the list
+        ArrayAdapter<String> adp_Match = new ArrayAdapter<String>(this,
+                R.layout.cpr_spinner, FindMatches());
+        adp_Match.setDropDownViewResource(R.layout.cpr_spinner_item);
+        submitDataBinding.spinnerMatch.setAdapter(adp_Match);
+        // Set the selection (if there are any) to the latest match (largest value in the list)
+        if (adp_Match.getCount() > 0) submitDataBinding.spinnerMatch.setSelection(adp_Match.getCount() - 1, true);
+
+        submitDataBinding.spinnerMatch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // If we don't have both data files, display a message.  Otherwise clear it.
+                if (!checkDataFiles(submitDataBinding.spinnerMatch.getSelectedItem().toString()))
+                    submitDataBinding.textMatchMessage.setText(getString(R.string.submit_match_error));
+                else
+                    submitDataBinding.textMatchMessage.setText("");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+    }
+
+    // =============================================================================================
+    // Function:    initQR
+    // Description: Initialize the QR Code field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initQR() {
+
+    }
+
+    // =============================================================================================
+    // Function:    initBluetooth
+    // Description: Initialize the Bluetooth field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initBluetooth() {
+
+    }
+
+    // =============================================================================================
+    // Function:    initQuit
+    // Description: Initialize the Quit button
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initQuit() {
+        submitDataBinding.butQuit.setOnClickListener(view -> new AlertDialog.Builder(view.getContext())
+            .setTitle(getString(R.string.submit_alert_quit_title))
+            .setMessage(getString(R.string.submit_alert_quit_message))
+
+            // Specifying a listener allows you to take an action before dismissing the dialog.
+            // The dialog is automatically dismissed when a dialog button is clicked.
+            .setPositiveButton(getString(R.string.submit_alert_quit_positive), (dialog, which) -> {
+                SubmitData.this.finishAffinity();
+                System.exit(0);
+            })
+
+            // A null listener allows the button to dismiss the dialog and take no further action.
+            .setNegativeButton(getString(R.string.submit_alert_cancel), null)
+            // TODO make the icon work
+//                .setIcon(getDrawable(android.R.attr.alertDialogIcon))
+            .show()
+        );
+    }
+
+    // =============================================================================================
+    // Function:    initNext
+    // Description: Initialize the Next Match button
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initNext() {
+        submitDataBinding.butNext.setOnClickListener(view -> {
+            Intent GoToPreMatch = new Intent(SubmitData.this, PreMatch.class);
+            startActivity(GoToPreMatch);
+
+            finish();
+        });
     }
 }
