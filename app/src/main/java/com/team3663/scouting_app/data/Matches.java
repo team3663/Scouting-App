@@ -25,14 +25,6 @@ public class Matches {
         match_list.add(new MatchInfoRow(in_csvRow));
     }
 
-    // Member Function: Get back a row of data for a given match
-    public MatchInfoRow getMatchInfoRow(int in_match_id) {
-        if (in_match_id > 0 && in_match_id < match_list.size())
-            return match_list.get(in_match_id);
-
-        return null;
-    }
-
     // Member Function: do we have valid match data for this one
     public boolean isMatchValid(int in_MatchNumber){
         return (in_MatchNumber > 0) && (in_MatchNumber <= match_list.size());
