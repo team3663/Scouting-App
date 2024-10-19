@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="submit_heading">Submit Scouting Data</string>
+    <string name="submit_match_error">Incomplete data files found!</string>
+    <string name="submit_alert_cancel">Cancel</string>
+    <string name="submit_alert_quit_title">Quit app</string>
+    <string name="submit_alert_quit_message">Are you sure you want to Quit the app?</string>
+    <string name="submit_alert_quit_positive">Quit</string>
+</resources>
