@@ -23,6 +23,21 @@ import java.util.Objects;
 // =============================================================================================
 // Class:       Logger
 // Description: Sets up how all of the scouting data will be logged to disk.
+// Methods:     LogEvent()
+//                  used for logging time-based events.  Keep track of previous events, with
+//                  special handling of Defense and Defended events.
+//              LogData()
+//                  used for logging a specific non-time-based scouting piece of data
+//              close()
+//                  finish logging any/all events, and flush/close the log files
+//              clear()
+//                  clears out any stored data/events that were logged
+//              LookupEvent(int EventId)
+//                  check whether an event has previously been logged
+//              isLastEventAnOrphan()
+//                  see if the last FOP logged event has any possible "next events" (orphaned)
+//              UndoLastEvent()
+//                  UNDO the last FOP event recorded
 // =============================================================================================
 public class Logger {
     private int seq_number; // Track the current sequence number for events
@@ -422,8 +437,9 @@ public class Logger {
     // =============================================================================================
     // Class:       LoggerEventRow
     // Description: Contains all data for a single log event
+    // Methods:
     // =============================================================================================
-    private static class LoggerEventRow {
+    protected static class LoggerEventRow {
         int EventId;
         String LogTime;
         String X;

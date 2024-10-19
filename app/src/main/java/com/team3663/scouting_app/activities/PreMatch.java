@@ -37,8 +37,8 @@ public class PreMatch extends AppCompatActivity {
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
-    protected void onCreate(Bundle in_savedInstanceState) {
-        super.onCreate(in_savedInstanceState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         preMatchBinding = PreMatchBinding.inflate(getLayoutInflater());
         setContentView(preMatchBinding.getRoot());
@@ -57,151 +57,9 @@ public class PreMatch extends AppCompatActivity {
         Globals.CurrentPrefTeamPos = Globals.sp.getInt(Constants.Prefs.PREF_TEAM_POS, 0);
         Globals.isPractice = false;
 
-        // Initialize activity components
-        initMatchNumber();
-        initTeamNumber();
-        initScouterName();
-        initDidPlay();
-        initStartingNote();
-        initStartingPos();
-        initOverride();
-        initResubmit();
-        initPractice();
-        initNext();
-    }
+        // Default the override button to disabled
+        preMatchBinding.checkboxOverride.setEnabled(false);
 
-    // =============================================================================================
-    // Function:    initMatchNumber
-    // Description: Initialize the Match Number field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initMatchNumber() {
-        if (Globals.CurrentMatchNumber > 0)
-            // MUST CONVERT TO STRING or it crashes with out warning
-            preMatchBinding.editMatch.setText(String.valueOf(Globals.CurrentMatchNumber));
-        else
-            preMatchBinding.editMatch.setText("");
-
-        preMatchBinding.editMatch.setOnFocusChangeListener((view, focus) -> {
-            if (!focus) {
-                String MatchNumStr = String.valueOf(preMatchBinding.editMatch.getText());
-                int MatchNum = -1;
-                if (!MatchNumStr.isEmpty()) MatchNum = Integer.parseInt(MatchNumStr);
-
-                // We need to do SOMETHING if:
-                // 1. they blanked out the match number
-                // 2. they changed the match number from what it was before
-                // 3. we didn't have a match number before.
-                if (MatchNumStr.isEmpty()) {
-                    // Disable the override
-                    preMatchBinding.checkboxOverride.setEnabled(false);
-                    Globals.CurrentMatchNumber = -1;
-                    Globals.CurrentTeamOverrideNum = 0;
-                    CurrentTeamToScoutPosition = -1;
-                } else if (MatchNum != Globals.CurrentMatchNumber) {
-                    // Enable the override
-                    preMatchBinding.checkboxOverride.setEnabled(true);
-                    Globals.CurrentMatchNumber = MatchNum;
-                    Globals.CurrentTeamOverrideNum = 0;
-                }
-
-                loadTeamToScout();
-            }
-        });
-    }
-
-    // =============================================================================================
-    // Function:    initTeamNumber
-    // Description: Initialize the Team Number To Scout field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initTeamNumber() {
-        // Run it from a handler because it doesn't like to work and it will just do absolutely nothing if you don't
-        // Create a new variable so it wont change before the handler is called cause that will mess it up (Even though its only 1 millisecond)
-//        new Handler().postDelayed(() -> preMatchBinding.spinnerTeamToScout.setSelection(CurrentTeamToScoutPosition), 1);
-
-        loadTeamToScout();
-
-        preMatchBinding.spinnerTeamToScout.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String TeamToScoutStr = preMatchBinding.spinnerTeamToScout.getSelectedItem().toString();
-                if (!TeamToScoutStr.isEmpty() && !TeamToScoutStr.equals(getString(R.string.pre_dropdown_no_items))) {
-                    int TeamToScout = Integer.parseInt(TeamToScoutStr);
-                    if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size()) {
-                        // This will crash the app instead of returning null if you pass it an invalid num
-                        String ScoutingTeamName = Globals.TeamList.get(TeamToScout);
-                        preMatchBinding.textTeamToScoutName.setText(ScoutingTeamName);
-                    } else {
-                        preMatchBinding.textTeamToScoutName.setText("");
-                    }
-
-                    // Save off what you selected for if you go to the match and then back
-                    CurrentTeamToScoutPosition = preMatchBinding.spinnerTeamToScout.getSelectedItemPosition();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {}
-        });
-    }
-
-    // =============================================================================================
-    // Function:    initScouterName
-    // Description: Initialize the Scouter Name field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initScouterName() {
-        // Create a text box to input the scouters name
-        preMatchBinding.editScouterName.setText(ScouterName);
-    }
-
-    // =============================================================================================
-    // Function:    initDidPlay
-    // Description: Initialize the Did Play field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initDidPlay() {
-        // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
-        // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)
-        // So add it in now.
-        String paddedText = preMatchBinding.checkboxDidPlay.getText() + Globals.CheckBoxTextPadding;
-        preMatchBinding.checkboxDidPlay.setText(paddedText);
-
-        // Default checkboxes
-        // TODO shouldn't we save these values off as well in case they hit the BACK button?
-        preMatchBinding.checkboxDidPlay.setChecked(true);
-    }
-
-    // =============================================================================================
-    // Function:    initStartingNote
-    // Description: Initialize the Starting Note field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initStartingNote() {
-        // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
-        // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)
-        // So add it in now.
-        String paddedText = preMatchBinding.checkboxStartNote.getText() + Globals.CheckBoxTextPadding;
-        preMatchBinding.checkboxStartNote.setText(paddedText);
-
-        // Default checkboxes
-        // TODO shouldn't we save these values off as well in case they hit the BACK button?
-        preMatchBinding.checkboxStartNote.setChecked(true);
-    }
-
-    // =============================================================================================
-    // Function:    initStartingPos
-    // Description: Initialize the Start Position field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initStartingPos() {
         // Adds the items from the starting positions array to the list
         ArrayAdapter<String> adp_StartPos = new ArrayAdapter<String>(this, R.layout.cpr_spinner, Start_Positions);
         adp_StartPos.setDropDownViewResource(R.layout.cpr_spinner_item);
@@ -216,18 +74,72 @@ public class PreMatch extends AppCompatActivity {
             }
         }
         preMatchBinding.spinnerStartingPosition.setSelection(start_Pos_DropId);
-    }
 
-    // =============================================================================================
-    // Function:    initOverride
-    // Description: Initialize the Override fields
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initOverride() {
-        // Default the override button to disabled
-        // If we have a match number, enable the override
-        preMatchBinding.checkboxOverride.setEnabled(Globals.CurrentMatchNumber > 0);
+        // adds teams in match to the spinner
+        // Create an ArrayAdapter using the string array and a default spinner layout.
+        ArrayList<String> teams;
+        if (Globals.MatchList.isMatchValid(Globals.CurrentMatchNumber)) {
+            teams = new ArrayList<String>();
+            teams.add(getString(R.string.pre_dropdown_no_items));
+        } else {
+            teams = Globals.MatchList.getListOfTeams(Globals.CurrentMatchNumber);
+        }
+        ArrayAdapter<String> adp_Team = new ArrayAdapter<String>(this, R.layout.cpr_spinner, teams);
+        adp_Team.setDropDownViewResource(R.layout.cpr_spinner_item);
+        preMatchBinding.spinnerTeamToScout.setAdapter(adp_Team);
+
+        // Run it from a handler because it doesn't like to work and it will just do absolutely nothing if you don't
+        // Create a new variable so it wont change before the handler is called cause that will mess it up (Even though its only 1 millisecond)
+        new Handler().postDelayed(() -> preMatchBinding.spinnerTeamToScout.setSelection(CurrentTeamToScoutPosition), 1);
+
+        // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
+        // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)
+        // So add it in now.
+        preMatchBinding.checkboxDidPlay.setText(preMatchBinding.checkboxDidPlay.getText() + Globals.CheckBoxTextPadding);
+        preMatchBinding.checkboxStartNote.setText(preMatchBinding.checkboxStartNote.getText() + Globals.CheckBoxTextPadding);
+
+        // Create a text box to input the scouters name
+        preMatchBinding.editScouterName.setText(ScouterName);
+
+        // When we load the page, if we have a match number (can happen if we hit the BACK button from Match or it's the next match)
+        // load the team information for the match
+        if (Globals.CurrentMatchNumber > 0) {
+            // If we have a match number, enable the override
+            preMatchBinding.checkboxOverride.setEnabled(true);
+
+            // MUST CONVERT TO STRING or it crashes with out warning
+            preMatchBinding.editMatch.setText(String.valueOf(Globals.CurrentMatchNumber));
+
+            ArrayList<String> teamsInMatch;
+            if (Globals.MatchList.isMatchValid(Globals.CurrentMatchNumber)) {
+                teamsInMatch = new ArrayList<String>();
+                teamsInMatch.add(getString(R.string.pre_dropdown_no_items));
+            } else {
+                teamsInMatch = Globals.MatchList.getListOfTeams(Globals.CurrentMatchNumber);
+            }
+
+            // If there's an override set, add it to the spinner
+            if (Globals.CurrentTeamOverrideNum > 0) teamsInMatch.add(String.valueOf(Globals.CurrentTeamOverrideNum));
+
+            // Create and apply the adapter to the spinner.
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.cpr_spinner, teamsInMatch);
+            adapter.setDropDownViewResource(R.layout.cpr_spinner_item);
+            preMatchBinding.spinnerTeamToScout.setAdapter(adapter);
+
+            // Set the spinner to the right selection
+            if (CurrentTeamToScoutPosition > 0) preMatchBinding.spinnerTeamToScout.setSelection(CurrentTeamToScoutPosition);
+            else preMatchBinding.spinnerTeamToScout.setSelection(teamsInMatch.size() - 1);
+        } else {
+            preMatchBinding.checkboxOverride.setEnabled(false);
+            preMatchBinding.editMatch.setText("");
+        }
+
+        // Default checkboxes
+        // TODO shouldn't we save these values off as well in case they hit the BACK button?
+        preMatchBinding.checkboxDidPlay.setChecked(true);
+        preMatchBinding.checkboxStartNote.setChecked(true);
+        preMatchBinding.checkboxResubmit.setChecked(false);
+        preMatchBinding.checkboxPractice.setChecked(false);
 
         // Hide override components initially
         preMatchBinding.textOverride.setVisibility(View.INVISIBLE);
@@ -241,56 +153,36 @@ public class PreMatch extends AppCompatActivity {
             preMatchBinding.butAddOverrideTeamNum.setVisibility(state);
         });
 
+        preMatchBinding.checkboxPractice.setOnClickListener(view -> Globals.isPractice = preMatchBinding.checkboxPractice.isChecked());
+
         preMatchBinding.butAddOverrideTeamNum.setOnClickListener(view -> {
-            // Set the global override number
-            String new_override = preMatchBinding.editOverrideTeamNum.getText().toString();
+            String teamNum = String.valueOf(preMatchBinding.editOverrideTeamNum.getText());
+            ArrayList<String> teamsInMatch;
+            if (!teamNum.isEmpty()) {
+                if (Globals.MatchList.isMatchValid(Globals.CurrentMatchNumber)) {
+                    teamsInMatch = new ArrayList<String>();
+                    teamsInMatch.add(getString(R.string.pre_dropdown_no_items));
+                } else {
+                    teamsInMatch = Globals.MatchList.getListOfTeams(Globals.CurrentMatchNumber);
+                }
 
-            if (!new_override.isEmpty())
-                Globals.CurrentTeamOverrideNum = Integer.parseInt(new_override);
-
-            // Load the team data again
-            loadTeamToScout();
+                teamsInMatch.add(teamNum);
+                ArrayAdapter<String> adp_Team1 = new ArrayAdapter<String>(view.getContext(), R.layout.cpr_spinner, teamsInMatch);
+                adp_Team1.setDropDownViewResource(R.layout.cpr_spinner_item);
+                // Apply the adapter to the spinner
+                preMatchBinding.spinnerTeamToScout.setAdapter(adp_Team1);
+                preMatchBinding.spinnerTeamToScout.setSelection(teamsInMatch.size() - 1);
+                // Set CurrentTeamToScoutPosition to be the overridden value
+                CurrentTeamToScoutPosition = preMatchBinding.spinnerTeamToScout.getSelectedItemPosition();
+                Globals.CurrentTeamOverrideNum = Integer.parseInt(teamNum);
+            }
 
             preMatchBinding.checkboxOverride.setChecked(false);
             preMatchBinding.textOverride.setVisibility(View.INVISIBLE);
             preMatchBinding.editOverrideTeamNum.setVisibility(View.INVISIBLE);
             preMatchBinding.butAddOverrideTeamNum.setVisibility(View.INVISIBLE);
         });
-    }
 
-    // =============================================================================================
-    // Function:    initResubmit
-    // Description: Initialize the Resubmit field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initResubmit() {
-        // Default checkboxes
-        // TODO shouldn't we save these values off as well in case they hit the BACK button?
-        preMatchBinding.checkboxResubmit.setChecked(false);
-    }
-
-    // =============================================================================================
-    // Function:    initPractice
-    // Description: Initialize the Practice field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initPractice() {
-        preMatchBinding.checkboxPractice.setOnClickListener(view -> Globals.isPractice = preMatchBinding.checkboxPractice.isChecked());
-
-        // Default checkboxes
-        // TODO shouldn't we save these values off as well in case they hit the BACK button?
-        preMatchBinding.checkboxPractice.setChecked(false);
-    }
-
-    // =============================================================================================
-    // Function:    initNext
-    // Description: Initialize the Next button
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initNext() {
         // Create a button for when you are done inputting info
         Button but_Next = preMatchBinding.butNext;
         but_Next.setOnClickListener(view -> {
@@ -362,51 +254,83 @@ public class PreMatch extends AppCompatActivity {
                 }
             }
         });
-    }
 
-    // =============================================================================================
-    // Function:    loadTeamToScout
-    // Description: Load the teams to scout into the spinner (including an override)
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void loadTeamToScout() {
-        // If we have a match number load the team information for the match
-        ArrayList<String> teamsInMatch = new ArrayList<>();
-        if (Globals.CurrentMatchNumber > 0) {
-            if (Globals.MatchList.isMatchValid(Globals.CurrentMatchNumber))
-                teamsInMatch = Globals.MatchList.getListOfTeams(Globals.CurrentMatchNumber);
-            else {
-                teamsInMatch = new ArrayList<>();
-                teamsInMatch.add(getString(R.string.pre_dropdown_no_items));
+        preMatchBinding.editMatch.setOnFocusChangeListener((view, focus) -> {
+            if (!focus) {
+                String MatchNumStr = String.valueOf(preMatchBinding.editMatch.getText());
+                int MatchNum = -1;
+                if (!MatchNumStr.isEmpty()) MatchNum = Integer.parseInt(MatchNumStr);
+
+                // We need to do SOMETHING if:
+                // 1. they blanked out the match number
+                // 2. they changed the match number from what it was before
+                // 3. we didn't have a match number before.
+                if (MatchNumStr.isEmpty()) {
+                    // Disable the override
+                    preMatchBinding.checkboxOverride.setEnabled(false);
+                    Globals.CurrentMatchNumber = -1;
+                    Globals.CurrentTeamOverrideNum = 0;
+                    CurrentTeamToScoutPosition = -1;
+
+                    ArrayList<String> noTeams = new ArrayList<>();
+                    noTeams.add(getString(R.string.pre_dropdown_no_items));
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(view.getContext(), R.layout.cpr_spinner, noTeams);
+                    adapter.setDropDownViewResource(R.layout.cpr_spinner_item);
+                    preMatchBinding.spinnerTeamToScout.setAdapter(adapter);
+                } else if (MatchNum != Globals.CurrentMatchNumber) {
+                    // Enable the override
+                    preMatchBinding.checkboxOverride.setEnabled(true);
+                    Globals.CurrentMatchNumber = MatchNum;
+                    Globals.CurrentTeamOverrideNum = 0;
+
+                    if (MatchNum > 0 && MatchNum < Globals.MatchList.size()) {
+                        ArrayList<String> teamsInMatch = Globals.MatchList.getListOfTeams(MatchNum);
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(view.getContext(), R.layout.cpr_spinner, teamsInMatch);
+                        adapter.setDropDownViewResource(R.layout.cpr_spinner_item);
+
+                        // Apply the adapter to the spinner.
+                        preMatchBinding.spinnerTeamToScout.setAdapter(adapter);
+
+                        // If there's a default position, select the right team
+                        if (Globals.CurrentPrefTeamPos > 0) {
+                            String prefTeam = Globals.MatchList.getTeamInPosition(MatchNum, Constants.Settings.PREF_TEAM_POS[Globals.CurrentPrefTeamPos]);
+                            int prefPos = teamsInMatch.indexOf(prefTeam);
+                            preMatchBinding.spinnerTeamToScout.setSelection(prefPos);
+                        }
+
+                        CurrentTeamToScoutPosition = preMatchBinding.spinnerTeamToScout.getSelectedItemPosition();
+                    } else {
+                        ArrayList<String> noTeams = new ArrayList<>();
+                        noTeams.add(getString(R.string.pre_dropdown_no_items));
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(view.getContext(), R.layout.cpr_spinner, noTeams);
+                        adapter.setDropDownViewResource(R.layout.cpr_spinner_item);
+                        preMatchBinding.spinnerTeamToScout.setAdapter(adapter);
+                    }
+                }
             }
-        }
+        });
 
-        // If there's an override set, add it to the spinner
-        if (Globals.CurrentTeamOverrideNum > 0) {
-            if (teamsInMatch.size() == 1)
-                teamsInMatch.set(0, String.valueOf(Globals.CurrentTeamOverrideNum));
-            else
-                teamsInMatch.add(String.valueOf(Globals.CurrentTeamOverrideNum));
-        }
+        preMatchBinding.spinnerTeamToScout.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String TeamToScoutStr = preMatchBinding.spinnerTeamToScout.getSelectedItem().toString();
+                if (!TeamToScoutStr.isEmpty() && !TeamToScoutStr.equals(getString(R.string.pre_dropdown_no_items))) {
+                    int TeamToScout = Integer.parseInt(TeamToScoutStr);
+                    if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size()) {
+                        // This will crash the app instead of returning null if you pass it an invalid num
+                        String ScoutingTeamName = Globals.TeamList.get(TeamToScout);
+                        preMatchBinding.textTeamToScoutName.setText(ScoutingTeamName);
+                    } else {
+                        preMatchBinding.textTeamToScoutName.setText("");
+                    }
 
-        // Create and apply the adapter to the spinner.
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.cpr_spinner, teamsInMatch);
-        adapter.setDropDownViewResource(R.layout.cpr_spinner_item);
-        preMatchBinding.spinnerTeamToScout.setAdapter(adapter);
+                    // Save off what you selected for if you go to the match and then back
+                    CurrentTeamToScoutPosition = preMatchBinding.spinnerTeamToScout.getSelectedItemPosition();
+                }
+            }
 
-        // Choose the right team in the list to select.
-        // If there's an override, we want that one and it'll be the last in the list
-        // If there's a preferred position, choose it
-        // Lastly, if there is no previously chosen one, set it to the first one
-        if (Globals.CurrentTeamOverrideNum > 0) {
-            CurrentTeamToScoutPosition = teamsInMatch.size() - 1;
-        } else if (Globals.CurrentPrefTeamPos > 0) {
-            String prefTeam = Globals.MatchList.getTeamInPosition(Globals.CurrentMatchNumber, Constants.Settings.PREF_TEAM_POS[Globals.CurrentPrefTeamPos]);
-            CurrentTeamToScoutPosition = teamsInMatch.indexOf(prefTeam);
-        } else if (CurrentTeamToScoutPosition < 0)
-            CurrentTeamToScoutPosition = 0;
-
-        preMatchBinding.spinnerTeamToScout.setSelection(CurrentTeamToScoutPosition);
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
     }
 }

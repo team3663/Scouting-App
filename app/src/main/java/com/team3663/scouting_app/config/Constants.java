@@ -84,11 +84,9 @@ public class Constants {
 
     public static class Settings {
         public static final String[] PREF_TEAM_POS = new String[]{"No Preference", "Blue 1", "Blue 2", "Blue 3", "Red 1", "Red 2", "Red 3"};
-        public static final String RELOAD_DATA_KEY = "ReloadData";
     }
 
     public static class AppLaunch {
         public static final long SPLASH_SCREEN_DELAY = 100;
-        public static final int ACTIVITY_CODE_SETTINGS = 1;
     }
 }

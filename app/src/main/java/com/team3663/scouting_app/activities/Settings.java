@@ -2,11 +2,12 @@ package com.team3663.scouting_app.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -28,8 +29,8 @@ public class Settings extends AppCompatActivity {
 
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceType"})
     @Override
-    protected void onCreate(Bundle in_savedInstanceState) {
-        super.onCreate(in_savedInstanceState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         settingsBinding = SettingsBinding.inflate(getLayoutInflater());
         View page_root_view = settingsBinding.getRoot();
@@ -44,69 +45,9 @@ public class Settings extends AppCompatActivity {
         if (Globals.sp == null) Globals.sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
         if (Globals.spe == null) Globals.spe = Globals.sp.edit();
 
-        // Initialize activity components
-        initCompetition();
-        initDevice();
-        initPrefTeamPos();
-        initScoutingTeam();
-        initNumMatches();
-        initColors();
+        // Restore number of files to keep from saved preferences
+        settingsBinding.editNumMatches.setText(String.valueOf(Globals.sp.getInt(Constants.Prefs.NUM_MATCHES, 5)));
 
-        // Define a Cancel Button
-        settingsBinding.butCancel.setOnClickListener(view -> finish());
-
-        // Define a Save Button
-        settingsBinding.butSave.setOnClickListener(view -> {
-            SaveSettings();
-        });
-    }
-
-    // =============================================================================================
-    // Function:    SaveSettings
-    // Description: Save off the settings before closing this activity
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void SaveSettings() {
-        Intent intent = new Intent();
-        int CompetitionId = Globals.CompetitionList.getCompetitionId(settingsBinding.spinnerCompetition.getSelectedItem().toString());
-
-        if (CompetitionId > 0) {
-            // If we changed the CompetitionId, set Global flag to reload some of the data
-            if (CompetitionId != savedCompetitionId)
-                intent.putExtra(Constants.Settings.RELOAD_DATA_KEY, 1);
-            Globals.spe.putInt(Constants.Prefs.COMPETITION_ID, CompetitionId);
-        }
-        int DeviceId = Globals.DeviceList.getDeviceId(settingsBinding.spinnerDevice.getSelectedItem().toString());
-        if (DeviceId > 0) {
-            Globals.spe.putInt(Constants.Prefs.DEVICE_ID, DeviceId);
-        }
-        String ScoutingTeam = String.valueOf(settingsBinding.editScoutingTeam.getText());
-        if (!ScoutingTeam.isEmpty()) {
-            Globals.spe.putInt(Constants.Prefs.SCOUTING_TEAM, Integer.parseInt(ScoutingTeam));
-        }
-        int NumMatches = Integer.parseInt(settingsBinding.editNumMatches.getText().toString());
-        if (NumMatches < 1) NumMatches = 1;
-        Globals.spe.putInt(Constants.Prefs.NUM_MATCHES, NumMatches);
-        int ColorId = Globals.ColorList.getColorId(settingsBinding.spinnerColor.getSelectedItem().toString());
-        if (ColorId > 0) {
-            Globals.spe.putInt(Constants.Prefs.COLOR_CONTEXT_MENU, ColorId);
-        }
-        Globals.CurrentPrefTeamPos = settingsBinding.spinnerPrefTeamPos.getSelectedItemPosition();
-        Globals.spe.putInt(Constants.Prefs.PREF_TEAM_POS, Globals.CurrentPrefTeamPos);
-        Globals.spe.apply();
-
-        setResult(RESULT_OK, intent);
-        finish();
-    }
-
-    // =============================================================================================
-    // Function:    initCompetition
-    // Description: Initialize the competition id field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initCompetition() {
         // Adds Competition information to spinner
         ArrayAdapter<String> adp_Competition = new ArrayAdapter<String>(this,
                 R.layout.cpr_spinner, Globals.CompetitionList.getCompetitionList());
@@ -129,15 +70,7 @@ public class Settings extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-    }
 
-    // =============================================================================================
-    // Function:    initDevice
-    // Description: Initialize the device id field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initDevice() {
         // Adds Device information to spinner
         ArrayAdapter<String> adp_Device = new ArrayAdapter<String>(this,
                 R.layout.cpr_spinner, Globals.DeviceList.getDeviceList());
@@ -170,15 +103,7 @@ public class Settings extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-    }
 
-    // =============================================================================================
-    // Function:    initPrefTeamPos
-    // Description: Initialize the Preferred Team Position field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initPrefTeamPos() {
         // Adds PreferredTeamPosition information to spinner
         ArrayAdapter<String> adp_PrefTeamPos = new ArrayAdapter<String>(this,
                 R.layout.cpr_spinner, Constants.Settings.PREF_TEAM_POS);
@@ -205,62 +130,7 @@ public class Settings extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-    }
 
-    // =============================================================================================
-    // Function:    initScoutingTeam
-    // Description: Initialize the Scouting Team field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initScoutingTeam() {
-        // MUST CONVERT TO STRING or it crashes with out warning
-        settingsBinding.editScoutingTeam.setText(String.valueOf(Globals.sp.getInt(Constants.Prefs.SCOUTING_TEAM, -1)));
-
-        // Define a text box for the name of the Team to appear in when you enter the Number
-        String ScoutingTeamNumStr = String.valueOf(settingsBinding.editScoutingTeam.getText());
-        if (!ScoutingTeamNumStr.isEmpty()) {
-            int ScoutingTeamNum = Integer.parseInt(ScoutingTeamNumStr);
-            if (ScoutingTeamNum > 0 && ScoutingTeamNum < Globals.TeamList.size()) {
-                // This will crash the app instead of returning null if you pass it an invalid num
-                String ScoutingTeamName = Globals.TeamList.get(ScoutingTeamNum);
-                settingsBinding.textScoutingTeamName.setText(ScoutingTeamName);
-            } else settingsBinding.textScoutingTeamName.setText("");
-        }
-
-        settingsBinding.editScoutingTeam.setOnFocusChangeListener((view, focus) -> {
-            if (!focus) {
-                String ScoutingTeamNumStr1 = String.valueOf(settingsBinding.editScoutingTeam.getText());
-                if (!ScoutingTeamNumStr1.isEmpty()) {
-                    int ScoutingTeamNum = Integer.parseInt(ScoutingTeamNumStr1);
-                    if (ScoutingTeamNum > 0 && ScoutingTeamNum < Globals.TeamList.size()) {
-                        // This will crash the app instead of returning null if you pass it an invalid num
-                        String ScoutingTeamName = Globals.TeamList.get(ScoutingTeamNum);
-                        settingsBinding.textScoutingTeamName.setText(ScoutingTeamName);
-                    } else settingsBinding.textScoutingTeamName.setText("");
-                }
-            }
-        });
-    }
-
-    // =============================================================================================
-    // Function:    initNumMatches
-    // Description: Initialize the Number of Matches to Keep field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initNumMatches() {
-        // Restore number of files to keep from saved preferences
-        settingsBinding.editNumMatches.setText(String.valueOf(Globals.sp.getInt(Constants.Prefs.NUM_MATCHES, 5)));
-    }
-
-    // =============================================================================================
-    // Function:    initColors
-    // Description: Initialize the Color Palette field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initColors() {
         // Adds Color information to spinner
         ArrayAdapter<String> adp_Color = new ArrayAdapter<String>(this,
                 R.layout.cpr_spinner, Globals.ColorList.getDescriptionList());
@@ -281,6 +151,73 @@ public class Settings extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        // Define the edit Text for entering the Device Id
+        EditText edit_ScoutingTeam = settingsBinding.editScoutingTeam;
+        // MUST CONVERT TO STRING or it crashes with out warning
+        edit_ScoutingTeam.setText(String.valueOf(Globals.sp.getInt(Constants.Prefs.SCOUTING_TEAM, -1)));
+
+        // Define a text box for the name of the Team to appear in when you enter the Number
+        TextView text_ScoutingTeamName = settingsBinding.textScoutingTeamName;
+        String ScoutingTeamNumStr = String.valueOf(edit_ScoutingTeam.getText());
+        if (!ScoutingTeamNumStr.isEmpty()) {
+            int ScoutingTeamNum = Integer.parseInt(ScoutingTeamNumStr);
+            if (ScoutingTeamNum > 0 && ScoutingTeamNum < Globals.TeamList.size()) {
+                // This will crash the app instead of returning null if you pass it an invalid num
+                String ScoutingTeamName = Globals.TeamList.get(ScoutingTeamNum);
+                text_ScoutingTeamName.setText(ScoutingTeamName);
+            } else text_ScoutingTeamName.setText("");
+        }
+
+        // Define a Cancel Button
+        Button but_Cancel = settingsBinding.butCancel;
+
+        but_Cancel.setOnClickListener(view -> finish());
+
+        // Define a Save Button
+        Button but_Save = settingsBinding.butSave;
+
+        but_Save.setOnClickListener(view -> {
+            int CompetitionId = Globals.CompetitionList.getCompetitionId(settingsBinding.spinnerCompetition.getSelectedItem().toString());
+            if (CompetitionId > 0) {
+                // If we changed the CompetitionId, set Global flag to reload some of the data
+                if (CompetitionId != savedCompetitionId) Globals.NeedToLoadData = true;
+                Globals.spe.putInt(Constants.Prefs.COMPETITION_ID, CompetitionId);
+            }
+            int DeviceId = Globals.DeviceList.getDeviceId(settingsBinding.spinnerDevice.getSelectedItem().toString());
+            if (DeviceId > 0) {
+                Globals.spe.putInt(Constants.Prefs.DEVICE_ID, DeviceId);
+            }
+            String ScoutingTeam = String.valueOf(edit_ScoutingTeam.getText());
+            if (!ScoutingTeam.isEmpty()) {
+                Globals.spe.putInt(Constants.Prefs.SCOUTING_TEAM, Integer.parseInt(ScoutingTeam));
+            }
+            int NumMatches = Integer.parseInt(settingsBinding.editNumMatches.getText().toString());
+            if (NumMatches < 1) NumMatches = 1;
+            Globals.spe.putInt(Constants.Prefs.NUM_MATCHES, NumMatches);
+            int ColorId = Globals.ColorList.getColorId(settingsBinding.spinnerColor.getSelectedItem().toString());
+            if (ColorId > 0) {
+                Globals.spe.putInt(Constants.Prefs.COLOR_CONTEXT_MENU, ColorId);
+            }
+            Globals.CurrentPrefTeamPos = settingsBinding.spinnerPrefTeamPos.getSelectedItemPosition();
+            Globals.spe.putInt(Constants.Prefs.PREF_TEAM_POS, Globals.CurrentPrefTeamPos);
+            Globals.spe.apply();
+            finish();
+        });
+
+        edit_ScoutingTeam.setOnFocusChangeListener((view, focus) -> {
+            if (!focus) {
+                String ScoutingTeamNumStr1 = String.valueOf(edit_ScoutingTeam.getText());
+                if (!ScoutingTeamNumStr1.isEmpty()) {
+                    int ScoutingTeamNum = Integer.parseInt(ScoutingTeamNumStr1);
+                    if (ScoutingTeamNum > 0 && ScoutingTeamNum < Globals.TeamList.size()) {
+                        // This will crash the app instead of returning null if you pass it an invalid num
+                        String ScoutingTeamName = Globals.TeamList.get(ScoutingTeamNum);
+                        text_ScoutingTeamName.setText(ScoutingTeamName);
+                    } else text_ScoutingTeamName.setText("");
+                }
             }
         });
     }

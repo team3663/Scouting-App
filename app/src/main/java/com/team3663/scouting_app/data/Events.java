@@ -1,6 +1,7 @@
 package com.team3663.scouting_app.data;
 
 import com.team3663.scouting_app.config.Constants;
+import com.team3663.scouting_app.activities.Match;
 import com.team3663.scouting_app.config.Globals;
 
 import java.util.ArrayList;
@@ -145,6 +146,16 @@ public class Events {
                         break;
                 }
             }
+        }
+
+        // Getter
+        public int getId() {
+            return id;
+        }
+
+        // Getter
+        public String getDescription() {
+            return description;
         }
     }
 }

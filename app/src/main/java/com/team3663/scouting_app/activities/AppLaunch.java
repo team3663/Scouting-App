@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.Display;
 import android.view.View;
 import android.widget.Toast;
 
@@ -39,34 +41,10 @@ public class AppLaunch extends AppCompatActivity {
     private AppLaunchBinding appLaunchBinding;
     public static Timer appLaunch_timer = new Timer();
 
-    @Override
-    protected void onActivityResult(int in_requestCode, int in_resultCode, Intent in_data) {
-        super.onActivityResult(in_requestCode, in_resultCode, in_data);
-
-        // check that it is the SecondActivity with an OK result
-        if (in_requestCode == Constants.AppLaunch.ACTIVITY_CODE_SETTINGS) {
-            if (in_resultCode == RESULT_OK) { // Activity.RESULT_OK
-
-                // get String data from Intent
-                if (in_data.getIntExtra(Constants.Settings.RELOAD_DATA_KEY, 0) == 1) {
-                    try {
-                        Globals.MatchList.clear();
-                        Globals.MatchList.addMatchRow(Constants.Matches.NO_MATCH);
-                        LoadDataFile(getString(R.string.file_matches), getString(R.string.applaunch_loading_matches), getString(R.string.applaunch_file_error_matches));
-                        Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                        appLaunchBinding.textStatus.setText("");
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        }
-    }
-
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
     @Override
-    protected void onCreate(Bundle in_savedInstanceState) {
-        super.onCreate(in_savedInstanceState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         EdgeToEdge.enable(this);
         appLaunchBinding = AppLaunchBinding.inflate(getLayoutInflater());
@@ -77,6 +55,11 @@ public class AppLaunch extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Capture screen size. Need to use WindowManager to populate a Point that holds the screen size.
+        Display screen = getWindowManager().getDefaultDisplay();
+        Point screen_size = new Point();
+        screen.getSize(screen_size);
 
         // Display app version
         PackageInfo pInfo = null;
@@ -91,90 +74,132 @@ public class AppLaunch extends AppCompatActivity {
         if (Globals.sp == null) Globals.sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
         if (Globals.spe == null) Globals.spe = Globals.sp.edit();
 
-        // Initialize activity components
-        initSettings();
-        initScouting();
+        // Define a Image Button to open up the Settings
+        appLaunchBinding.imgButSettings.setImageResource(R.drawable.settings_icon);
+        appLaunchBinding.imgButSettings.setVisibility(View.INVISIBLE);
+        appLaunchBinding.imgButSettings.setClickable(false);
+        appLaunchBinding.imgButSettings.setOnClickListener(view -> {
+            Intent GoToSettings = new Intent(AppLaunch.this, Settings.class);
+            startActivity(GoToSettings);
+        });
 
-        // Load the data
-        loadData();
-    }
+        // Define the Start Scouting Button
+        appLaunchBinding.butStartScouting.setVisibility(View.INVISIBLE);
+        appLaunchBinding.butStartScouting.setClickable(false);
+        appLaunchBinding.butStartScouting.setOnClickListener(view -> {
+            // Stop the timer
+            appLaunch_timer.cancel();
+            appLaunch_timer.purge();
 
-    private void loadData()
-    {
-        // Set a TimerTask to load the data shortly AFTER this OnCreate finishes
-        appLaunch_timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                // Force all lists to be empty (just to be sure)
-                Globals.ClimbPositionList.clear();
-                Globals.ColorList.clear();
-                Globals.CommentList.clear();
-                Globals.CompetitionList.clear();
-                Globals.DeviceList.clear();
-                Globals.EventList.clear();
-                Globals.MatchList.clear();
-                Globals.StartPositionList.clear();
-                Globals.TeamList.clear();
-                Globals.TrapResultsList.clear();
+            // Default Globals
+            Globals.CurrentTeamOverrideNum = 0;
 
-                // Load the data with a BRIEF delay between.  :)
-                try {
-                    // First index (zero) needs to be a "NO TEAM" entry so the rest line up when they are loaded
-                    Globals.TeamList.add(Constants.Teams.NO_TEAM);
-                    Globals.MatchList.addMatchRow(Constants.Matches.NO_MATCH);
+            // Go to the first page
+            Intent GoToPreMatch = new Intent(AppLaunch.this, PreMatch.class);
+            startActivity(GoToPreMatch);
 
-                    LoadDataFile(getString(R.string.file_climb_positions), getString(R.string.applaunch_loading_climb_positions), getString(R.string.applaunch_file_error_climb_positions));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_colors), getString(R.string.applaunch_loading_colors), getString(R.string.applaunch_file_error_colors));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_comments), getString(R.string.applaunch_loading_comments), getString(R.string.applaunch_file_error_comments));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_competitions), getString(R.string.applaunch_loading_competitions), getString(R.string.applaunch_file_error_competitions));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_devices), getString(R.string.applaunch_loading_devices), getString(R.string.applaunch_file_error_devices));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_events_auto), getString(R.string.applaunch_loading_events_auto), getString(R.string.applaunch_file_error_events_auto));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_events_teleop), getString(R.string.applaunch_loading_events_teleop), getString(R.string.applaunch_file_error_events_teleop));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_matches), getString(R.string.applaunch_loading_matches), getString(R.string.applaunch_file_error_matches));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_start_positions), getString(R.string.applaunch_loading_start_positions), getString(R.string.applaunch_file_error_start_positions));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_teams), getString(R.string.applaunch_loading_teams), getString(R.string.applaunch_file_error_teams));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_trap_results), getString(R.string.applaunch_loading_trap_results), getString(R.string.applaunch_file_error_trap_results));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
+            finish();
+        });
 
-                    // We need to build the "Next Events" possible but needs to be done now, after all data is loaded.
-                    Globals.EventList.buildNextEvents();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+        // Make sure that we aren't coming back to the page and it is the first time running this
+        // This is defaulted to TRUE and reset to FALSE below.  In Settings, this can be set back to
+        // TRUE if we need to (re)load some data again.
+        if (Globals.NeedToLoadData) {
+            // Set a TimerTask to load the data shortly AFTER this OnCreate finishes
+            appLaunch_timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    // Make sure that we aren't coming back to the page and it is the first time running this
+                    // This is defaulted to TRUE and reset to FALSE below.  In Settings, this can be set back to
+                    // TRUE if we need to (re)load some data again.
+                    if (Globals.NeedToLoadData) {
+                        Globals.NeedToLoadData = false;
 
-                // Erase the status text
-                appLaunchBinding.textStatus.setText("");
+                        // If we need to Load Data, this might be a "re-load".  Some Data files don't need to load if
+                        // there's already data in it.  Some will always need to reload.  We'll check if there's data by
+                        // looking at the TeamsList.
+                        Globals.MatchList.clear();
+                        Globals.MatchList.addMatchRow(Constants.Matches.NO_MATCH);
 
-                // Enable the start scouting button and settings button
-                appLaunchBinding.butStartScouting.setClickable(true);
-                appLaunchBinding.imgButSettings.setClickable(true);
+                        // If the TeamList is empty that indicates we need to load ALL data.
+                        if (Globals.TeamList.isEmpty()) {
+                            // Force all lists to be empty (just to be sure)
+                            Globals.ClimbPositionList.clear();
+                            Globals.ColorList.clear();
+                            Globals.CommentList.clear();
+                            Globals.CompetitionList.clear();
+                            Globals.DeviceList.clear();
+                            Globals.EventList.clear();
+                            Globals.StartPositionList.clear();
+                            Globals.TeamList.clear();
+                            Globals.TrapResultsList.clear();
+                        }
 
-                // Setting the Visibility attribute can't be set from a non-UI thread (like withing a TimerTask
-                // that runs on a separate thread.  So we need to make a Runner that will execute on the UI thread
-                // to set these.
-                AppLaunch.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
-                        appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
-                        appLaunchBinding.butStartScouting.setClickable(true);
-                        appLaunchBinding.imgButSettings.setClickable(true);
-                        appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
-                        appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
+                        // Load the data with a BRIEF delay between.  :)
+                        try {
+                            LoadDataFile(getString(R.string.file_matches), getString(R.string.applaunch_loading_matches), getString(R.string.applaunch_file_error_matches));
+                            Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
+
+                            // Again, if TeamList is empty this is a full load.
+                            if (Globals.TeamList.isEmpty()) {
+                                // First index (zero) needs to be a "NO TEAM" entry so the rest line up when they are loaded
+                                Globals.TeamList.add(Constants.Teams.NO_TEAM);
+
+                                LoadDataFile(getString(R.string.file_climb_positions), getString(R.string.applaunch_loading_climb_positions), getString(R.string.applaunch_file_error_climb_positions));
+                                Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_colors), getString(R.string.applaunch_loading_colors), getString(R.string.applaunch_file_error_colors));
+                                Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_comments), getString(R.string.applaunch_loading_comments), getString(R.string.applaunch_file_error_comments));
+                                Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_competitions), getString(R.string.applaunch_loading_competitions), getString(R.string.applaunch_file_error_competitions));
+                                Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_devices), getString(R.string.applaunch_loading_devices), getString(R.string.applaunch_file_error_devices));
+                                Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_events_auto), getString(R.string.applaunch_loading_events_auto), getString(R.string.applaunch_file_error_events_auto));
+                                Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_events_teleop), getString(R.string.applaunch_loading_events_teleop), getString(R.string.applaunch_file_error_events_teleop));
+                                Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_start_positions), getString(R.string.applaunch_loading_start_positions), getString(R.string.applaunch_file_error_start_positions));
+                                Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_teams), getString(R.string.applaunch_loading_teams), getString(R.string.applaunch_file_error_teams));
+                                Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
+                                LoadDataFile(getString(R.string.file_trap_results), getString(R.string.applaunch_loading_trap_results), getString(R.string.applaunch_file_error_trap_results));
+                                Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
+
+                                // We need to build the "Next Events" possible but needs to be done now, after all data is loaded.
+                                Globals.EventList.buildNextEvents();
+                            }
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
-                });
-            }
-        }, 100);
+
+                    // Erase the status text
+                    appLaunchBinding.textStatus.setText("");
+
+                    // Enable the start scouting button and settings button
+                    appLaunchBinding.butStartScouting.setClickable(true);
+                    appLaunchBinding.imgButSettings.setClickable(true);
+
+                    // Setting the Visibility attribute can't be set from a non-UI thread (like withing a TimerTask
+                    // that runs on a separate thread.  So we need to make a Runner that will execute on the UI thread
+                    // to set these.
+                    AppLaunch.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
+                            appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
+            }, 100);
+        } else {
+            // Enable the start scouting button and settings button because it isn't
+            appLaunchBinding.butStartScouting.setClickable(true);
+            appLaunchBinding.imgButSettings.setClickable(true);
+            appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
+            appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
+        }
     }
 
     // =============================================================================================
@@ -324,48 +349,5 @@ public class AppLaunch extends AppCompatActivity {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    // =============================================================================================
-    // Function:    initSettings
-    // Description: Initialize the Settings button
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initSettings() {
-        // Define a Image Button to open up the Settings
-        appLaunchBinding.imgButSettings.setImageResource(R.drawable.settings_icon);
-        appLaunchBinding.imgButSettings.setVisibility(View.INVISIBLE);
-        appLaunchBinding.imgButSettings.setClickable(false);
-        appLaunchBinding.imgButSettings.setOnClickListener(view -> {
-            Intent GoToSettings = new Intent(AppLaunch.this, Settings.class);
-            startActivityForResult(GoToSettings, Constants.AppLaunch.ACTIVITY_CODE_SETTINGS);
-        });
-    }
-
-    // =============================================================================================
-    // Function:    initScouting
-    // Description: Initialize the Start Scouting button
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initScouting() {
-        // Define the Start Scouting Button
-        appLaunchBinding.butStartScouting.setVisibility(View.INVISIBLE);
-        appLaunchBinding.butStartScouting.setClickable(false);
-        appLaunchBinding.butStartScouting.setOnClickListener(view -> {
-            // Stop the timer
-            appLaunch_timer.cancel();
-            appLaunch_timer.purge();
-
-            // Default Globals
-            Globals.CurrentTeamOverrideNum = 0;
-
-            // Go to the first page
-            Intent GoToPreMatch = new Intent(AppLaunch.this, PreMatch.class);
-            startActivity(GoToPreMatch);
-
-            finish();
-        });
     }
 }

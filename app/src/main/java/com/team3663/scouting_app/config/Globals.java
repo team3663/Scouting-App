@@ -47,5 +47,6 @@ public class Globals {
     public static SharedPreferences sp;
     public static SharedPreferences.Editor spe;
 
+    public static boolean NeedToLoadData = true;
     public static boolean isPractice = false;
 }
