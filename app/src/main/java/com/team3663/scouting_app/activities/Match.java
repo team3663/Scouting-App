@@ -267,6 +267,36 @@ public class Match extends AppCompatActivity {
     }
 
     // =============================================================================================
+    // Function:    endMatchCheck
+    // Description: Check if the match CAN end.  Check for orphaned events.
+    // Output:      void
+    // Parameters:  N/A
+    // =============================================================================================
+    @SuppressLint("SetTextI18n")
+    public void endMatchCheck() {
+        // See if there's an orphaned event.  If so, double check we REALLY want to end the match
+        if (Globals.EventLogger.isLastEventAnOrphan()) {
+            new AlertDialog.Builder(Match.this)
+                    .setTitle(getString(R.string.match_alert_orphanedEvent_title))
+                    .setMessage(getString(R.string.match_alert_orphanedEvent_message))
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(getString(R.string.match_alert_orphanedEvent_positive), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            endMatch();
+                        }
+                    })
+
+                    // A null listener allows the button to dismiss the dialog and take no further action.
+                    .setNegativeButton(getString(R.string.match_alert_orphanedEvent_negative), null)
+                    .show();
+        }
+        else endMatch();
+    }
+
+    // =============================================================================================
     // Function:    endMatch
     // Description: Ends the match and all of the timers
     // Output:      void
@@ -491,7 +521,8 @@ public class Match extends AppCompatActivity {
                                 // The dialog is automatically dismissed when a dialog button is clicked.
                                 .setPositiveButton(getString(R.string.match_alert_endMatch_positive), new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
-                                        endMatch();
+                                        dialog.dismiss();
+                                        endMatchCheck();
                                     }
                                 })
 
@@ -500,7 +531,7 @@ public class Match extends AppCompatActivity {
                                 // TODO make the icon work
 //                          .setIcon(getDrawable(android.R.attr.alertDialogIcon))
                                 .show();
-                    else endMatch();
+                    else endMatchCheck();
                     break;
             }
         });
