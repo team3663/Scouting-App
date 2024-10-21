@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "CPR-Scouting-App"
+rootProject.name = "Scouting-App"
 include(":app")

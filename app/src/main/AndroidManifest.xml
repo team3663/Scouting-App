@@ -10,10 +10,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CPRScoutingApp"
+        android:theme="@style/Theme.ScoutingApp"
         tools:targetApi="34">
         <activity
-            android:name=".AppLaunch"
+            android:name=".activities.AppLaunch"
             android:screenOrientation="sensorLandscape"
             android:exported="true"
             tools:ignore="DiscouragedApi">
@@ -23,22 +23,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Settings"
-            android:parentActivityName=".AppLaunch"
+            android:name=".activities.Settings"
+            android:parentActivityName=".activities.AppLaunch"
             android:screenOrientation="sensorLandscape"
             android:exported="true"
             android:noHistory="true"
             tools:ignore="DiscouragedApi">
         </activity>
         <activity
-            android:name=".PreMatch"
+            android:name=".activities.PreMatch"
             android:screenOrientation="sensorLandscape"
             android:exported="true"
             android:noHistory="true"
             tools:ignore="DiscouragedApi">
         </activity>
         <activity
-            android:name=".Match"
+            android:name=".activities.Match"
             android:screenOrientation="sensorLandscape"
             android:exported="true"
             android:noHistory="true"
@@ -46,14 +46,14 @@
             tools:ignore="DiscouragedApi">
         </activity>
         <activity
-            android:name=".PostMatch"
+            android:name=".activities.PostMatch"
             android:screenOrientation="sensorLandscape"
             android:exported="true"
             android:noHistory="true"
             tools:ignore="DiscouragedApi">
         </activity>
         <activity
-            android:name=".SubmitData"
+            android:name=".activities.SubmitData"
             android:screenOrientation="sensorLandscape"
             android:exported="true"
             android:noHistory="true"
