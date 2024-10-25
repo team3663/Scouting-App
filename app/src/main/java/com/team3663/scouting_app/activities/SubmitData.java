@@ -3,9 +3,12 @@ package com.team3663.scouting_app.activities;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import androidx.activity.EdgeToEdge;
@@ -15,18 +18,26 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.team3663.scouting_app.R;
+import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.SubmitDataBinding;
+import com.team3663.scouting_app.utility.achievements.Achievements;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SubmitData extends AppCompatActivity {
     // =============================================================================================
     // Global variables
     // =============================================================================================
     private SubmitDataBinding submitDataBinding;
+    private static final Timer achievement_timer = new Timer();
+    private static MediaPlayer media;
+    private static ArrayList<Achievements.PoppedAchievement> poplist;
+    private static int currentAchievement = 0;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -36,7 +47,7 @@ public class SubmitData extends AppCompatActivity {
         submitDataBinding = SubmitDataBinding.inflate(getLayoutInflater());
         View page_root_view = submitDataBinding.getRoot();
         setContentView(page_root_view);
-        ViewCompat.setOnApplyWindowInsetsListener(submitDataBinding.qrCode, (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(submitDataBinding.submitData, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -122,6 +133,84 @@ public class SubmitData extends AppCompatActivity {
         return e_file.exists() && e_file.isFile();
     }
 
+    private class popOneAndGo_TimerTask extends TimerTask {
+        @Override
+        public void run() {
+            TimerTask achievement_timerTask_Start;
+            TimerTask achievement_timerTask_End;
+
+            if (!poplist.isEmpty() && currentAchievement < poplist.size()) {
+                achievement_timerTask_Start = new AchievementTimerTaskStart();
+                achievement_timerTask_End = new AchievementTimerTaskEnd();
+                achievement_timer.schedule(achievement_timerTask_Start, 1);
+                achievement_timer.schedule(achievement_timerTask_End, Constants.Achievements.DISPLAY_TIME);
+            }
+        }
+    }
+
+    // =============================================================================================
+    // Class:       AchievementTimerTaskStart
+    // Description: Defines the TimerTask trigger for when we need to start showing an achievement
+    // =============================================================================================
+    private class AchievementTimerTaskStart extends TimerTask {
+        @Override
+        public void run() {
+            SubmitData.this.runOnUiThread(() -> {
+                submitDataBinding.textAchievementTitle.setText(poplist.get(currentAchievement).title);
+                submitDataBinding.textAchievementDesc.setText(poplist.get(currentAchievement).description);
+
+                Animation animation = AnimationUtils.loadAnimation(SubmitData.this, R.anim.blink);
+
+                submitDataBinding.imageAchievement.setVisibility(View.VISIBLE);
+                submitDataBinding.textAchievementTitle.setVisibility(View.VISIBLE);
+                submitDataBinding.textAchievementDesc.setVisibility(View.VISIBLE);
+            });
+
+//                in_submitDataBinding.imageAchievement.startAnimation(animation);
+//                in_submitDataBinding.textAchievement.startAnimation(animation);
+//                in_submitDataBinding.imageAchievement.clearAnimation();
+//                in_submitDataBinding.textAchievement.clearAnimation();
+
+            media.start();
+        }
+    }
+
+    // =============================================================================================
+    // Class:       AchievementTimerTaskEnd
+    // Description: Defines the TimerTask trigger for when we need to end showing an achievement
+    // =============================================================================================
+    private class AchievementTimerTaskEnd extends TimerTask {
+        @Override
+        public void run() {
+            TimerTask startNext;
+
+            SubmitData.this.runOnUiThread(() -> {
+                submitDataBinding.imageAchievement.setVisibility(View.INVISIBLE);
+                submitDataBinding.textAchievementTitle.setVisibility(View.INVISIBLE);
+                submitDataBinding.textAchievementDesc.setVisibility(View.INVISIBLE);
+            });
+
+            currentAchievement++;
+            if (currentAchievement < poplist.size()) {
+                startNext = new popOneAndGo_TimerTask();
+                achievement_timer.schedule(startNext, Constants.Achievements.INBETWEEN_DELAY);
+            }
+            else closeAchievements();
+        }
+    }
+
+    // =============================================================================================
+    // Function:    closeAchievements
+    // Description: Close and finish the activity
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void closeAchievements() {
+        if (media.isPlaying()) media.stop();
+        media.reset();
+        media.release();
+    }
+
     // =============================================================================================
     // Function:    initAchievements
     // Description: Initialize the Achievements system
@@ -129,14 +218,19 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initAchievements() {
+        TimerTask startOne;
+        startOne = new popOneAndGo_TimerTask();
+
         // Keep Achievements invisible
         submitDataBinding.imageAchievement.setVisibility(View.INVISIBLE);
-        submitDataBinding.textAchievement.setVisibility(View.INVISIBLE);
+        submitDataBinding.textAchievementTitle.setVisibility(View.INVISIBLE);
+        submitDataBinding.textAchievementDesc.setVisibility(View.INVISIBLE);
 
-//        Animation animation = AnimationUtils.loadAnimation(getApplicationContext()
-//                , R.anim.blink);
-//        submitDataBinding.imageAchievement.startAnimation(animation);
-//        submitDataBinding.imageAchievement.clearAnimation();
+        media = MediaPlayer.create(this, R.raw.achievement);
+        media.setVolume(1,1);
+
+        poplist = Achievements.popAchievements();
+        achievement_timer.schedule(startOne,Constants.Achievements.START_DELAY);
     }
 
     // =============================================================================================
@@ -147,7 +241,7 @@ public class SubmitData extends AppCompatActivity {
     // =============================================================================================
     private void initMatch() {
         // Adds the items from the match log files array to the list
-        ArrayAdapter<String> adp_Match = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> adp_Match = new ArrayAdapter<>(this,
                 R.layout.cpr_spinner, FindMatches());
         adp_Match.setDropDownViewResource(R.layout.cpr_spinner_item);
         submitDataBinding.spinnerMatch.setAdapter(adp_Match);

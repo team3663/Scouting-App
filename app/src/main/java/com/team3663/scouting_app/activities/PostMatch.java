@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
@@ -18,6 +17,7 @@ import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.PostMatchBinding;
+import com.team3663.scouting_app.utility.achievements.Achievements;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -253,6 +253,7 @@ public class PostMatch extends AppCompatActivity {
                 startActivity(GoToSubmitData);
             }
 
+            Achievements.data_NumMatches++;
             finish();
         });
     }

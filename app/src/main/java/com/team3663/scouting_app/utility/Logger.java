@@ -6,9 +6,9 @@ import android.util.Pair;
 import android.widget.Toast;
 
 import com.team3663.scouting_app.R;
-import com.team3663.scouting_app.activities.Match;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
+import com.team3663.scouting_app.utility.achievements.Achievements;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -279,6 +279,7 @@ public class Logger {
         // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;
 
+        Achievements.data_NumEvents++;
         int seq_number_prev = 0;
 
         // We need to special case the toggle switches.  We must preserve their own "previous" eventID but still
@@ -313,7 +314,7 @@ public class Logger {
 
         // Determine elapsed time and round to 1 decimal places
         // Get min of elapsed time and match length in order to essentially cap the time that will be recorded
-        String string_time = String.valueOf(Math.min(Math.round((in_time - Match.startTime) / 100.0) / 10.0, Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_TELEOP_LENGTH));
+        String string_time = String.valueOf(Math.min(Math.round((in_time - Globals.startTime) / 100.0) / 10.0, Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_TELEOP_LENGTH));
 
         if (string_time.endsWith(".0")) string_time = string_time.substring(0, string_time.length() - 2);
 

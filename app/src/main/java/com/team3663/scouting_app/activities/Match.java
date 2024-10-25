@@ -28,6 +28,7 @@ import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.MatchBinding;
+import com.team3663.scouting_app.utility.achievements.Achievements;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -41,7 +42,6 @@ public class Match extends AppCompatActivity {
     // Global variables
     // =============================================================================================
     private MatchBinding matchBinding;
-    public static long startTime;
     private static int eventPrevious = -1;
     private static OrientationEventListener OEL; // needed to detect the screen being flipped around
     private static String currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE;
@@ -51,6 +51,7 @@ public class Match extends AppCompatActivity {
     private static float current_Y_Relative = 0;
     private static float current_X_Absolute = 0;
     private static float current_Y_Absolute = 0;
+    private static long starttime_not_moving;
 
     // Define a Timer and TimerTasks so you can schedule things
     Timer match_Timer;
@@ -157,7 +158,11 @@ public class Match extends AppCompatActivity {
     @SuppressLint({"DiscouragedApi", "SetTextI18n"})
     public void startMatch() {
         // Record the current/start time of the match to calculate elapsed time
-        startTime = System.currentTimeMillis();
+        Globals.startTime = System.currentTimeMillis();
+
+        // Achievements
+        if (Achievements.data_StartTime == 0) Achievements.data_StartTime = Globals.startTime;
+        Globals.myAchievements.clearMatchData();
 
         // Log the starting time
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_TIME, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss")));
@@ -215,7 +220,7 @@ public class Match extends AppCompatActivity {
     @SuppressLint({"SetTextI18n", "DefaultLocale"})
     public void startTeleop() {
         // Set the start Time so that the Display Time will be correct
-        startTime = System.currentTimeMillis() - Constants.Match.TIMER_AUTO_LENGTH * 1_000;
+        Globals.startTime = System.currentTimeMillis() - Constants.Match.TIMER_AUTO_LENGTH * 1_000;
         matchBinding.textTime.setText(Constants.Match.TIMER_TELEOP_LENGTH / 60 + ":" + String.format("%02d", Constants.Match.TIMER_TELEOP_LENGTH % 60));
 
         match_Timer.schedule(teleop_timertask, Constants.Match.TIMER_TELEOP_LENGTH * 1_000);
@@ -285,6 +290,8 @@ public class Match extends AppCompatActivity {
                     .setPositiveButton(getString(R.string.match_alert_orphanedEvent_positive), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+                            Achievements.data_OrphanEvents++;
+                            Achievements.data_match_OrphanEvents++;
                             endMatch();
                         }
                     })
@@ -372,9 +379,9 @@ public class Match extends AppCompatActivity {
             int elapsedSeconds;
 
             if (Globals.CurrentMatchPhase.equals(Constants.Phases.AUTO)) {
-                elapsedSeconds = (int) (Constants.Match.TIMER_AUTO_LENGTH - Math.round((System.currentTimeMillis() - startTime) / 1_000.0));
+                elapsedSeconds = (int) (Constants.Match.TIMER_AUTO_LENGTH - Math.round((System.currentTimeMillis() - Globals.startTime) / 1_000.0));
             } else {
-                elapsedSeconds = (int) (Constants.Match.TIMER_TELEOP_LENGTH + Constants.Match.TIMER_AUTO_LENGTH - Math.round((System.currentTimeMillis() - startTime) / 1_000.0));
+                elapsedSeconds = (int) (Constants.Match.TIMER_TELEOP_LENGTH + Constants.Match.TIMER_AUTO_LENGTH - Math.round((System.currentTimeMillis() - Globals.startTime) / 1_000.0));
             }
             if (elapsedSeconds < 0) elapsedSeconds = 0;
             matchBinding.textTime.setText(elapsedSeconds / 60 + ":" + String.format("%02d", elapsedSeconds % 60));
@@ -508,11 +515,11 @@ public class Match extends AppCompatActivity {
                     break;
                 case Constants.Phases.AUTO:
                     // If we're going to teleop manually, log the start time offset
-                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_TIME_OFFSET, String.valueOf(Math.round((Constants.Match.TIMER_AUTO_LENGTH * 1000.0 - System.currentTimeMillis() + startTime) / 10.0) / 100.0));
+                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_TIME_OFFSET, String.valueOf(Math.round((Constants.Match.TIMER_AUTO_LENGTH * 1000.0 - System.currentTimeMillis() + Globals.startTime) / 10.0) / 100.0));
                     startTeleop();
                     break;
                 case Constants.Phases.TELEOP:
-                    if (startTime + (Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_TELEOP_LENGTH) * 1000 > System.currentTimeMillis())
+                    if (Globals.startTime + (Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_TELEOP_LENGTH) * 1000 > System.currentTimeMillis())
                         new AlertDialog.Builder(view.getContext())
                                 .setTitle(getString(R.string.match_alert_endMatch_title))
                                 .setMessage(getString(R.string.match_alert_endMatch_message))
@@ -625,9 +632,12 @@ public class Match extends AppCompatActivity {
             if (isChecked) {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_NOT_MOVING_START, 0,0,true);
                 matchBinding.switchNotMoving.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
+                starttime_not_moving = System.currentTimeMillis();
+                Achievements.data_match_Toggles++;
             } else {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_NOT_MOVING_END, 0,0,false);
                 matchBinding.switchNotMoving.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
+                Achievements.data_IdleTime += System.currentTimeMillis() - starttime_not_moving;
             }
         });
 
@@ -656,6 +666,7 @@ public class Match extends AppCompatActivity {
             if (isChecked) {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENSE_START, 0,0,true);
                 matchBinding.switchDefense.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
+                Achievements.data_match_Toggles++;
             } else {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENSE_END, 0,0,false);
                 matchBinding.switchDefense.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
@@ -686,6 +697,7 @@ public class Match extends AppCompatActivity {
             if (isChecked) {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENDED_START, 0,0,true);
                 matchBinding.switchDefended.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
+                Achievements.data_match_Toggles++;
             } else {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENDED_END, 0,0,false);
                 matchBinding.switchDefended.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
