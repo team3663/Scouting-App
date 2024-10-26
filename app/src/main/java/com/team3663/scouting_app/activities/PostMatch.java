@@ -3,8 +3,8 @@ package com.team3663.scouting_app.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
@@ -20,6 +20,7 @@ import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.PostMatchBinding;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 public class PostMatch extends AppCompatActivity {
@@ -100,16 +101,12 @@ public class PostMatch extends AppCompatActivity {
         postMatchBinding.dropComments.setText(new_text);
         //code for how to open the dropdown menu when clicked and select items
         postMatchBinding.dropComments.setOnClickListener(view -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(PostMatch.this);
-
-            // set title for the dropdown menu
-            builder.setTitle("Select All That Apply");
-
-            // set dialog non cancelable
-            builder.setCancelable(false);
+            AlertDialog.Builder builder = new AlertDialog.Builder(PostMatch.this)
+                .setTitle("Select All That Apply")
+                .setCancelable(false)
+                .setNeutralButton("Clear All", null);
 
             // Puts to comments from the array into the dropdown menu
-
             String[] CA = new String[CommentArray.size()];
             CommentArray.toArray(CA);
             builder.setMultiChoiceItems(CA, selectedComment, (dialogInterface, i, b) -> {
@@ -154,22 +151,25 @@ public class PostMatch extends AppCompatActivity {
                 dialogInterface.dismiss();
             });
 
-            //adds the "clear all" button to the dropdown menu
-            // to clear all previously selected items
-            builder.setNeutralButton("Clear All", (dialogInterface, i) -> {
-                // use for loop
-                for (int j = 0; j < selectedComment.length; j++) {
+            // show dialog
+            final AlertDialog dialog = builder.create();
+            dialog.show();
+
+            //Overriding the handler for the neutral button
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
                     // remove all selection
-                    selectedComment[j] = false;
-                    // clear comment list
+                    Arrays.fill(selectedComment, false);
+                    // clear comment list and uncheck entries
                     CommentList.clear();
-                    // clear text view value
-                    String new_text3 = "0 " + getString(R.string.post_dropdown_items_selected);
-                    postMatchBinding.dropComments.setText(new_text3);
+                    for (int i = 0; i < dialog.getListView().getCount(); ++i) {
+                        dialog.getListView().setItemChecked(i, false);
+                    }
                 }
             });
-            // show dialog
-            builder.show();
         });
     }
 
