@@ -17,4 +17,8 @@
     <string name="match_alert_endMatch_title">End Match</string>
     <string name="match_alert_endMatch_message">Are you sure you want to End the Match early? This cannot be undone.</string>
     <string name="match_alert_endMatch_positive">End</string>
+    <string name="match_alert_orphanedEvent_title">Possible Incomplete Event Detected</string>
+    <string name="match_alert_orphanedEvent_message">The last event recorded could have following events.\nQuitting now will leave this incomplete.\nYou can still quit or go back and complete the event sequence.</string>
+    <string name="match_alert_orphanedEvent_positive">Quit anyway</string>
+    <string name="match_alert_orphanedEvent_negative">Return to match</string>
 </resources>
