@@ -25,5 +25,6 @@
     <string name="applaunch_file_error_colors">Error loading colors from data file!</string>
 
     <string name="applaunch_start_scouting">Start Scouting</string>
-    <string name="applanuch_scouting_app">Scouting App</string>
+    <string name="applaunch_scouting_app">Scouting App</string>
+    <string name="applaunch_not_configured">This device is not configured yet.  Go to Settings to set it up.</string>
 </resources>

@@ -55,7 +55,7 @@
         android:textColor="@color/cpr_green"
         android:textSize="72sp"
         android:textStyle="bold"
-        android:text="@string/applanuch_scouting_app"
+        android:text="@string/applaunch_scouting_app"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image_CPR3663"

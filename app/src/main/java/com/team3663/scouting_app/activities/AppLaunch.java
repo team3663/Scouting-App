@@ -361,11 +361,17 @@ public class AppLaunch extends AppCompatActivity {
             // Default Globals
             Globals.CurrentTeamOverrideNum = 0;
 
-            // Go to the first page
-            Intent GoToPreMatch = new Intent(AppLaunch.this, PreMatch.class);
-            startActivity(GoToPreMatch);
+            if ((Globals.sp == null) ||
+                    (Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1) == -1) ||
+                    (Globals.sp.getInt(Constants.Prefs.DEVICE_ID, -1) == -1)) {
+                Toast.makeText( AppLaunch.this,R.string.applaunch_not_configured, Toast.LENGTH_SHORT).show();
+            } else {
+                // Go to the first page
+                Intent GoToPreMatch = new Intent(AppLaunch.this, PreMatch.class);
+                startActivity(GoToPreMatch);
 
-            finish();
+                finish();
+            }
         });
     }
 }
