@@ -18,7 +18,7 @@
         android:textSize="12sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints,VisualLintOverlap" />
 
     <ImageView
         android:id="@+id/image_CPR3663"
@@ -43,7 +43,7 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints,VisualLintBounds" />
 
     <TextView
         android:id="@+id/text_Banner"
@@ -55,7 +55,7 @@
         android:textColor="@color/cpr_green"
         android:textSize="72sp"
         android:textStyle="bold"
-        android:text="Scouting App"
+        android:text="@string/applanuch_scouting_app"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image_CPR3663"
@@ -63,33 +63,33 @@
 
     <ImageButton
         android:id="@+id/imgBut_Settings"
-        android:contentDescription="Go to settings"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:scaleType="fitXY"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:background="@color/cpr_bkgnd"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/settings_icon"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="ContentDescription,SpeakableTextPresentCheck,ImageContrastCheck" />
 
     <Button
         android:id="@+id/but_StartScouting"
         android:layout_width="245dp"
         android:layout_height="72dp"
         android:layout_marginTop="80dp"
-        android:text="Start Scouting"
+        android:text="@string/applaunch_start_scouting"
         android:textColor="@color/cpr_bkgnd"
         android:textSize="28sp"
         android:textStyle="bold"
         app:backgroundTint="@color/cpr_green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_Banner" />
+        app:layout_constraintTop_toBottomOf="@id/text_Banner"
+        tools:ignore="TextSizeCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

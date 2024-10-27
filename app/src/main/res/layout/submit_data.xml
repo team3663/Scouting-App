@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/qr_code"
+    android:id="@+id/submit_data"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/cpr_bkgnd"
@@ -149,22 +149,35 @@
 
     <ImageView
         android:id="@+id/image_Achievement"
-        android:layout_width="500dp"
-        android:layout_height="150dp"
-        android:paddingBottom="50dp"
+        android:layout_width="400dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:srcCompat="@drawable/achievement" />
 
     <TextView
-        android:id="@+id/text_Achievement"
+        android:id="@+id/text_AchievementTitle"
         android:gravity="center_vertical"
-        android:layout_width="300dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="60dp"
-        android:layout_marginStart="140dp"
-        android:textSize="22sp"
+        android:layout_width="250dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="120dp"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@id/image_Achievement"
+        app:layout_constraintStart_toStartOf="@id/image_Achievement"
+        app:layout_constraintTop_toTopOf="@id/image_Achievement" />
+
+    <TextView
+        android:id="@+id/text_AchievementDesc"
+        android:gravity="center_vertical"
+        android:layout_width="250dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="60dp"
+        android:textSize="16sp"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@id/image_Achievement"
         app:layout_constraintStart_toStartOf="@id/image_Achievement"

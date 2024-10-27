@@ -91,4 +91,10 @@ public class Constants {
         public static final long SPLASH_SCREEN_DELAY = 100;
         public static final int ACTIVITY_CODE_SETTINGS = 1;
     }
+
+    public static class Achievements {
+        public static final int START_DELAY = 500;
+        public static final int DISPLAY_TIME = 3_000;
+        public static final int INBETWEEN_DELAY = 1_000;
+    }
 }

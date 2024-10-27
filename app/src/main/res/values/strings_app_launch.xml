@@ -23,4 +23,7 @@
     <string name="applaunch_file_error_climb_positions">Error loading climbing positions from data file!</string>
     <string name="applaunch_file_error_start_positions">Error loading starting positions from data file!</string>
     <string name="applaunch_file_error_colors">Error loading colors from data file!</string>
+
+    <string name="applaunch_start_scouting">Start Scouting</string>
+    <string name="applanuch_scouting_app">Scouting App</string>
 </resources>

@@ -12,6 +12,7 @@ import com.team3663.scouting_app.data.Events;
 import com.team3663.scouting_app.data.Matches;
 import com.team3663.scouting_app.data.StartPositions;
 import com.team3663.scouting_app.data.TrapResults;
+import com.team3663.scouting_app.utility.achievements.Achievements;
 
 import java.util.ArrayList;
 
@@ -41,6 +42,7 @@ public class Globals {
     public static String CheckBoxTextPadding = "       ";
 
     public static Logger EventLogger = null;
+    public static Achievements myAchievements;
 
     public static int NumberMatchFilesKept;
 
@@ -48,4 +50,6 @@ public class Globals {
     public static SharedPreferences.Editor spe;
 
     public static boolean isPractice = false;
+
+    public static long startTime;
 }
