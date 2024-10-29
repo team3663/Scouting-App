@@ -16,8 +16,8 @@ public class Comments {
     }
 
     // Member Function: Add a row of Comment info into the list giving the data individually
-    public void addCommentRow(String in_id, String in_order, String in_description) {
-        comment_list.add(new CommentRow(in_id, in_order, in_description));
+    public void addCommentRow(String in_id, String in_description) {
+        comment_list.add(new CommentRow(in_id, in_description));
     }
 
     // Member Function: return the size of the list
@@ -61,13 +61,11 @@ public class Comments {
     // =============================================================================================
     private static class CommentRow {
         private final int id;
-        private final int order;
         private final String description;
 
         // Constructor with individual data
-        public CommentRow(String in_id, String in_order, String in_description) {
+        public CommentRow(String in_id, String in_description) {
             id = Integer.parseInt(in_id);
-            order = Integer.parseInt(in_order);
             description = in_description;
         }
     }
