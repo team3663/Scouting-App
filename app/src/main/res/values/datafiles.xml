@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="private_path">input_data</string>
-    <string name="public_path">CPR-Scouting/Input</string>
-
     <string name="file_teams">Teams.csv</string>
     <string name="file_competitions">Competitions.csv</string>
     <string name="file_matches">Matches.csv</string>
@@ -14,6 +11,4 @@
     <string name="file_climb_positions">ClimbPositions.csv</string>
     <string name="file_start_positions">StartPositions.csv</string>
     <string name="file_colors">Colors.csv</string>
-
-    <string name="logger_path">CPR-Scouting/Output</string>
 </resources>

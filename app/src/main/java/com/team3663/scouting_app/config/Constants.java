@@ -59,6 +59,10 @@ public class Constants {
 
     public static class Data {
         public static final int ID_START_POS_DEFAULT = 0;
+        public static final String PRIVATE_BASE_DIR = "input_data";
+        public static final String PUBLIC_BASE_DIR = "CPR-Scouting";
+        public static final String PUBLIC_INPUT_DIR = "Input";
+        public static final String PUBLIC_OUTPUT_DIR = "Output";
     }
 
     public static class Events {
@@ -80,6 +84,7 @@ public class Constants {
         public static final String NUM_MATCHES = "NumberOfMatches";
         public static final String COLOR_CONTEXT_MENU = "ColorContextMenu";
         public static final String PREF_TEAM_POS = "PreferredTeamPosition";
+        public static final String STORAGE_URI = "StorageURI";
     }
 
     public static class Settings {
@@ -90,6 +95,7 @@ public class Constants {
     public static class AppLaunch {
         public static final long SPLASH_SCREEN_DELAY = 100;
         public static final int ACTIVITY_CODE_SETTINGS = 1;
+        public static final int ACTIVITY_CODE_STORAGE = 2;
     }
 
     public static class Achievements {
