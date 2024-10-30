@@ -94,7 +94,7 @@ public class AppLaunch extends AppCompatActivity {
         });
 
         // Display app version
-        PackageInfo pInfo = null;
+        PackageInfo pInfo;
         try {
             pInfo = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0);
         } catch (PackageManager.NameNotFoundException e) {
@@ -134,7 +134,6 @@ public class AppLaunch extends AppCompatActivity {
     {
         // Make sure we have our directory structure created
         DocumentFile storage_df = DocumentFile.fromTreeUri(this, Globals.baseStorageURI);
-        DocumentFile[] file_list;
 
         // Check that the BASE directory exists and create it if not.
         assert storage_df != null;
@@ -218,16 +217,13 @@ public class AppLaunch extends AppCompatActivity {
                 // Setting the Visibility attribute can't be set from a non-UI thread (like withing a TimerTask
                 // that runs on a separate thread.  So we need to make a Runner that will execute on the UI thread
                 // to set these.
-                AppLaunch.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
-                        appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
-                        appLaunchBinding.butStartScouting.setClickable(true);
-                        appLaunchBinding.imgButSettings.setClickable(true);
-                        appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
-                        appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
-                    }
+                AppLaunch.this.runOnUiThread(() -> {
+                    appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
+                    appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
+                    appLaunchBinding.butStartScouting.setClickable(true);
+                    appLaunchBinding.imgButSettings.setClickable(true);
+                    appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
+                    appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
                 });
             }
         }, 10);
@@ -272,12 +268,7 @@ public class AppLaunch extends AppCompatActivity {
             // If anything goes wrong, just use the Private file
             ret = false;
 
-            AppLaunch.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(AppLaunch.this, in_msgError, Toast.LENGTH_SHORT).show();
-                }
-            });
+            AppLaunch.this.runOnUiThread(() -> Toast.makeText(AppLaunch.this, in_msgError, Toast.LENGTH_SHORT).show());
         }
 
         return ret;
@@ -288,7 +279,7 @@ public class AppLaunch extends AppCompatActivity {
     // Description: Read from the .csv data file and populates the data into the in_List.
     //              StartPositionList structure.
     //              If the in_PublicFileName doesn't exist, try to create if from the private one.
-    //              If we can't read fromthe Public file, read from the Private one.
+    //              If we can't read from the Public file, read from the Private one.
     // Parameters:  in_msgLoading
     //                  String to display to the UI that we're loading the file
     //              in_msgError
@@ -297,7 +288,7 @@ public class AppLaunch extends AppCompatActivity {
     // =============================================================================================
     public void LoadDataFile(String in_fileName, String in_msgLoading, String in_msgError) {
         boolean usePublic;
-        String line = "";
+        String line;
         int index = 1;
 
         // Ensure the public file exists, and if not, copy the private one there.

@@ -14,7 +14,7 @@ public class Colors {
 
     // Constructor
     public Colors() {
-        color_list = new ArrayList<ColorRow>();
+        color_list = new ArrayList<>();
     }
 
     // Member Function: Add a row of Color info into the list giving the data individually

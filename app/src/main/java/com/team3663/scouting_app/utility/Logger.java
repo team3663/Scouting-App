@@ -53,8 +53,6 @@ public class Logger {
 
     // Member Function: Close out the logger.  Write out all of the non-time based match data and close the files.
     public void close() {
-        boolean rc = true;
-
         // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;
 
@@ -87,9 +85,9 @@ public class Logger {
             DocumentFile file_df;
 
             for (int i = Globals.NumberMatchFilesKept - 1; i < filename_match_list.size(); ++i) {
-                file_df = Globals.output_df.findFile(String.valueOf(Globals.CurrentCompetitionId) + "_" + String.valueOf(filename_match_list.get(i)) + "_" + String.valueOf(Globals.CurrentDeviceId) + "_d.csv");
+                file_df = Globals.output_df.findFile(Globals.CurrentCompetitionId + "_" + filename_match_list.get(i) + "_" + Globals.CurrentDeviceId + "_d.csv");
                 if (file_df != null) file_df.delete();
-                file_df = Globals.output_df.findFile(String.valueOf(Globals.CurrentCompetitionId) + "_" + String.valueOf(filename_match_list.get(i)) + "_" + String.valueOf(Globals.CurrentDeviceId) + "_e.csv");
+                file_df = Globals.output_df.findFile(Globals.CurrentCompetitionId + "_" + filename_match_list.get(i) + "_" + Globals.CurrentDeviceId + "_e.csv");
                 if (file_df != null) file_df.delete();
             }
         }
@@ -127,8 +125,6 @@ public class Logger {
 
     // Member Function: Write out the "D" file
     private void WriteOutDataFile(DocumentFile in_data_df) {
-        boolean rc;
-
         if (!in_data_df.canWrite()) Toast.makeText(appContext, "File not writeable: " + in_data_df.getName(), Toast.LENGTH_LONG).show();
 
         OutputStream fos_data;
@@ -188,8 +184,6 @@ public class Logger {
 
     // Member Function: Write out the "E" file
     private void WriteOutEventFile(DocumentFile in_event_df) {
-        boolean rc;
-
         if (!in_event_df.canWrite()) Toast.makeText(appContext, "File not writeable: " + in_event_df.getName(), Toast.LENGTH_LONG).show();
 
         OutputStream fos_event;

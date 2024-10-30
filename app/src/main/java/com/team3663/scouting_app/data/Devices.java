@@ -12,7 +12,7 @@ public class Devices {
 
     // Constructor
     public Devices() {
-        device_list = new ArrayList<DeviceRow>();
+        device_list = new ArrayList<>();
     }
 
     // Member Function: Add a row of device info into the list giving the data in a csv format

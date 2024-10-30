@@ -11,7 +11,7 @@ public class TrapResults {
 
     // Constructor
     public TrapResults() {
-        trapResult_list = new ArrayList<TrapResultRow>();
+        trapResult_list = new ArrayList<>();
     }
 
     // Member Function: Add a row of Trap Result info into the list giving the data individually
