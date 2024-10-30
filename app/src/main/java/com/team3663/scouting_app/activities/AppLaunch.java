@@ -280,7 +280,7 @@ public class AppLaunch extends AppCompatActivity {
                 }
                 else if (in_fileName.equals(getString(R.string.file_comments))) {
                     if (Boolean.parseBoolean(info[1]))
-                        Globals.CommentList.addCommentRow(info[0], info[2], info[3]);
+                        Globals.CommentList.addCommentRow(info[0], info[2]);
                 }
                 else if (in_fileName.equals(getString(R.string.file_competitions))) {
                     Globals.CompetitionList.addCompetitionRow(info[0], info[1]);
