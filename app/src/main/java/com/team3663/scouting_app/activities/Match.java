@@ -43,7 +43,7 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     private MatchBinding matchBinding;
     private static int eventPrevious = -1;
-    private static OrientationEventListener OEL; // needed to detect the screen being flipped around
+    private static OrientationEventListener OEL = null; // needed to detect the screen being flipped around
     private static String currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE;
     private static double currentTouchTime = 0;
     private static boolean is_start_of_seq = true;
@@ -559,6 +559,11 @@ public class Match extends AppCompatActivity {
             // we'll try to write out to the same "dummy" Logger and crash.  Resetting the Logger here ensures we do the
             // right instantiation in Pre-Match.
             if (Globals.isPractice) Globals.EventLogger = null;
+
+            if (OEL != null) {
+                OEL.disable();
+                OEL = null;
+            }
 
             // Go to the previous page
             Intent GoToPreviousPage = new Intent(Match.this, PreMatch.class);
