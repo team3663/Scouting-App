@@ -1,24 +1,21 @@
 package com.team3663.scouting_app.utility;
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.Pair;
 import android.widget.Toast;
+
+import androidx.documentfile.provider.DocumentFile;
 
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Objects;
 
 // =============================================================================================
 // Class:       Logger
@@ -56,74 +53,58 @@ public class Logger {
 
     // Member Function: Close out the logger.  Write out all of the non-time based match data and close the files.
     public void close() {
-        String path = appContext.getString(R.string.logger_path);
-        boolean rc = true;
-
         // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;
 
-        // Ensure the path (if it's not blank) has a trailing delimiter
-        if (!path.isEmpty()) {
-            if (!path.endsWith("/")) path = path + "/";
-        }
-
         // Define the filenames/files to be used for this logger
-        String filename_data = path + Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_d.csv";
-        String filename_event = path + Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_e.csv";
-
-        File file_data = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), filename_data);
-        File file_event = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), filename_event);
-
-        // Ensure the directory structure exists first - only need to check with one file
-        if (!Objects.requireNonNull(file_data.getParentFile()).exists()) {
-            rc = Objects.requireNonNull(file_data.getParentFile()).mkdirs();
-            if (!rc) Toast.makeText(appContext, "Failed to create directory: " + file_data.getParentFile().getName(), Toast.LENGTH_LONG).show();
-        }
+        String filename_data = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_d.csv";
+        String filename_event = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_e.csv";
 
         // Delete files to ensure we're not creating more than Constants.KEEP_NUMBER_OF_MATCHES
         // Only look at _d.csv files, ensure it's a file, and store off CreationTime attribute
-        File[] files = file_data.getParentFile().listFiles();
-        ArrayList<Long> last_created = new ArrayList<>();
+        // Only look at files associated with the current competition
+        DocumentFile[] list_of_files = Globals.output_df.listFiles();
+        ArrayList<Integer> filename_match_list = new ArrayList<>();
+        for (DocumentFile df : list_of_files) {
+            String[] file_parts = df.getName().split("_");
 
-        if (files != null) {
-            for (File file : files) {
-                if (file.isFile() && file.getName().endsWith("d.csv")) {
-                    BasicFileAttributes attrs;
-                    try {
-                        attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    last_created.add(attrs.creationTime().toMillis());
-                }
-            }
+            if ((Integer.parseInt(file_parts[0]) == Globals.CurrentCompetitionId) && (file_parts[3].equals("d.csv")))
+                filename_match_list.add(Integer.parseInt(file_parts[1]));
         }
 
         // If there's too many files, go through and delete ANY that are older than then Nth - 1
-        if ((files != null) && (last_created.size() >= Globals.NumberMatchFilesKept)) {
+        // What we'll do is collect attributes and names (_d files only) into two sync'd lists.
+        // We'll take a copy of the last_created_list and sort it to easily find the create date of the Nth - 1 one.
+        // Then we'll iterate through our original sync'd two lists and see if one should be deleted based on the
+        // create date, and if so, use the matching name from the other list to do so.
+        if (filename_match_list.size() >= Globals.NumberMatchFilesKept) {
             // Sort the list and find the Nth - 1 oldest file (because we're about to create the Nth)
-            Collections.sort(last_created);
-            Collections.reverse(last_created);
+            Collections.sort(filename_match_list);
+            Collections.reverse(filename_match_list);
 
-            long created_check = last_created.get(Globals.NumberMatchFilesKept - 1);
+            DocumentFile file_df;
 
-            for (File file : files) {
-                if (file.isFile()) {
-                    BasicFileAttributes attrs;
-                    try {
-                        attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    if (attrs.creationTime().toMillis() < created_check) rc = file.delete();
-                    if (!rc) Toast.makeText(appContext, "Failed to delete file: " + file.getName(), Toast.LENGTH_LONG).show();
-                }
+            for (int i = Globals.NumberMatchFilesKept - 1; i < filename_match_list.size(); ++i) {
+                file_df = Globals.output_df.findFile(Globals.CurrentCompetitionId + "_" + filename_match_list.get(i) + "_" + Globals.CurrentDeviceId + "_d.csv");
+                if (file_df != null) file_df.delete();
+                file_df = Globals.output_df.findFile(Globals.CurrentCompetitionId + "_" + filename_match_list.get(i) + "_" + Globals.CurrentDeviceId + "_e.csv");
+                if (file_df != null) file_df.delete();
             }
         }
 
+        // Check if the current file exists before creating it.  DocumentFile will create a "... (1).csv" file
+        // if it previously existed, instead of overwriting it.
+        if (Globals.output_df.findFile(filename_data) != null) Globals.output_df.findFile(filename_data).delete();
+        if (Globals.output_df.findFile(filename_event) != null) Globals.output_df.findFile(filename_event).delete();
+
+        DocumentFile data_df = Globals.output_df.createFile("text/csv", filename_data);
+        DocumentFile event_df = Globals.output_df.createFile("text/csv", filename_event);
+
         // Write out the log files
-        WriteOutDataFile(file_data);
-        WriteOutEventFile(file_event);
+        assert data_df != null;
+        assert event_df != null;
+        WriteOutDataFile(data_df);
+        WriteOutEventFile(event_df);
         this.clear();
     }
 
@@ -143,29 +124,15 @@ public class Logger {
     }
 
     // Member Function: Write out the "D" file
-    private void WriteOutDataFile(File in_File_Data) {
-        boolean rc;
+    private void WriteOutDataFile(DocumentFile in_data_df) {
+        if (!in_data_df.canWrite()) Toast.makeText(appContext, "File not writeable: " + in_data_df.getName(), Toast.LENGTH_LONG).show();
 
-        // If the output file doesn't exist, output a stream to it and copy contents over
-        if (in_File_Data.exists())
-            Toast.makeText(appContext, "File already exists: " + in_File_Data.getName(), Toast.LENGTH_LONG).show();
-        else {
-            try {
-                rc = in_File_Data.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            if (!rc) Toast.makeText(appContext, "Failed to create file: " + in_File_Data.getName(), Toast.LENGTH_LONG).show();
-        }
-
-        if (!in_File_Data.canWrite()) Toast.makeText(appContext, "File not writeable: " + in_File_Data.getName(), Toast.LENGTH_LONG).show();
-
-        FileOutputStream fos_data;
+        OutputStream fos_data;
 
         try {
-            fos_data = new FileOutputStream(in_File_Data,false);
+            fos_data = appContext.getContentResolver().openOutputStream(in_data_df.getUri());
         } catch (Exception e) {
-            Toast.makeText(appContext, "Failed to create output stream: " + in_File_Data.getName() + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
+            Toast.makeText(appContext, "Failed to create output stream: " + in_data_df.getName() + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
             throw new RuntimeException(e);
         }
 
@@ -200,6 +167,7 @@ public class Logger {
 
         try {
             // Write out the data
+            assert fos_data != null;
             fos_data.write(csv_header.getBytes(StandardCharsets.UTF_8));
             fos_data.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
             fos_data.write(csv_line.getBytes(StandardCharsets.UTF_8));
@@ -215,25 +183,12 @@ public class Logger {
     }
 
     // Member Function: Write out the "E" file
-    private void WriteOutEventFile(File in_File_Event) {
-        boolean rc;
+    private void WriteOutEventFile(DocumentFile in_event_df) {
+        if (!in_event_df.canWrite()) Toast.makeText(appContext, "File not writeable: " + in_event_df.getName(), Toast.LENGTH_LONG).show();
 
-        if (in_File_Event.exists())
-            Toast.makeText(appContext, "File already exists: " + in_File_Event.getName(), Toast.LENGTH_LONG).show();
-        else {
-            try {
-                rc = in_File_Event.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            if (!rc) Toast.makeText(appContext, "Failed to create file: " + in_File_Event.getName(), Toast.LENGTH_LONG).show();
-        }
-
-        if (!in_File_Event.canWrite()) Toast.makeText(appContext, "File not writeable: " + in_File_Event.getName(), Toast.LENGTH_LONG).show();
-
-        FileOutputStream fos_event;
+        OutputStream fos_event;
         try {
-            fos_event = new FileOutputStream(in_File_Event, false);
+            fos_event = appContext.getContentResolver().openOutputStream(in_event_df.getUri());
 
             // Write out the header for for the file_event csv file
             String csv_header = Constants.Logger.LOGKEY_EVENT_KEY;
@@ -244,10 +199,11 @@ public class Logger {
             csv_header += "," + Constants.Logger.LOGKEY_EVENT_Y;
             csv_header += "," + Constants.Logger.LOGKEY_EVENT_PREVIOUS_SEQ;
 
+            assert fos_event != null;
             fos_event.write(csv_header.getBytes(StandardCharsets.UTF_8));
             fos_event.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
-            Toast.makeText(appContext, "Failed to create output stream: " + in_File_Event.getName() + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
+            Toast.makeText(appContext, "Failed to create output stream: " + in_event_df.getName() + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
             throw new RuntimeException(e);
         }
 

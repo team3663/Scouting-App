@@ -11,7 +11,7 @@ public class Competitions {
 
     // Constructor
     public Competitions() {
-        competition_list = new ArrayList<CompetitionRow>();
+        competition_list = new ArrayList<>();
     }
 
     // Member Function: Add a row of competition info into the list giving all of the data individually

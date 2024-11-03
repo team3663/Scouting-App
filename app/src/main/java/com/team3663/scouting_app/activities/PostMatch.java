@@ -3,7 +3,6 @@ package com.team3663.scouting_app.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -66,7 +65,7 @@ public class PostMatch extends AppCompatActivity {
         //Creating the single select dropdown menu for the trap outcomes
         Spinner spinner_Trap = findViewById(R.id.spinnerTrap);
         //accessing the array in strings.xml
-        ArrayAdapter<String> adp_Trap = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> adp_Trap = new ArrayAdapter<>(this,
                 R.layout.cpr_spinner, Globals.TrapResultsList.getDescriptionList());
         adp_Trap.setDropDownViewResource(R.layout.cpr_spinner_item);
         spinner_Trap.setAdapter(adp_Trap);
@@ -82,7 +81,7 @@ public class PostMatch extends AppCompatActivity {
         //Creating the single select dropdown menu for the climb positions
         Spinner spinner_ClimbPos = findViewById(R.id.spinnerClimbPosition);
         //accessing the array in strings.xml
-        ArrayAdapter<String> adp_ClimbPos = new ArrayAdapter<String> (this,
+        ArrayAdapter<String> adp_ClimbPos = new ArrayAdapter<> (this,
                 R.layout.cpr_spinner, Globals.ClimbPositionList.getDescriptionList());
         adp_ClimbPos.setDropDownViewResource(R.layout.cpr_spinner_item);
         spinner_ClimbPos.setAdapter(adp_ClimbPos);
@@ -157,18 +156,13 @@ public class PostMatch extends AppCompatActivity {
             dialog.show();
 
             //Overriding the handler for the neutral button
-            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    // remove all selection
-                    Arrays.fill(selectedComment, false);
-                    // clear comment list and uncheck entries
-                    CommentList.clear();
-                    for (int i = 0; i < dialog.getListView().getCount(); ++i) {
-                        dialog.getListView().setItemChecked(i, false);
-                    }
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(v -> {
+                // remove all selection
+                Arrays.fill(selectedComment, false);
+                // clear comment list and uncheck entries
+                CommentList.clear();
+                for (int i = 0; i < dialog.getListView().getCount(); ++i) {
+                    dialog.getListView().setItemChecked(i, false);
                 }
             });
         });

@@ -12,7 +12,7 @@ public class Comments {
 
     // Constructor
     public Comments() {
-        comment_list = new ArrayList<CommentRow>();
+        comment_list = new ArrayList<>();
     }
 
     // Member Function: Add a row of Comment info into the list giving the data individually
