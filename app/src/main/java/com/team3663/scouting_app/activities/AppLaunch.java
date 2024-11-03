@@ -372,7 +372,7 @@ public class AppLaunch extends AppCompatActivity {
                         Globals.TrapResultsList.addTrapResultRow(info[0], info[2]);
                 }
             }
-        } catch (IOException  e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
