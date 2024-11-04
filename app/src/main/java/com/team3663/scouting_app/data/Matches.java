@@ -13,7 +13,7 @@ public class Matches {
 
     // Constructor
     public Matches() {
-        match_list = new ArrayList<MatchInfoRow>();
+        match_list = new ArrayList<>();
     }
 
     // Member Function: Add a row of match info into the list giving all of the data individually

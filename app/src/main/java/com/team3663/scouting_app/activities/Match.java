@@ -2,7 +2,6 @@ package com.team3663.scouting_app.activities;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.SensorManager;
@@ -28,6 +27,7 @@ import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.MatchBinding;
+import com.team3663.scouting_app.utility.achievements.Achievements;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -41,9 +41,8 @@ public class Match extends AppCompatActivity {
     // Global variables
     // =============================================================================================
     private MatchBinding matchBinding;
-    public static long startTime;
     private static int eventPrevious = -1;
-    private static OrientationEventListener OEL; // needed to detect the screen being flipped around
+    private static OrientationEventListener OEL = null; // needed to detect the screen being flipped around
     private static String currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE;
     private static double currentTouchTime = 0;
     private static boolean is_start_of_seq = true;
@@ -51,6 +50,7 @@ public class Match extends AppCompatActivity {
     private static float current_Y_Relative = 0;
     private static float current_X_Absolute = 0;
     private static float current_Y_Absolute = 0;
+    private static long starttime_not_moving;
 
     // Define a Timer and TimerTasks so you can schedule things
     Timer match_Timer;
@@ -157,7 +157,11 @@ public class Match extends AppCompatActivity {
     @SuppressLint({"DiscouragedApi", "SetTextI18n"})
     public void startMatch() {
         // Record the current/start time of the match to calculate elapsed time
-        startTime = System.currentTimeMillis();
+        Globals.startTime = System.currentTimeMillis();
+
+        // Achievements
+        if (Achievements.data_StartTime == 0) Achievements.data_StartTime = Globals.startTime;
+        Globals.myAchievements.clearMatchData();
 
         // Log the starting time
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_TIME, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss")));
@@ -215,7 +219,7 @@ public class Match extends AppCompatActivity {
     @SuppressLint({"SetTextI18n", "DefaultLocale"})
     public void startTeleop() {
         // Set the start Time so that the Display Time will be correct
-        startTime = System.currentTimeMillis() - Constants.Match.TIMER_AUTO_LENGTH * 1_000;
+        Globals.startTime = System.currentTimeMillis() - Constants.Match.TIMER_AUTO_LENGTH * 1_000;
         matchBinding.textTime.setText(Constants.Match.TIMER_TELEOP_LENGTH / 60 + ":" + String.format("%02d", Constants.Match.TIMER_TELEOP_LENGTH % 60));
 
         match_Timer.schedule(teleop_timertask, Constants.Match.TIMER_TELEOP_LENGTH * 1_000);
@@ -225,23 +229,20 @@ public class Match extends AppCompatActivity {
 
         // Certain actions can't be set from a non-UI thread (like within a TimerTask that runs on a
         // separate thread). So we need to make a Runner that will execute on the UI thread to set this.
-        Match.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                matchBinding.switchNotMoving.setEnabled(true);
-                matchBinding.switchNotMoving.setTextColor(Color.WHITE);
-                matchBinding.switchNotMoving.setVisibility(View.VISIBLE);
-                matchBinding.switchDefense.setEnabled(true);
-                matchBinding.switchDefense.setTextColor(Color.WHITE);
-                matchBinding.switchDefense.setVisibility(View.VISIBLE);
-                matchBinding.switchDefended.setEnabled(true);
-                matchBinding.switchDefended.setTextColor(Color.WHITE);
-                matchBinding.switchDefended.setVisibility(View.VISIBLE);
+        Match.this.runOnUiThread(() -> {
+            matchBinding.switchNotMoving.setEnabled(true);
+            matchBinding.switchNotMoving.setTextColor(Color.WHITE);
+            matchBinding.switchNotMoving.setVisibility(View.VISIBLE);
+            matchBinding.switchDefense.setEnabled(true);
+            matchBinding.switchDefense.setTextColor(Color.WHITE);
+            matchBinding.switchDefense.setVisibility(View.VISIBLE);
+            matchBinding.switchDefended.setEnabled(true);
+            matchBinding.switchDefended.setTextColor(Color.WHITE);
+            matchBinding.switchDefended.setVisibility(View.VISIBLE);
 
-                matchBinding.butMatchControl.setText(getString(R.string.button_end_match));
-                matchBinding.butMatchControl.setBackgroundColor(getColor(R.color.dark_red));
-                matchBinding.butMatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.stop_match, 0);
-            }
+            matchBinding.butMatchControl.setText(getString(R.string.button_end_match));
+            matchBinding.butMatchControl.setBackgroundColor(getColor(R.color.dark_red));
+            matchBinding.butMatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.stop_match, 0);
         });
     }
 
@@ -255,15 +256,42 @@ public class Match extends AppCompatActivity {
     public void endTeleop() {
         // Certain actions can't be set from a non-UI thread (like within a TimerTask that runs on a
         // separate thread). So we need to make a Runner that will execute on the UI thread to set this.
-        Match.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                matchBinding.butMatchControl.setText(getString(R.string.button_match_next));
-                matchBinding.butMatchControl.setTextColor(Color.TRANSPARENT);
-                matchBinding.butMatchControl.setBackgroundColor(getColor(R.color.white));
-                matchBinding.butMatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.next_button, 0);
-            }
+        Match.this.runOnUiThread(() -> {
+            matchBinding.butMatchControl.setText(getString(R.string.button_match_next));
+            matchBinding.butMatchControl.setTextColor(Color.TRANSPARENT);
+            matchBinding.butMatchControl.setBackgroundColor(getColor(R.color.white));
+            matchBinding.butMatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.next_button, 0);
         });
+    }
+
+    // =============================================================================================
+    // Function:    endMatchCheck
+    // Description: Check if the match CAN end.  Check for orphaned events.
+    // Output:      void
+    // Parameters:  N/A
+    // =============================================================================================
+    @SuppressLint("SetTextI18n")
+    public void endMatchCheck() {
+        // See if there's an orphaned event.  If so, double check we REALLY want to end the match
+        if (Globals.EventLogger.isLastEventAnOrphan()) {
+            new AlertDialog.Builder(Match.this)
+                    .setTitle(getString(R.string.match_alert_orphanedEvent_title))
+                    .setMessage(getString(R.string.match_alert_orphanedEvent_message))
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(getString(R.string.match_alert_orphanedEvent_positive), (dialog, which) -> {
+                        dialog.dismiss();
+                        Achievements.data_OrphanEvents++;
+                        Achievements.data_match_OrphanEvents++;
+                        endMatch();
+                    })
+
+                    // A null listener allows the button to dismiss the dialog and take no further action.
+                    .setNegativeButton(getString(R.string.match_alert_orphanedEvent_negative), null)
+                    .show();
+        }
+        else endMatch();
     }
 
     // =============================================================================================
@@ -342,9 +370,9 @@ public class Match extends AppCompatActivity {
             int elapsedSeconds;
 
             if (Globals.CurrentMatchPhase.equals(Constants.Phases.AUTO)) {
-                elapsedSeconds = (int) (Constants.Match.TIMER_AUTO_LENGTH - Math.round((System.currentTimeMillis() - startTime) / 1_000.0));
+                elapsedSeconds = (int) (Constants.Match.TIMER_AUTO_LENGTH - Math.round((System.currentTimeMillis() - Globals.startTime) / 1_000.0));
             } else {
-                elapsedSeconds = (int) (Constants.Match.TIMER_TELEOP_LENGTH + Constants.Match.TIMER_AUTO_LENGTH - Math.round((System.currentTimeMillis() - startTime) / 1_000.0));
+                elapsedSeconds = (int) (Constants.Match.TIMER_TELEOP_LENGTH + Constants.Match.TIMER_AUTO_LENGTH - Math.round((System.currentTimeMillis() - Globals.startTime) / 1_000.0));
             }
             if (elapsedSeconds < 0) elapsedSeconds = 0;
             matchBinding.textTime.setText(elapsedSeconds / 60 + ":" + String.format("%02d", elapsedSeconds % 60));
@@ -478,21 +506,20 @@ public class Match extends AppCompatActivity {
                     break;
                 case Constants.Phases.AUTO:
                     // If we're going to teleop manually, log the start time offset
-                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_TIME_OFFSET, String.valueOf(Math.round((Constants.Match.TIMER_AUTO_LENGTH * 1000.0 - System.currentTimeMillis() + startTime) / 10.0) / 100.0));
+                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_TIME_OFFSET, String.valueOf(Math.round((Constants.Match.TIMER_AUTO_LENGTH * 1000.0 - System.currentTimeMillis() + Globals.startTime) / 10.0) / 100.0));
                     startTeleop();
                     break;
                 case Constants.Phases.TELEOP:
-                    if (startTime + (Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_TELEOP_LENGTH) * 1000 > System.currentTimeMillis())
+                    if (Globals.startTime + (Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_TELEOP_LENGTH) * 1000 > System.currentTimeMillis())
                         new AlertDialog.Builder(view.getContext())
                                 .setTitle(getString(R.string.match_alert_endMatch_title))
                                 .setMessage(getString(R.string.match_alert_endMatch_message))
 
                                 // Specifying a listener allows you to take an action before dismissing the dialog.
                                 // The dialog is automatically dismissed when a dialog button is clicked.
-                                .setPositiveButton(getString(R.string.match_alert_endMatch_positive), new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        endMatch();
-                                    }
+                                .setPositiveButton(getString(R.string.match_alert_endMatch_positive), (dialog, which) -> {
+                                    dialog.dismiss();
+                                    endMatchCheck();
                                 })
 
                                 // A null listener allows the button to dismiss the dialog and take no further action.
@@ -500,7 +527,7 @@ public class Match extends AppCompatActivity {
                                 // TODO make the icon work
 //                          .setIcon(getDrawable(android.R.attr.alertDialogIcon))
                                 .show();
-                    else endMatch();
+                    else endMatchCheck();
                     break;
             }
         });
@@ -521,6 +548,11 @@ public class Match extends AppCompatActivity {
             // we'll try to write out to the same "dummy" Logger and crash.  Resetting the Logger here ensures we do the
             // right instantiation in Pre-Match.
             if (Globals.isPractice) Globals.EventLogger = null;
+
+            if (OEL != null) {
+                OEL.disable();
+                OEL = null;
+            }
 
             // Go to the previous page
             Intent GoToPreviousPage = new Intent(Match.this, PreMatch.class);
@@ -548,13 +580,10 @@ public class Match extends AppCompatActivity {
             if ((eventPrevious == -1) || (eventPrevious == Constants.Events.ID_AUTO_STARTNOTE)) {
                 // Certain actions can't be set from a non-UI thread
                 // So we need to make a Runner that will execute on the UI thread to set this.
-                Match.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        matchBinding.butUndo.setVisibility(View.INVISIBLE);
-                        matchBinding.butUndo.setEnabled(false);
-                        matchBinding.textStatus.setText("");
-                    }
+                Match.this.runOnUiThread(() -> {
+                    matchBinding.butUndo.setVisibility(View.INVISIBLE);
+                    matchBinding.butUndo.setEnabled(false);
+                    matchBinding.textStatus.setText("");
                 });
             }
             else {
@@ -594,9 +623,12 @@ public class Match extends AppCompatActivity {
             if (isChecked) {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_NOT_MOVING_START, 0,0,true);
                 matchBinding.switchNotMoving.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
+                starttime_not_moving = System.currentTimeMillis();
+                Achievements.data_match_Toggles++;
             } else {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_NOT_MOVING_END, 0,0,false);
                 matchBinding.switchNotMoving.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
+                Achievements.data_IdleTime += (int)(System.currentTimeMillis() - starttime_not_moving);
             }
         });
 
@@ -625,6 +657,7 @@ public class Match extends AppCompatActivity {
             if (isChecked) {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENSE_START, 0,0,true);
                 matchBinding.switchDefense.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
+                Achievements.data_match_Toggles++;
             } else {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENSE_END, 0,0,false);
                 matchBinding.switchDefense.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
@@ -655,6 +688,7 @@ public class Match extends AppCompatActivity {
             if (isChecked) {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENDED_START, 0,0,true);
                 matchBinding.switchDefended.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
+                Achievements.data_match_Toggles++;
             } else {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENDED_END, 0,0,false);
                 matchBinding.switchDefended.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);

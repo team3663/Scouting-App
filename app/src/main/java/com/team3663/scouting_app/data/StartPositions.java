@@ -11,7 +11,7 @@ public class StartPositions {
 
     // Constructor
     public StartPositions() {
-        startPosition_list = new ArrayList<StartPositionRow>();
+        startPosition_list = new ArrayList<>();
     }
 
     // Member Function: Add a row of Start Position info into the list giving the data individually

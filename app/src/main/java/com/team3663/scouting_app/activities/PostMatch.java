@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
@@ -18,8 +17,10 @@ import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.PostMatchBinding;
+import com.team3663.scouting_app.utility.achievements.Achievements;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 public class PostMatch extends AppCompatActivity {
@@ -64,7 +65,7 @@ public class PostMatch extends AppCompatActivity {
         //Creating the single select dropdown menu for the trap outcomes
         Spinner spinner_Trap = findViewById(R.id.spinnerTrap);
         //accessing the array in strings.xml
-        ArrayAdapter<String> adp_Trap = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> adp_Trap = new ArrayAdapter<>(this,
                 R.layout.cpr_spinner, Globals.TrapResultsList.getDescriptionList());
         adp_Trap.setDropDownViewResource(R.layout.cpr_spinner_item);
         spinner_Trap.setAdapter(adp_Trap);
@@ -80,7 +81,7 @@ public class PostMatch extends AppCompatActivity {
         //Creating the single select dropdown menu for the climb positions
         Spinner spinner_ClimbPos = findViewById(R.id.spinnerClimbPosition);
         //accessing the array in strings.xml
-        ArrayAdapter<String> adp_ClimbPos = new ArrayAdapter<String> (this,
+        ArrayAdapter<String> adp_ClimbPos = new ArrayAdapter<> (this,
                 R.layout.cpr_spinner, Globals.ClimbPositionList.getDescriptionList());
         adp_ClimbPos.setDropDownViewResource(R.layout.cpr_spinner_item);
         spinner_ClimbPos.setAdapter(adp_ClimbPos);
@@ -100,16 +101,12 @@ public class PostMatch extends AppCompatActivity {
         postMatchBinding.dropComments.setText(new_text);
         //code for how to open the dropdown menu when clicked and select items
         postMatchBinding.dropComments.setOnClickListener(view -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(PostMatch.this);
-
-            // set title for the dropdown menu
-            builder.setTitle("Select All That Apply");
-
-            // set dialog non cancelable
-            builder.setCancelable(false);
+            AlertDialog.Builder builder = new AlertDialog.Builder(PostMatch.this)
+                .setTitle("Select All That Apply")
+                .setCancelable(false)
+                .setNeutralButton("Clear All", null);
 
             // Puts to comments from the array into the dropdown menu
-
             String[] CA = new String[CommentArray.size()];
             CommentArray.toArray(CA);
             builder.setMultiChoiceItems(CA, selectedComment, (dialogInterface, i, b) -> {
@@ -154,22 +151,20 @@ public class PostMatch extends AppCompatActivity {
                 dialogInterface.dismiss();
             });
 
-            //adds the "clear all" button to the dropdown menu
-            // to clear all previously selected items
-            builder.setNeutralButton("Clear All", (dialogInterface, i) -> {
-                // use for loop
-                for (int j = 0; j < selectedComment.length; j++) {
-                    // remove all selection
-                    selectedComment[j] = false;
-                    // clear comment list
-                    CommentList.clear();
-                    // clear text view value
-                    String new_text3 = "0 " + getString(R.string.post_dropdown_items_selected);
-                    postMatchBinding.dropComments.setText(new_text3);
+            // show dialog
+            final AlertDialog dialog = builder.create();
+            dialog.show();
+
+            //Overriding the handler for the neutral button
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(v -> {
+                // remove all selection
+                Arrays.fill(selectedComment, false);
+                // clear comment list and uncheck entries
+                CommentList.clear();
+                for (int i = 0; i < dialog.getListView().getCount(); ++i) {
+                    dialog.getListView().setItemChecked(i, false);
                 }
             });
-            // show dialog
-            builder.show();
         });
     }
 
@@ -253,6 +248,7 @@ public class PostMatch extends AppCompatActivity {
                 startActivity(GoToSubmitData);
             }
 
+            Achievements.data_NumMatches++;
             finish();
         });
     }

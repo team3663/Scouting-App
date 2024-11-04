@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -22,6 +21,7 @@ import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.PreMatchBinding;
+import com.team3663.scouting_app.utility.achievements.Achievements;
 
 import java.util.ArrayList;
 
@@ -68,6 +68,7 @@ public class PreMatch extends AppCompatActivity {
         initResubmit();
         initPractice();
         initNext();
+        initAchievements();
     }
 
     // =============================================================================================
@@ -203,7 +204,7 @@ public class PreMatch extends AppCompatActivity {
     // =============================================================================================
     private void initStartingPos() {
         // Adds the items from the starting positions array to the list
-        ArrayAdapter<String> adp_StartPos = new ArrayAdapter<String>(this, R.layout.cpr_spinner, Start_Positions);
+        ArrayAdapter<String> adp_StartPos = new ArrayAdapter<>(this, R.layout.cpr_spinner, Start_Positions);
         adp_StartPos.setDropDownViewResource(R.layout.cpr_spinner_item);
         preMatchBinding.spinnerStartingPosition.setAdapter(adp_StartPos);
         // Search through the list of Start Positions till you find the one that is correct then get its position in the list
@@ -323,6 +324,9 @@ public class PreMatch extends AppCompatActivity {
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_SCOUTER, preMatchBinding.editScouterName.getText().toString().toUpperCase().replace(" ",""));
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_PLAY, String.valueOf(preMatchBinding.checkboxDidPlay.isChecked()));
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_TEAM_SCOUTING, String.valueOf(Globals.CurrentScoutingTeam));
+
+                    Achievements.data_TeamToScout = Globals.CurrentTeamToScout;
+
                     if (preMatchBinding.checkboxDidPlay.isChecked()) {
                         int startPos = Globals.StartPositionList.getStartPositionId(preMatchBinding.spinnerStartingPosition.getSelectedItem().toString());
                         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_POSITION, String.valueOf(startPos));
@@ -336,6 +340,9 @@ public class PreMatch extends AppCompatActivity {
                     }
 
                     // Save off some fields for next time or later usage
+                    if ((ScouterName != null) && (!ScouterName.isEmpty()) && !ScouterName.equals(String.valueOf(preMatchBinding.editScouterName.getText())))
+                        Globals.myAchievements.clearAllData();
+
                     ScouterName = String.valueOf(preMatchBinding.editScouterName.getText());
 
                     // If they didn't play skip everything else
@@ -391,7 +398,7 @@ public class PreMatch extends AppCompatActivity {
         }
 
         // Create and apply the adapter to the spinner.
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.cpr_spinner, teamsInMatch);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.cpr_spinner, teamsInMatch);
         adapter.setDropDownViewResource(R.layout.cpr_spinner_item);
         preMatchBinding.spinnerTeamToScout.setAdapter(adapter);
 
@@ -408,5 +415,16 @@ public class PreMatch extends AppCompatActivity {
             CurrentTeamToScoutPosition = 0;
 
         preMatchBinding.spinnerTeamToScout.setSelection(CurrentTeamToScoutPosition);
+    }
+
+    // =============================================================================================
+    // Function:    initAchievements
+    // Description: Initialize the Achievements
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initAchievements() {
+        if (Globals.myAchievements == null)
+            Globals.myAchievements = new Achievements();
     }
 }
