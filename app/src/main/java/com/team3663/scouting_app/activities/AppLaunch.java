@@ -3,10 +3,13 @@ package com.team3663.scouting_app.activities;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.UriPermission;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.view.View;
 import android.widget.Toast;
 
@@ -16,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.documentfile.provider.DocumentFile;
 
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
@@ -23,12 +27,11 @@ import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.AppLaunchBinding;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.nio.file.Files;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -44,21 +47,33 @@ public class AppLaunch extends AppCompatActivity {
         super.onActivityResult(in_requestCode, in_resultCode, in_data);
 
         // check that it is the SecondActivity with an OK result
-        if (in_requestCode == Constants.AppLaunch.ACTIVITY_CODE_SETTINGS) {
-            if (in_resultCode == RESULT_OK) { // Activity.RESULT_OK
-
-                // get String data from Intent
-                if (in_data.getIntExtra(Constants.Settings.RELOAD_DATA_KEY, 0) == 1) {
-                    try {
-                        Globals.MatchList.clear();
-                        Globals.MatchList.addMatchRow(Constants.Matches.NO_MATCH);
-                        LoadDataFile(getString(R.string.file_matches), getString(R.string.applaunch_loading_matches), getString(R.string.applaunch_file_error_matches));
-                        Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                        appLaunchBinding.textStatus.setText("");
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+        if (in_resultCode == RESULT_OK) { // Activity.RESULT_OK
+            switch (in_requestCode) {
+                case Constants.AppLaunch.ACTIVITY_CODE_SETTINGS:
+                    // get String data from Intent
+                    if (in_data.getIntExtra(Constants.Settings.RELOAD_DATA_KEY, 0) == 1) {
+                        try {
+                            Globals.MatchList.clear();
+                            Globals.MatchList.addMatchRow(Constants.Matches.NO_MATCH);
+                            LoadDataFile(getString(R.string.file_matches), getString(R.string.applaunch_loading_matches), getString(R.string.applaunch_file_error_matches));
+                            Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
+                            appLaunchBinding.textStatus.setText("");
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
-                }
+                    break;
+                case Constants.AppLaunch.ACTIVITY_CODE_STORAGE:
+                    Uri treeUri = in_data.getData();
+                    if (treeUri != null) {
+                        getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                        Globals.spe.putString(Constants.Prefs.STORAGE_URI, treeUri.toString());
+                        Globals.spe.apply();
+                        Globals.baseStorageURI = treeUri;
+                    }
+
+                    loadData();
+                    break;
             }
         }
     }
@@ -79,7 +94,7 @@ public class AppLaunch extends AppCompatActivity {
         });
 
         // Display app version
-        PackageInfo pInfo = null;
+        PackageInfo pInfo;
         try {
             pInfo = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0);
         } catch (PackageManager.NameNotFoundException e) {
@@ -95,12 +110,52 @@ public class AppLaunch extends AppCompatActivity {
         initSettings();
         initScouting();
 
-        // Load the data
-        loadData();
+        // Find out if we have permissions.  Since our app is only requesting one location, if it's not empty, we're good
+        List<UriPermission> perm_list = getContentResolver().getPersistedUriPermissions();
+        boolean havePerms = !perm_list.isEmpty();
+
+        // If we have storage permissions go ahead and load the data.
+        // Otherwise, initiate getting permissions (which will then load the data afterwards)
+        if (havePerms) {
+            Globals.baseStorageURI = Uri.parse(Globals.sp.getString(Constants.Prefs.STORAGE_URI, null));
+            loadData();
+        }
+        else
+            initStoragePermissions();
     }
 
+    // =============================================================================================
+    // Function:    loadData
+    // Description: load all of the configurable data for the app
+    // Output:      void
+    // Parameters:  void
+    // =============================================================================================
     private void loadData()
     {
+        // Make sure we have our directory structure created
+        DocumentFile storage_df = DocumentFile.fromTreeUri(this, Globals.baseStorageURI);
+
+        // Check that the BASE directory exists and create it if not.
+        assert storage_df != null;
+        Globals.base_df = storage_df.findFile(Constants.Data.PUBLIC_BASE_DIR);
+
+        // If the base dir isn't there, the others won't be either, so create them
+        if (Globals.base_df == null) {
+            Globals.base_df = storage_df.createDirectory(Constants.Data.PUBLIC_BASE_DIR);
+            if (Globals.base_df != null) {
+                Globals.input_df = Globals.base_df.createDirectory(Constants.Data.PUBLIC_INPUT_DIR);
+                Globals.output_df = Globals.base_df.createDirectory(Constants.Data.PUBLIC_OUTPUT_DIR);
+            }
+        } else {
+            // The base dir is there but we should check the two sub directories are there.
+            Globals.input_df = Globals.base_df.findFile(Constants.Data.PUBLIC_INPUT_DIR);
+            if (Globals.input_df == null)
+                Globals.input_df = Globals.base_df.createDirectory(Constants.Data.PUBLIC_INPUT_DIR);
+            Globals.output_df = Globals.base_df.findFile(Constants.Data.PUBLIC_OUTPUT_DIR);
+            if (Globals.output_df == null)
+                Globals.output_df = Globals.base_df.createDirectory(Constants.Data.PUBLIC_OUTPUT_DIR);
+        }
+
         // Set a TimerTask to load the data shortly AFTER this OnCreate finishes
         appLaunch_timer.schedule(new TimerTask() {
             @Override
@@ -162,19 +217,16 @@ public class AppLaunch extends AppCompatActivity {
                 // Setting the Visibility attribute can't be set from a non-UI thread (like withing a TimerTask
                 // that runs on a separate thread.  So we need to make a Runner that will execute on the UI thread
                 // to set these.
-                AppLaunch.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
-                        appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
-                        appLaunchBinding.butStartScouting.setClickable(true);
-                        appLaunchBinding.imgButSettings.setClickable(true);
-                        appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
-                        appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
-                    }
+                AppLaunch.this.runOnUiThread(() -> {
+                    appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
+                    appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
+                    appLaunchBinding.butStartScouting.setClickable(true);
+                    appLaunchBinding.imgButSettings.setClickable(true);
+                    appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
+                    appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
                 });
             }
-        }, 100);
+        }, 10);
     }
 
     // =============================================================================================
@@ -187,38 +239,36 @@ public class AppLaunch extends AppCompatActivity {
     //              in_PublicFileName
     //                  filename for the "public" accessible file
     // =============================================================================================
-    private boolean CopyPrivateToPublicFile(String in_PrivateFileName, String in_PublicFileName, String in_msgError) {
+    private boolean CopyPrivateToPublicFile(String in_FileName, String in_msgError) {
         boolean ret = true;
 
         try {
-            InputStream in = getAssets().open(in_PrivateFileName);
-            File out_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), in_PublicFileName);
-
-            // Ensure the directory structure exists first
-            out_file.getParentFile().mkdirs();
+            InputStream in = getAssets().open(Constants.Data.PRIVATE_BASE_DIR + "/" + in_FileName);
+            DocumentFile out_file = Globals.input_df.findFile(in_FileName);
 
             // If the output file doesn't exist, output a stream to it and copy contents over
-            if (!out_file.exists()) {
-                if (out_file.createNewFile()) {
-                    OutputStream out = Files.newOutputStream(out_file.toPath());
+            if (out_file == null) {
+                out_file = Globals.input_df.createFile("text/csv", in_FileName);
+                if (out_file != null) {
+                    OutputStream out = getContentResolver().openOutputStream(out_file.getUri());
 
-                    byte[] buffer = new byte[1024];
-                    int read;
-                    while ((read = in.read(buffer)) != -1) {
-                        out.write(buffer, 0, read);
+                    if (out != null) {
+                        byte[] buffer = new byte[1024];
+                        int read;
+                        while ((read = in.read(buffer)) != -1) {
+                            out.write(buffer, 0, read);
+                        }
+
+                        out.close();
                     }
                 }
+
             }
         } catch (IOException e) {
             // If anything goes wrong, just use the Private file
             ret = false;
 
-            AppLaunch.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(AppLaunch.this, in_msgError, Toast.LENGTH_SHORT).show();
-                }
-            });
+            AppLaunch.this.runOnUiThread(() -> Toast.makeText(AppLaunch.this, in_msgError, Toast.LENGTH_SHORT).show());
         }
 
         return ret;
@@ -229,7 +279,7 @@ public class AppLaunch extends AppCompatActivity {
     // Description: Read from the .csv data file and populates the data into the in_List.
     //              StartPositionList structure.
     //              If the in_PublicFileName doesn't exist, try to create if from the private one.
-    //              If we can't read fromthe Public file, read from the Private one.
+    //              If we can't read from the Public file, read from the Private one.
     // Parameters:  in_msgLoading
     //                  String to display to the UI that we're loading the file
     //              in_msgError
@@ -238,12 +288,12 @@ public class AppLaunch extends AppCompatActivity {
     // =============================================================================================
     public void LoadDataFile(String in_fileName, String in_msgLoading, String in_msgError) {
         boolean usePublic;
-        String line = "";
+        String line;
         int index = 1;
 
         // Ensure the public file exists, and if not, copy the private one there.
         // Return back if we should use the private or public file.
-       usePublic = CopyPrivateToPublicFile(getString(R.string.private_path) + "/" + in_fileName, getString(R.string.public_path) + "/" + in_fileName, in_msgError);
+       usePublic = CopyPrivateToPublicFile(in_fileName, in_msgError);
 
         // Update the loading status
         appLaunchBinding.textStatus.setText(in_msgLoading);
@@ -253,17 +303,18 @@ public class AppLaunch extends AppCompatActivity {
             InputStream is;
 
             // If we can use the Public file, open the file, then the stream.  for the Private file, we can open the stream directly.
-            // We assume this will work (no try/catch) and if THIS fails, it's likely good that we're going to crash the app.  :(
             if (usePublic) {
-                File in_file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getString(R.string.public_path) + "/" + in_fileName);
-                is = Files.newInputStream(in_file.toPath());
-            } else {
-                is = getAssets().open(getString(R.string.private_path) + "/" + in_fileName);
+                DocumentFile df = Globals.input_df.findFile(in_fileName);
+                assert df != null;
+                is = getContentResolver().openInputStream(df.getUri());
+            }
+            else {
+                is = getAssets().open(Constants.Data.PRIVATE_BASE_DIR + "/" + in_fileName);
             }
 
             // Read in the data
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            line = br.readLine();
+            br.readLine();
             while ((line = br.readLine()) != null) {
                 // Split out the csv line.
                 String[] info = line.split(",", -1);
@@ -373,5 +424,19 @@ public class AppLaunch extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    // =============================================================================================
+    // Function:    initStoragePermissions
+    // Description: Initialize the Storage Permissions for the CPR-Scouting public directory
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initStoragePermissions() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        Uri initialUri = Uri.parse(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toURI().toString());
+        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, initialUri);
+
+        startActivityForResult(intent, Constants.AppLaunch.ACTIVITY_CODE_STORAGE);
     }
 }

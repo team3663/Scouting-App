@@ -56,9 +56,7 @@ public class Settings extends AppCompatActivity {
         settingsBinding.butCancel.setOnClickListener(view -> finish());
 
         // Define a Save Button
-        settingsBinding.butSave.setOnClickListener(view -> {
-            SaveSettings();
-        });
+        settingsBinding.butSave.setOnClickListener(view -> SaveSettings());
     }
 
     // =============================================================================================
@@ -108,7 +106,7 @@ public class Settings extends AppCompatActivity {
     // =============================================================================================
     private void initCompetition() {
         // Adds Competition information to spinner
-        ArrayAdapter<String> adp_Competition = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> adp_Competition = new ArrayAdapter<>(this,
                 R.layout.cpr_spinner, Globals.CompetitionList.getCompetitionList());
         adp_Competition.setDropDownViewResource(R.layout.cpr_spinner_item);
         settingsBinding.spinnerCompetition.setAdapter(adp_Competition);
@@ -139,7 +137,7 @@ public class Settings extends AppCompatActivity {
     // =============================================================================================
     private void initDevice() {
         // Adds Device information to spinner
-        ArrayAdapter<String> adp_Device = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> adp_Device = new ArrayAdapter<>(this,
                 R.layout.cpr_spinner, Globals.DeviceList.getDeviceList());
         adp_Device.setDropDownViewResource(R.layout.cpr_spinner_item);
         settingsBinding.spinnerDevice.setAdapter(adp_Device);
@@ -156,13 +154,10 @@ public class Settings extends AppCompatActivity {
         settingsBinding.spinnerDevice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Settings.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        int team_num = Globals.DeviceList.getTeamNumberByDescription(settingsBinding.spinnerDevice.getSelectedItem().toString());
-                        settingsBinding.editScoutingTeam.setText(String.valueOf(team_num));
-                        settingsBinding.textScoutingTeamName.setText(Globals.TeamList.get(team_num));
-                    }
+                Settings.this.runOnUiThread(() -> {
+                    int team_num = Globals.DeviceList.getTeamNumberByDescription(settingsBinding.spinnerDevice.getSelectedItem().toString());
+                    settingsBinding.editScoutingTeam.setText(String.valueOf(team_num));
+                    settingsBinding.textScoutingTeamName.setText(Globals.TeamList.get(team_num));
                 });
             }
 
@@ -180,7 +175,7 @@ public class Settings extends AppCompatActivity {
     // =============================================================================================
     private void initPrefTeamPos() {
         // Adds PreferredTeamPosition information to spinner
-        ArrayAdapter<String> adp_PrefTeamPos = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> adp_PrefTeamPos = new ArrayAdapter<>(this,
                 R.layout.cpr_spinner, Constants.Settings.PREF_TEAM_POS);
         adp_PrefTeamPos.setDropDownViewResource(R.layout.cpr_spinner_item);
         settingsBinding.spinnerPrefTeamPos.setAdapter(adp_PrefTeamPos);
@@ -193,11 +188,8 @@ public class Settings extends AppCompatActivity {
         settingsBinding.spinnerPrefTeamPos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Settings.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+                Settings.this.runOnUiThread(() -> {
 
-                    }
                 });
             }
 
@@ -262,7 +254,7 @@ public class Settings extends AppCompatActivity {
     // =============================================================================================
     private void initColors() {
         // Adds Color information to spinner
-        ArrayAdapter<String> adp_Color = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> adp_Color = new ArrayAdapter<>(this,
                 R.layout.cpr_spinner, Globals.ColorList.getDescriptionList());
         adp_Color.setDropDownViewResource(R.layout.cpr_spinner_item);
         settingsBinding.spinnerColor.setAdapter(adp_Color);

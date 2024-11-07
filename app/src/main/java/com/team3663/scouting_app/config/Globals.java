@@ -1,6 +1,9 @@
 package com.team3663.scouting_app.config;
 
 import android.content.SharedPreferences;
+import android.net.Uri;
+
+import androidx.documentfile.provider.DocumentFile;
 
 import com.team3663.scouting_app.utility.Logger;
 import com.team3663.scouting_app.data.ClimbPositions;
@@ -48,8 +51,13 @@ public class Globals {
 
     public static SharedPreferences sp;
     public static SharedPreferences.Editor spe;
+    public static Uri baseStorageURI = null;
 
     public static boolean isPractice = false;
 
     public static long startTime;
+
+    public static DocumentFile base_df = null;
+    public static DocumentFile input_df = null;
+    public static DocumentFile output_df = null;
 }

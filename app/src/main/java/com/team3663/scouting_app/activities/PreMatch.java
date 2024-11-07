@@ -204,7 +204,7 @@ public class PreMatch extends AppCompatActivity {
     // =============================================================================================
     private void initStartingPos() {
         // Adds the items from the starting positions array to the list
-        ArrayAdapter<String> adp_StartPos = new ArrayAdapter<String>(this, R.layout.cpr_spinner, Start_Positions);
+        ArrayAdapter<String> adp_StartPos = new ArrayAdapter<>(this, R.layout.cpr_spinner, Start_Positions);
         adp_StartPos.setDropDownViewResource(R.layout.cpr_spinner_item);
         preMatchBinding.spinnerStartingPosition.setAdapter(adp_StartPos);
         // Search through the list of Start Positions till you find the one that is correct then get its position in the list
@@ -398,7 +398,7 @@ public class PreMatch extends AppCompatActivity {
         }
 
         // Create and apply the adapter to the spinner.
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.cpr_spinner, teamsInMatch);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.cpr_spinner, teamsInMatch);
         adapter.setDropDownViewResource(R.layout.cpr_spinner_item);
         preMatchBinding.spinnerTeamToScout.setAdapter(adapter);
 
