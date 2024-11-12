@@ -58,6 +58,14 @@ public class SubmitData extends AppCompatActivity {
         initBluetooth();
         initQuit();
         initNext();
+
+        // We're done with the logger
+        Globals.EventLogger.close();
+        Globals.EventLogger = null;
+
+        // Increases the team number so that it auto fills for the next match correctly
+        //  and do it after the logger is closed so that this can't mess the logger up
+        Globals.CurrentMatchNumber++;
     }
 
     // =============================================================================================
@@ -195,7 +203,20 @@ public class SubmitData extends AppCompatActivity {
         media.setVolume(1,1);
 
         poplist = Achievements.popAchievements();
-        achievement_timer.schedule(startOne,Constants.Achievements.START_DELAY);
+
+        // If achievement need to be popped, first log them, and then set up a timer to show them.
+        if (!poplist.isEmpty()) {
+            String ach_sep_ID = "";
+            for (Achievements.PoppedAchievement pa : poplist) {
+                ach_sep_ID += ":" + pa.id;
+            }
+            if (!poplist.isEmpty()) {
+                ach_sep_ID = ach_sep_ID.substring(1);
+                Globals.EventLogger.LogData(Constants.Logger.LOGKEY_ACHIEVEMENT, ach_sep_ID);
+            }
+
+            achievement_timer.schedule(startOne, Constants.Achievements.START_DELAY);
+        }
     }
 
     // =============================================================================================
