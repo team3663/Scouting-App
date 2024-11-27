@@ -151,6 +151,7 @@ public class Logger {
         csv_header += "," + Constants.Logger.LOGKEY_CLIMB_POSITION;
         csv_header += "," + Constants.Logger.LOGKEY_TRAP;
         csv_header += "," + Constants.Logger.LOGKEY_COMMENTS;
+        csv_header += "," + Constants.Logger.LOGKEY_ACHIEVEMENT;
         csv_header += "," + Constants.Logger.LOGKEY_START_TIME_OFFSET;
         csv_header += "," + Constants.Logger.LOGKEY_START_TIME;
 
@@ -164,6 +165,7 @@ public class Logger {
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_CLIMB_POSITION);
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_TRAP);
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_COMMENTS);
+        csv_line += FindValueInPair(Constants.Logger.LOGKEY_ACHIEVEMENT);
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_START_TIME_OFFSET);
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_START_TIME);
 
