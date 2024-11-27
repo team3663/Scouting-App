@@ -33,6 +33,7 @@ public class PreMatch extends AppCompatActivity {
     // To store the inputted name
     protected static String ScouterName;
     private static final ArrayList<String> Start_Positions = Globals.StartPositionList.getDescriptionList();
+    private static final ArrayList<String> Match_Types = Globals.MatchTypeList.getDescriptionList();
     public static int CurrentTeamToScoutPosition;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
@@ -59,6 +60,7 @@ public class PreMatch extends AppCompatActivity {
 
         // Initialize activity components
         initMatchNumber();
+        initMatchType();
         initTeamNumber();
         initScouterName();
         initDidPlay();
@@ -113,16 +115,58 @@ public class PreMatch extends AppCompatActivity {
     }
 
     // =============================================================================================
+    // Function:    initMatchType
+    // Description: Initialize the Match Type field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initMatchType() {
+        // Adds the items from the match type array to the list
+        ArrayAdapter<String> adp_MatchType = new ArrayAdapter<>(this, R.layout.cpr_spinner, Match_Types);
+        adp_MatchType.setDropDownViewResource(R.layout.cpr_spinner_item);
+        preMatchBinding.spinnerMatchType.setAdapter(adp_MatchType);
+
+        // Search through the list of match types until you find the one that is correct then get its position in the list
+        // and set that one as selected
+        int start_Pos_DropId = 0;
+        for (int i = 0; i < Match_Types.size(); i++) {
+            if (Match_Types.get(i).equals(Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType))) {
+                start_Pos_DropId = i;
+                break;
+            }
+        }
+        preMatchBinding.spinnerMatchType.setSelection(start_Pos_DropId);
+
+        // Set up a listener to handle any changes to the dropdown
+        preMatchBinding.spinnerMatchType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                // Save off what you selected to be used until changed again
+                int newMatchType = Globals.MatchTypeList.getMatchTypeId(preMatchBinding.spinnerMatchType.getSelectedItem().toString());
+
+                if (newMatchType != Globals.CurrentMatchType) {
+                    Globals.CurrentMatchType = Globals.MatchTypeList.getMatchTypeId(preMatchBinding.spinnerMatchType.getSelectedItem().toString());
+                    Globals.CurrentTeamOverrideNum = 0;
+                    Globals.CurrentMatchNumber = 0;
+                    Globals.CurrentTeamToScout = 0;
+                    preMatchBinding.editMatch.setText("");
+                    preMatchBinding.textTeamToScoutName.setText("");
+                    loadTeamToScout();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
+    }
+
+    // =============================================================================================
     // Function:    initTeamNumber
     // Description: Initialize the Team Number To Scout field
     // Parameters:  void
     // Output:      void
     // =============================================================================================
     private void initTeamNumber() {
-        // Run it from a handler because it doesn't like to work and it will just do absolutely nothing if you don't
-        // Create a new variable so it wont change before the handler is called cause that will mess it up (Even though its only 1 millisecond)
-//        new Handler().postDelayed(() -> preMatchBinding.spinnerTeamToScout.setSelection(CurrentTeamToScoutPosition), 1);
-
         loadTeamToScout();
 
         preMatchBinding.spinnerTeamToScout.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -324,6 +368,7 @@ public class PreMatch extends AppCompatActivity {
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_SCOUTER, preMatchBinding.editScouterName.getText().toString().toUpperCase().replace(" ",""));
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_PLAY, String.valueOf(preMatchBinding.checkboxDidPlay.isChecked()));
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_TEAM_SCOUTING, String.valueOf(Globals.CurrentScoutingTeam));
+                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_MATCH_TYPE, Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType));
 
                     Achievements.data_TeamToScout = Globals.CurrentTeamToScout;
 
@@ -381,8 +426,8 @@ public class PreMatch extends AppCompatActivity {
         // If we have a match number load the team information for the match
         ArrayList<String> teamsInMatch = new ArrayList<>();
         if (Globals.CurrentMatchNumber > 0) {
-            if (Globals.MatchList.isMatchValid(Globals.CurrentMatchNumber))
-                teamsInMatch = Globals.MatchList.getListOfTeams(Globals.CurrentMatchNumber);
+            if (Globals.MatchList.isCurrentMatchValid())
+                teamsInMatch = Globals.MatchList.getListOfTeams();
             else {
                 teamsInMatch = new ArrayList<>();
                 teamsInMatch.add(getString(R.string.pre_dropdown_no_items));
@@ -409,7 +454,7 @@ public class PreMatch extends AppCompatActivity {
         if (Globals.CurrentTeamOverrideNum > 0) {
             CurrentTeamToScoutPosition = teamsInMatch.size() - 1;
         } else if (Globals.CurrentPrefTeamPos > 0) {
-            String prefTeam = Globals.MatchList.getTeamInPosition(Globals.CurrentMatchNumber, Constants.Settings.PREF_TEAM_POS[Globals.CurrentPrefTeamPos]);
+            String prefTeam = Globals.MatchList.getTeamInPosition(Constants.Settings.PREF_TEAM_POS[Globals.CurrentPrefTeamPos]);
             CurrentTeamToScoutPosition = teamsInMatch.indexOf(prefTeam);
         } else if (CurrentTeamToScoutPosition < 0)
             CurrentTeamToScoutPosition = 0;
