@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import androidx.documentfile.provider.DocumentFile;
 
+import com.team3663.scouting_app.data.MatchTypes;
 import com.team3663.scouting_app.utility.Logger;
 import com.team3663.scouting_app.data.ClimbPositions;
 import com.team3663.scouting_app.data.Colors;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 public class Globals {
     public static ArrayList<String> TeamList = new ArrayList<String>();
     public static Competitions CompetitionList = new Competitions();
+    public static MatchTypes MatchTypeList = new MatchTypes();
     public static Matches MatchList = new Matches();
     public static Devices DeviceList = new Devices();
     public static Events EventList = new Events();
@@ -41,6 +43,7 @@ public class Globals {
     public static int CurrentPrefTeamPos;
     public static int CurrentTeamToScout;
     public static String CurrentMatchPhase;
+    public static int CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
 
     public static String CheckBoxTextPadding = "       ";
 
