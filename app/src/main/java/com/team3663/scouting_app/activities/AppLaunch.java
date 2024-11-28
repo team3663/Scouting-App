@@ -122,6 +122,9 @@ public class AppLaunch extends AppCompatActivity {
         }
         else
             initStoragePermissions();
+
+        // While loading Matches, we messed with Globals.CurrentMatchType, so reset it
+        Globals.CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
     }
 
     // =============================================================================================
@@ -176,7 +179,6 @@ public class AppLaunch extends AppCompatActivity {
                 try {
                     // First index (zero) needs to be a "NO TEAM" entry so the rest line up when they are loaded
                     Globals.TeamList.add(Constants.Teams.NO_TEAM);
-                    Globals.MatchList.addMatchRow(Constants.Matches.NO_MATCH);
 
                     LoadDataFile(getString(R.string.file_climb_positions), getString(R.string.applaunch_loading_climb_positions), getString(R.string.applaunch_file_error_climb_positions));
                     Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
@@ -191,6 +193,8 @@ public class AppLaunch extends AppCompatActivity {
                     LoadDataFile(getString(R.string.file_events_auto), getString(R.string.applaunch_loading_events_auto), getString(R.string.applaunch_file_error_events_auto));
                     Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
                     LoadDataFile(getString(R.string.file_events_teleop), getString(R.string.applaunch_loading_events_teleop), getString(R.string.applaunch_file_error_events_teleop));
+                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
+                    LoadDataFile(getString(R.string.file_match_types), getString(R.string.applaunch_loading_match_types), getString(R.string.applaunch_file_error_match_types));
                     Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
                     LoadDataFile(getString(R.string.file_matches), getString(R.string.applaunch_loading_matches), getString(R.string.applaunch_file_error_matches));
                     Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
@@ -345,14 +349,17 @@ public class AppLaunch extends AppCompatActivity {
                 else if (in_fileName.equals(getString(R.string.file_events_teleop))) {
                     Globals.EventList.addEventRow(info[0], info[1], Constants.Phases.TELEOP, info[2], info[3], info[4]);
                 }
+                else if (in_fileName.equals(getString(R.string.file_match_types))) {
+                    Globals.MatchTypeList.addMatchTypeRow(info[0], info[1], info[2]);
+                }
                 else if (in_fileName.equals(getString(R.string.file_matches))) {
                     // Use only the match information that equals the competition we're in.
                     if (Integer.parseInt(info[0]) == Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1)) {
-                        for (int i = index; i < Integer.parseInt(info[1]); i++) {
+                        Globals.CurrentMatchType = Globals.MatchTypeList.getMatchTypeId(info[1]);
+                        for (int i = Globals.MatchList.size(); i < Integer.parseInt(info[2]); i++) {
                             Globals.MatchList.addMatchRow(Constants.Matches.NO_MATCH);
                         }
-                        Globals.MatchList.addMatchRow(info[2], info[3], info[4], info[5], info[6], info[7]);
-                        index = Integer.parseInt(info[1]) + 1;
+                        Globals.MatchList.addMatchRow(info[1], info[3], info[4], info[5], info[6], info[7], info[8]);
                     }
                 }
                 else if (in_fileName.equals(getString(R.string.file_start_positions))) {

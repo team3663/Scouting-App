@@ -233,14 +233,6 @@ public class PostMatch extends AppCompatActivity {
                 if (!comment_sep_ID.isEmpty()) comment_sep_ID = comment_sep_ID.substring(1);
                 Globals.EventLogger.LogData(Constants.Logger.LOGKEY_COMMENTS, comment_sep_ID);
 
-                // We're done with the logger
-                Globals.EventLogger.close();
-                Globals.EventLogger = null;
-
-                // Increases the team number so that it auto fills for the next match correctly
-                //  and do it after the logger is closed so that this can't mess the logger up
-                Globals.CurrentMatchNumber++;
-
                 // Reset the Saved Start position so that you have to choose it again
                 Globals.CurrentStartPosition = 0;
 

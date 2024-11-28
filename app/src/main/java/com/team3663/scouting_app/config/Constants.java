@@ -6,6 +6,8 @@ public class Constants {
 
     public static class Logger {
         // Logger Keys - These are also the csv column header names
+        public static final String LOGKEY_ACHIEVEMENT = "D_Achievements";
+        public static final String LOGKEY_MATCH_TYPE = "D_MatchType";
         public static final String LOGKEY_DID_PLAY = "D_DidPlay";
         public static final String LOGKEY_START_POSITION = "D_StartPos";
         public static final String LOGKEY_TEAM_SCOUTING = "D_TeamScouting";
@@ -39,6 +41,11 @@ public class Constants {
         public static final String AUTO = "Auto";
         public static final String TELEOP = "Teleop";
         public static final String NONE = "";
+    }
+
+    public static class PreMatch {
+        public static final int NUMBER_OF_MATCH_TYPES = 3;
+        public static final int DEFAULT_MATCH_TYPE = 1;
     }
 
     public static class Match {
