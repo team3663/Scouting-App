@@ -44,8 +44,8 @@ public class Constants {
     }
 
     public static class PreMatch {
-        public static final String QUAL_MATCH_SHORTFORM = "q";
         public static final int NUMBER_OF_MATCH_TYPES = 3;
+        public static final int DEFAULT_MATCH_TYPE = 1;
     }
 
     public static class Match {

@@ -124,7 +124,7 @@ public class AppLaunch extends AppCompatActivity {
             initStoragePermissions();
 
         // While loading Matches, we messed with Globals.CurrentMatchType, so reset it
-        Globals.CurrentMatchType = 1;
+        Globals.CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
     }
 
     // =============================================================================================
