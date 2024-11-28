@@ -51,6 +51,7 @@ public class Settings extends AppCompatActivity {
         initScoutingTeam();
         initNumMatches();
         initColors();
+        initShadowMode();
 
         // Define a Cancel Button
         settingsBinding.butCancel.setOnClickListener(view -> finish());
@@ -274,6 +275,27 @@ public class Settings extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
+        });
+    }
+
+    // =============================================================================================
+    // Function:    initShadowMode
+    // Description: Initialize the Shadow Mode field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initShadowMode() {
+        // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
+        // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)
+        // So add it in now.
+        String paddedText = settingsBinding.checkboxShadowMode.getText() + Globals.CheckBoxTextPadding;
+        settingsBinding.checkboxShadowMode.setText(paddedText);
+
+        // Default checkboxes
+        settingsBinding.checkboxShadowMode.setChecked(false);
+
+        settingsBinding.checkboxShadowMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Globals.isShadowMode = isChecked;
         });
     }
 }

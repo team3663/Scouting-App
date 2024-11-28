@@ -13,4 +13,5 @@
     <string name="pre_practice">Practice Mode</string>
     <string name="pre_missing_data">Please fill in all fields</string>
     <string name="pre_dropdown_no_items">None</string>
+    <string name="pre_shadow_mode">Shadow Mode</string>
 </resources>
