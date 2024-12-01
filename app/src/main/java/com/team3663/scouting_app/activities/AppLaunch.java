@@ -330,8 +330,11 @@ public class AppLaunch extends AppCompatActivity {
                         Globals.ClimbPositionList.addClimbPositionRow(info[0], info[2]);
                 }
                 else if (in_fileName.equals(getString(R.string.file_colors))) {
-                    if (Boolean.parseBoolean(info[1]))
-                        Globals.ColorList.addColorRow(info[0], info[2], info[3], info[4]);
+                    // We don't know how many color codes there will be so re-split the line and pass in the csv of color choices
+                    if (Boolean.parseBoolean(info[1])) {
+                        String[] info_colors = line.split(",",4);
+                        Globals.ColorList.addColorRow(info[0], info[2], info_colors[3]);
+                    }
                 }
                 else if (in_fileName.equals(getString(R.string.file_comments))) {
                     if (Boolean.parseBoolean(info[1]))
@@ -344,10 +347,10 @@ public class AppLaunch extends AppCompatActivity {
                     Globals.DeviceList.addDeviceRow(info[0], info[1], info[2]);
                 }
                 else if (in_fileName.equals(getString(R.string.file_events_auto))) {
-                    Globals.EventList.addEventRow(info[0], info[1], Constants.Phases.AUTO, info[2], info[3], info[4]);
+                    Globals.EventList.addEventRow(info[0], info[1], Constants.Phases.AUTO, info[2], info[3], info[4], info[5]);
                 }
                 else if (in_fileName.equals(getString(R.string.file_events_teleop))) {
-                    Globals.EventList.addEventRow(info[0], info[1], Constants.Phases.TELEOP, info[2], info[3], info[4]);
+                    Globals.EventList.addEventRow(info[0], info[1], Constants.Phases.TELEOP, info[2], info[3], info[4], info[5]);
                 }
                 else if (in_fileName.equals(getString(R.string.file_match_types))) {
                     Globals.MatchTypeList.addMatchTypeRow(info[0], info[1], info[2]);
