@@ -6,6 +6,7 @@ public class Constants {
 
     public static class Logger {
         // Logger Keys - These are also the csv column header names
+        public static final String LOGKEY_SHADOW_MODE = "D_Shadow";
         public static final String LOGKEY_ACHIEVEMENT = "D_Achievements";
         public static final String LOGKEY_MATCH_TYPE = "D_MatchType";
         public static final String LOGKEY_DID_PLAY = "D_DidPlay";

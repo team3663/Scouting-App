@@ -142,6 +142,7 @@ public class Logger {
 
         // Append to the csv line the values in the correct order
         csv_header += "," + Constants.Logger.LOGKEY_MATCH_TYPE;
+        csv_header += "," + Constants.Logger.LOGKEY_SHADOW_MODE;
         csv_header += "," + Constants.Logger.LOGKEY_TEAM_TO_SCOUT;
         csv_header += "," + Constants.Logger.LOGKEY_TEAM_SCOUTING;
         csv_header += "," + Constants.Logger.LOGKEY_SCOUTER;
@@ -156,6 +157,7 @@ public class Logger {
         csv_header += "," + Constants.Logger.LOGKEY_START_TIME;
 
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_MATCH_TYPE);
+        csv_line += FindValueInPair(Constants.Logger.LOGKEY_SHADOW_MODE);
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_TEAM_TO_SCOUT);
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_TEAM_SCOUTING);
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_SCOUTER);
