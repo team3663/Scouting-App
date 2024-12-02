@@ -71,6 +71,7 @@ public class PreMatch extends AppCompatActivity {
         initPractice();
         initNext();
         initAchievements();
+        initShadowMode();
     }
 
     // =============================================================================================
@@ -369,6 +370,7 @@ public class PreMatch extends AppCompatActivity {
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_PLAY, String.valueOf(preMatchBinding.checkboxDidPlay.isChecked()));
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_TEAM_SCOUTING, String.valueOf(Globals.CurrentScoutingTeam));
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_MATCH_TYPE, Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType));
+                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_SHADOW_MODE, String.valueOf(Globals.isShadowMode));
 
                     Achievements.data_TeamToScout = Globals.CurrentTeamToScout;
 
@@ -471,5 +473,18 @@ public class PreMatch extends AppCompatActivity {
     private void initAchievements() {
         if (Globals.myAchievements == null)
             Globals.myAchievements = new Achievements();
+    }
+
+    // =============================================================================================
+    // Function:    initShadowMode
+    // Description: Initialize the Shadow Mode fields
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initShadowMode() {
+        if (Globals.isShadowMode) {
+            preMatchBinding.textShadowModeL.setText(getString(R.string.pre_shadow_mode));
+            preMatchBinding.textShadowModeR.setText(getString(R.string.pre_shadow_mode));
+        }
     }
 }
