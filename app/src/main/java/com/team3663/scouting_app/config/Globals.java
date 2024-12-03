@@ -58,6 +58,7 @@ public class Globals {
 
     public static boolean isPractice = false;
     public static boolean isStartingNote = true;
+    public static boolean isShadowMode = false;
 
     public static long startTime;
 

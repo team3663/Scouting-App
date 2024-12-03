@@ -22,8 +22,28 @@ public class Events {
     }
 
     // Member Function: Add a row of event info into the list giving the data individually
-    public void addEventRow(String in_id, String in_description, String in_phase, String in_seq_start, String in_FOP, String in_next_set) {
-        event_list.add(new EventRow(Integer.parseInt(in_id), in_description, in_phase, Boolean.parseBoolean(in_seq_start), Boolean.parseBoolean(in_FOP), in_next_set));
+    public void addEventRow(String in_id, String in_description, String in_phase, String in_seq_start, String in_FOP, String in_next_set, String in_color_index) {
+        event_list.add(new EventRow(Integer.parseInt(in_id), in_description, in_phase, Boolean.parseBoolean(in_seq_start), Boolean.parseBoolean(in_FOP), in_next_set, in_color_index));
+    }
+
+    // Member Function: Check if an event has a specific color to use
+    public boolean hasEventColor(int in_EventId) {
+        for (EventRow er : event_list) {
+            if ((er.id == in_EventId) && (!er.color.isEmpty()))
+                return true;
+        }
+
+        return false;
+    }
+
+    // Member Function: Return the color code for this event
+    public int getEventColor(int in_EventId) {
+        for (EventRow er : event_list) {
+            if (er.id == in_EventId)
+                return Integer.parseInt(er.color);
+        }
+
+        return 0;
     }
 
     // Member Function: Return a list of Events (description) for a give phase of the match (only ones that start a sequence)
@@ -39,7 +59,7 @@ public class Events {
     public ArrayList<String> getNextEvents(int in_EventId) {
         // Find the event in the list, and return it's list of valid next events
         for (EventRow er : event_list) {
-            if ((er.id == in_EventId)) return er.next_events_desc;
+            if (er.id == in_EventId) return er.next_events_desc;
         }
 
         return null;
@@ -122,9 +142,10 @@ public class Events {
         final boolean is_seq_start;
         final String next_event_set;
         final ArrayList<String> next_events_desc;
+        final String color;
 
         // Constructor
-        public EventRow(int in_id, String in_description, String in_phase, Boolean in_seq_start, Boolean in_FOP, String in_next_event_set) {
+        public EventRow(int in_id, String in_description, String in_phase, Boolean in_seq_start, Boolean in_FOP, String in_next_event_set, String in_color_index) {
             id = in_id;
             description = in_description;
             match_phase = in_phase;
@@ -132,6 +153,7 @@ public class Events {
             is_seq_start = in_seq_start;
             next_event_set = in_next_event_set;
             next_events_desc = new ArrayList<>();
+            color = in_color_index;
 
             // Manually build what events are allowed to start a sequence in each phase
             // Only add to the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
