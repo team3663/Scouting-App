@@ -57,6 +57,7 @@ public class Globals {
     public static Uri baseStorageURI = null;
 
     public static boolean isPractice = false;
+    public static boolean isStartingNote = true;
 
     public static long startTime;
 
