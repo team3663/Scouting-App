@@ -218,6 +218,8 @@ public class Logger {
             LoggerEventRow ler = match_log_events.get(i);
 
             // Normalize the X, Y coordinates to be a %age of the image size
+            // Multiply the %age by 10,000 to get a whole number representing 2 digits of precision (ie: 0.3956 turns into 3956)
+            // We do this to save 2 characters in the .csv file that we need to transmit.
             int normalized_x = 0;
             int normalized_y = 0;
             if (Constants.Match.IMAGE_WIDTH > 0) normalized_x = (int)(10_000.0 * Integer.parseInt(ler.X) / Constants.Match.IMAGE_WIDTH);
