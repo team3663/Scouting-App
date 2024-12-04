@@ -61,8 +61,8 @@ public class Constants {
         public static final int BUTTON_TEXT_COLOR_DISABLED = Color.LTGRAY;
         public static final String ORIENTATION_LANDSCAPE = "l";
         public static final String ORIENTATION_LANDSCAPE_REVERSE = "lr";
-        public static int IMAGE_HEIGHT;
-        public static int IMAGE_WIDTH;
+        public static int IMAGE_HEIGHT = 0;
+        public static int IMAGE_WIDTH = 0;
     }
 
     public static class Data {

@@ -216,8 +216,17 @@ public class Logger {
         // Form the output line that goes in the csv file.
         for (int i = 1; i < match_log_events.size(); ++i) {
             LoggerEventRow ler = match_log_events.get(i);
+
+            // Normalize the X, Y coordinates to be a %age of the image size
+            // Multiply the %age by 10,000 to get a whole number representing 2 digits of precision (ie: 0.3956 turns into 3956)
+            // We do this to save 2 characters in the .csv file that we need to transmit.
+            int normalized_x = 0;
+            int normalized_y = 0;
+            if (Constants.Match.IMAGE_WIDTH > 0) normalized_x = (int)(10_000.0 * Integer.parseInt(ler.X) / Constants.Match.IMAGE_WIDTH);
+            if (Constants.Match.IMAGE_HEIGHT > 0) normalized_y = (int)(10_000.0 * Integer.parseInt(ler.Y) / Constants.Match.IMAGE_HEIGHT);
+
             String csv_line = Globals.CurrentCompetitionId + ":" + Globals.CurrentMatchNumber + ":" + Globals.CurrentDeviceId;
-            csv_line += "," + i + "," + ler.EventId + "," + ler.LogTime + "," + ler.X + "," + ler.Y + "," + ler.PrevSeq;
+            csv_line += "," + i + "," + ler.EventId + "," + ler.LogTime + "," + normalized_x + "," + normalized_y + "," + ler.PrevSeq;
             try {
                 fos_event.write(csv_line.getBytes(StandardCharsets.UTF_8));
                 fos_event.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
