@@ -56,7 +56,6 @@ public class PreMatch extends AppCompatActivity {
         Globals.CurrentDeviceId = Globals.sp.getInt(Constants.Prefs.DEVICE_ID, 0);
         Globals.CurrentColorId = Globals.sp.getInt(Constants.Prefs.COLOR_CONTEXT_MENU, 1);
         Globals.CurrentPrefTeamPos = Globals.sp.getInt(Constants.Prefs.PREF_TEAM_POS, 0);
-        Globals.isPractice = false;
 
         // Initialize activity components
         initMatchNumber();
@@ -219,7 +218,6 @@ public class PreMatch extends AppCompatActivity {
         preMatchBinding.checkboxDidPlay.setText(paddedText);
 
         // Default checkboxes
-        // TODO shouldn't we save these values off as well in case they hit the BACK button?
         preMatchBinding.checkboxDidPlay.setChecked(true);
     }
 
@@ -236,9 +234,11 @@ public class PreMatch extends AppCompatActivity {
         String paddedText = preMatchBinding.checkboxStartNote.getText() + Globals.CheckBoxTextPadding;
         preMatchBinding.checkboxStartNote.setText(paddedText);
 
+        // Save off any changes the scouter makes.
+        preMatchBinding.checkboxStartNote.setOnCheckedChangeListener((buttonView, isChecked) -> Globals.isStartingNote = isChecked);
+
         // Default checkboxes
-        // TODO shouldn't we save these values off as well in case they hit the BACK button?
-        preMatchBinding.checkboxStartNote.setChecked(true);
+        preMatchBinding.checkboxStartNote.setChecked(Globals.isStartingNote);
     }
 
     // =============================================================================================
@@ -312,7 +312,6 @@ public class PreMatch extends AppCompatActivity {
     // =============================================================================================
     private void initResubmit() {
         // Default checkboxes
-        // TODO shouldn't we save these values off as well in case they hit the BACK button?
         preMatchBinding.checkboxResubmit.setChecked(false);
     }
 
@@ -326,8 +325,7 @@ public class PreMatch extends AppCompatActivity {
         preMatchBinding.checkboxPractice.setOnClickListener(view -> Globals.isPractice = preMatchBinding.checkboxPractice.isChecked());
 
         // Default checkboxes
-        // TODO shouldn't we save these values off as well in case they hit the BACK button?
-        preMatchBinding.checkboxPractice.setChecked(false);
+        preMatchBinding.checkboxPractice.setChecked(Globals.isPractice);
     }
 
     // =============================================================================================
@@ -397,10 +395,6 @@ public class PreMatch extends AppCompatActivity {
                         Intent GoToMatch = new Intent(PreMatch.this, Match.class);
                         startActivity(GoToMatch);
                     } else {
-                        // Since we're jumping to the Submit page, we need to clear the Logger first.
-                        Globals.EventLogger.clear();
-                        Globals.EventLogger = null;
-
                         // Increases the match number so that it auto fills for the next match correctly
                         //  and do it after the logger is closed so that this can't mess the logger up
                         Globals.CurrentMatchNumber++;

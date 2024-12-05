@@ -523,8 +523,6 @@ public class Match extends AppCompatActivity {
 
                                 // A null listener allows the button to dismiss the dialog and take no further action.
                                 .setNegativeButton(getString(R.string.match_alert_cancel), null)
-                                // TODO make the icon work
-//                          .setIcon(getDrawable(android.R.attr.alertDialogIcon))
                                 .show();
                     else endMatchCheck();
                     break;
