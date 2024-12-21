@@ -275,8 +275,6 @@ public class SubmitData extends AppCompatActivity {
 
             // A null listener allows the button to dismiss the dialog and take no further action.
             .setNegativeButton(getString(R.string.submit_alert_cancel), null)
-            // TODO make the icon work
-//                .setIcon(getDrawable(android.R.attr.alertDialogIcon))
             .show()
         );
     }
@@ -289,6 +287,10 @@ public class SubmitData extends AppCompatActivity {
     // =============================================================================================
     private void initNext() {
         submitDataBinding.butNext.setOnClickListener(view -> {
+            // Reset pre-Match settings for next time
+            Globals.isStartingNote = true;
+            Globals.isPractice = false;
+
             Intent GoToPreMatch = new Intent(SubmitData.this, PreMatch.class);
             startActivity(GoToPreMatch);
 

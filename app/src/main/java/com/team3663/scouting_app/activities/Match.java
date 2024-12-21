@@ -124,12 +124,11 @@ public class Match extends AppCompatActivity {
                 SpannableString ss = new SpannableString(item.getTitle());
                 ss.setSpan(new AbsoluteSizeSpan(24), 0, ss.length(), 0);
 
-                // If this menuItem has "Miss"/"Failed" or "Score"/"Success" in the text, see if we should use a special color
+                // If this menuItem has a color to use, then use it
                 if (Globals.ColorList.isColorValid(Globals.CurrentColorId - 1)) {
-                    if ((ss.toString().contains("Miss")) || (ss.toString().contains("Failed")))
-                        ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColorMiss(Globals.CurrentColorId - 1)), 0, ss.length(), 0);
-                    else if ((ss.toString().contains("Score")) || (ss.toString().contains("Success")))
-                        ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColorScore(Globals.CurrentColorId - 1)), 0, ss.length(), 0);
+                    int eventID = Globals.EventList.getEventId(Objects.requireNonNull(item.getTitle()).toString());
+                    if (Globals.EventList.hasEventColor(eventID))
+                        ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColor(Globals.CurrentColorId - 1, Globals.EventList.getEventColor(eventID))), 0, ss.length(), 0);
                 }
 
                 item.setTitle(ss);
@@ -524,8 +523,6 @@ public class Match extends AppCompatActivity {
 
                                 // A null listener allows the button to dismiss the dialog and take no further action.
                                 .setNegativeButton(getString(R.string.match_alert_cancel), null)
-                                // TODO make the icon work
-//                          .setIcon(getDrawable(android.R.attr.alertDialogIcon))
                                 .show();
                     else endMatchCheck();
                     break;
@@ -590,12 +587,11 @@ public class Match extends AppCompatActivity {
                 SpannableString ss = new SpannableString(Globals.EventList.getEventDescription(eventPrevious));
                 ss.setSpan(new AbsoluteSizeSpan(24), 0, ss.length(), 0);
 
-                // If this menuItem has "Miss"/"Failed" or "Score"/"Success" in the text, see if we should use a special color
+                // If this menuItem has a color to use, then use it
                 if (Globals.ColorList.isColorValid(Globals.CurrentColorId - 1)) {
-                    if ((ss.toString().contains("Miss")) || (ss.toString().contains("Failed")))
-                        ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColorMiss(Globals.CurrentColorId - 1)), 0, ss.length(), 0);
-                    else if ((ss.toString().contains("Score")) || (ss.toString().contains("Success")))
-                        ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColorScore(Globals.CurrentColorId - 1)), 0, ss.length(), 0);
+                    int eventID = Globals.EventList.getEventId(Objects.requireNonNull(Globals.EventList.getEventDescription(eventPrevious)));
+                    if (Globals.EventList.hasEventColor(eventID))
+                        ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColor(Globals.CurrentColorId - 1, Globals.EventList.getEventColor(eventID))), 0, ss.length(), 0);
                 }
 
                 matchBinding.textStatus.setText(ss);

@@ -33,6 +33,7 @@ public class PreMatch extends AppCompatActivity {
     // To store the inputted name
     protected static String ScouterName;
     private static final ArrayList<String> Start_Positions = Globals.StartPositionList.getDescriptionList();
+    private static final ArrayList<String> Match_Types = Globals.MatchTypeList.getDescriptionList();
     public static int CurrentTeamToScoutPosition;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
@@ -55,10 +56,10 @@ public class PreMatch extends AppCompatActivity {
         Globals.CurrentDeviceId = Globals.sp.getInt(Constants.Prefs.DEVICE_ID, 0);
         Globals.CurrentColorId = Globals.sp.getInt(Constants.Prefs.COLOR_CONTEXT_MENU, 1);
         Globals.CurrentPrefTeamPos = Globals.sp.getInt(Constants.Prefs.PREF_TEAM_POS, 0);
-        Globals.isPractice = false;
 
         // Initialize activity components
         initMatchNumber();
+        initMatchType();
         initTeamNumber();
         initScouterName();
         initDidPlay();
@@ -69,6 +70,7 @@ public class PreMatch extends AppCompatActivity {
         initPractice();
         initNext();
         initAchievements();
+        initShadowMode();
     }
 
     // =============================================================================================
@@ -113,16 +115,58 @@ public class PreMatch extends AppCompatActivity {
     }
 
     // =============================================================================================
+    // Function:    initMatchType
+    // Description: Initialize the Match Type field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initMatchType() {
+        // Adds the items from the match type array to the list
+        ArrayAdapter<String> adp_MatchType = new ArrayAdapter<>(this, R.layout.cpr_spinner, Match_Types);
+        adp_MatchType.setDropDownViewResource(R.layout.cpr_spinner_item);
+        preMatchBinding.spinnerMatchType.setAdapter(adp_MatchType);
+
+        // Search through the list of match types until you find the one that is correct then get its position in the list
+        // and set that one as selected
+        int start_Pos_DropId = 0;
+        for (int i = 0; i < Match_Types.size(); i++) {
+            if (Match_Types.get(i).equals(Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType))) {
+                start_Pos_DropId = i;
+                break;
+            }
+        }
+        preMatchBinding.spinnerMatchType.setSelection(start_Pos_DropId);
+
+        // Set up a listener to handle any changes to the dropdown
+        preMatchBinding.spinnerMatchType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                // Save off what you selected to be used until changed again
+                int newMatchType = Globals.MatchTypeList.getMatchTypeId(preMatchBinding.spinnerMatchType.getSelectedItem().toString());
+
+                if (newMatchType != Globals.CurrentMatchType) {
+                    Globals.CurrentMatchType = Globals.MatchTypeList.getMatchTypeId(preMatchBinding.spinnerMatchType.getSelectedItem().toString());
+                    Globals.CurrentTeamOverrideNum = 0;
+                    Globals.CurrentMatchNumber = 0;
+                    Globals.CurrentTeamToScout = 0;
+                    preMatchBinding.editMatch.setText("");
+                    preMatchBinding.textTeamToScoutName.setText("");
+                    loadTeamToScout();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
+    }
+
+    // =============================================================================================
     // Function:    initTeamNumber
     // Description: Initialize the Team Number To Scout field
     // Parameters:  void
     // Output:      void
     // =============================================================================================
     private void initTeamNumber() {
-        // Run it from a handler because it doesn't like to work and it will just do absolutely nothing if you don't
-        // Create a new variable so it wont change before the handler is called cause that will mess it up (Even though its only 1 millisecond)
-//        new Handler().postDelayed(() -> preMatchBinding.spinnerTeamToScout.setSelection(CurrentTeamToScoutPosition), 1);
-
         loadTeamToScout();
 
         preMatchBinding.spinnerTeamToScout.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -174,7 +218,6 @@ public class PreMatch extends AppCompatActivity {
         preMatchBinding.checkboxDidPlay.setText(paddedText);
 
         // Default checkboxes
-        // TODO shouldn't we save these values off as well in case they hit the BACK button?
         preMatchBinding.checkboxDidPlay.setChecked(true);
     }
 
@@ -191,9 +234,11 @@ public class PreMatch extends AppCompatActivity {
         String paddedText = preMatchBinding.checkboxStartNote.getText() + Globals.CheckBoxTextPadding;
         preMatchBinding.checkboxStartNote.setText(paddedText);
 
+        // Save off any changes the scouter makes.
+        preMatchBinding.checkboxStartNote.setOnCheckedChangeListener((buttonView, isChecked) -> Globals.isStartingNote = isChecked);
+
         // Default checkboxes
-        // TODO shouldn't we save these values off as well in case they hit the BACK button?
-        preMatchBinding.checkboxStartNote.setChecked(true);
+        preMatchBinding.checkboxStartNote.setChecked(Globals.isStartingNote);
     }
 
     // =============================================================================================
@@ -267,7 +312,6 @@ public class PreMatch extends AppCompatActivity {
     // =============================================================================================
     private void initResubmit() {
         // Default checkboxes
-        // TODO shouldn't we save these values off as well in case they hit the BACK button?
         preMatchBinding.checkboxResubmit.setChecked(false);
     }
 
@@ -281,8 +325,7 @@ public class PreMatch extends AppCompatActivity {
         preMatchBinding.checkboxPractice.setOnClickListener(view -> Globals.isPractice = preMatchBinding.checkboxPractice.isChecked());
 
         // Default checkboxes
-        // TODO shouldn't we save these values off as well in case they hit the BACK button?
-        preMatchBinding.checkboxPractice.setChecked(false);
+        preMatchBinding.checkboxPractice.setChecked(Globals.isPractice);
     }
 
     // =============================================================================================
@@ -324,6 +367,8 @@ public class PreMatch extends AppCompatActivity {
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_SCOUTER, preMatchBinding.editScouterName.getText().toString().toUpperCase().replace(" ",""));
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_PLAY, String.valueOf(preMatchBinding.checkboxDidPlay.isChecked()));
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_TEAM_SCOUTING, String.valueOf(Globals.CurrentScoutingTeam));
+                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_MATCH_TYPE, Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType));
+                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_SHADOW_MODE, String.valueOf(Globals.isShadowMode));
 
                     Achievements.data_TeamToScout = Globals.CurrentTeamToScout;
 
@@ -350,10 +395,6 @@ public class PreMatch extends AppCompatActivity {
                         Intent GoToMatch = new Intent(PreMatch.this, Match.class);
                         startActivity(GoToMatch);
                     } else {
-                        // Since we're jumping to the Submit page, we need to clear the Logger first.
-                        Globals.EventLogger.clear();
-                        Globals.EventLogger = null;
-
                         // Increases the match number so that it auto fills for the next match correctly
                         //  and do it after the logger is closed so that this can't mess the logger up
                         Globals.CurrentMatchNumber++;
@@ -381,8 +422,8 @@ public class PreMatch extends AppCompatActivity {
         // If we have a match number load the team information for the match
         ArrayList<String> teamsInMatch = new ArrayList<>();
         if (Globals.CurrentMatchNumber > 0) {
-            if (Globals.MatchList.isMatchValid(Globals.CurrentMatchNumber))
-                teamsInMatch = Globals.MatchList.getListOfTeams(Globals.CurrentMatchNumber);
+            if (Globals.MatchList.isCurrentMatchValid())
+                teamsInMatch = Globals.MatchList.getListOfTeams();
             else {
                 teamsInMatch = new ArrayList<>();
                 teamsInMatch.add(getString(R.string.pre_dropdown_no_items));
@@ -409,7 +450,7 @@ public class PreMatch extends AppCompatActivity {
         if (Globals.CurrentTeamOverrideNum > 0) {
             CurrentTeamToScoutPosition = teamsInMatch.size() - 1;
         } else if (Globals.CurrentPrefTeamPos > 0) {
-            String prefTeam = Globals.MatchList.getTeamInPosition(Globals.CurrentMatchNumber, Constants.Settings.PREF_TEAM_POS[Globals.CurrentPrefTeamPos]);
+            String prefTeam = Globals.MatchList.getTeamInPosition(Constants.Settings.PREF_TEAM_POS[Globals.CurrentPrefTeamPos]);
             CurrentTeamToScoutPosition = teamsInMatch.indexOf(prefTeam);
         } else if (CurrentTeamToScoutPosition < 0)
             CurrentTeamToScoutPosition = 0;
@@ -426,5 +467,18 @@ public class PreMatch extends AppCompatActivity {
     private void initAchievements() {
         if (Globals.myAchievements == null)
             Globals.myAchievements = new Achievements();
+    }
+
+    // =============================================================================================
+    // Function:    initShadowMode
+    // Description: Initialize the Shadow Mode fields
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initShadowMode() {
+        if (Globals.isShadowMode) {
+            preMatchBinding.textShadowModeL.setText(getString(R.string.pre_shadow_mode));
+            preMatchBinding.textShadowModeR.setText(getString(R.string.pre_shadow_mode));
+        }
     }
 }

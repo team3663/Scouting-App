@@ -7,4 +7,5 @@
     <string name="settings_scouting_team">Scouting team number:</string>
     <string name="settings_num_files"># of matches to keep:</string>
     <string name="settings_color">Color palette:</string>
+    <string name="settings_shadowmode">Shadow Mode:</string>
 </resources>

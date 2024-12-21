@@ -6,7 +6,9 @@ public class Constants {
 
     public static class Logger {
         // Logger Keys - These are also the csv column header names
+        public static final String LOGKEY_SHADOW_MODE = "D_Shadow";
         public static final String LOGKEY_ACHIEVEMENT = "D_Achievements";
+        public static final String LOGKEY_MATCH_TYPE = "D_MatchType";
         public static final String LOGKEY_DID_PLAY = "D_DidPlay";
         public static final String LOGKEY_START_POSITION = "D_StartPos";
         public static final String LOGKEY_TEAM_SCOUTING = "D_TeamScouting";
@@ -42,6 +44,11 @@ public class Constants {
         public static final String NONE = "";
     }
 
+    public static class PreMatch {
+        public static final int NUMBER_OF_MATCH_TYPES = 3;
+        public static final int DEFAULT_MATCH_TYPE = 1;
+    }
+
     public static class Match {
         public static final int TIMER_AUTO_LENGTH = 15; // in seconds
         public static final int TIMER_TELEOP_LENGTH = 135; // in seconds
@@ -54,8 +61,8 @@ public class Constants {
         public static final int BUTTON_TEXT_COLOR_DISABLED = Color.LTGRAY;
         public static final String ORIENTATION_LANDSCAPE = "l";
         public static final String ORIENTATION_LANDSCAPE_REVERSE = "lr";
-        public static int IMAGE_HEIGHT;
-        public static int IMAGE_WIDTH;
+        public static int IMAGE_HEIGHT = 0;
+        public static int IMAGE_WIDTH = 0;
     }
 
     public static class Data {

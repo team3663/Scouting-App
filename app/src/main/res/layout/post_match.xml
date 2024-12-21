@@ -28,13 +28,18 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="15dp"
+            android:orientation="horizontal"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
             android:orientation="horizontal">
           
             <CheckBox
                 android:id="@+id/checkbox_DidLeave"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:button="@null"
                 android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
@@ -49,20 +54,25 @@
             <TextView
                 android:id="@+id/text_LeaveStartPadding"
                 android:layout_width="570dp"
-                android:layout_height="60dp"
+                android:layout_height="match_parent"
                 android:gravity="end|center"
                 tools:ignore="VisualLintBounds" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="15dp"
+            android:orientation="horizontal"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/text_ClimbPosition"
                 android:layout_width="400dp"
-                android:layout_height="60dp"
+                android:layout_height="match_parent"
                 android:gravity="end|center"
                 android:paddingEnd="50dp"
                 android:textColor="@color/white"
@@ -72,7 +82,7 @@
 
             <RelativeLayout
                 android:layout_width="300dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -80,7 +90,7 @@
                     android:id="@+id/spinnerClimbPosition"
                     android:spinnerMode="dropdown"
                     android:layout_width="match_parent"
-                    android:layout_height="35dp"
+                    android:layout_height="match_parent"
                     android:background="@color/white"
                     android:gravity="end|center"
                     android:paddingStart="10dp"
@@ -88,7 +98,7 @@
 
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:paddingEnd="10dp"
                     android:paddingStart="10dp"
@@ -102,13 +112,18 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="15dp"
+            android:orientation="horizontal"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/text_Trap"
                 android:layout_width="400dp"
-                android:layout_height="60dp"
+                android:layout_height="match_parent"
                 android:gravity="end|center"
                 android:paddingEnd="50dp"
                 android:textColor="@color/white"
@@ -118,7 +133,7 @@
 
             <RelativeLayout
                 android:layout_width="300dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -126,7 +141,7 @@
                     android:id="@+id/spinnerTrap"
                     android:spinnerMode="dropdown"
                     android:layout_width="match_parent"
-                    android:layout_height="35dp"
+                    android:layout_height="match_parent"
                     android:background="@color/white"
                     android:gravity="end|center"
                     android:paddingStart="10dp"
@@ -134,7 +149,7 @@
 
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:paddingEnd="10dp"
                     android:paddingStart="10dp"
@@ -148,13 +163,18 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="15dp"
+            android:orientation="horizontal"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/text_Comments"
                 android:layout_width="400dp"
-                android:layout_height="60dp"
+                android:layout_height="match_parent"
                 android:gravity="end|center"
                 android:paddingEnd="50dp"
                 android:textColor="@color/white"
@@ -165,14 +185,14 @@
 
             <RelativeLayout
                 android:layout_width="300dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/drop_Comments"
                     android:layout_width="match_parent"
-                    android:layout_height="35dp"
+                    android:layout_height="match_parent"
                     android:textColor="@color/cpr_bkgnd"
                     android:background="@color/white"
                     android:textSize="22sp"
@@ -181,7 +201,7 @@
 
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:paddingEnd="10dp"
                     android:paddingStart="10dp"

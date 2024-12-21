@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="applaunch_loading_teams">Loading Team Data…</string>
+    <string name="applaunch_loading_match_types">Loading Match Types Data…</string>
     <string name="applaunch_loading_matches">Loading Match Data…</string>
     <string name="applaunch_loading_events_auto">Loading Auto Event Data…</string>
     <string name="applaunch_loading_events_teleop">Loading Teleop Event Data…</string>
@@ -13,6 +14,7 @@
     <string name="applaunch_loading_colors">Loading Color Data…</string>
 
     <string name="applaunch_file_error_teams">Error loading teams from data file!</string>
+    <string name="applaunch_file_error_match_types">Error loading match types from data file!</string>
     <string name="applaunch_file_error_matches">Error loading matches from data file!</string>
     <string name="applaunch_file_error_events_auto">Error loading Auto events from data file!</string>
     <string name="applaunch_file_error_events_teleop">Error loading Teleop events from data file!</string>

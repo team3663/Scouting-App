@@ -18,8 +18,8 @@ public class Colors {
     }
 
     // Member Function: Add a row of Color info into the list giving the data individually
-    public void addColorRow(String in_id, String in_description, String in_ColorScore, String in_ColorMiss) {
-        color_list.add(new ColorRow(in_id, in_description, Color.parseColor(in_ColorScore), Color.parseColor(in_ColorMiss)));
+    public void addColorRow(String in_id, String in_description, String in_Color_CSV) {
+        color_list.add(new ColorRow(in_id, in_description, in_Color_CSV));
     }
 
     // Member Function: return the size of the list
@@ -33,16 +33,9 @@ public class Colors {
     }
 
     // Member Function: Get back the color for a score
-    public int getColorScore(int in_ColorId) {
-        if (this.isColorValid(in_ColorId))
-            return color_list.get(in_ColorId).color_score;
-        else return 0;
-    }
-
-    // Member Function: Get back the color for a miss
-    public int getColorMiss(int in_ColorId) {
-        if (this.isColorValid(in_ColorId))
-            return color_list.get(in_ColorId).color_miss;
+    public int getColor(int in_ColorId, int in_ColorIndex) {
+        if ((this.isColorValid(in_ColorId)) && (in_ColorIndex >= 0) && (in_ColorIndex < color_list.get(in_ColorId).color.size()))
+            return color_list.get(in_ColorId).color.get(in_ColorIndex);
         else return 0;
     }
 
@@ -98,15 +91,17 @@ public class Colors {
     private static class ColorRow {
         private final int id;
         private final String description;
-        private final int color_score;
-        private final int color_miss;
+        private final ArrayList<Integer> color = new ArrayList<>();
 
         // Constructor with individual data
-        public ColorRow(String in_id, String in_description, int in_color_score, int in_color_miss) {
+        public ColorRow(String in_id, String in_description, String in_colors_csv) {
             id = Integer.parseInt(in_id);
             description = in_description;
-            color_score = in_color_score;
-            color_miss = in_color_miss;
+            String[] info = in_colors_csv.split(",", 0);
+
+            for (String s : info) {
+                color.add(Color.parseColor(s));
+            }
         }
     }
 }

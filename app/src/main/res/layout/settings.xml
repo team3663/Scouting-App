@@ -24,13 +24,13 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="35dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/text_Competition"
             android:layout_width="350dp"
-            android:layout_height="50dp"
+            android:layout_height="match_parent"
             android:gravity="end|center"
             android:paddingEnd="50dp"
             android:textColor="@color/white"
@@ -50,7 +50,7 @@
                 android:verticalScrollbarPosition="left"
                 android:scrollbarThumbVertical="@drawable/scrollbar_style"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="match_parent"
                 android:background="@color/white"
                 android:gravity="end|center"
                 android:paddingStart="10dp"
@@ -58,7 +58,7 @@
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:paddingEnd="10dp"
                 android:layout_centerVertical="true"
@@ -72,13 +72,18 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="15dp"
+        android:orientation="horizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/text_Device"
             android:layout_width="350dp"
-            android:layout_height="50dp"
+            android:layout_height="match_parent"
             android:gravity="end|center"
             android:paddingEnd="50dp"
             android:textColor="@color/white"
@@ -96,7 +101,7 @@
                 android:id="@+id/spinner_Device"
                 android:spinnerMode="dropdown"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="match_parent"
                 android:background="@color/white"
                 android:gravity="end|center"
                 android:paddingStart="10dp"
@@ -104,7 +109,7 @@
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:paddingEnd="10dp"
                 android:layout_centerVertical="true"
@@ -118,13 +123,18 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="15dp"
+        android:orientation="horizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/text_PrefTeamPos"
             android:layout_width="350dp"
-            android:layout_height="50dp"
+            android:layout_height="match_parent"
             android:gravity="end|center"
             android:paddingEnd="50dp"
             android:textColor="@color/white"
@@ -142,7 +152,7 @@
                 android:id="@+id/spinner_PrefTeamPos"
                 android:spinnerMode="dropdown"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="match_parent"
                 android:background="@color/white"
                 android:gravity="end|center"
                 android:paddingStart="10dp"
@@ -150,7 +160,7 @@
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:paddingEnd="10dp"
                 android:layout_centerVertical="true"
@@ -164,13 +174,18 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="15dp"
+        android:orientation="horizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/text_ScoutingTeam"
             android:layout_width="350dp"
-            android:layout_height="50dp"
+            android:layout_height="match_parent"
             android:gravity="end|center"
             android:paddingEnd="50dp"
             android:text="@string/settings_scouting_team"
@@ -181,7 +196,7 @@
         <EditText
             android:id="@+id/edit_ScoutingTeam"
             android:layout_width="125dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:autofillHints="Enter Scouting team number here"
             android:gravity="center"
             android:inputType="number"
@@ -195,7 +210,7 @@
         <TextView
             android:id="@+id/text_ScoutingTeamName"
             android:layout_width="500dp"
-            android:layout_height="50dp"
+            android:layout_height="match_parent"
             android:gravity="start|center"
             android:paddingStart="20dp"
             android:paddingHorizontal="20dp"
@@ -205,13 +220,18 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="15dp"
+        android:orientation="horizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/text_NumMatches"
             android:layout_width="350dp"
-            android:layout_height="50dp"
+            android:layout_height="match_parent"
             android:gravity="end|center"
             android:paddingEnd="50dp"
             android:text="@string/settings_num_files"
@@ -222,7 +242,7 @@
         <EditText
             android:id="@+id/edit_NumMatches"
             android:layout_width="125dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:autofillHints="Enter Scouting team number here"
             android:gravity="center"
             android:inputType="number"
@@ -236,20 +256,25 @@
         <TextView
             android:id="@+id/text_NumMatchesPadding"
             android:layout_width="500dp"
-            android:layout_height="50dp"
+            android:layout_height="match_parent"
             android:gravity="start|center"
             android:textSize="20sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="15dp"
+        android:orientation="horizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/text_Color"
             android:layout_width="350dp"
-            android:layout_height="50dp"
+            android:layout_height="match_parent"
             android:gravity="end|center"
             android:paddingEnd="50dp"
             android:textColor="@color/white"
@@ -259,7 +284,7 @@
 
         <RelativeLayout
             android:layout_width="400dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -267,7 +292,7 @@
                 android:id="@+id/spinner_Color"
                 android:spinnerMode="dropdown"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="match_parent"
                 android:background="@color/white"
                 android:gravity="end|center"
                 android:paddingStart="10dp"
@@ -275,7 +300,7 @@
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:paddingEnd="10dp"
                 android:layout_centerVertical="true"
@@ -285,6 +310,37 @@
 
         </RelativeLayout>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:orientation="horizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/checkbox_ShadowMode"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+            android:textColor="@color/white"
+            android:gravity="end|center"
+            android:paddingEnd="0dp"
+            android:paddingStart="10dp"
+            android:textSize="24sp"
+            android:text="@string/settings_shadowmode" />
+
+        <TextView
+            android:id="@+id/text_ShadowModePadding"
+            android:layout_width="635dp"
+            android:layout_height="match_parent"
+            tools:ignore="RtlSymmetry" />
     </LinearLayout>
 
 </LinearLayout>
