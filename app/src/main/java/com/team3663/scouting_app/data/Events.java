@@ -58,6 +58,8 @@ public class Events {
 
     // Member Function: Return a list of Events (description) that can follow a given EventId (next Event in the sequence)
     public ArrayList<String> getNextEvents(int in_EventId) {
+        if (in_EventId == -1) return null;
+
         // Find the event in the list, and return it's list of valid next events
         for (EventRow er : event_list) {
             if (er.id == in_EventId) return er.next_events_desc;

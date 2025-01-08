@@ -54,7 +54,8 @@ public class Match extends AppCompatActivity {
     // Public Global Variables
     // Keep track of the currently selected event (per event group) to be used to build the context menus
     // A value of -1 means there is no current sequence started and all "starting events" should be used.
-    public static int[] current_event = new int[Globals.MaxEventGroups];
+    // (Adding 1 so that we can be "1" based and not have to keep "-1" a lot of places)
+    public static int[] current_event = new int[Globals.MaxEventGroups + 1];
 
     // Define a Timer and TimerTasks so you can schedule things
     Timer match_Timer;
@@ -106,7 +107,7 @@ public class Match extends AppCompatActivity {
             ArrayList<String> events;
             is_start_of_seq = false;
 
-            for (int i = 0; i < Globals.MaxEventGroups; ++i) {
+            for (int i = 1; i <= Globals.MaxEventGroups; ++i) {
                 events = Globals.EventList.getNextEvents(current_event[i]);
 
                 if ((events == null) || events.isEmpty())
@@ -141,7 +142,7 @@ public class Match extends AppCompatActivity {
     public boolean onContextItemSelected(@NonNull MenuItem in_item) {
         if (!Globals.isPractice) matchBinding.textStatus.setText(Objects.requireNonNull(in_item.getTitle()));
         int event_id = Globals.EventList.getEventId(Objects.requireNonNull(in_item.getTitle()).toString());
-        int event_group_id = Globals.EventList.getEventGroup(event_id) - 1;
+        int event_group_id = Globals.EventList.getEventGroup(event_id);
         current_event[event_group_id] = event_id;
         Globals.EventLogger.LogEvent(current_event[event_group_id], current_X_Relative, current_Y_Relative, is_start_of_seq, currentTouchTime);
         matchBinding.butUndo.setVisibility(View.VISIBLE);
