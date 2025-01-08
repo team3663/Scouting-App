@@ -381,7 +381,7 @@ public class PreMatch extends AppCompatActivity {
                     // Log if they started with a note (the match hasn't started so we need to specify a "0" time
                     // or else it will log as max match time which wastes 2 log characters for no benefit)
                     if (preMatchBinding.checkboxStartNote.isChecked()) {
-                        Globals.EventLogger.LogEvent(Constants.Events.ID_AUTO_STARTNOTE, 0, 0, true, 0);
+                        Globals.EventLogger.LogEvent(Constants.Events.ID_AUTO_START_GAME_PIECE, 0, 0, true, 0);
                     }
 
                     // Save off some fields for next time or later usage

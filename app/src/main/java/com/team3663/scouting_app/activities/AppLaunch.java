@@ -173,7 +173,6 @@ public class AppLaunch extends AppCompatActivity {
                 Globals.MatchList.clear();
                 Globals.StartPositionList.clear();
                 Globals.TeamList.clear();
-                Globals.TrapResultsList.clear();
 
                 // Load the data with a BRIEF delay between.  :)
                 try {
@@ -201,8 +200,6 @@ public class AppLaunch extends AppCompatActivity {
                     LoadDataFile(getString(R.string.file_start_positions), getString(R.string.applaunch_loading_start_positions), getString(R.string.applaunch_file_error_start_positions));
                     Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
                     LoadDataFile(getString(R.string.file_teams), getString(R.string.applaunch_loading_teams), getString(R.string.applaunch_file_error_teams));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_trap_results), getString(R.string.applaunch_loading_trap_results), getString(R.string.applaunch_file_error_trap_results));
                     Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
 
                     // We need to build the "Next Events" possible but needs to be done now, after all data is loaded.
@@ -341,16 +338,16 @@ public class AppLaunch extends AppCompatActivity {
                         Globals.CommentList.addCommentRow(info[0], info[2]);
                 }
                 else if (in_fileName.equals(getString(R.string.file_competitions))) {
-                    Globals.CompetitionList.addCompetitionRow(info[0], info[1]);
+                    Globals.CompetitionList.addCompetitionRow(info[0], info[4]);
                 }
                 else if (in_fileName.equals(getString(R.string.file_devices))) {
-                    Globals.DeviceList.addDeviceRow(info[0], info[1], info[2]);
+                    Globals.DeviceList.addDeviceRow(info[0], info[1], info[5]);
                 }
                 else if (in_fileName.equals(getString(R.string.file_events_auto))) {
-                    Globals.EventList.addEventRow(info[0], info[1], Constants.Phases.AUTO, info[2], info[3], info[4], info[5]);
+                    Globals.EventList.addEventRow(info[0], info[1], info[2], Constants.Phases.AUTO, info[3], info[4], info[5], info[6]);
                 }
                 else if (in_fileName.equals(getString(R.string.file_events_teleop))) {
-                    Globals.EventList.addEventRow(info[0], info[1], Constants.Phases.TELEOP, info[2], info[3], info[4], info[5]);
+                    Globals.EventList.addEventRow(info[0], info[1], info[2], Constants.Phases.TELEOP, info[3], info[4], info[5], info[6]);
                 }
                 else if (in_fileName.equals(getString(R.string.file_match_types))) {
                     Globals.MatchTypeList.addMatchTypeRow(info[0], info[1], info[2]);
@@ -376,10 +373,6 @@ public class AppLaunch extends AppCompatActivity {
                     }
                     Globals.TeamList.add(info[1]);
                     index = Integer.parseInt(info[0]) + 1;
-                }
-                else if (in_fileName.equals(getString(R.string.file_trap_results))) {
-                    if (Boolean.parseBoolean(info[1]))
-                        Globals.TrapResultsList.addTrapResultRow(info[0], info[2]);
                 }
             }
         } catch (IOException e) {

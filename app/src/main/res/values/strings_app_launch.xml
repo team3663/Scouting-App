@@ -8,7 +8,6 @@
     <string name="applaunch_loading_competitions">Loading Competition Data…</string>
     <string name="applaunch_loading_devices">Loading Device Data…</string>
     <string name="applaunch_loading_comments">Loading Comment Data…</string>
-    <string name="applaunch_loading_trap_results">Loading Trap Results Data…</string>
     <string name="applaunch_loading_climb_positions">Loading Climbing Positions Data…</string>
     <string name="applaunch_loading_start_positions">Loading Starting Positions Data…</string>
     <string name="applaunch_loading_colors">Loading Color Data…</string>
@@ -21,7 +20,6 @@
     <string name="applaunch_file_error_competitions">Error loading competitions from data file!</string>
     <string name="applaunch_file_error_devices">Error loading devices from data file!</string>
     <string name="applaunch_file_error_comments">Error loading comments from data file!</string>
-    <string name="applaunch_file_error_trap_results">Error loading trap results from data file!</string>
     <string name="applaunch_file_error_climb_positions">Error loading climbing positions from data file!</string>
     <string name="applaunch_file_error_start_positions">Error loading starting positions from data file!</string>
     <string name="applaunch_file_error_colors">Error loading colors from data file!</string>

@@ -3,7 +3,6 @@
     <string name="post_heading">Post-Match Scouting Information</string>
     <string name="post_left_start_zone">Left the starting zone?</string>
     <string name="post_climb_position">Climbing position:</string>
-    <string name="post_trap">Trap outcome:</string>
     <string name="post_comments">Comments:</string>
     <string name="post_reset">Field Fault - Reset Match</string>
     <string name="post_but_reset">Reset</string>

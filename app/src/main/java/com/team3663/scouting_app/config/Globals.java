@@ -15,7 +15,6 @@ import com.team3663.scouting_app.data.Devices;
 import com.team3663.scouting_app.data.Events;
 import com.team3663.scouting_app.data.Matches;
 import com.team3663.scouting_app.data.StartPositions;
-import com.team3663.scouting_app.data.TrapResults;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
 import java.util.ArrayList;
@@ -29,7 +28,6 @@ public class Globals {
     public static Events EventList = new Events();
     public static Comments CommentList = new Comments();
     public static ClimbPositions ClimbPositionList = new ClimbPositions();
-    public static TrapResults TrapResultsList = new TrapResults();
     public static StartPositions StartPositionList = new StartPositions();
     public static Colors ColorList = new Colors();
 
@@ -51,6 +49,7 @@ public class Globals {
     public static Achievements myAchievements;
 
     public static int NumberMatchFilesKept;
+    public static int MaxEventGroups = 0;
 
     public static SharedPreferences sp;
     public static SharedPreferences.Editor spe;

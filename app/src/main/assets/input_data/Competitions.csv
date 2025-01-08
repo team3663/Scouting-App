@@ -1,20 +1,7 @@
-﻿Competition_Id,Competition_Name
-1,PNW Auburn
-2,PNW Bonnie Lake
-3,DCMP Portland
-4,Worlds Houston - Newton
-5,Block Party
-6,Chezy Champs
-7,Bordie
-8,Worlds Houston - Milstein
-9,Worlds Houston - Daly
-10,Worlds Houston - Galileo
-11,Worlds Houston - Johnson
-12,Worlds Houston - Archimedes
-13,Worlds Houston - Hopper
-14,Worlds Houston - Archimedes
-16,East Bay Regional Week 6
-17,Aerospace Valley Regional Week 6
-18,Orange County Regional Week 5
-19,Central Valley Regional Week 4
-20,Bayou Regional Week 6
+﻿Competition_Id,Competition_Date,Competition_City,Competition_State,Competition_Name,Competition_TBACode
+1,2/28/2025,Snohomish,WA,Glacier Peak,2025wasno
+2,3/6/2024,Oregon City,OR,Clackamas Academy,2025orore
+3,3/7/2025,Bellevue,WA,Sammamish,2025wasam
+4,3/14/2025,Bonney Lake,WA,Bonney Lake,2025wabon
+5,3/21/2025,Auburn,WA,Auburn,2025waahs
+6,4/2/2025,Cheney,WA,PNW DCMP,2025pncmp

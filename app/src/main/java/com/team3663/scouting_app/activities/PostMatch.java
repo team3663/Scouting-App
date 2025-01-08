@@ -49,26 +49,9 @@ public class PostMatch extends AppCompatActivity {
         // Initialize activity components
         initDidLeave();
         initClimbingPos();
-        initTrap();
         initComments();
         initReset();
         initSubmit();
-    }
-
-    // =============================================================================================
-    // Function:    initTrap
-    // Description: Initialize the Trap field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initTrap() {
-        //Creating the single select dropdown menu for the trap outcomes
-        Spinner spinner_Trap = findViewById(R.id.spinnerTrap);
-        //accessing the array in strings.xml
-        ArrayAdapter<String> adp_Trap = new ArrayAdapter<>(this,
-                R.layout.cpr_spinner, Globals.TrapResultsList.getDescriptionList());
-        adp_Trap.setDropDownViewResource(R.layout.cpr_spinner_item);
-        spinner_Trap.setAdapter(adp_Trap);
     }
 
     // =============================================================================================
@@ -224,7 +207,6 @@ public class PostMatch extends AppCompatActivity {
                 // Log all of the data from this page
                 Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_LEAVE_START, String.valueOf(postMatchBinding.checkboxDidLeave.isChecked()));
                 Globals.EventLogger.LogData(Constants.Logger.LOGKEY_CLIMB_POSITION, String.valueOf(Globals.ClimbPositionList.getClimbPositionId(postMatchBinding.spinnerClimbPosition.getSelectedItem().toString())));
-                Globals.EventLogger.LogData(Constants.Logger.LOGKEY_TRAP, String.valueOf(Globals.TrapResultsList.getTrapResultId(postMatchBinding.spinnerTrap.getSelectedItem().toString())));
                 String comment_sep_ID = "";
                 for (Integer comment_dropID : CommentList) {
                     String comment = CommentArray.get(comment_dropID);

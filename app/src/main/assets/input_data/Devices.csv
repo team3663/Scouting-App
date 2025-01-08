@@ -1,8 +1,8 @@
-﻿Devices_Id,Devices_TeamNumber,Devices_Description,Devices_TeamName
-1,3663,CPR - Blue 1
-2,3663,CPR - Blue 2
-3,3663,CPR - Blue 3
-4,3663,CPR - Red 1
-5,3663,CPR - Red 2
-6,3663,CPR - Red 3
-7,3663,CPR - Mentor
+﻿Devices_Id,Devices_TeamNumber,Devices_Make,Devices_Model,Devices_SerialNumber,Devices_Description
+1,3663,Android,Galaxy Tab A7 Lite (SM-T220),R9PTB10XPBR,CPR - Blue 1
+2,3663,Android,Galaxy Tab A7 Lite (SM-T220),R9PT60B1PZD,CPR - Blue 2
+3,3663,Android,Galaxy Tab A7 Lite (SM-T220),R9PTB118PCL,CPR - Blue 3
+4,3663,Android,Galaxy Tab A7 Lite (SM-T220),R9PTB118SER,CPR - Red 1
+5,3663,Android,Galaxy Tab A7 Lite (SM-T220),R9PTB01M96L,CPR - Red 2
+6,3663,Android,Galaxy Tab A7 Lite (SM-T220),R9PTB1C9MQX,CPR - Red 3
+7,3663,Android,Galaxy Tab A7 Lite (SM-T220),R9PT60ASCDN,CPR - Mentor

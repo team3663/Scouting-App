@@ -11,19 +11,16 @@ import java.util.ArrayList;
 // =============================================================================================
 public class Events {
     private final ArrayList<EventRow> event_list;
-    private final ArrayList<String> auto_events;
-    private final ArrayList<String> teleop_events;
 
     // Constructor
     public Events() {
         event_list = new ArrayList<>();
-        auto_events = new ArrayList<>();
-        teleop_events = new ArrayList<>();
+        Globals.MaxEventGroups = 0;
     }
 
     // Member Function: Add a row of event info into the list giving the data individually
-    public void addEventRow(String in_id, String in_description, String in_phase, String in_seq_start, String in_FOP, String in_next_set, String in_color_index) {
-        event_list.add(new EventRow(Integer.parseInt(in_id), in_description, in_phase, Boolean.parseBoolean(in_seq_start), Boolean.parseBoolean(in_FOP), in_next_set, in_color_index));
+    public void addEventRow(String in_id, String in_group_id, String in_description, String in_phase, String in_seq_start, String in_FOP, String in_next_set, String in_color_index) {
+        event_list.add(new EventRow(Integer.parseInt(in_id), Integer.parseInt(in_group_id), in_description, in_phase, Boolean.parseBoolean(in_seq_start), Boolean.parseBoolean(in_FOP), in_next_set, in_color_index));
     }
 
     // Member Function: Check if an event has a specific color to use
@@ -40,19 +37,23 @@ public class Events {
     public int getEventColor(int in_EventId) {
         for (EventRow er : event_list) {
             if (er.id == in_EventId)
-                return Integer.parseInt(er.color);
+                return Integer.parseInt(er.color) - 1;
         }
 
         return 0;
     }
 
     // Member Function: Return a list of Events (description) for a give phase of the match (only ones that start a sequence)
-    public ArrayList<String> getEventsForPhase(String in_phase) {
-        // Return the pre-built list depending on the match_phase being asked for
-        if (in_phase.equals(Constants.Phases.AUTO)) return auto_events;
-        if (in_phase.equals(Constants.Phases.TELEOP)) return teleop_events;
+    public ArrayList<String> getEventsForPhase(String in_phase, int in_group_id) {
+        ArrayList<String> rc = new ArrayList<>();
 
-        return null;
+        // Return a list depending on the match_phase being asked for and the group id
+        for (EventRow er : event_list) {
+            if ((er.group_id == in_group_id) && (er.match_phase.equals(in_phase)) && (er.is_FOP_Event) && (er.is_seq_start))
+                rc.add((er.description));
+        }
+
+        return rc;
     }
 
     // Member Function: Return a list of Events (description) that can follow a given EventId (next Event in the sequence)
@@ -130,12 +131,22 @@ public class Events {
         return "";
     }
 
+    // Member Function: Return the description for this Event
+    public int getEventGroup(int in_EventId) {
+        for (EventRow er : event_list) {
+            if (er.id == in_EventId) return er.group_id;
+        }
+
+        return -1;
+    }
+
     // =============================================================================================
     // Class:       EventRow
     // Description: Defines a structure/class to hold the information for each Event
     // =============================================================================================
     private class EventRow {
         final int id;
+        final int group_id;
         final String description;
         final String match_phase;
         final boolean is_FOP_Event;
@@ -145,8 +156,9 @@ public class Events {
         final String color;
 
         // Constructor
-        public EventRow(int in_id, String in_description, String in_phase, Boolean in_seq_start, Boolean in_FOP, String in_next_event_set, String in_color_index) {
+        public EventRow(int in_id, int in_group_id, String in_description, String in_phase, Boolean in_seq_start, Boolean in_FOP, String in_next_event_set, String in_color_index) {
             id = in_id;
+            group_id = in_group_id;
             description = in_description;
             match_phase = in_phase;
             is_FOP_Event = in_FOP;
@@ -155,18 +167,7 @@ public class Events {
             next_events_desc = new ArrayList<>();
             color = in_color_index;
 
-            // Manually build what events are allowed to start a sequence in each phase
-            // Only add to the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
-            if (is_FOP_Event && is_seq_start) {
-                switch (match_phase) {
-                    case Constants.Phases.AUTO:
-                        auto_events.add(description);
-                        break;
-                    case Constants.Phases.TELEOP:
-                        teleop_events.add(description);
-                        break;
-                }
-            }
+            Globals.MaxEventGroups = Math.max(Globals.MaxEventGroups, in_group_id);
         }
     }
 }
