@@ -189,6 +189,8 @@ public class AppLaunch extends AppCompatActivity {
                     Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
                     LoadDataFile(getString(R.string.file_devices), getString(R.string.applaunch_loading_devices), getString(R.string.applaunch_file_error_devices));
                     Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
+                    LoadDataFile(getString(R.string.file_event_groups), getString(R.string.applaunch_loading_event_groups), getString(R.string.applaunch_file_error_event_groups));
+                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
                     LoadDataFile(getString(R.string.file_events_auto), getString(R.string.applaunch_loading_events_auto), getString(R.string.applaunch_file_error_events_auto));
                     Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
                     LoadDataFile(getString(R.string.file_events_teleop), getString(R.string.applaunch_loading_events_teleop), getString(R.string.applaunch_file_error_events_teleop));
@@ -342,6 +344,9 @@ public class AppLaunch extends AppCompatActivity {
                 }
                 else if (in_fileName.equals(getString(R.string.file_devices))) {
                     Globals.DeviceList.addDeviceRow(info[0], info[1], info[5]);
+                }
+                else if (in_fileName.equals(getString(R.string.file_event_groups))) {
+                    Globals.EventList.addEventGroup(info[0], info[1]);
                 }
                 else if (in_fileName.equals(getString(R.string.file_events_auto))) {
                     Globals.EventList.addEventRow(info[0], info[1], info[2], Constants.Phases.AUTO, info[3], info[4], info[5], info[6]);

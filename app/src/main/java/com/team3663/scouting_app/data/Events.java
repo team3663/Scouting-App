@@ -11,16 +11,65 @@ import java.util.ArrayList;
 // =============================================================================================
 public class Events {
     private final ArrayList<EventRow> event_list;
+    public ArrayList<EventGroup> EventGroup;
 
     // Constructor
     public Events() {
         event_list = new ArrayList<>();
+        EventGroup = new ArrayList<>();
+
+        // EventGroup will use a 1-based group_id, so add a dummy record for index 0.
+        EventGroup.add(new EventGroup("",""));
+
         Globals.MaxEventGroups = 0;
+    }
+
+    // Member Function: Add an EventGroup to the list
+    public void addEventGroup(String in_id, String in_name) {
+        int group_id = Integer.parseInt(in_id);
+
+        // Ensure we're adding the groupid (in_id) as the same index.  This shouldn't happen but in case there's a gap in group numbers.
+        // 1. Ensure the array is at least as big as the group_id needs
+        // 2. Just set the value at the right index to the name.
+        for (int i = Globals.MaxEventGroups; i < group_id; ++i)
+            EventGroup.add(new EventGroup("",""));
+
+        EventGroup.get(group_id).name = in_name;
+        Globals.MaxEventGroups = Math.max(Globals.MaxEventGroups, Integer.parseInt(in_id));
+    }
+
+    // Member Function: Check if an EventGroup has Events for this Match Phase
+    public boolean hasEventsForGroup(int in_group_id, String in_phase) {
+        for (EventRow er : event_list) {
+            if ((er.match_phase.equals(in_phase)) && (er.group_id == in_group_id))
+                return true;
+        }
+
+        return false;
+    }
+
+    // Member Function: Return the GroupID for a given Group name.  -1 if not found
+    public int getGroupId(String in_group) {
+        for (int i = 1; i <= Globals.MaxEventGroups; i++)
+            if (EventGroup.get(i).name.equals(in_group))
+                return i;
+
+        return -1;
+    }
+
+    // Member Function: Return the Group Name for a given Group Id
+    public String getGroupName(int in_GroupId) {
+        return EventGroup.get(in_GroupId).name;
     }
 
     // Member Function: Add a row of event info into the list giving the data individually
     public void addEventRow(String in_id, String in_group_id, String in_description, String in_phase, String in_seq_start, String in_FOP, String in_next_set, String in_color_index) {
         event_list.add(new EventRow(Integer.parseInt(in_id), Integer.parseInt(in_group_id), in_description, in_phase, Boolean.parseBoolean(in_seq_start), Boolean.parseBoolean(in_FOP), in_next_set, in_color_index));
+    }
+
+    // Member Function: Check if an event group has a specific color to use
+    public boolean hasGroupColor(int in_GroupId) {
+        return (!EventGroup.get(in_GroupId).color.isEmpty());
     }
 
     // Member Function: Check if an event has a specific color to use
@@ -31,6 +80,11 @@ public class Events {
         }
 
         return false;
+    }
+
+    // Member Function: Return the color code for this event
+    public int getGroupColor(int in_GroupId) {
+        return Integer.parseInt(EventGroup.get(in_GroupId).color) - 1;
     }
 
     // Member Function: Return the color code for this event
@@ -111,6 +165,10 @@ public class Events {
     // Member Function: Empties out the list
     public void clear() {
         event_list.clear();
+        EventGroup.clear();
+
+        // EventGroup will use a 1-based group_id, so add a dummy record for index 0.
+        EventGroup.add(new EventGroup("",""));
     }
 
 
@@ -168,8 +226,21 @@ public class Events {
             next_event_set = in_next_event_set;
             next_events_desc = new ArrayList<>();
             color = in_color_index;
+        }
+    }
 
-            Globals.MaxEventGroups = Math.max(Globals.MaxEventGroups, in_group_id);
+    // =============================================================================================
+    // Class:       EventGroup
+    // Description: Defines a structure/class to hold the information for each Event Group
+    // =============================================================================================
+    private class EventGroup {
+        String name;
+        String color;
+
+        // Constructor
+        public EventGroup(String in_name, String in_color_index) {
+            name = in_name;
+            color = in_color_index;
         }
     }
 }

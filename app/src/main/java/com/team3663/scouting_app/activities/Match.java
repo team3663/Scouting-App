@@ -51,6 +51,8 @@ public class Match extends AppCompatActivity {
     private static float current_X_Absolute = 0;
     private static float current_Y_Absolute = 0;
     private static long start_time_not_moving;
+    private static boolean showing_event_detail_menu = false;
+    private static int showing_event_detail_group;
     // Public Global Variables
     // Keep track of the currently selected event (per event group) to be used to build the context menus
     // A value of -1 means there is no current sequence started and all "starting events" should be used.
@@ -98,41 +100,25 @@ public class Match extends AppCompatActivity {
     public void onCreateContextMenu(ContextMenu in_menu, View in_v, ContextMenu.ContextMenuInfo in_menuInfo) {
         super.onCreateContextMenu(in_menu, in_v, in_menuInfo);
 
-        // Save off the time that this was touched
-        currentTouchTime = System.currentTimeMillis();
 
         // Check to make sure the game is going
         if (!Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) {
-            // Get the events
-            ArrayList<String> events;
-            is_start_of_seq = false;
+            // Save off the time that this was touched
+            currentTouchTime = System.currentTimeMillis();
 
-            for (int i = 1; i <= Globals.MaxEventGroups; ++i) {
-                events = Globals.EventList.getNextEvents(current_event[i]);
-
-                if ((events == null) || events.isEmpty())
-                    events = Globals.EventList.getEventsForPhase(Globals.CurrentMatchPhase, i);
-
-                // Add all the events
-                for (String event : events) {
-                    in_menu.add(event);
+            // Call the correct context menu
+            if (in_v.getId() == R.id.image_FieldView)
+                if (Globals.MaxEventGroups > 1) {
+                    showing_event_detail_menu = false;
+                    createEventContextMenu(in_menu);
                 }
-            }
-
-            // Go through all of the items and see if we want to customize the text using a SpannableString
-            for (int i = 0; i < in_menu.size(); i++) {
-                MenuItem item = in_menu.getItem(i);
-                SpannableString ss = new SpannableString(item.getTitle());
-                ss.setSpan(new AbsoluteSizeSpan(24), 0, ss.length(), 0);
-
-                // If this menuItem has a color to use, then use it
-                if (Globals.ColorList.isColorValid(Globals.CurrentColorId - 1)) {
-                    int eventID = Globals.EventList.getEventId(Objects.requireNonNull(item.getTitle()).toString());
-                    if (Globals.EventList.hasEventColor(eventID))
-                        ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColor(Globals.CurrentColorId - 1, Globals.EventList.getEventColor(eventID))), 0, ss.length(), 0);
+                else {
+                    showing_event_detail_menu = true;
+                    createEventContextSubMenu(in_menu);
                 }
-
-                item.setTitle(ss);
+            else if (in_v.getId() == R.id.view_ContextSubMenuView) {
+                showing_event_detail_menu = true;
+                createEventContextSubMenu(in_menu);
             }
         }
     }
@@ -140,14 +126,98 @@ public class Match extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem in_item) {
-        if (!Globals.isPractice) matchBinding.textStatus.setText(Objects.requireNonNull(in_item.getTitle()));
-        int event_id = Globals.EventList.getEventId(Objects.requireNonNull(in_item.getTitle()).toString());
-        int event_group_id = Globals.EventList.getEventGroup(event_id);
-        current_event[event_group_id] = event_id;
-        Globals.EventLogger.LogEvent(current_event[event_group_id], current_X_Relative, current_Y_Relative, is_start_of_seq, currentTouchTime);
-        matchBinding.butUndo.setVisibility(View.VISIBLE);
-        matchBinding.butUndo.setEnabled(true);
+        // Take action on whether we're showing the detail event menu or the group event menu
+        if (showing_event_detail_menu) {
+            if (!Globals.isPractice)
+                matchBinding.textStatus.setText(Objects.requireNonNull(in_item.getTitle()));
+            int event_id = Globals.EventList.getEventId(Objects.requireNonNull(in_item.getTitle()).toString());
+            int event_group_id = Globals.EventList.getEventGroup(event_id);
+            current_event[event_group_id] = event_id;
+            Globals.EventLogger.LogEvent(current_event[event_group_id], current_X_Relative, current_Y_Relative, is_start_of_seq, currentTouchTime);
+            matchBinding.butUndo.setVisibility(View.VISIBLE);
+            matchBinding.butUndo.setEnabled(true);
+            showing_event_detail_menu = false;
+        }
+        else {
+            // Set the group we clicked on so the sub-menu will be the right one, then show the sub-menu
+            showing_event_detail_group = Globals.EventList.getGroupId(Objects.requireNonNull(in_item.getTitle()).toString());
+            matchBinding.viewContextSubMenuView.showContextMenu(current_X_Absolute, current_Y_Absolute);
+        }
+
         return true;
+    }
+
+    // =============================================================================================
+    // Function:    createEventContextMenu
+    // Description: Create the context menu for the Event Group list
+    // Output:      void
+    // Parameters:  N/A
+    // =============================================================================================
+    @SuppressLint({"DiscouragedApi", "SetTextI18n"})
+    public void createEventContextMenu(ContextMenu in_menu) {
+        // Loop through the groups, and if there are events for this group in this phase of the game,
+        // add the group to the menu
+        for (int i = 1; i <= Globals.MaxEventGroups; ++i) {
+            if (Globals.EventList.hasEventsForGroup(i, Globals.CurrentMatchPhase))
+                in_menu.add(Globals.EventList.getGroupName(i));
+        }
+
+        // Go through all of the items and see if we want to customize the text using a SpannableString
+        for (int i = 0; i < in_menu.size(); i++) {
+            MenuItem item = in_menu.getItem(i);
+            SpannableString ss = new SpannableString(item.getTitle());
+            ss.setSpan(new AbsoluteSizeSpan(24), 0, ss.length(), 0);
+
+            // If this menuItem has a color to use, then use it
+            if (Globals.ColorList.isColorValid(Globals.CurrentColorId - 1)) {
+                int groupID = Globals.EventList.getGroupId(Objects.requireNonNull(item.getTitle()).toString());
+                if (Globals.EventList.hasGroupColor(groupID))
+                    ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColor(Globals.CurrentColorId - 1, Globals.EventList.getGroupColor(groupID))), 0, ss.length(), 0);
+            }
+
+            item.setTitle(ss);
+        }
+    }
+
+    // =============================================================================================
+    // Function:    createEventContextSubMenu
+    // Description: Create the context menu for the Event Group list
+    // Output:      void
+    // Parameters:  N/A
+    // =============================================================================================
+    @SuppressLint({"DiscouragedApi", "SetTextI18n"})
+    public void createEventContextSubMenu(ContextMenu in_menu) {
+        // In case there's not a valid group, exit out.  This shouldn't happen.
+        if (showing_event_detail_group < 1) return;
+
+        // Get the events
+        ArrayList<String> events;
+        is_start_of_seq = false;
+        events = Globals.EventList.getNextEvents(current_event[showing_event_detail_group]);
+
+        if ((events == null) || events.isEmpty())
+            events = Globals.EventList.getEventsForPhase(Globals.CurrentMatchPhase, showing_event_detail_group);
+
+        // Add all the events
+        for (String event : events) {
+            in_menu.add(event);
+        }
+
+        // Go through all of the items and see if we want to customize the text using a SpannableString
+        for (int i = 0; i < in_menu.size(); i++) {
+            MenuItem item = in_menu.getItem(i);
+            SpannableString ss = new SpannableString(item.getTitle());
+            ss.setSpan(new AbsoluteSizeSpan(24), 0, ss.length(), 0);
+
+            // If this menuItem has a color to use, then use it
+            if (Globals.ColorList.isColorValid(Globals.CurrentColorId - 1)) {
+                int eventID = Globals.EventList.getEventId(Objects.requireNonNull(item.getTitle()).toString());
+                if (Globals.EventList.hasEventColor(eventID))
+                    ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColor(Globals.CurrentColorId - 1, Globals.EventList.getEventColor(eventID))), 0, ss.length(), 0);
+            }
+
+            item.setTitle(ss);
+        }
     }
 
     // =============================================================================================
@@ -716,6 +786,8 @@ public class Match extends AppCompatActivity {
 
         // This is required it will not run without it
         registerForContextMenu(matchBinding.imageFieldView);
+        registerForContextMenu(matchBinding.viewContextSubMenuView);
+
         // So that it activates on a normal click instead of a long click
         ContextMenu.setOnTouchListener((view, motionEvent) -> {
             // Save where we touched the field image regardless of its orientation
