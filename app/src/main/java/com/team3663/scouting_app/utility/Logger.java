@@ -1,6 +1,10 @@
 package com.team3663.scouting_app.utility;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.UriPermission;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.util.Pair;
 import android.widget.Toast;
 
@@ -12,7 +16,10 @@ import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -50,6 +57,39 @@ public class Logger {
     public void clear() {
         match_log_events.clear();
         match_log_data.clear();
+    }
+
+    // Member Function: Read in a logger file and return it as one big string.
+    public String getFileAsString(int in_Match_ID, String in_Extension) {
+        // Validate we have a proper extension
+        if (!(in_Extension.equals("d") || in_Extension.equals("e")))
+            return "";
+
+        String filename = Globals.CurrentCompetitionId + "_" + in_Match_ID + "_" + Globals.CurrentDeviceId + "_" + in_Extension + ".csv";
+        String file_as_string = "";
+        String line;
+
+        try {
+            // Open up the correct input stream
+            InputStream is;
+            DocumentFile df = Globals.output_df.findFile(filename);
+            assert df != null;
+            is = appContext.getContentResolver().openInputStream(df.getUri());
+
+            // Read in the data
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            br.readLine();
+            while ((line = br.readLine()) != null) {
+                if (!file_as_string.isEmpty())
+                    file_as_string += "\n";
+
+                file_as_string += line;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return file_as_string;
     }
 
     // Member Function: Close out the logger.  Write out all of the non-time based match data and close the files.
