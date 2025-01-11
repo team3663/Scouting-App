@@ -7,6 +7,7 @@ import android.widget.Toast;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.team3663.scouting_app.R;
+import com.team3663.scouting_app.activities.Match;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.utility.achievements.Achievements;
@@ -150,7 +151,6 @@ public class Logger {
         csv_header += "," + Constants.Logger.LOGKEY_START_POSITION;
         csv_header += "," + Constants.Logger.LOGKEY_DID_LEAVE_START;
         csv_header += "," + Constants.Logger.LOGKEY_CLIMB_POSITION;
-        csv_header += "," + Constants.Logger.LOGKEY_TRAP;
         csv_header += "," + Constants.Logger.LOGKEY_COMMENTS;
         csv_header += "," + Constants.Logger.LOGKEY_ACHIEVEMENT;
         csv_header += "," + Constants.Logger.LOGKEY_START_TIME_OFFSET;
@@ -165,7 +165,6 @@ public class Logger {
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_START_POSITION);
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_DID_LEAVE_START);
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_CLIMB_POSITION);
-        csv_line += FindValueInPair(Constants.Logger.LOGKEY_TRAP);
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_COMMENTS);
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_ACHIEVEMENT);
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_START_TIME_OFFSET);
@@ -319,46 +318,62 @@ public class Logger {
 
     // Member Function: Check if the last logged event is an orphan
     public boolean isLastEventAnOrphan() {
-        boolean foundLast = false;
+        boolean foundLast;
+        boolean rc = false;
         LoggerEventRow ler = null;
         // Check for a no-op
         if (match_log_events.isEmpty()) return false;
 
-        // See if the last FOP logged event has "next events" that can happen (ie: an orphan)
-        for (int i = match_log_events.size() - 1; i >=0 && !foundLast; --i) {
-            ler = match_log_events.get(i);
+        for (int group_id = 1; group_id <= Globals.MaxEventGroups; ++group_id) {
+            foundLast = false;
 
-            switch (ler.EventId) {
-                case Constants.Events.ID_DEFENDED_START:
-                case Constants.Events.ID_DEFENDED_END:
-                case Constants.Events.ID_DEFENSE_START:
-                case Constants.Events.ID_DEFENSE_END:
-                case Constants.Events.ID_NOT_MOVING_START:
-                case Constants.Events.ID_NOT_MOVING_END:
-                    break;
-                default:
-                    foundLast = true;
+            // See if the last FOP logged event for this group has "next events" that can happen (ie: an orphan)
+            for (int i = match_log_events.size() - 1; i >= 0 && !foundLast; --i) {
+                ler = match_log_events.get(i);
+
+                // Only look at rows that match the group id we're interested in
+                if (Globals.EventList.getEventGroup(ler.EventId) == group_id) {
+                    switch (ler.EventId) {
+                        case Constants.Events.ID_DEFENDED_START:
+                        case Constants.Events.ID_DEFENDED_END:
+                        case Constants.Events.ID_DEFENSE_START:
+                        case Constants.Events.ID_DEFENSE_END:
+                        case Constants.Events.ID_NOT_MOVING_START:
+                        case Constants.Events.ID_NOT_MOVING_END:
+                            break;
+                        default:
+                            foundLast = true;
+                    }
+                }
+
+                // If we found a last row worth looking at, check if it's an orphan
+                // Use an "OR" condition to find if ANY group had an orphan event.
+                if (foundLast)
+                    rc = rc || !Globals.EventList.getNextEvents(ler.EventId).isEmpty();
             }
         }
 
-        // If we didn't find a last row worth looking at, just return now
-        if (!foundLast) return false;
-
-        // Return value based on whether there are any Next Events (orphan) or not.
-        return !Globals.EventList.getNextEvents(ler.EventId).isEmpty();
+        return rc;
     }
 
     // Member Function: Undo the last logged Event and return the previous EventId
     public int UndoLastEvent() {
         int lastIndex = -1;
+        int lastEventId = -1;
+        int lastEventGroupId = -1;
+        int rc;
         LoggerEventRow ler;
 
         // Check for a no-op
         if (match_log_events.isEmpty()) return -1;
 
         // Find the last FOP logged event
-        for (int i = match_log_events.size() - 1; i >=0 && lastIndex < 0; --i) {
-            if (Globals.EventList.isEventInFOP(match_log_events.get(i).EventId)) lastIndex = i;
+        for (int i = match_log_events.size() - 1; i >=0; --i) {
+            lastEventId = match_log_events.get(i).EventId;
+            if (Globals.EventList.isEventInFOP(lastEventId)) {
+                lastIndex = i;
+                break;
+            }
         }
 
         // If we didn't find the last logged event (that's bad) show a Toast and return
@@ -368,7 +383,8 @@ public class Logger {
         }
 
         // In order to UNDO this event, we need to find what the new last event is and return it
-        // after we remove the one we need to undo.
+        // after we remove the one we need to undo.  Save off the groupId of this event for later
+        lastEventGroupId = Globals.EventList.getEventGroup(lastEventId);
         match_log_events.remove(lastIndex);
 
         // For any events AFTER this removed event, we need to decrement the "PrevSeq" since they all
@@ -380,15 +396,24 @@ public class Logger {
             }
         }
 
-        // Find the (new) last FOP logged event
+        // Set the default return code to be -1 (there's no more previous events)
+        rc = -1;
+
+        // Find the (new) last FOP logged event regardless of "group" and save it as the return value.
+        // Update the Match "current_event" for the right group so the context menu is correct.
         // Special case if we've backed up to the starting note.
         for (int i = match_log_events.size() - 1; i >=0; --i) {
             if ((Globals.EventList.isEventInFOP(match_log_events.get(i).EventId)) ||
-                    (match_log_events.get(i).EventId == Constants.Events.ID_AUTO_STARTNOTE))
-                return match_log_events.get(i).EventId;
+                    (match_log_events.get(i).EventId == Constants.Events.ID_AUTO_START_GAME_PIECE)) {
+                if (rc == -1) rc = match_log_events.get(i).EventId;
+                if (Globals.EventList.getEventGroup(match_log_events.get(i).EventId) == lastEventGroupId) {
+                    Match.current_event[lastEventGroupId] = match_log_events.get(i).EventId;
+                    break;
+                }
+            }
         }
 
-        return -1;
+        return rc;
     }
 
     // =============================================================================================

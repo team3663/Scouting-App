@@ -11,19 +11,65 @@ import java.util.ArrayList;
 // =============================================================================================
 public class Events {
     private final ArrayList<EventRow> event_list;
-    private final ArrayList<String> auto_events;
-    private final ArrayList<String> teleop_events;
+    public ArrayList<EventGroup> EventGroup;
 
     // Constructor
     public Events() {
         event_list = new ArrayList<>();
-        auto_events = new ArrayList<>();
-        teleop_events = new ArrayList<>();
+        EventGroup = new ArrayList<>();
+
+        // EventGroup will use a 1-based group_id, so add a dummy record for index 0.
+        EventGroup.add(new EventGroup("",""));
+
+        Globals.MaxEventGroups = 0;
+    }
+
+    // Member Function: Add an EventGroup to the list
+    public void addEventGroup(String in_id, String in_name) {
+        int group_id = Integer.parseInt(in_id);
+
+        // Ensure we're adding the groupid (in_id) as the same index.  This shouldn't happen but in case there's a gap in group numbers.
+        // 1. Ensure the array is at least as big as the group_id needs
+        // 2. Just set the value at the right index to the name.
+        for (int i = Globals.MaxEventGroups; i < group_id; ++i)
+            EventGroup.add(new EventGroup("",""));
+
+        EventGroup.get(group_id).name = in_name;
+        Globals.MaxEventGroups = Math.max(Globals.MaxEventGroups, Integer.parseInt(in_id));
+    }
+
+    // Member Function: Check if an EventGroup has Events for this Match Phase
+    public boolean hasEventsForGroup(int in_group_id, String in_phase) {
+        for (EventRow er : event_list) {
+            if ((er.match_phase.equals(in_phase)) && (er.group_id == in_group_id))
+                return true;
+        }
+
+        return false;
+    }
+
+    // Member Function: Return the GroupID for a given Group name.  -1 if not found
+    public int getGroupId(String in_group) {
+        for (int i = 1; i <= Globals.MaxEventGroups; i++)
+            if (EventGroup.get(i).name.equals(in_group))
+                return i;
+
+        return -1;
+    }
+
+    // Member Function: Return the Group Name for a given Group Id
+    public String getGroupName(int in_GroupId) {
+        return EventGroup.get(in_GroupId).name;
     }
 
     // Member Function: Add a row of event info into the list giving the data individually
-    public void addEventRow(String in_id, String in_description, String in_phase, String in_seq_start, String in_FOP, String in_next_set, String in_color_index) {
-        event_list.add(new EventRow(Integer.parseInt(in_id), in_description, in_phase, Boolean.parseBoolean(in_seq_start), Boolean.parseBoolean(in_FOP), in_next_set, in_color_index));
+    public void addEventRow(String in_id, String in_group_id, String in_description, String in_phase, String in_seq_start, String in_FOP, String in_next_set, String in_color_index) {
+        event_list.add(new EventRow(Integer.parseInt(in_id), Integer.parseInt(in_group_id), in_description, in_phase, Boolean.parseBoolean(in_seq_start), Boolean.parseBoolean(in_FOP), in_next_set, in_color_index));
+    }
+
+    // Member Function: Check if an event group has a specific color to use
+    public boolean hasGroupColor(int in_GroupId) {
+        return (!EventGroup.get(in_GroupId).color.isEmpty());
     }
 
     // Member Function: Check if an event has a specific color to use
@@ -37,26 +83,37 @@ public class Events {
     }
 
     // Member Function: Return the color code for this event
+    public int getGroupColor(int in_GroupId) {
+        return Integer.parseInt(EventGroup.get(in_GroupId).color) - 1;
+    }
+
+    // Member Function: Return the color code for this event
     public int getEventColor(int in_EventId) {
         for (EventRow er : event_list) {
             if (er.id == in_EventId)
-                return Integer.parseInt(er.color);
+                return Integer.parseInt(er.color) - 1;
         }
 
         return 0;
     }
 
     // Member Function: Return a list of Events (description) for a give phase of the match (only ones that start a sequence)
-    public ArrayList<String> getEventsForPhase(String in_phase) {
-        // Return the pre-built list depending on the match_phase being asked for
-        if (in_phase.equals(Constants.Phases.AUTO)) return auto_events;
-        if (in_phase.equals(Constants.Phases.TELEOP)) return teleop_events;
+    public ArrayList<String> getEventsForPhase(String in_phase, int in_group_id) {
+        ArrayList<String> rc = new ArrayList<>();
 
-        return null;
+        // Return a list depending on the match_phase being asked for and the group id
+        for (EventRow er : event_list) {
+            if ((er.group_id == in_group_id) && (er.match_phase.equals(in_phase)) && (er.is_FOP_Event) && (er.is_seq_start))
+                rc.add((er.description));
+        }
+
+        return rc;
     }
 
     // Member Function: Return a list of Events (description) that can follow a given EventId (next Event in the sequence)
     public ArrayList<String> getNextEvents(int in_EventId) {
+        if (in_EventId == -1) return null;
+
         // Find the event in the list, and return it's list of valid next events
         for (EventRow er : event_list) {
             if (er.id == in_EventId) return er.next_events_desc;
@@ -108,6 +165,10 @@ public class Events {
     // Member Function: Empties out the list
     public void clear() {
         event_list.clear();
+        EventGroup.clear();
+
+        // EventGroup will use a 1-based group_id, so add a dummy record for index 0.
+        EventGroup.add(new EventGroup("",""));
     }
 
 
@@ -130,12 +191,22 @@ public class Events {
         return "";
     }
 
+    // Member Function: Return the description for this Event
+    public int getEventGroup(int in_EventId) {
+        for (EventRow er : event_list) {
+            if (er.id == in_EventId) return er.group_id;
+        }
+
+        return -1;
+    }
+
     // =============================================================================================
     // Class:       EventRow
     // Description: Defines a structure/class to hold the information for each Event
     // =============================================================================================
     private class EventRow {
         final int id;
+        final int group_id;
         final String description;
         final String match_phase;
         final boolean is_FOP_Event;
@@ -145,8 +216,9 @@ public class Events {
         final String color;
 
         // Constructor
-        public EventRow(int in_id, String in_description, String in_phase, Boolean in_seq_start, Boolean in_FOP, String in_next_event_set, String in_color_index) {
+        public EventRow(int in_id, int in_group_id, String in_description, String in_phase, Boolean in_seq_start, Boolean in_FOP, String in_next_event_set, String in_color_index) {
             id = in_id;
+            group_id = in_group_id;
             description = in_description;
             match_phase = in_phase;
             is_FOP_Event = in_FOP;
@@ -154,19 +226,21 @@ public class Events {
             next_event_set = in_next_event_set;
             next_events_desc = new ArrayList<>();
             color = in_color_index;
+        }
+    }
 
-            // Manually build what events are allowed to start a sequence in each phase
-            // Only add to the array if the phase is right AND this is for a FOP (field of play) AND this event starts a sequence
-            if (is_FOP_Event && is_seq_start) {
-                switch (match_phase) {
-                    case Constants.Phases.AUTO:
-                        auto_events.add(description);
-                        break;
-                    case Constants.Phases.TELEOP:
-                        teleop_events.add(description);
-                        break;
-                }
-            }
+    // =============================================================================================
+    // Class:       EventGroup
+    // Description: Defines a structure/class to hold the information for each Event Group
+    // =============================================================================================
+    private class EventGroup {
+        String name;
+        String color;
+
+        // Constructor
+        public EventGroup(String in_name, String in_color_index) {
+            name = in_name;
+            color = in_color_index;
         }
     }
 }

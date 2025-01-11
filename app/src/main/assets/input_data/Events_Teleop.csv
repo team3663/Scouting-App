@@ -1,20 +1,20 @@
-﻿Events_Id,Events_Name,Events_StartOfSeq,Events_AppliesToFOP,Events_NextSet,Event_Color
-50,Pickup Note,True,True,54:55:56:57:53:52:100,
-51,Steal Note,True,True,54:55:56:57:53:52:100,
-52,Drop Note,False,True,,
-53,Pass Note,False,True,,
-54,Speaker Score,False,True,,0
-55,Speaker Miss,False,True,,1
-56,Amp Score,False,True,,0
-57,Amp Miss,False,True,,1
-58,Teleop_AutoNote,True,False,,
-59,Failed Pickup,True,True,,
-100,Climb Start,True,True,101:102,
-101,Climb Success,False,True,,0
-102,Climb Failed,False,True,,1
-150,Defended_Start,True,False,151,
-151,Defended_End,False,False,,
-152,PlayDefense_Start,True,False,153,
-153,PlayDefense_End,False,False,,
-154,NotMoving_Start,True,False,155,
-155,NotMoving_End,False,False,,
+﻿Events_Id,Events_Group_Id,Events_Name,Events_StartOfSeq,Events_AppliesToFOP,Events_NextSet,Events_ColorIndex
+20,1,Pickup Coral - Station,TRUE,TRUE,23:24:25:26:27,
+21,1,Pickup Coral - Ground,TRUE,TRUE,23:24:25:26:27,
+22,1,Pickup Coral - FAILED,TRUE,TRUE,,
+23,1,Drop Coral,FALSE,TRUE,,
+24,1,Place Coral L1,FALSE,TRUE,,1
+25,1,Place Coral L2,FALSE,TRUE,,1
+26,1,Place Coral L3,FALSE,TRUE,,1
+27,1,Place Coral L4,FALSE,TRUE,,1
+28,2,Pickup Algae,TRUE,TRUE,30:32:33:34:35,
+29,2,Pickup Algae - FAILED,TRUE,TRUE,,
+30,2,Drop Algae,FALSE,TRUE,,
+31,2,Remove Algae,TRUE,TRUE,,
+32,2,Score Algae in Processor,FALSE,TRUE,,1
+33,2,Miss Algae in Processor,FALSE,TRUE,,2
+34,2,Score Algae in Net,FALSE,TRUE,,1
+35,2,Miss Algae in Net,FALSE,TRUE,,2
+40,3,Climb Start,TRUE,TRUE,41:42,,
+41,3,Climb Success,FALSE,TRUE,,1
+42,3,Climb Failed,FALSE,TRUE,,2

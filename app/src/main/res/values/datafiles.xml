@@ -5,10 +5,10 @@
     <string name="file_match_types">MatchTypes.csv</string>
     <string name="file_matches">Matches.csv</string>
     <string name="file_devices">Devices.csv</string>
+    <string name="file_event_groups">EventGroups.csv</string>
     <string name="file_events_auto">Events_Auto.csv</string>
     <string name="file_events_teleop">Events_Teleop.csv</string>
     <string name="file_comments">Comments.csv</string>
-    <string name="file_trap_results">TrapResults.csv</string>
     <string name="file_climb_positions">ClimbPositions.csv</string>
     <string name="file_start_positions">StartPositions.csv</string>
     <string name="file_colors">Colors.csv</string>

@@ -1,9 +1,16 @@
-﻿Events_Id,Events_Name,Events_StartOfSeq,Events_AppliesToFOP,Events_NextSet,Event_Color
-0,Auto_StartingNote,True,False,3:4:5:6:2,,
-1,Pickup Note,True,True,3:4:5:6:2,,
-2,Drop Note,False,True,,
-3,Speaker Score,False,True,,0
-4,Speaker Miss,False,True,,1
-5,Amp Score,False,True,,0
-6,Amp Miss,False,True,,1
-7,Auto_KeptNote,False,False,,
+﻿Events_Id,Events_GroupId,Events_Name,Events_StartOfSeq,Events_AppliesToFOP,Events_NextSet,Events_ColorIndex
+0,1,StartingCoral,TRUE,FALSE,3:4:5:6:7,
+1,1,Pickup Coral - Station,TRUE,TRUE,3:4:5:6:7,
+2,1,Pickup Coral - Ground,TRUE,TRUE,3:4:5:6:7,
+3,1,Drop Coral,FALSE,TRUE,,
+4,1,Place Coral L1,FALSE,TRUE,,1
+5,1,Place Coral L2,FALSE,TRUE,,1
+6,1,Place Coral L3,FALSE,TRUE,,1
+7,1,Place Coral L4,FALSE,TRUE,,1
+8,2,Pickup Algae,TRUE,TRUE,9:11:12:13:14,
+9,2,Drop Algae,FALSE,TRUE,,2
+10,2,Remove Algae,TRUE,TRUE,,
+11,2,Score Algae in Processor,FALSE,TRUE,,1
+12,2,Miss Algae in Processor,FALSE,TRUE,,2
+13,2,Score Algae in Net,FALSE,TRUE,,1
+14,2,Miss Algae in Net,FALSE,TRUE,,2

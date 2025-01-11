@@ -32,6 +32,7 @@ import com.team3663.scouting_app.utility.achievements.Achievements;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -41,7 +42,6 @@ public class Match extends AppCompatActivity {
     // Global variables
     // =============================================================================================
     private MatchBinding matchBinding;
-    private static int eventPrevious = -1;
     private static OrientationEventListener OEL = null; // needed to detect the screen being flipped around
     private static String currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE;
     private static double currentTouchTime = 0;
@@ -50,7 +50,14 @@ public class Match extends AppCompatActivity {
     private static float current_Y_Relative = 0;
     private static float current_X_Absolute = 0;
     private static float current_Y_Absolute = 0;
-    private static long starttime_not_moving;
+    private static long start_time_not_moving;
+    private static boolean showing_event_detail_menu = false;
+    private static int showing_event_detail_group;
+    // Public Global Variables
+    // Keep track of the currently selected event (per event group) to be used to build the context menus
+    // A value of -1 means there is no current sequence started and all "starting events" should be used.
+    // (Adding 1 so that we can be "1" based and not have to keep "-1" a lot of places)
+    public static int[] current_event = new int[Globals.MaxEventGroups + 1];
 
     // Define a Timer and TimerTasks so you can schedule things
     Timer match_Timer;
@@ -93,45 +100,25 @@ public class Match extends AppCompatActivity {
     public void onCreateContextMenu(ContextMenu in_menu, View in_v, ContextMenu.ContextMenuInfo in_menuInfo) {
         super.onCreateContextMenu(in_menu, in_v, in_menuInfo);
 
-        // Save off the time that this was touched
-        currentTouchTime = System.currentTimeMillis();
 
         // Check to make sure the game is going
         if (!Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) {
-            // Get the events
-            ArrayList<String> events;
-            is_start_of_seq = false;
+            // Save off the time that this was touched
+            currentTouchTime = System.currentTimeMillis();
 
-            if (eventPrevious == -1) {
-                events = Globals.EventList.getEventsForPhase(Globals.CurrentMatchPhase);
-                is_start_of_seq = true;
-            } else {
-                events = Globals.EventList.getNextEvents(eventPrevious);
-                if ((events == null) || events.isEmpty()) {
-                    events = Globals.EventList.getEventsForPhase(Globals.CurrentMatchPhase);
-                    is_start_of_seq = true;
+            // Call the correct context menu
+            if (in_v.getId() == R.id.image_FieldView)
+                if (Globals.MaxEventGroups > 1) {
+                    showing_event_detail_menu = false;
+                    createEventContextMenu(in_menu);
                 }
-            }
-
-            // Add all the events
-            for (String event : events) {
-                in_menu.add(event);
-            }
-
-            // Go through all of the items and see if we want to customize the text using a SpannableString
-            for (int i = 0; i < in_menu.size(); i++) {
-                MenuItem item = in_menu.getItem(i);
-                SpannableString ss = new SpannableString(item.getTitle());
-                ss.setSpan(new AbsoluteSizeSpan(24), 0, ss.length(), 0);
-
-                // If this menuItem has a color to use, then use it
-                if (Globals.ColorList.isColorValid(Globals.CurrentColorId - 1)) {
-                    int eventID = Globals.EventList.getEventId(Objects.requireNonNull(item.getTitle()).toString());
-                    if (Globals.EventList.hasEventColor(eventID))
-                        ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColor(Globals.CurrentColorId - 1, Globals.EventList.getEventColor(eventID))), 0, ss.length(), 0);
+                else {
+                    showing_event_detail_menu = true;
+                    createEventContextSubMenu(in_menu);
                 }
-
-                item.setTitle(ss);
+            else if (in_v.getId() == R.id.view_ContextSubMenuView) {
+                showing_event_detail_menu = true;
+                createEventContextSubMenu(in_menu);
             }
         }
     }
@@ -139,12 +126,98 @@ public class Match extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem in_item) {
-        if (!Globals.isPractice) matchBinding.textStatus.setText(Objects.requireNonNull(in_item.getTitle()));
-        eventPrevious = Globals.EventList.getEventId(Objects.requireNonNull(in_item.getTitle()).toString());
-        Globals.EventLogger.LogEvent(eventPrevious, current_X_Relative, current_Y_Relative, is_start_of_seq, currentTouchTime);
-        matchBinding.butUndo.setVisibility(View.VISIBLE);
-        matchBinding.butUndo.setEnabled(true);
+        // Take action on whether we're showing the detail event menu or the group event menu
+        if (showing_event_detail_menu) {
+            if (!Globals.isPractice)
+                matchBinding.textStatus.setText(Objects.requireNonNull(in_item.getTitle()));
+            int event_id = Globals.EventList.getEventId(Objects.requireNonNull(in_item.getTitle()).toString());
+            int event_group_id = Globals.EventList.getEventGroup(event_id);
+            current_event[event_group_id] = event_id;
+            Globals.EventLogger.LogEvent(current_event[event_group_id], current_X_Relative, current_Y_Relative, is_start_of_seq, currentTouchTime);
+            matchBinding.butUndo.setVisibility(View.VISIBLE);
+            matchBinding.butUndo.setEnabled(true);
+            showing_event_detail_menu = false;
+        }
+        else {
+            // Set the group we clicked on so the sub-menu will be the right one, then show the sub-menu
+            showing_event_detail_group = Globals.EventList.getGroupId(Objects.requireNonNull(in_item.getTitle()).toString());
+            matchBinding.viewContextSubMenuView.showContextMenu(current_X_Absolute, current_Y_Absolute);
+        }
+
         return true;
+    }
+
+    // =============================================================================================
+    // Function:    createEventContextMenu
+    // Description: Create the context menu for the Event Group list
+    // Output:      void
+    // Parameters:  N/A
+    // =============================================================================================
+    @SuppressLint({"DiscouragedApi", "SetTextI18n"})
+    public void createEventContextMenu(ContextMenu in_menu) {
+        // Loop through the groups, and if there are events for this group in this phase of the game,
+        // add the group to the menu
+        for (int i = 1; i <= Globals.MaxEventGroups; ++i) {
+            if (Globals.EventList.hasEventsForGroup(i, Globals.CurrentMatchPhase))
+                in_menu.add(Globals.EventList.getGroupName(i));
+        }
+
+        // Go through all of the items and see if we want to customize the text using a SpannableString
+        for (int i = 0; i < in_menu.size(); i++) {
+            MenuItem item = in_menu.getItem(i);
+            SpannableString ss = new SpannableString(item.getTitle());
+            ss.setSpan(new AbsoluteSizeSpan(24), 0, ss.length(), 0);
+
+            // If this menuItem has a color to use, then use it
+            if (Globals.ColorList.isColorValid(Globals.CurrentColorId - 1)) {
+                int groupID = Globals.EventList.getGroupId(Objects.requireNonNull(item.getTitle()).toString());
+                if (Globals.EventList.hasGroupColor(groupID))
+                    ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColor(Globals.CurrentColorId - 1, Globals.EventList.getGroupColor(groupID))), 0, ss.length(), 0);
+            }
+
+            item.setTitle(ss);
+        }
+    }
+
+    // =============================================================================================
+    // Function:    createEventContextSubMenu
+    // Description: Create the context menu for the Event Group list
+    // Output:      void
+    // Parameters:  N/A
+    // =============================================================================================
+    @SuppressLint({"DiscouragedApi", "SetTextI18n"})
+    public void createEventContextSubMenu(ContextMenu in_menu) {
+        // In case there's not a valid group, exit out.  This shouldn't happen.
+        if (showing_event_detail_group < 1) return;
+
+        // Get the events
+        ArrayList<String> events;
+        is_start_of_seq = false;
+        events = Globals.EventList.getNextEvents(current_event[showing_event_detail_group]);
+
+        if ((events == null) || events.isEmpty())
+            events = Globals.EventList.getEventsForPhase(Globals.CurrentMatchPhase, showing_event_detail_group);
+
+        // Add all the events
+        for (String event : events) {
+            in_menu.add(event);
+        }
+
+        // Go through all of the items and see if we want to customize the text using a SpannableString
+        for (int i = 0; i < in_menu.size(); i++) {
+            MenuItem item = in_menu.getItem(i);
+            SpannableString ss = new SpannableString(item.getTitle());
+            ss.setSpan(new AbsoluteSizeSpan(24), 0, ss.length(), 0);
+
+            // If this menuItem has a color to use, then use it
+            if (Globals.ColorList.isColorValid(Globals.CurrentColorId - 1)) {
+                int eventID = Globals.EventList.getEventId(Objects.requireNonNull(item.getTitle()).toString());
+                if (Globals.EventList.hasEventColor(eventID))
+                    ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColor(Globals.CurrentColorId - 1, Globals.EventList.getEventColor(eventID))), 0, ss.length(), 0);
+            }
+
+            item.setTitle(ss);
+        }
     }
 
     // =============================================================================================
@@ -203,8 +276,8 @@ public class Match extends AppCompatActivity {
         matchBinding.butMatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.start_teleop, 0);
 
         // If we logged that we started with a note, then set the eventPrevious to it.
-        if (Globals.EventLogger.LookupEvent(Constants.Events.ID_AUTO_STARTNOTE)) {
-            eventPrevious = Constants.Events.ID_AUTO_STARTNOTE;
+        if (Globals.EventLogger.LookupEvent(Constants.Events.ID_AUTO_START_GAME_PIECE)) {
+            current_event[Globals.EventList.getEventGroup(Constants.Events.ID_AUTO_START_GAME_PIECE)] = Constants.Events.ID_AUTO_START_GAME_PIECE;
         }
     }
 
@@ -571,10 +644,11 @@ public class Match extends AppCompatActivity {
 
         // If clicked, undo the last event selected
         matchBinding.butUndo.setOnClickListener(view -> {
-            eventPrevious = Globals.EventLogger.UndoLastEvent();
+            int last_event_id;
+            last_event_id = Globals.EventLogger.UndoLastEvent();
 
             // If there are no events left to undo, hide the button
-            if ((eventPrevious == -1) || (eventPrevious == Constants.Events.ID_AUTO_STARTNOTE)) {
+            if ((last_event_id == -1) || (current_event[Globals.EventList.getEventGroup(Constants.Events.ID_AUTO_START_GAME_PIECE)] == Constants.Events.ID_AUTO_START_GAME_PIECE)) {
                 // Certain actions can't be set from a non-UI thread
                 // So we need to make a Runner that will execute on the UI thread to set this.
                 Match.this.runOnUiThread(() -> {
@@ -584,12 +658,12 @@ public class Match extends AppCompatActivity {
                 });
             }
             else {
-                SpannableString ss = new SpannableString(Globals.EventList.getEventDescription(eventPrevious));
+                SpannableString ss = new SpannableString(Globals.EventList.getEventDescription(current_event[Globals.EventList.getEventGroup(last_event_id)]));
                 ss.setSpan(new AbsoluteSizeSpan(24), 0, ss.length(), 0);
 
                 // If this menuItem has a color to use, then use it
                 if (Globals.ColorList.isColorValid(Globals.CurrentColorId - 1)) {
-                    int eventID = Globals.EventList.getEventId(Objects.requireNonNull(Globals.EventList.getEventDescription(eventPrevious)));
+                    int eventID = current_event[Globals.EventList.getEventGroup(last_event_id)];
                     if (Globals.EventList.hasEventColor(eventID))
                         ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColor(Globals.CurrentColorId - 1, Globals.EventList.getEventColor(eventID))), 0, ss.length(), 0);
                 }
@@ -619,12 +693,12 @@ public class Match extends AppCompatActivity {
             if (isChecked) {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_NOT_MOVING_START, 0,0,true);
                 matchBinding.switchNotMoving.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
-                starttime_not_moving = System.currentTimeMillis();
+                start_time_not_moving = System.currentTimeMillis();
                 Achievements.data_match_Toggles++;
             } else {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_NOT_MOVING_END, 0,0,false);
                 matchBinding.switchNotMoving.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
-                Achievements.data_IdleTime += (int)(System.currentTimeMillis() - starttime_not_moving);
+                Achievements.data_IdleTime += (int)(System.currentTimeMillis() - start_time_not_moving);
             }
         });
 
@@ -704,11 +778,16 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint("ClickableViewAccessibility")
     private void initContextMenu() {
+        // Default all current events to -1
+        Arrays.fill(current_event, -1);
+
         // Define a context menu
         RelativeLayout ContextMenu = matchBinding.ContextMenu;
 
         // This is required it will not run without it
         registerForContextMenu(matchBinding.imageFieldView);
+        registerForContextMenu(matchBinding.viewContextSubMenuView);
+
         // So that it activates on a normal click instead of a long click
         ContextMenu.setOnTouchListener((view, motionEvent) -> {
             // Save where we touched the field image regardless of its orientation

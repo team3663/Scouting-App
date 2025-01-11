@@ -16,7 +16,6 @@ public class Constants {
         public static final String LOGKEY_SCOUTER = "D_Scouter";
         public static final String LOGKEY_DID_LEAVE_START = "D_DidLeaveStart";
         public static final String LOGKEY_CLIMB_POSITION = "D_ClimbPos";
-        public static final String LOGKEY_TRAP = "D_Trap";
         public static final String LOGKEY_COMMENTS = "D_Comments";
         public static final String LOGKEY_START_TIME_OFFSET = "D_StartOffset";
         public static final String LOGKEY_DATA_KEY = "D_Key";
@@ -80,7 +79,7 @@ public class Constants {
         public static final int ID_DEFENSE_END = 153;
         public static final int ID_NOT_MOVING_START = 154;
         public static final int ID_NOT_MOVING_END = 155;
-        public static final int ID_AUTO_STARTNOTE = 0;
+        public static final int ID_AUTO_START_GAME_PIECE = 0;
         public static final int ID_NO_EVENT = 999;   // use to check if the eventID you're looking for doesn't exist
     }
 
