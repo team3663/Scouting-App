@@ -248,6 +248,7 @@ public class SubmitData extends AppCompatActivity {
             // Reset pre-Match settings for next time
             Globals.isStartingNote = true;
             Globals.isPractice = false;
+            Globals.transmitMatchNum= Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
 
             Intent GoToQRCode = new Intent(SubmitData.this, QRCode.class);
             startActivity(GoToQRCode);

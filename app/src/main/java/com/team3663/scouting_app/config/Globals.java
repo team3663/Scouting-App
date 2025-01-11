@@ -64,4 +64,6 @@ public class Globals {
     public static DocumentFile base_df = null;
     public static DocumentFile input_df = null;
     public static DocumentFile output_df = null;
+
+    public static int transmitMatchNum;
 }
