@@ -330,7 +330,7 @@ public class Match extends AppCompatActivity {
         // separate thread). So we need to make a Runner that will execute on the UI thread to set this.
         Match.this.runOnUiThread(() -> {
             matchBinding.butMatchControl.setText(getString(R.string.button_match_next));
-            matchBinding.butMatchControl.setTextColor(Color.TRANSPARENT);
+            matchBinding.butMatchControl.setTextColor(getColor(R.color.cpr_bkgnd));
             matchBinding.butMatchControl.setBackgroundColor(getColor(R.color.white));
             matchBinding.butMatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.next_button, 0);
         });

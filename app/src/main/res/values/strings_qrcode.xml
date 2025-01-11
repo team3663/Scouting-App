@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="qr_heading">QR Code</string>
+    <string name="qr_but_next">Next Match</string>
+    <string name="qr_text_data">Scouting Data</string>
+    <string name="qr_text_event">Scouting Events</string>
+</resources>

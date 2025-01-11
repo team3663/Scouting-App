@@ -59,9 +59,11 @@ public class SubmitData extends AppCompatActivity {
         initQuit();
         initNext();
 
-        // We're done with the logger
-        Globals.EventLogger.close();
-        Globals.EventLogger = null;
+        // We're done with the logger (only if not null - it can be null if we're resubmitting data from Pre-Match)
+        if (Globals.EventLogger != null) {
+            Globals.EventLogger.close();
+            Globals.EventLogger = null;
+        }
 
         // Increases the team number so that it auto fills for the next match correctly
         //  and do it after the logger is closed so that this can't mess the logger up
@@ -242,7 +244,16 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initQR() {
+        submitDataBinding.butQRCode.setOnClickListener(view -> {
+            // Reset pre-Match settings for next time
+            Globals.isStartingNote = true;
+            Globals.isPractice = false;
 
+            Intent GoToQRCode = new Intent(SubmitData.this, QRCode.class);
+            startActivity(GoToQRCode);
+
+            finish();
+        });
     }
 
     // =============================================================================================

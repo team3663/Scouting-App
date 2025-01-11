@@ -59,5 +59,12 @@
             android:noHistory="true"
             tools:ignore="DiscouragedApi">
         </activity>
+        <activity
+            android:name=".activities.QRCode"
+            android:screenOrientation="sensorLandscape"
+            android:exported="true"
+            android:noHistory="true"
+            tools:ignore="DiscouragedApi">
+        </activity>
     </application>
 </manifest>
