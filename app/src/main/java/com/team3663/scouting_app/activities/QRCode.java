@@ -1,6 +1,5 @@
 package com.team3663.scouting_app.activities;
 
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -49,15 +48,20 @@ public class QRCode extends AppCompatActivity {
         });
 
         // Initialize activity components
-
         InitQRData();
         InitQREvent();
         InitNext();
      }
 
+    // =============================================================================================
+    // Function:    InitQREvent
+    // Description: Initialize the QR image for the Event file
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
     private void InitQREvent() {
         BarcodeEncoder be = new BarcodeEncoder();
-        String qrDataEvent= getFileAsString(Globals.transmitMatchNum,"e");
+        String qrDataEvent= Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_e.csv" + "\n" + getFileAsString(Globals.transmitMatchNum,"e");
         if (qrDataEvent.length()> Constants.QRCode.MAX_QR_DATA_SIZE){
             Toast.makeText(QRCode.this, " Data file is too big for this method", Toast.LENGTH_LONG).show();
             return;
@@ -72,9 +76,15 @@ public class QRCode extends AppCompatActivity {
         }
     }
 
+    // =============================================================================================
+    // Function:    InitQRData
+    // Description: Initialize the QR image for the Data file
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
     private void InitQRData() {
         BarcodeEncoder be = new BarcodeEncoder();
-        String qrData= getFileAsString(Globals.transmitMatchNum,"d");
+        String qrData= Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_d.csv" + "\n" + getFileAsString(Globals.transmitMatchNum,"d");
         if (qrData.length()> Constants.QRCode.MAX_QR_DATA_SIZE){
             Toast.makeText(QRCode.this, " Data file is too big for this method", Toast.LENGTH_LONG).show();
             return;
@@ -108,7 +118,15 @@ public class QRCode extends AppCompatActivity {
         });
     }
 
-    // Member Function: Read in a logger file and return it as one big string.
+    // =============================================================================================
+    // Function:    getFileAsString
+    // Description: Initialize the Next Match button
+    // Parameters:  in_Match_ID
+    //                  Match number that we want to transmit
+    //              in_Extension
+    //                  type of file ("d" or "e") we want to convert to a string
+    // Output:      String representing the entire contents of the file
+    // =============================================================================================
     public String getFileAsString(int in_Match_ID, String in_Extension) {
         // Validate we have a proper extension
         if (!(in_Extension.equals("d") || in_Extension.equals("e")))
@@ -140,5 +158,4 @@ public class QRCode extends AppCompatActivity {
 
         return file_as_string;
     }
-
 }
