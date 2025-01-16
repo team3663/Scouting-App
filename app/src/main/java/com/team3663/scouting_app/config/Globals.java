@@ -66,4 +66,6 @@ public class Globals {
     public static DocumentFile output_df = null;
 
     public static int transmitMatchNum;
+
+    public static String deviceAddress;
 }

@@ -264,6 +264,19 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initBluetooth() {
+        submitDataBinding.butSendBT.setOnClickListener(view -> {
+            // Reset pre-Match settings for next time
+            Globals.isStartingNote = true;
+            Globals.isPractice = false;
+            Globals.transmitMatchNum= Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
+
+
+            Intent GoToBluetooth = new Intent(SubmitData.this, Bluetooth.class);
+            startActivity(GoToBluetooth);
+
+            finish();
+        });
+
 
     }
 
