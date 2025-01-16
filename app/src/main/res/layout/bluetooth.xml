@@ -1,0 +1,104 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bluetooth"
+    android:background="@color/cpr_bkgnd"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_Heading"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:text="Bluetooth"
+            android:textColor="@color/cpr_green"
+            android:textSize="50sp"
+            tools:ignore="TextSizeCheck" />
+
+        <Button
+            android:id="@+id/btnOn"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/cpr_green"
+            android:onClick="on"
+            android:text="Turn On Bluetooth"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btnOff"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="@color/cpr_green"
+            android:onClick="off"
+            android:text="Turn Off Bluetooth"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btnScan"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/cpr_green"
+            android:onClick="scanDevice"
+            android:text="Scan Bluetooth Device"
+            app:layout_constraintEnd_toEndOf="@+id/btnOn"
+            app:layout_constraintHorizontal_bias="0.22"
+            app:layout_constraintStart_toStartOf="@+id/btnOn"
+            app:layout_constraintTop_toBottomOf="@+id/btnOn" />
+
+        <Button
+            android:id="@+id/btnPair"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/cpr_green"
+            android:text="GET PAIRED DEVICE"
+            app:layout_constraintEnd_toEndOf="@+id/btnOff"
+            app:layout_constraintStart_toStartOf="@+id/btnOff"
+            app:layout_constraintTop_toBottomOf="@+id/btnOff" />
+
+        <Button
+            android:id="@+id/but_Next"
+            android:layout_width="175dp"
+            android:layout_height="60dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="20dp"
+            android:backgroundTint="@color/white"
+            android:text="@string/qr_but_next"
+            android:textColor="@color/cpr_bkgnd"
+            android:textSize="24sp"
+            tools:ignore="HardcodedText,MissingConstraints" />
+
+        <ListView
+            android:id="@+id/listdeviceFound"
+            android:layout_width="379dp"
+            android:layout_height="588dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/btnOff"
+            app:layout_constraintStart_toStartOf="@+id/btnOn"
+            app:layout_constraintTop_toBottomOf="@+id/btnScan"
+            app:layout_constraintVertical_bias="0.0" />
+
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
