@@ -271,8 +271,8 @@ public class SubmitData extends AppCompatActivity {
             Globals.transmitMatchNum= Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
 
 
-            Intent GoToBluetooth = new Intent(SubmitData.this, Bluetooth.class);
-            startActivity(GoToBluetooth);
+//            Intent GoToBluetooth = new Intent(SubmitData.this, Bluetooth.class);
+//            startActivity(GoToBluetooth);
 
             finish();
         });
