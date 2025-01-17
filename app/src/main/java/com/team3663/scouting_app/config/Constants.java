@@ -73,12 +73,12 @@ public class Constants {
     }
 
     public static class Events {
-        public static final int ID_DEFENDED_START = 150;
-        public static final int ID_DEFENDED_END = 151;
-        public static final int ID_DEFENSE_START = 152;
-        public static final int ID_DEFENSE_END = 153;
-        public static final int ID_NOT_MOVING_START = 154;
-        public static final int ID_NOT_MOVING_END = 155;
+        public static final int ID_DEFENDED_START = 60;
+        public static final int ID_DEFENDED_END = 61;
+        public static final int ID_DEFENSE_START = 62;
+        public static final int ID_DEFENSE_END = 63;
+        public static final int ID_NOT_MOVING_START = 64;
+        public static final int ID_NOT_MOVING_END = 65;
         public static final int ID_AUTO_START_GAME_PIECE = 0;
         public static final int ID_NO_EVENT = 999;   // use to check if the eventID you're looking for doesn't exist
     }

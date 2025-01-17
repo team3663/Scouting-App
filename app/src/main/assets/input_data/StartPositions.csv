@@ -1,5 +1,5 @@
 ﻿StartPosition_Id,StartPosition_Active,StartPosition_Description
 0,TRUE,Did Not Play
-1,TRUE,Processor Side
-2,TRUE,Center
-3,TRUE,Far Side
+1,TRUE,Far Side
+2,TRUE,Middle
+3,TRUE,Processor Side

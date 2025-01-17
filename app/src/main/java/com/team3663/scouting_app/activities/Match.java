@@ -648,7 +648,7 @@ public class Match extends AppCompatActivity {
             last_event_id = Globals.EventLogger.UndoLastEvent();
 
             // If there are no events left to undo, hide the button
-            if ((last_event_id == -1) || (current_event[Globals.EventList.getEventGroup(Constants.Events.ID_AUTO_START_GAME_PIECE)] == Constants.Events.ID_AUTO_START_GAME_PIECE)) {
+            if ((last_event_id == -1) || (current_event[Globals.EventList.getEventGroup(last_event_id)] == Constants.Events.ID_AUTO_START_GAME_PIECE)) {
                 // Certain actions can't be set from a non-UI thread
                 // So we need to make a Runner that will execute on the UI thread to set this.
                 Match.this.runOnUiThread(() -> {

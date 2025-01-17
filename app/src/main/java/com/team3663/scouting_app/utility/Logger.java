@@ -27,6 +27,7 @@ public class Logger {
     private int seq_number_prev_common = 0; // Track previous sequence number for all common events
     private int seq_number_prev_defended = 0; // Track previous sequence number for just defended toggle
     private int seq_number_prev_defense = 0; // Track previous sequence number for just defense toggle
+    private int seq_number_prev_not_moving = 0; // Track previous sequence number for just not-moving toggle
     private final ArrayList<Pair<String, String>> match_log_data = new ArrayList<>();
     private final Context appContext;
     private final ArrayList<LoggerEventRow> match_log_events = new ArrayList<>();
@@ -269,6 +270,13 @@ public class Logger {
                 seq_number_prev = seq_number_prev_defense;
                 seq_number++;
                 break;
+            case Constants.Events.ID_NOT_MOVING_START:
+                seq_number_prev_not_moving = ++seq_number;
+                break;
+            case Constants.Events.ID_NOT_MOVING_END:
+                seq_number_prev = seq_number_prev_not_moving;
+                seq_number++;
+                break;
             default:
                 seq_number_prev = seq_number_prev_common;
                 seq_number_prev_common = ++seq_number;
@@ -384,7 +392,10 @@ public class Logger {
 
         // In order to UNDO this event, we need to find what the new last event is and return it
         // after we remove the one we need to undo.  Save off the groupId of this event for later
+        // Reset the current event for that group (we'll find it later - but this ensures that if we
+        // DON'T find it, it'll be reset properly.
         lastEventGroupId = Globals.EventList.getEventGroup(lastEventId);
+        Match.current_event[lastEventGroupId] = -1;
         match_log_events.remove(lastIndex);
 
         // For any events AFTER this removed event, we need to decrement the "PrevSeq" since they all
