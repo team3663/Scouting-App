@@ -43,7 +43,7 @@ public class Logger {
         if (Globals.isPractice) return;
 
         // Add an empty logging row so that Seq# is the same as the index
-        match_log_events.add(new LoggerEventRow(0, "", "", "", ""));
+        match_log_events.add(new LoggerEventRow(-1, "", "", "", ""));
     }
 
     // Member Function: Clear out any saved data from the logger.
@@ -148,6 +148,7 @@ public class Logger {
         csv_header += "," + Constants.Logger.LOGKEY_TEAM_SCOUTING;
         csv_header += "," + Constants.Logger.LOGKEY_SCOUTER;
         csv_header += "," + Constants.Logger.LOGKEY_DID_PLAY;
+        csv_header += "," + Constants.Logger.LOGKEY_START_WITH_GAME_PIECE;
         csv_header += "," + Constants.Logger.LOGKEY_START_POSITION;
         csv_header += "," + Constants.Logger.LOGKEY_DID_LEAVE_START;
         csv_header += "," + Constants.Logger.LOGKEY_CLIMB_POSITION;
@@ -162,6 +163,7 @@ public class Logger {
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_TEAM_SCOUTING);
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_SCOUTER);
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_DID_PLAY);
+        csv_line += FindValueInPair(Constants.Logger.LOGKEY_START_WITH_GAME_PIECE);
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_START_POSITION);
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_DID_LEAVE_START);
         csv_line += FindValueInPair(Constants.Logger.LOGKEY_CLIMB_POSITION);
@@ -401,7 +403,7 @@ public class Logger {
 
         // Find the (new) last FOP logged event regardless of "group" and save it as the return value.
         // Update the Match "current_event" for the right group so the context menu is correct.
-        // Special case if we've backed up to the starting note.
+        // Special case if we've backed up to the starting game piece.
         for (int i = match_log_events.size() - 1; i >=0; --i) {
             if ((Globals.EventList.isEventInFOP(match_log_events.get(i).EventId)) ||
                     (match_log_events.get(i).EventId == Constants.Events.ID_AUTO_START_GAME_PIECE)) {

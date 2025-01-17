@@ -56,7 +56,7 @@ public class Globals {
     public static Uri baseStorageURI = null;
 
     public static boolean isPractice = false;
-    public static boolean isStartingNote = true;
+    public static boolean isStartingGamePiece = true;
     public static boolean isShadowMode = false;
 
     public static long startTime;
@@ -64,4 +64,6 @@ public class Globals {
     public static DocumentFile base_df = null;
     public static DocumentFile input_df = null;
     public static DocumentFile output_df = null;
+
+    public static int transmitMatchNum;
 }
