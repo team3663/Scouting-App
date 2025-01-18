@@ -105,6 +105,10 @@ public class Constants {
         public static final int ACTIVITY_CODE_SETTINGS = 1;
         public static final int ACTIVITY_CODE_STORAGE = 2;
     }
+    public static class QRCode{
+        public static final int MAX_QR_DATA_SIZE= 2990;
+        public static final int QR_LENGTH = 500;
+    }
 
     public static class Achievements {
         public static final int START_DELAY = 500;
