@@ -72,7 +72,7 @@ public class QRCode extends AppCompatActivity {
             qrCodeBinding.imageQREvent.setImageBitmap(bm);
         } catch (Exception e) {
             Toast.makeText(QRCode.this, "Failed to generate QR Code!", Toast.LENGTH_LONG).show();
-            throw new RuntimeException(e);
+//            throw new RuntimeException(e);
         }
     }
 
