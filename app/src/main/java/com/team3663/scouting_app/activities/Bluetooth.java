@@ -74,7 +74,7 @@ public class Bluetooth extends AppCompatActivity {
     private void InitNext() {
         bluetoothBinding.butNext.setOnClickListener(view -> {
             // Reset pre-Match settings for next time
-            Globals.isStartingNote = true;
+            Globals.isStartingGamePiece = true;
             Globals.isPractice = false;
 
             Intent GoToPreMatch = new Intent(Bluetooth.this, PreMatch.class);
