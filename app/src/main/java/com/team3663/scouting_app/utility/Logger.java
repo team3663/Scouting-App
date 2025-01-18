@@ -1,6 +1,10 @@
 package com.team3663.scouting_app.utility;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.UriPermission;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.util.Pair;
 import android.widget.Toast;
 
@@ -12,7 +16,10 @@ import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;

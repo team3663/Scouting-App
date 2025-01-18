@@ -12,18 +12,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.documentfile.provider.DocumentFile;
 
 import com.google.zxing.BarcodeFormat;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
+import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.QrCodeBinding;
+import com.team3663.scouting_app.utility.Logger;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class QRCode extends AppCompatActivity {
     // =============================================================================================
     // Global variables
     // =============================================================================================
     private QrCodeBinding qrCodeBinding;
-    private final int QR_SIZE = 390;
+    private Logger logger;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -40,17 +48,27 @@ public class QRCode extends AppCompatActivity {
         });
 
         // Initialize activity components
-
         InitQRData();
         InitQREvent();
         InitNext();
      }
 
+    // =============================================================================================
+    // Function:    InitQREvent
+    // Description: Initialize the QR image for the Event file
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
     private void InitQREvent() {
         BarcodeEncoder be = new BarcodeEncoder();
+        String qrDataEvent= Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_e.csv" + "\n" + getFileAsString(Globals.transmitMatchNum,"e");
+        if (qrDataEvent.length()> Constants.QRCode.MAX_QR_DATA_SIZE){
+            Toast.makeText(QRCode.this, " Data file is too big for this method", Toast.LENGTH_LONG).show();
+            return;
+        }
 
         try {
-            Bitmap bm = be.encodeBitmap("this is a test of a qr code generated data", BarcodeFormat.QR_CODE, QR_SIZE, QR_SIZE);
+            Bitmap bm = be.encodeBitmap(qrDataEvent, BarcodeFormat.QR_CODE,Constants.QRCode.QR_LENGTH, Constants.QRCode.QR_LENGTH);
             qrCodeBinding.imageQREvent.setImageBitmap(bm);
         } catch (Exception e) {
             Toast.makeText(QRCode.this, "Failed to generate QR Code!", Toast.LENGTH_LONG).show();
@@ -58,11 +76,22 @@ public class QRCode extends AppCompatActivity {
         }
     }
 
+    // =============================================================================================
+    // Function:    InitQRData
+    // Description: Initialize the QR image for the Data file
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
     private void InitQRData() {
         BarcodeEncoder be = new BarcodeEncoder();
+        String qrData= Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_d.csv" + "\n" + getFileAsString(Globals.transmitMatchNum,"d");
+        if (qrData.length()> Constants.QRCode.MAX_QR_DATA_SIZE){
+            Toast.makeText(QRCode.this, " Data file is too big for this method", Toast.LENGTH_LONG).show();
+            return;
+        }
 
         try {
-            Bitmap bm = be.encodeBitmap("this is a test of a qr code generated data", BarcodeFormat.QR_CODE, QR_SIZE, QR_SIZE);
+            Bitmap bm = be.encodeBitmap(qrData, BarcodeFormat.QR_CODE, Constants.QRCode.QR_LENGTH, Constants.QRCode.QR_LENGTH);
             qrCodeBinding.imageQRData.setImageBitmap(bm);
         } catch (Exception e) {
             Toast.makeText(QRCode.this, "Failed to generate QR Code!", Toast.LENGTH_LONG).show();
@@ -87,5 +116,46 @@ public class QRCode extends AppCompatActivity {
 
             finish();
         });
+    }
+
+    // =============================================================================================
+    // Function:    getFileAsString
+    // Description: Initialize the Next Match button
+    // Parameters:  in_Match_ID
+    //                  Match number that we want to transmit
+    //              in_Extension
+    //                  type of file ("d" or "e") we want to convert to a string
+    // Output:      String representing the entire contents of the file
+    // =============================================================================================
+    public String getFileAsString(int in_Match_ID, String in_Extension) {
+        // Validate we have a proper extension
+        if (!(in_Extension.equals("d") || in_Extension.equals("e")))
+            return "";
+
+        String filename = Globals.CurrentCompetitionId + "_" + in_Match_ID + "_" + Globals.CurrentDeviceId + "_" + in_Extension + ".csv";
+        String file_as_string = "";
+        String line;
+
+        try {
+            // Open up the correct input stream
+            InputStream is;
+            DocumentFile df = Globals.output_df.findFile(filename);
+            assert df != null;
+            is = this.getContentResolver().openInputStream(df.getUri());
+
+            // Read in the data
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            br.readLine();
+            while ((line = br.readLine()) != null) {
+                if (!file_as_string.isEmpty())
+                    file_as_string += "\n";
+
+                file_as_string += line;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return file_as_string;
     }
 }

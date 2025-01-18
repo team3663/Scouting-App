@@ -19,7 +19,7 @@
             android:gravity="center"
             android:text="@string/qr_heading"
             android:textColor="@color/cpr_green"
-            android:textSize="34sp"
+            android:textSize="50sp"
             tools:ignore="TextSizeCheck" />
 
         <LinearLayout
