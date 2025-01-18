@@ -275,7 +275,7 @@ public class Match extends AppCompatActivity {
         matchBinding.butMatchControl.setBackgroundColor(getColor(R.color.dark_yellow));
         matchBinding.butMatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.start_teleop, 0);
 
-        // If we logged that we started with a note, then set the eventPrevious to it.
+        // If we logged that we started with a game piece, then set the eventPrevious to it.
         if (Globals.EventLogger.LookupEvent(Constants.Events.ID_AUTO_START_GAME_PIECE)) {
             current_event[Globals.EventList.getEventGroup(Constants.Events.ID_AUTO_START_GAME_PIECE)] = Constants.Events.ID_AUTO_START_GAME_PIECE;
         }
@@ -648,7 +648,7 @@ public class Match extends AppCompatActivity {
             last_event_id = Globals.EventLogger.UndoLastEvent();
 
             // If there are no events left to undo, hide the button
-            if ((last_event_id == -1) || (current_event[Globals.EventList.getEventGroup(Constants.Events.ID_AUTO_START_GAME_PIECE)] == Constants.Events.ID_AUTO_START_GAME_PIECE)) {
+            if ((last_event_id == -1) || (current_event[Globals.EventList.getEventGroup(last_event_id)] == Constants.Events.ID_AUTO_START_GAME_PIECE)) {
                 // Certain actions can't be set from a non-UI thread
                 // So we need to make a Runner that will execute on the UI thread to set this.
                 Match.this.runOnUiThread(() -> {

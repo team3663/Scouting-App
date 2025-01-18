@@ -63,7 +63,7 @@ public class PreMatch extends AppCompatActivity {
         initTeamNumber();
         initScouterName();
         initDidPlay();
-        initStartingNote();
+        initStartingGamePiece();
         initStartingPos();
         initOverride();
         initResubmit();
@@ -222,23 +222,23 @@ public class PreMatch extends AppCompatActivity {
     }
 
     // =============================================================================================
-    // Function:    initStartingNote
-    // Description: Initialize the Starting Note field
+    // Function:    initStartingGamePiece
+    // Description: Initialize the Starting Game Piece field
     // Parameters:  void
     // Output:      void
     // =============================================================================================
-    private void initStartingNote() {
+    private void initStartingGamePiece() {
         // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
         // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)
         // So add it in now.
-        String paddedText = preMatchBinding.checkboxStartNote.getText() + Globals.CheckBoxTextPadding;
-        preMatchBinding.checkboxStartNote.setText(paddedText);
+        String paddedText = preMatchBinding.checkboxStartGamePiece.getText() + Globals.CheckBoxTextPadding;
+        preMatchBinding.checkboxStartGamePiece.setText(paddedText);
 
         // Save off any changes the scouter makes.
-        preMatchBinding.checkboxStartNote.setOnCheckedChangeListener((buttonView, isChecked) -> Globals.isStartingNote = isChecked);
+        preMatchBinding.checkboxStartGamePiece.setOnCheckedChangeListener((buttonView, isChecked) -> Globals.isStartingGamePiece = isChecked);
 
         // Default checkboxes
-        preMatchBinding.checkboxStartNote.setChecked(Globals.isStartingNote);
+        preMatchBinding.checkboxStartGamePiece.setChecked(Globals.isStartingGamePiece);
     }
 
     // =============================================================================================
@@ -366,6 +366,7 @@ public class PreMatch extends AppCompatActivity {
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_TEAM_TO_SCOUT, String.valueOf(Globals.CurrentTeamToScout));
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_SCOUTER, preMatchBinding.editScouterName.getText().toString().toUpperCase().replace(" ",""));
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_PLAY, String.valueOf(preMatchBinding.checkboxDidPlay.isChecked()));
+                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_WITH_GAME_PIECE, String.valueOf(Globals.isStartingGamePiece));
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_TEAM_SCOUTING, String.valueOf(Globals.CurrentScoutingTeam));
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_MATCH_TYPE, Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType));
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_SHADOW_MODE, String.valueOf(Globals.isShadowMode));
@@ -378,9 +379,9 @@ public class PreMatch extends AppCompatActivity {
                         Globals.CurrentStartPosition = startPos;
                     }
 
-                    // Log if they started with a note (the match hasn't started so we need to specify a "0" time
-                    // or else it will log as max match time which wastes 2 log characters for no benefit)
-                    if (preMatchBinding.checkboxStartNote.isChecked()) {
+                    // Log if they started with a game piece (the match hasn't started so we need to specify a "0" time
+                    // or else it will log as max match time which wastes extra log characters for no benefit)
+                    if (Globals.isStartingGamePiece) {
                         Globals.EventLogger.LogEvent(Constants.Events.ID_AUTO_START_GAME_PIECE, 0, 0, true, 0);
                     }
 
