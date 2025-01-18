@@ -322,7 +322,7 @@
             android:orientation="horizontal">
 
             <CheckBox
-                android:id="@+id/checkbox_StartNote"
+                android:id="@+id/checkbox_StartGamePiece"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -336,7 +336,7 @@
                 android:textSize="24sp" />
 
             <TextView
-                android:id="@+id/text_StartNotePadding"
+                android:id="@+id/text_StartGamePiecePadding"
                 android:layout_width="630dp"
                 android:layout_height="match_parent"
                 android:gravity="end|center"

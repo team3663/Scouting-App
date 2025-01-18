@@ -79,7 +79,7 @@ public class QRCode extends AppCompatActivity {
     private void InitNext() {
         qrCodeBinding.butNext.setOnClickListener(view -> {
             // Reset pre-Match settings for next time
-            Globals.isStartingNote = true;
+            Globals.isStartingGamePiece = true;
             Globals.isPractice = false;
 
             Intent GoToPreMatch = new Intent(QRCode.this, PreMatch.class);

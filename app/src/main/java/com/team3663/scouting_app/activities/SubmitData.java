@@ -246,8 +246,9 @@ public class SubmitData extends AppCompatActivity {
     private void initQR() {
         submitDataBinding.butQRCode.setOnClickListener(view -> {
             // Reset pre-Match settings for next time
-            Globals.isStartingNote = true;
+            Globals.isStartingGamePiece = true;
             Globals.isPractice = false;
+            Globals.transmitMatchNum= Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
 
             Intent GoToQRCode = new Intent(SubmitData.this, QRCode.class);
             startActivity(GoToQRCode);
@@ -299,7 +300,7 @@ public class SubmitData extends AppCompatActivity {
     private void initNext() {
         submitDataBinding.butNext.setOnClickListener(view -> {
             // Reset pre-Match settings for next time
-            Globals.isStartingNote = true;
+            Globals.isStartingGamePiece = true;
             Globals.isPractice = false;
 
             Intent GoToPreMatch = new Intent(SubmitData.this, PreMatch.class);

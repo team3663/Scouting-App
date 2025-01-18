@@ -275,7 +275,7 @@ public class Match extends AppCompatActivity {
         matchBinding.butMatchControl.setBackgroundColor(getColor(R.color.dark_yellow));
         matchBinding.butMatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.start_teleop, 0);
 
-        // If we logged that we started with a note, then set the eventPrevious to it.
+        // If we logged that we started with a game piece, then set the eventPrevious to it.
         if (Globals.EventLogger.LookupEvent(Constants.Events.ID_AUTO_START_GAME_PIECE)) {
             current_event[Globals.EventList.getEventGroup(Constants.Events.ID_AUTO_START_GAME_PIECE)] = Constants.Events.ID_AUTO_START_GAME_PIECE;
         }

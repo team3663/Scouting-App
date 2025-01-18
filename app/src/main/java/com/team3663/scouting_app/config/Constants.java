@@ -15,6 +15,7 @@ public class Constants {
         public static final String LOGKEY_TEAM_TO_SCOUT = "D_Team";
         public static final String LOGKEY_SCOUTER = "D_Scouter";
         public static final String LOGKEY_DID_LEAVE_START = "D_DidLeaveStart";
+        public static final String LOGKEY_START_WITH_GAME_PIECE = "D_StartGamePiece";
         public static final String LOGKEY_CLIMB_POSITION = "D_ClimbPos";
         public static final String LOGKEY_COMMENTS = "D_Comments";
         public static final String LOGKEY_START_TIME_OFFSET = "D_StartOffset";
