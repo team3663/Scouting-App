@@ -195,8 +195,10 @@ public class Match extends AppCompatActivity {
         is_start_of_seq = false;
         events = Globals.EventList.getNextEvents(current_event[showing_event_detail_group]);
 
-        if ((events == null) || events.isEmpty())
+        if ((events == null) || events.isEmpty()) {
+            is_start_of_seq = true;
             events = Globals.EventList.getEventsForPhase(Globals.CurrentMatchPhase, showing_event_detail_group);
+        }
 
         // Add all the events
         for (String event : events) {

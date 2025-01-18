@@ -266,7 +266,7 @@ public class SubmitData extends AppCompatActivity {
     private void initBluetooth() {
         submitDataBinding.butSendBT.setOnClickListener(view -> {
             // Reset pre-Match settings for next time
-            Globals.isStartingNote = true;
+            Globals.isStartingGamePiece = true;
             Globals.isPractice = false;
             Globals.transmitMatchNum= Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
 

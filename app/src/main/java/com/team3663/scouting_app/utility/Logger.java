@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 // =============================================================================================
@@ -31,7 +32,8 @@ import java.util.Collections;
 // =============================================================================================
 public class Logger {
     private int seq_number; // Track the current sequence number for events
-    private int seq_number_prev_common = 0; // Track previous sequence number for all common events
+    private int[] seq_number_prev_common = new int[Globals.MaxEventGroups + 1];
+    // Track previous sequence number for all common events
     private int seq_number_prev_defended = 0; // Track previous sequence number for just defended toggle
     private int seq_number_prev_defense = 0; // Track previous sequence number for just defense toggle
     private int seq_number_prev_not_moving = 0; // Track previous sequence number for just not-moving toggle
@@ -42,6 +44,7 @@ public class Logger {
     // Constructor: create the new files
     public Logger(Context in_context) {
         appContext = in_context;
+        Arrays.fill(seq_number_prev_common, -1);
 
         // Ensure the things are reset
         seq_number = 0;
@@ -283,8 +286,8 @@ public class Logger {
                 seq_number++;
                 break;
             default:
-                seq_number_prev = seq_number_prev_common;
-                seq_number_prev_common = ++seq_number;
+                seq_number_prev = seq_number_prev_common[Globals.EventList.getEventGroup(in_EventId)];
+                seq_number_prev_common[Globals.EventList.getEventGroup(in_EventId)] = ++seq_number;
         }
 
         // If this is NOT a new sequence, we need to write out the previous event id that goes with this one
