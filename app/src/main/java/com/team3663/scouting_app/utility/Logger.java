@@ -119,12 +119,12 @@ public class Logger {
 
     // Member Function: Find the correct data in the Key/Value Pair variable
     private String FindValueInPair(String in_Key) {
-        String ret = ",";
+        String ret = "";
 
         // loop through the pairs and stop if you find a key match.  Append the value if found.
         for(Pair<String, String> p : match_log_data) {
             if (p.first.equals(in_Key)) {
-                ret += p.second;
+                ret = p.second;
                 break;
             }
         }
@@ -145,12 +145,11 @@ public class Logger {
             throw new RuntimeException(e);
         }
 
-        // Start the csv line with the event key
-        String csv_header = Constants.Logger.LOGKEY_DATA_KEY;
-        String csv_line = Globals.CurrentCompetitionId + ":" + Globals.CurrentMatchNumber + ":" + Globals.CurrentDeviceId;
+        // Start the line (header as well) with the Match Type
+        String csv_header = Constants.Logger.LOGKEY_MATCH_TYPE;
+        String csv_line = FindValueInPair(Constants.Logger.LOGKEY_MATCH_TYPE);
 
         // Append to the csv line the values in the correct order
-        csv_header += "," + Constants.Logger.LOGKEY_MATCH_TYPE;
         csv_header += "," + Constants.Logger.LOGKEY_SHADOW_MODE;
         csv_header += "," + Constants.Logger.LOGKEY_TEAM_TO_SCOUT;
         csv_header += "," + Constants.Logger.LOGKEY_TEAM_SCOUTING;
@@ -165,20 +164,19 @@ public class Logger {
         csv_header += "," + Constants.Logger.LOGKEY_START_TIME_OFFSET;
         csv_header += "," + Constants.Logger.LOGKEY_START_TIME;
 
-        csv_line += FindValueInPair(Constants.Logger.LOGKEY_MATCH_TYPE);
-        csv_line += FindValueInPair(Constants.Logger.LOGKEY_SHADOW_MODE);
-        csv_line += FindValueInPair(Constants.Logger.LOGKEY_TEAM_TO_SCOUT);
-        csv_line += FindValueInPair(Constants.Logger.LOGKEY_TEAM_SCOUTING);
-        csv_line += FindValueInPair(Constants.Logger.LOGKEY_SCOUTER);
-        csv_line += FindValueInPair(Constants.Logger.LOGKEY_DID_PLAY);
-        csv_line += FindValueInPair(Constants.Logger.LOGKEY_START_WITH_GAME_PIECE);
-        csv_line += FindValueInPair(Constants.Logger.LOGKEY_START_POSITION);
-        csv_line += FindValueInPair(Constants.Logger.LOGKEY_DID_LEAVE_START);
-        csv_line += FindValueInPair(Constants.Logger.LOGKEY_CLIMB_POSITION);
-        csv_line += FindValueInPair(Constants.Logger.LOGKEY_COMMENTS);
-        csv_line += FindValueInPair(Constants.Logger.LOGKEY_ACHIEVEMENT);
-        csv_line += FindValueInPair(Constants.Logger.LOGKEY_START_TIME_OFFSET);
-        csv_line += FindValueInPair(Constants.Logger.LOGKEY_START_TIME);
+        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_SHADOW_MODE);
+        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_TEAM_TO_SCOUT);
+        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_TEAM_SCOUTING);
+        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_SCOUTER);
+        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_DID_PLAY);
+        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_START_WITH_GAME_PIECE);
+        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_START_POSITION);
+        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_DID_LEAVE_START);
+        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_CLIMB_POSITION);
+        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_COMMENTS);
+        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_ACHIEVEMENT);
+        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_START_TIME_OFFSET);
+        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_START_TIME);
 
         try {
             // Write out the data
@@ -206,8 +204,7 @@ public class Logger {
             fos_event = appContext.getContentResolver().openOutputStream(in_event_df.getUri());
 
             // Write out the header for for the file_event csv file
-            String csv_header = Constants.Logger.LOGKEY_EVENT_KEY;
-            csv_header += "," + Constants.Logger.LOGKEY_EVENT_SEQ;
+            String csv_header = Constants.Logger.LOGKEY_EVENT_SEQ;
             csv_header += "," + Constants.Logger.LOGKEY_EVENT_ID;
             csv_header += "," + Constants.Logger.LOGKEY_EVENT_TIME;
             csv_header += "," + Constants.Logger.LOGKEY_EVENT_X;
@@ -234,8 +231,7 @@ public class Logger {
             if (Constants.Match.IMAGE_WIDTH > 0) normalized_x = (int)(10_000.0 * Integer.parseInt(ler.X) / Constants.Match.IMAGE_WIDTH);
             if (Constants.Match.IMAGE_HEIGHT > 0) normalized_y = (int)(10_000.0 * Integer.parseInt(ler.Y) / Constants.Match.IMAGE_HEIGHT);
 
-            String csv_line = Globals.CurrentCompetitionId + ":" + Globals.CurrentMatchNumber + ":" + Globals.CurrentDeviceId;
-            csv_line += "," + i + "," + ler.EventId + "," + ler.LogTime + "," + normalized_x + "," + normalized_y + "," + ler.PrevSeq;
+            String csv_line = i + "," + ler.EventId + "," + ler.LogTime + "," + normalized_x + "," + normalized_y + "," + ler.PrevSeq;
             try {
                 fos_event.write(csv_line.getBytes(StandardCharsets.UTF_8));
                 fos_event.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
