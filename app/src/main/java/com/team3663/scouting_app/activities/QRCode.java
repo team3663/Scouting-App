@@ -50,6 +50,7 @@ public class QRCode extends AppCompatActivity {
         // Initialize activity components
         InitQRData();
         InitQREvent();
+        InitBack();
         InitNext();
      }
 
@@ -62,6 +63,7 @@ public class QRCode extends AppCompatActivity {
     private void InitQREvent() {
         BarcodeEncoder be = new BarcodeEncoder();
         String qrDataEvent= Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_e.csv" + "\n" + getFileAsString(Globals.transmitMatchNum,"e");
+
         if (qrDataEvent.length()> Constants.QRCode.MAX_QR_DATA_SIZE){
             Toast.makeText(QRCode.this, " Data file is too big for this method", Toast.LENGTH_LONG).show();
             return;
@@ -72,7 +74,6 @@ public class QRCode extends AppCompatActivity {
             qrCodeBinding.imageQREvent.setImageBitmap(bm);
         } catch (Exception e) {
             Toast.makeText(QRCode.this, "Failed to generate QR Code!", Toast.LENGTH_LONG).show();
-//            throw new RuntimeException(e);
         }
     }
 
@@ -85,6 +86,7 @@ public class QRCode extends AppCompatActivity {
     private void InitQRData() {
         BarcodeEncoder be = new BarcodeEncoder();
         String qrData= Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_d.csv" + "\n" + getFileAsString(Globals.transmitMatchNum,"d");
+
         if (qrData.length()> Constants.QRCode.MAX_QR_DATA_SIZE){
             Toast.makeText(QRCode.this, " Data file is too big for this method", Toast.LENGTH_LONG).show();
             return;
@@ -95,8 +97,22 @@ public class QRCode extends AppCompatActivity {
             qrCodeBinding.imageQRData.setImageBitmap(bm);
         } catch (Exception e) {
             Toast.makeText(QRCode.this, "Failed to generate QR Code!", Toast.LENGTH_LONG).show();
-            throw new RuntimeException(e);
         }
+    }
+
+    // =============================================================================================
+    // Function:    InitBack
+    // Description: Initialize the Back button
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void InitBack() {
+        qrCodeBinding.butBack.setOnClickListener(view -> {
+            Intent GoToSubmitData = new Intent(QRCode.this, SubmitData.class);
+            startActivity(GoToSubmitData);
+
+            finish();
+        });
     }
 
     // =============================================================================================
