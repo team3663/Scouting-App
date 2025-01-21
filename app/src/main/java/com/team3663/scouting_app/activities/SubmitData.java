@@ -51,14 +51,16 @@ public class SubmitData extends AppCompatActivity {
             return insets;
         });
 
+        // Initialize activity components that need the Logger
+        initAchievements();
+
         // We're done with the logger (only if not null - it can be null if we're resubmitting data from Pre-Match)
         if (Globals.EventLogger != null) {
             Globals.EventLogger.close();
             Globals.EventLogger = null;
         }
 
-        // Initialize activity components
-        initAchievements();
+        // Initialize activity components that don't log anything
         initMatch();
         initQR();
         initBluetooth();
@@ -88,11 +90,12 @@ public class SubmitData extends AppCompatActivity {
         if ((file_list.length == 0)) return ret;
 
         // Parse out the match number from the filename.  If this is a "d" file from the right
-        // competition (as defined in Settings) then add it to the list.
+        // competition (as defined in Settings) and matching device then add it to the list.
         for (DocumentFile df : file_list) {
             if (df.isFile() && df.getName().endsWith("d.csv")) {
                 String[] file_parts = df.getName().split("_");
-                if (Integer.parseInt(file_parts[0]) == Globals.CurrentCompetitionId)
+                if ((Integer.parseInt(file_parts[0]) == Globals.CurrentCompetitionId) &&
+                        (Integer.parseInt(file_parts[2]) == Globals.CurrentDeviceId))
                     ret_int.add(Integer.parseInt(file_parts[1]));
             }
         }

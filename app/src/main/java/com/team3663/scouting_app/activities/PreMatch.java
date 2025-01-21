@@ -396,10 +396,6 @@ public class PreMatch extends AppCompatActivity {
                         Intent GoToMatch = new Intent(PreMatch.this, Match.class);
                         startActivity(GoToMatch);
                     } else {
-                        // Increases the match number so that it auto fills for the next match correctly
-                        //  and do it after the logger is closed so that this can't mess the logger up
-                        Globals.CurrentMatchNumber++;
-
                         // Reset the Saved Start position so that you have to choose it again
                         Globals.CurrentStartPosition = 0;
 
