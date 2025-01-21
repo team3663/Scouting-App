@@ -191,9 +191,7 @@ public class AppLaunch extends AppCompatActivity {
                     Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
                     LoadDataFile(getString(R.string.file_event_groups), getString(R.string.applaunch_loading_event_groups), getString(R.string.applaunch_file_error_event_groups));
                     Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_events_auto), getString(R.string.applaunch_loading_events_auto), getString(R.string.applaunch_file_error_events_auto));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_events_teleop), getString(R.string.applaunch_loading_events_teleop), getString(R.string.applaunch_file_error_events_teleop));
+                    LoadDataFile(getString(R.string.file_events), getString(R.string.applaunch_loading_events), getString(R.string.applaunch_file_error_events));
                     Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
                     LoadDataFile(getString(R.string.file_match_types), getString(R.string.applaunch_loading_match_types), getString(R.string.applaunch_file_error_match_types));
                     Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
@@ -310,8 +308,7 @@ public class AppLaunch extends AppCompatActivity {
                 DocumentFile df = Globals.input_df.findFile(in_fileName);
                 assert df != null;
                 is = getContentResolver().openInputStream(df.getUri());
-            }
-            else {
+            } else {
                 is = getAssets().open(Constants.Data.PRIVATE_BASE_DIR + "/" + in_fileName);
             }
 
@@ -327,37 +324,26 @@ public class AppLaunch extends AppCompatActivity {
                 if (in_fileName.equals(getString(R.string.file_climb_positions))) {
                     if (Boolean.parseBoolean(info[1]))
                         Globals.ClimbPositionList.addClimbPositionRow(info[0], info[2]);
-                }
-                else if (in_fileName.equals(getString(R.string.file_colors))) {
+                } else if (in_fileName.equals(getString(R.string.file_colors))) {
                     // We don't know how many color codes there will be so re-split the line and pass in the csv of color choices
                     if (Boolean.parseBoolean(info[1])) {
-                        String[] info_colors = line.split(",",4);
+                        String[] info_colors = line.split(",", 4);
                         Globals.ColorList.addColorRow(info[0], info[2], info_colors[3]);
                     }
-                }
-                else if (in_fileName.equals(getString(R.string.file_comments))) {
+                } else if (in_fileName.equals(getString(R.string.file_comments))) {
                     if (Boolean.parseBoolean(info[1]))
                         Globals.CommentList.addCommentRow(info[0], info[2]);
-                }
-                else if (in_fileName.equals(getString(R.string.file_competitions))) {
+                } else if (in_fileName.equals(getString(R.string.file_competitions))) {
                     Globals.CompetitionList.addCompetitionRow(info[0], info[4]);
-                }
-                else if (in_fileName.equals(getString(R.string.file_devices))) {
+                } else if (in_fileName.equals(getString(R.string.file_devices))) {
                     Globals.DeviceList.addDeviceRow(info[0], info[1], info[5]);
-                }
-                else if (in_fileName.equals(getString(R.string.file_event_groups))) {
+                } else if (in_fileName.equals(getString(R.string.file_event_groups))) {
                     Globals.EventList.addEventGroup(info[0], info[1]);
-                }
-                else if (in_fileName.equals(getString(R.string.file_events_auto))) {
-                    Globals.EventList.addEventRow(info[0], info[1], info[2], Constants.Phases.AUTO, info[3], info[4], info[5], info[6]);
-                }
-                else if (in_fileName.equals(getString(R.string.file_events_teleop))) {
-                    Globals.EventList.addEventRow(info[0], info[1], info[2], Constants.Phases.TELEOP, info[3], info[4], info[5], info[6]);
-                }
-                else if (in_fileName.equals(getString(R.string.file_match_types))) {
+                } else if (in_fileName.equals(getString(R.string.file_events))) {
+                    Globals.EventList.addEventRow(info[0], info[1], info[3], info[2].toUpperCase(), info[4], info[5], info[6], info[7]);
+                } else if (in_fileName.equals(getString(R.string.file_match_types))) {
                     Globals.MatchTypeList.addMatchTypeRow(info[0], info[1], info[2]);
-                }
-                else if (in_fileName.equals(getString(R.string.file_matches))) {
+                } else if (in_fileName.equals(getString(R.string.file_matches))) {
                     // Use only the match information that equals the competition we're in.
                     if (Integer.parseInt(info[0]) == Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1)) {
                         Globals.CurrentMatchType = Globals.MatchTypeList.getMatchTypeId(info[1]);
@@ -366,12 +352,10 @@ public class AppLaunch extends AppCompatActivity {
                         }
                         Globals.MatchList.addMatchRow(info[1], info[3], info[4], info[5], info[6], info[7], info[8]);
                     }
-                }
-                else if (in_fileName.equals(getString(R.string.file_start_positions))) {
+                } else if (in_fileName.equals(getString(R.string.file_start_positions))) {
                     if (Boolean.parseBoolean(info[1]))
                         Globals.StartPositionList.addStartPositionRow(info[0], info[2]);
-                }
-                else if (in_fileName.equals(getString(R.string.file_teams))) {
+                } else if (in_fileName.equals(getString(R.string.file_teams))) {
                     // Need to make sure there's no gaps so the team number and index align
                     for (int i = index; i < Integer.parseInt(info[0]); i++) {
                         Globals.TeamList.add(Constants.Teams.NO_TEAM);
@@ -380,6 +364,9 @@ public class AppLaunch extends AppCompatActivity {
                     index = Integer.parseInt(info[0]) + 1;
                 }
             }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // You can't TOAST on a non-UI thread (like in a Timer)
+            AppLaunch.this.runOnUiThread(() -> Toast.makeText(AppLaunch.this, R.string.applaunch_malformed_file, Toast.LENGTH_LONG).show());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
