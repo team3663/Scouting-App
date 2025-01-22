@@ -114,6 +114,7 @@ public class Match extends AppCompatActivity {
                 }
                 else {
                     showing_event_detail_menu = true;
+                    showing_event_detail_group = Globals.MaxEventGroups;
                     createEventContextSubMenu(in_menu);
                 }
             else if (in_v.getId() == R.id.view_ContextSubMenuView) {
