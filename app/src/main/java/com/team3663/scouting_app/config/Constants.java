@@ -106,6 +106,7 @@ public class Constants {
     public static class QRCode{
         public static final int MAX_QR_DATA_SIZE= 2500;
         public static final int QR_LENGTH = 500;
+        public static final String EOF = "EOF";
     }
 
     public static class Achievements {
