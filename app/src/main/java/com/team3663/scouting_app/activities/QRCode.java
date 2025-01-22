@@ -62,7 +62,7 @@ public class QRCode extends AppCompatActivity {
     // =============================================================================================
     private void InitQREvent() {
         BarcodeEncoder be = new BarcodeEncoder();
-        String qrDataEvent= Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_e.csv" + "\n" + getFileAsString(Globals.transmitMatchNum,"e");
+        String qrDataEvent= Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_e.csv" + "\n" + getFileAsString(Globals.transmitMatchNum,"e") + "\n" + Constants.QRCode.EOF;
 
         if (qrDataEvent.length()> Constants.QRCode.MAX_QR_DATA_SIZE){
             Toast.makeText(QRCode.this, " Data file is too big for this method", Toast.LENGTH_LONG).show();
@@ -85,7 +85,7 @@ public class QRCode extends AppCompatActivity {
     // =============================================================================================
     private void InitQRData() {
         BarcodeEncoder be = new BarcodeEncoder();
-        String qrData= Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_d.csv" + "\n" + getFileAsString(Globals.transmitMatchNum,"d");
+        String qrData= Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_d.csv" + "\n" + getFileAsString(Globals.transmitMatchNum,"d") + "\n" + Constants.QRCode.EOF;
 
         if (qrData.length()> Constants.QRCode.MAX_QR_DATA_SIZE){
             Toast.makeText(QRCode.this, " Data file is too big for this method", Toast.LENGTH_LONG).show();
