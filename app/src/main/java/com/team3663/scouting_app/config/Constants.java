@@ -37,9 +37,9 @@ public class Constants {
     }
 
     public static class Phases {
-        public static final String AUTO = "Auto";
-        public static final String TELEOP = "Teleop";
-        public static final String NONE = "";
+        public static final String AUTO = "AUTO";
+        public static final String TELEOP = "TELEOP";
+        public static final String NONE = "NONE";
     }
 
     public static class PreMatch {
