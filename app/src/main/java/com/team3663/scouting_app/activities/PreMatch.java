@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -355,10 +356,14 @@ public class PreMatch extends AppCompatActivity {
                     Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
                     Globals.NumberMatchFilesKept = Globals.sp.getInt(Constants.Prefs.NUM_MATCHES, 5);
                     CurrentTeamToScoutPosition = preMatchBinding.spinnerTeamToScout.getSelectedItemPosition();
-
+                    Globals.startTime = 0;
+                    
                     // Set up the Logger
-                    // null it out first in case we have one set up already (could be there if BACK button was hit on Match)
-                    Globals.EventLogger = null;
+                    // Clear and null it out first if we have one set up already (could be there if BACK button was hit on Match)
+                    if (Globals.EventLogger != null) {
+                        Globals.EventLogger.clear();
+                        Globals.EventLogger = null;
+                    }
                     Globals.EventLogger = new Logger(getApplicationContext());
 
                     // Log all of the data from this page
