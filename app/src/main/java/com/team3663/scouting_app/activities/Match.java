@@ -27,12 +27,12 @@ import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.MatchBinding;
+import com.team3663.scouting_app.utility.Logger;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -45,7 +45,6 @@ public class Match extends AppCompatActivity {
     private static OrientationEventListener OEL = null; // needed to detect the screen being flipped around
     private static String currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE;
     private static double currentTouchTime = 0;
-    private static boolean is_start_of_seq = true;
     private static float current_X_Relative = 0;
     private static float current_Y_Relative = 0;
     private static float current_X_Absolute = 0;
@@ -53,11 +52,6 @@ public class Match extends AppCompatActivity {
     private static long start_time_not_moving;
     private static boolean showing_event_detail_menu = false;
     private static int showing_event_detail_group;
-    // Public Global Variables
-    // Keep track of the currently selected event (per event group) to be used to build the context menus
-    // A value of -1 means there is no current sequence started and all "starting events" should be used.
-    // (Adding 1 so that we can be "1" based and not have to keep "-1" a lot of places)
-    public static int[] current_event = new int[Globals.MaxEventGroups + 1];
 
     // Define a Timer and TimerTasks so you can schedule things
     Timer match_Timer;
@@ -132,9 +126,7 @@ public class Match extends AppCompatActivity {
             if (!Globals.isPractice)
                 matchBinding.textStatus.setText(Objects.requireNonNull(in_item.getTitle()));
             int event_id = Globals.EventList.getEventId(Objects.requireNonNull(in_item.getTitle()).toString());
-            int event_group_id = Globals.EventList.getEventGroup(event_id);
-            current_event[event_group_id] = event_id;
-            Globals.EventLogger.LogEvent(current_event[event_group_id], current_X_Relative, current_Y_Relative, is_start_of_seq, currentTouchTime);
+            Globals.EventLogger.LogEvent(event_id, current_X_Relative, current_Y_Relative, Globals.EventList.isEventStartOfSeq(event_id), currentTouchTime);
             matchBinding.butUndo.setVisibility(View.VISIBLE);
             matchBinding.butUndo.setEnabled(true);
             showing_event_detail_menu = false;
@@ -193,11 +185,9 @@ public class Match extends AppCompatActivity {
 
         // Get the events
         ArrayList<String> events;
-        is_start_of_seq = false;
-        events = Globals.EventList.getNextEvents(current_event[showing_event_detail_group]);
+        events = Globals.EventList.getNextEvents(Logger.current_event[showing_event_detail_group]);
 
         if ((events == null) || events.isEmpty()) {
-            is_start_of_seq = true;
             events = Globals.EventList.getEventsForPhase(Globals.CurrentMatchPhase, showing_event_detail_group);
         }
 
@@ -277,11 +267,6 @@ public class Match extends AppCompatActivity {
         matchBinding.butMatchControl.setText(getString(R.string.button_start_teleop));
         matchBinding.butMatchControl.setBackgroundColor(getColor(R.color.dark_yellow));
         matchBinding.butMatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.start_teleop, 0);
-
-        // If we logged that we started with a game piece, then set the eventPrevious to it.
-        if (Globals.EventLogger.LookupEvent(Constants.Events.ID_AUTO_START_GAME_PIECE)) {
-            current_event[Globals.EventList.getEventGroup(Constants.Events.ID_AUTO_START_GAME_PIECE)] = Constants.Events.ID_AUTO_START_GAME_PIECE;
-        }
     }
 
     // =============================================================================================
@@ -651,7 +636,7 @@ public class Match extends AppCompatActivity {
             last_event_id = Globals.EventLogger.UndoLastEvent();
 
             // If there are no events left to undo, hide the button
-            if ((last_event_id == -1) || (current_event[Globals.EventList.getEventGroup(last_event_id)] == Constants.Events.ID_AUTO_START_GAME_PIECE)) {
+            if ((last_event_id == -1) || (Logger.current_event[Globals.EventList.getEventGroup(last_event_id)] == Constants.Events.ID_AUTO_START_GAME_PIECE)) {
                 // Certain actions can't be set from a non-UI thread
                 // So we need to make a Runner that will execute on the UI thread to set this.
                 Match.this.runOnUiThread(() -> {
@@ -661,12 +646,12 @@ public class Match extends AppCompatActivity {
                 });
             }
             else {
-                SpannableString ss = new SpannableString(Globals.EventList.getEventDescription(current_event[Globals.EventList.getEventGroup(last_event_id)]));
+                SpannableString ss = new SpannableString(Globals.EventList.getEventDescription(Logger.current_event[Globals.EventList.getEventGroup(last_event_id)]));
                 ss.setSpan(new AbsoluteSizeSpan(24), 0, ss.length(), 0);
 
                 // If this menuItem has a color to use, then use it
                 if (Globals.ColorList.isColorValid(Globals.CurrentColorId - 1)) {
-                    int eventID = current_event[Globals.EventList.getEventGroup(last_event_id)];
+                    int eventID = Logger.current_event[Globals.EventList.getEventGroup(last_event_id)];
                     if (Globals.EventList.hasEventColor(eventID))
                         ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColor(Globals.CurrentColorId - 1, Globals.EventList.getEventColor(eventID))), 0, ss.length(), 0);
                 }
@@ -781,9 +766,6 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint("ClickableViewAccessibility")
     private void initContextMenu() {
-        // Default all current events to -1
-        Arrays.fill(current_event, -1);
-
         // Define a context menu
         RelativeLayout ContextMenu = matchBinding.ContextMenu;
 

@@ -35,7 +35,7 @@ Events_Id,Events_GroupId,Events_Phase,Events_Name,Events_StartOfSeq,Events_Appli
 42,3,TELEOP,Climb Failed,FALSE,TRUE,,2
 60,4,NONE,Defended_Start,TRUE,FALSE,61,
 61,4,NONE,Defended_End,FALSE,FALSE,,
-62,4,NONE,PlayDefense_Start,TRUE,FALSE,63,
-63,4,NONE,PlayDefense_End,FALSE,FALSE,,
-64,4,NONE,NotMoving_Start,TRUE,FALSE,65,
-65,4,NONE,NotMoving_End,FALSE,FALSE,,
+62,5,NONE,PlayDefense_Start,TRUE,FALSE,63,
+63,5,NONE,PlayDefense_End,FALSE,FALSE,,
+64,6,NONE,NotMoving_Start,TRUE,FALSE,65,
+65,6,NONE,NotMoving_End,FALSE,FALSE,,
