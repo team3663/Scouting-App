@@ -171,11 +171,20 @@ public class Events {
         EventGroup.add(new EventGroup("",""));
     }
 
-
     // Member Function: Is this EventId one that happens in the FOP
     public boolean isEventInFOP(int in_EventId) {
         for (EventRow er : event_list) {
             if (er.id == in_EventId) return er.is_FOP_Event;
+        }
+
+        // default to NOT in FOP event
+        return false;
+    }
+
+    // Member Function: Is this EventId one that starts a new sequence of events
+    public boolean isEventStartOfSeq(int in_EventId) {
+        for (EventRow er : event_list) {
+            if (er.id == in_EventId) return er.is_seq_start;
         }
 
         // default to NOT in FOP event

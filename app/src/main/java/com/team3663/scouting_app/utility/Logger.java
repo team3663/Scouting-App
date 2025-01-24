@@ -1,53 +1,51 @@
 package com.team3663.scouting_app.utility;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.UriPermission;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.util.Pair;
 import android.widget.Toast;
 
 import androidx.documentfile.provider.DocumentFile;
 
 import com.team3663.scouting_app.R;
-import com.team3663.scouting_app.activities.Match;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 
 // =============================================================================================
 // Class:       Logger
 // Description: Sets up how all of the scouting data will be logged to disk.
 // =============================================================================================
 public class Logger {
-    private int seq_number; // Track the current sequence number for events
-    private int[] seq_number_prev_common = new int[Globals.MaxEventGroups + 1];
-    // Track previous sequence number for all common events
-    private int seq_number_prev_defended = 0; // Track previous sequence number for just defended toggle
-    private int seq_number_prev_defense = 0; // Track previous sequence number for just defense toggle
-    private int seq_number_prev_not_moving = 0; // Track previous sequence number for just not-moving toggle
     private final ArrayList<Pair<String, String>> match_log_data = new ArrayList<>();
     private final Context appContext;
     private final ArrayList<LoggerEventRow> match_log_events = new ArrayList<>();
+    // Keep track of the previous sequence number (per event group) so we know how to link a subsequent
+    // event for that group.  Helps tremendously with UNDO actions.  This is updated / used by the logger.
+    private static final int[] previous_seq = new int[Globals.MaxEventGroups + 1];
 
-    // Constructor: create the new files
+    // Public Global Variables
+    // Keep track of the currently selected event (per event group) to be used to build the context menus
+    // A value of -1 means there is no current sequence started and all "starting events" should be used.
+    // (Adding 1 so that we can be "1" based and not have to keep "-1" a lot of places)
+    public static int[] current_event = new int[Globals.MaxEventGroups + 1];
+
+    // Constructor: create the new logger
     public Logger(Context in_context) {
         appContext = in_context;
-        Arrays.fill(seq_number_prev_common, -1);
+
+        // Default all arrays to -1
+        Arrays.fill(current_event, -1);
+        Arrays.fill(previous_seq, -1);
 
         // Ensure the things are reset
-        seq_number = 0;
         this.clear();
 
         // If this is a practice, just exit
@@ -78,7 +76,7 @@ public class Logger {
         DocumentFile[] list_of_files = Globals.output_df.listFiles();
         ArrayList<Integer> filename_match_list = new ArrayList<>();
         for (DocumentFile df : list_of_files) {
-            String[] file_parts = df.getName().split("_");
+            String[] file_parts = Objects.requireNonNull(df.getName()).split("_");
 
             if ((Integer.parseInt(file_parts[0]) == Globals.CurrentCompetitionId) && (file_parts[3].equals("d.csv")))
                 filename_match_list.add(Integer.parseInt(file_parts[1]));
@@ -106,8 +104,8 @@ public class Logger {
 
         // Check if the current file exists before creating it.  DocumentFile will create a "... (1).csv" file
         // if it previously existed, instead of overwriting it.
-        if (Globals.output_df.findFile(filename_data) != null) Globals.output_df.findFile(filename_data).delete();
-        if (Globals.output_df.findFile(filename_event) != null) Globals.output_df.findFile(filename_event).delete();
+        if (Globals.output_df.findFile(filename_data) != null) Objects.requireNonNull(Globals.output_df.findFile(filename_data)).delete();
+        if (Globals.output_df.findFile(filename_event) != null) Objects.requireNonNull(Globals.output_df.findFile(filename_event)).delete();
 
         DocumentFile data_df = Globals.output_df.createFile("text/csv", filename_data);
         DocumentFile event_df = Globals.output_df.createFile("text/csv", filename_event);
@@ -259,41 +257,13 @@ public class Logger {
         if (Globals.isPractice) return;
 
         Achievements.data_NumEvents++;
-        int seq_number_prev = 0;
-
-        // We need to special case the toggle switches.  We must preserve their own "previous" eventID but still
-        // keep the sequence numbers going.
-        switch (in_EventId) {
-            case Constants.Events.ID_DEFENDED_START:
-                seq_number_prev_defended = ++seq_number;
-                break;
-            case Constants.Events.ID_DEFENDED_END:
-                seq_number_prev = seq_number_prev_defended;
-                seq_number++;
-                break;
-            case Constants.Events.ID_DEFENSE_START:
-                seq_number_prev_defense = ++seq_number;
-                break;
-            case Constants.Events.ID_DEFENSE_END:
-                seq_number_prev = seq_number_prev_defense;
-                seq_number++;
-                break;
-            case Constants.Events.ID_NOT_MOVING_START:
-                seq_number_prev_not_moving = ++seq_number;
-                break;
-            case Constants.Events.ID_NOT_MOVING_END:
-                seq_number_prev = seq_number_prev_not_moving;
-                seq_number++;
-                break;
-            default:
-                seq_number_prev = seq_number_prev_common[Globals.EventList.getEventGroup(in_EventId)];
-                seq_number_prev_common[Globals.EventList.getEventGroup(in_EventId)] = ++seq_number;
-        }
+        int GroupId = Globals.EventList.getEventGroup(in_EventId);
 
         // If this is NOT a new sequence, we need to write out the previous event id that goes with this one
         String prev = "";
-        if (!in_NewSequence) prev = String.valueOf(seq_number_prev);
-        
+        if (!in_NewSequence)
+            prev = String.valueOf(previous_seq[GroupId]);
+
         // Determine string values for x, y. Truncate them.
         String string_x = String.valueOf((int) in_X);
         String string_y = String.valueOf((int) in_Y);
@@ -305,6 +275,13 @@ public class Logger {
         if (string_time.endsWith(".0")) string_time = string_time.substring(0, string_time.length() - 2);
 
         match_log_events.add(new LoggerEventRow(in_EventId, string_time, string_x, string_y, prev));
+
+        // Save off this event as the "current" event for its group.
+        current_event[GroupId] = in_EventId;
+
+        // Save this off as the previous event (to link the next one to it).
+        // Safe to do this everytime since if we start a new sequence, we override (above) to blank.
+        previous_seq[GroupId] = match_log_events.size() - 1;
     }
 
     // Member Function: Log a time-based event (with no time passed in)
@@ -323,20 +300,11 @@ public class Logger {
         match_log_data.add(new Pair<>(in_Key, in_Value.trim()));
     }
 
-    // Member Function: Determine if an Event (for Id) was logged already
-    public boolean LookupEvent(int in_EventId) {
-        for (LoggerEventRow ler : match_log_events) {
-            if (ler.EventId == in_EventId) return true;
-        }
-
-        return false;
-    }
-
     // Member Function: Check if the last logged event is an orphan
     public boolean isLastEventAnOrphan() {
         boolean foundLast;
         boolean rc = false;
-        LoggerEventRow ler = null;
+        LoggerEventRow ler;
         // Check for a no-op
         if (match_log_events.isEmpty()) return false;
 
@@ -376,7 +344,7 @@ public class Logger {
     public int UndoLastEvent() {
         int lastIndex = -1;
         int lastEventId = -1;
-        int lastEventGroupId = -1;
+        int lastEventGroupId;
         int rc;
         LoggerEventRow ler;
 
@@ -398,12 +366,20 @@ public class Logger {
             return -1;
         }
 
-        // In order to UNDO this event, we need to find what the new last event is and return it
-        // after we remove the one we need to undo.  Save off the groupId of this event for later
-        // Reset the current event for that group (we'll find it later - but this ensures that if we
-        // DON'T find it, it'll be reset properly.
+        // Check the match_event_log to see if there's a previous sequence.  If so, use that to set
+        // the current event.
         lastEventGroupId = Globals.EventList.getEventGroup(lastEventId);
-        Match.current_event[lastEventGroupId] = -1;
+
+        if (match_log_events.get(lastIndex).PrevSeq.isEmpty()) {
+            current_event[lastEventGroupId] = -1;
+            previous_seq[lastEventGroupId] = -1;
+        }
+        else {
+            previous_seq[lastEventGroupId] = Integer.parseInt(match_log_events.get(lastIndex).PrevSeq);
+            current_event[lastEventGroupId] = match_log_events.get(previous_seq[lastEventGroupId]).EventId;
+        }
+
+        // We can now remove the event.
         match_log_events.remove(lastIndex);
 
         // For any events AFTER this removed event, we need to decrement the "PrevSeq" since they all
@@ -419,16 +395,12 @@ public class Logger {
         rc = -1;
 
         // Find the (new) last FOP logged event regardless of "group" and save it as the return value.
-        // Update the Match "current_event" for the right group so the context menu is correct.
         // Special case if we've backed up to the starting game piece.
         for (int i = match_log_events.size() - 1; i >=0; --i) {
             if ((Globals.EventList.isEventInFOP(match_log_events.get(i).EventId)) ||
                     (match_log_events.get(i).EventId == Constants.Events.ID_AUTO_START_GAME_PIECE)) {
-                if (rc == -1) rc = match_log_events.get(i).EventId;
-                if (Globals.EventList.getEventGroup(match_log_events.get(i).EventId) == lastEventGroupId) {
-                    Match.current_event[lastEventGroupId] = match_log_events.get(i).EventId;
-                    break;
-                }
+                rc = match_log_events.get(i).EventId;
+                break;
             }
         }
 
