@@ -103,7 +103,8 @@ public class AppLaunch extends AppCompatActivity {
         appLaunchBinding.textVersion.setText(getString(R.string.app_version) + " " + pInfo.versionName);
 
         // Get the Shared Preferences where we save off app settings to use next time
-        if (Globals.sp == null) Globals.sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+        if (Globals.sp == null)
+            Globals.sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
         if (Globals.spe == null) Globals.spe = Globals.sp.edit();
 
         // Initialize activity components
@@ -119,8 +120,7 @@ public class AppLaunch extends AppCompatActivity {
         if (havePerms) {
             Globals.baseStorageURI = Uri.parse(Globals.sp.getString(Constants.Prefs.STORAGE_URI, null));
             loadData();
-        }
-        else
+        } else
             initStoragePermissions();
 
         // While loading Matches, we messed with Globals.CurrentMatchType, so reset it
@@ -133,8 +133,7 @@ public class AppLaunch extends AppCompatActivity {
     // Output:      void
     // Parameters:  void
     // =============================================================================================
-    private void loadData()
-    {
+    private void loadData() {
         // Make sure we have our directory structure created
         DocumentFile storage_df = DocumentFile.fromTreeUri(this, Globals.baseStorageURI);
 
@@ -294,7 +293,7 @@ public class AppLaunch extends AppCompatActivity {
 
         // Ensure the public file exists, and if not, copy the private one there.
         // Return back if we should use the private or public file.
-       usePublic = CopyPrivateToPublicFile(in_fileName, in_msgError);
+        usePublic = CopyPrivateToPublicFile(in_fileName, in_msgError);
 
         // Update the loading status
         appLaunchBinding.textStatus.setText(in_msgLoading);
@@ -401,8 +400,10 @@ public class AppLaunch extends AppCompatActivity {
         appLaunchBinding.butStartScouting.setClickable(false);
         appLaunchBinding.butStartScouting.setOnClickListener(view -> {
             // Stop the timer
-            appLaunch_timer.cancel();
-            appLaunch_timer.purge();
+            if (appLaunch_timer != null) {
+                appLaunch_timer.cancel();
+                appLaunch_timer.purge();
+            }
 
             // Default Globals
             Globals.CurrentTeamOverrideNum = 0;
@@ -410,7 +411,7 @@ public class AppLaunch extends AppCompatActivity {
             if ((Globals.sp == null) ||
                     (Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1) == -1) ||
                     (Globals.sp.getInt(Constants.Prefs.DEVICE_ID, -1) == -1)) {
-                Toast.makeText( AppLaunch.this,R.string.applaunch_not_configured, Toast.LENGTH_SHORT).show();
+                Toast.makeText(AppLaunch.this, R.string.applaunch_not_configured, Toast.LENGTH_SHORT).show();
             } else {
                 // Go to the first page
                 Intent GoToPreMatch = new Intent(AppLaunch.this, PreMatch.class);
