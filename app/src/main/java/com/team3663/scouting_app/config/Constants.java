@@ -45,6 +45,8 @@ public class Constants {
     public static class PreMatch {
         public static final int NUMBER_OF_MATCH_TYPES = 3;
         public static final int DEFAULT_MATCH_TYPE = 1;
+        public static final int START_POS_DID_NOT_PLAY = 0;
+        public static final int CLIMB_POS_DID_NOT_PLAY = 1;
     }
 
     public static class Match {

@@ -24,6 +24,8 @@ import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.PreMatchBinding;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class PreMatch extends AppCompatActivity {
@@ -378,10 +380,17 @@ public class PreMatch extends AppCompatActivity {
 
                     Achievements.data_TeamToScout = Globals.CurrentTeamToScout;
 
+                    // If the robot is playing, log the starting position the scouter chose.
+                    // If not, we need to log a few items that won't be logged elsewhere
                     if (preMatchBinding.checkboxDidPlay.isChecked()) {
                         int startPos = Globals.StartPositionList.getStartPositionId(preMatchBinding.spinnerStartingPosition.getSelectedItem().toString());
                         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_POSITION, String.valueOf(startPos));
                         Globals.CurrentStartPosition = startPos;
+                    } else {
+                        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_POSITION, String.valueOf(Constants.PreMatch.START_POS_DID_NOT_PLAY));
+                        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_TIME, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss")));
+                        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_LEAVE_START, String.valueOf(false));
+                        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_CLIMB_POSITION, String.valueOf(Constants.PreMatch.CLIMB_POS_DID_NOT_PLAY));
                     }
 
                     // Log if they started with a game piece (the match hasn't started so we need to specify a "0" time
