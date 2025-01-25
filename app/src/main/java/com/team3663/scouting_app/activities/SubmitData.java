@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import androidx.documentfile.provider.DocumentFile;
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
+import com.team3663.scouting_app.data.MatchTypes;
 import com.team3663.scouting_app.databinding.SubmitDataBinding;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
@@ -36,6 +38,7 @@ public class SubmitData extends AppCompatActivity {
     private static MediaPlayer media;
     private static ArrayList<Achievements.PoppedAchievement> poplist;
     private static int currentAchievement = 0;
+    private static final ArrayList<String> Match_Types = Globals.MatchTypeList.getDescriptionList();
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -61,6 +64,7 @@ public class SubmitData extends AppCompatActivity {
         }
 
         // Initialize activity components that don't log anything
+        initMatchType();
         initMatch();
         initQR();
         initBluetooth();
@@ -70,6 +74,49 @@ public class SubmitData extends AppCompatActivity {
         // Increases the team number so that it auto fills for the next match correctly
         //  and do it after the logger is closed so that this can't mess the logger up
         Globals.CurrentMatchNumber++;
+    }
+
+    // =============================================================================================
+    // Function:    initMatchType
+    // Description: Initialize the Match Type field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initMatchType() {
+        // Adds the items from the match type array to the list
+        ArrayAdapter<String> adp_MatchType = new ArrayAdapter<>(this, R.layout.cpr_spinner, Match_Types);
+        adp_MatchType.setDropDownViewResource(R.layout.cpr_spinner_item);
+        submitDataBinding.spinnerMatchType.setAdapter(adp_MatchType);
+
+        Globals.transmitMatchType = Globals.CurrentMatchType;
+
+        // Search through the list of match types until you find the one that is correct then get its position in the list
+        // and set that one as selected
+        int start_Pos_DropId = 0;
+        for (int i = 0; i < Match_Types.size(); i++) {
+            if (Match_Types.get(i).equals(Globals.MatchTypeList.getMatchTypeDescription(Globals.transmitMatchType))) {
+                start_Pos_DropId = i;
+                break;
+            }
+        }
+        submitDataBinding.spinnerMatchType.setSelection(start_Pos_DropId);
+
+        // Set up a listener to handle any changes to the dropdown
+        submitDataBinding.spinnerMatchType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                // Save off what you selected to be used until changed again
+                int newMatchType = Globals.MatchTypeList.getMatchTypeId(submitDataBinding.spinnerMatchType.getSelectedItem().toString());
+
+                if (newMatchType != Globals.transmitMatchType) {
+                    Globals.transmitMatchType = newMatchType;
+                    initMatch();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
     }
 
     // =============================================================================================
@@ -92,7 +139,7 @@ public class SubmitData extends AppCompatActivity {
         // Parse out the match number from the filename.  If this is a "d" file from the right
         // competition (as defined in Settings) and matching device then add it to the list.
         for (DocumentFile df : file_list) {
-            if (df.isFile() && df.getName().endsWith("d.csv")) {
+            if (df.isFile() && df.getName().endsWith("_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.transmitMatchType) + "_d.csv")) {
                 String[] file_parts = df.getName().split("_");
                 if ((Integer.parseInt(file_parts[0]) == Globals.CurrentCompetitionId) &&
                         (Integer.parseInt(file_parts[2]) == Globals.CurrentDeviceId))

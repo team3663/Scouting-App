@@ -63,7 +63,7 @@ public class QRCode extends AppCompatActivity {
     // =============================================================================================
     private void InitQREvent() {
         BarcodeEncoder be = new BarcodeEncoder();
-        String qrDataEvent= Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv" + "\n" + getFileAsString(Globals.transmitMatchNum,"e") + "\n" + Constants.QRCode.EOF;
+        String qrDataEvent= Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv" + "\n" + getFileAsString("e") + "\n" + Constants.QRCode.EOF;
 
         if (qrDataEvent.length()> Constants.QRCode.MAX_QR_DATA_SIZE){
             Toast.makeText(QRCode.this, " Data file is too big for this method", Toast.LENGTH_LONG).show();
@@ -86,7 +86,7 @@ public class QRCode extends AppCompatActivity {
     // =============================================================================================
     private void InitQRData() {
         BarcodeEncoder be = new BarcodeEncoder();
-        String qrData= Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_d.csv" + "\n" + getFileAsString(Globals.transmitMatchNum,"d") + "\n" + Constants.QRCode.EOF;
+        String qrData = Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.transmitMatchType) + "_d.csv" + "\n" + getFileAsString("d") + "\n" + Constants.QRCode.EOF;
 
         if (qrData.length()> Constants.QRCode.MAX_QR_DATA_SIZE){
             Toast.makeText(QRCode.this, " Data file is too big for this method", Toast.LENGTH_LONG).show();
@@ -144,12 +144,12 @@ public class QRCode extends AppCompatActivity {
     //                  type of file ("d" or "e") we want to convert to a string
     // Output:      String representing the entire contents of the file
     // =============================================================================================
-    public String getFileAsString(int in_Match_ID, String in_Extension) {
+    public String getFileAsString(String in_Extension) {
         // Validate we have a proper extension
         if (!(in_Extension.equals("d") || in_Extension.equals("e")))
             return "";
 
-        String filename = Globals.CurrentCompetitionId + "_" + in_Match_ID + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_" + in_Extension + ".csv";
+        String filename = Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.transmitMatchType) + "_" + in_Extension + ".csv";
         String file_as_string = "";
         String line;
 
