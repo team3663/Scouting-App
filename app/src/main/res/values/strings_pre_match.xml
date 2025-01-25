@@ -14,4 +14,8 @@
     <string name="pre_missing_data">Please fill in all fields</string>
     <string name="pre_dropdown_no_items">None</string>
     <string name="pre_shadow_mode">Shadow Mode</string>
+    <string name="pre_already_scouted_title">This match has already been scouted</string>
+    <string name="pre_already_scouted_message">Do you want to continue and overwrite the previous scouting data or go back and change the match?</string>
+    <string name="pre_already_scouted_button_positive">Continue</string>
+    <string name="pre_already_scouted_button_negative">Cancel</string>
 </resources>
