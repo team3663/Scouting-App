@@ -1,4 +1,5 @@
 ﻿MatchType_Id,MatchType_ShortForm,MatchType_Description
-1,q,Qualification
-2,s,Semi-Final (Elims)
-3,f,Final
+1,p,Practice
+2,q,Qualification
+3,s,Semi-Final (Elims)
+4,f,Final
