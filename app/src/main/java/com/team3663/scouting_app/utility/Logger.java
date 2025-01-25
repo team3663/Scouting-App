@@ -67,8 +67,8 @@ public class Logger {
         if (Globals.isPractice) return;
 
         // Define the filenames/files to be used for this logger
-        String filename_data = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_d.csv";
-        String filename_event = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_e.csv";
+        String filename_data = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_d.csv";
+        String filename_event = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv";
 
         // Delete files to ensure we're not creating more than Constants.KEEP_NUMBER_OF_MATCHES
         // Only look at _d.csv files, ensure it's a file, and store off CreationTime attribute
@@ -95,9 +95,9 @@ public class Logger {
             DocumentFile file_df;
 
             for (int i = Globals.NumberMatchFilesKept - 1; i < filename_match_list.size(); ++i) {
-                file_df = Globals.output_df.findFile(Globals.CurrentCompetitionId + "_" + filename_match_list.get(i) + "_" + Globals.CurrentDeviceId + "_d.csv");
+                file_df = Globals.output_df.findFile(Globals.CurrentCompetitionId + "_" + filename_match_list.get(i) + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_d.csv");
                 if (file_df != null) file_df.delete();
-                file_df = Globals.output_df.findFile(Globals.CurrentCompetitionId + "_" + filename_match_list.get(i) + "_" + Globals.CurrentDeviceId + "_e.csv");
+                file_df = Globals.output_df.findFile(Globals.CurrentCompetitionId + "_" + filename_match_list.get(i) + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv");
                 if (file_df != null) file_df.delete();
             }
         }
