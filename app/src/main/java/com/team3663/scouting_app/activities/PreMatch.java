@@ -466,13 +466,13 @@ public class PreMatch extends AppCompatActivity {
     private void loadTeamToScout() {
         // If we have a match number load the team information for the match
         ArrayList<String> teamsInMatch = new ArrayList<>();
-        if (Globals.CurrentMatchNumber > 0) {
-            if (Globals.MatchList.isCurrentMatchValid())
-                teamsInMatch = Globals.MatchList.getListOfTeams();
-            else {
-                teamsInMatch = new ArrayList<>();
-                teamsInMatch.add(getString(R.string.pre_dropdown_no_items));
-            }
+
+        // See if this is a valid match number.  If not, default team list to "None" otherwise fill it
+        if (Globals.MatchList.isCurrentMatchValid())
+            teamsInMatch = Globals.MatchList.getListOfTeams();
+        else {
+            teamsInMatch = new ArrayList<>();
+            teamsInMatch.add(getString(R.string.pre_dropdown_no_items));
         }
 
         // If there's an override set, add it to the spinner
