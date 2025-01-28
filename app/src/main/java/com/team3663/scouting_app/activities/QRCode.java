@@ -162,7 +162,7 @@ public class QRCode extends AppCompatActivity {
 
             // Read in the data
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            br.readLine();
+
             while ((line = br.readLine()) != null) {
                 if (!file_as_string.isEmpty())
                     file_as_string += "\n";
