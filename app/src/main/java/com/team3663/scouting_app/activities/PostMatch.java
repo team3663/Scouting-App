@@ -224,9 +224,9 @@ public class PostMatch extends AppCompatActivity {
             }
 
             Achievements.data_NumMatches++;
-            if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType).equals("Practice")) Achievements.data_PracticeType++;
-            if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType).startsWith("Semi")) Achievements.data_SemiFinalType++;
-            if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType).equals("Final")) Achievements.data_FinalType++;
+            if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType).startsWith(Constants.Achievements.EVENT_TYPE_PRACTICE)) Achievements.data_PracticeType++;
+            if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType).startsWith(Constants.Achievements.EVENT_TYPE_SEMI)) Achievements.data_SemiFinalType++;
+            if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType).startsWith(Constants.Achievements.EVENT_TYPE_FINAL)) Achievements.data_FinalType++;
 
             finish();
         });

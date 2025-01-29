@@ -258,12 +258,12 @@ public class Logger {
 
         String ach_desc = Globals.EventList.getEventDescription(in_EventId);
         Achievements.data_NumEvents++;
-        if (ach_desc.equals("Score Algae in Net")) Achievements.data_match_AlgaeInNet++; // 2025
-        if (ach_desc.equals("Score Algae in Processor")) Achievements.data_match_AlgaeInProcessor++; // 2025
-        if (ach_desc.equals("Pickup Coral - Ground")) Achievements.data_match_CoralPickupGround++; // 2025
-        if (ach_desc.contains("Place Coral L")) Achievements.data_match_CoralLevel[Integer.parseInt(ach_desc.substring(ach_desc.length() - 1))]++; // 2025
-        // Cheap way to see if it's a scoring event by looking at the color index for the event.  All scoring are color index=0.
-        if ((Globals.EventList.getEventColor(in_EventId) == 0) && Globals.isDefended) Achievements.data_ScoreWhileDefended++; // 2025
+
+        if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_NET.contains(in_EventId)) Achievements.data_match_AlgaeInNet++; // 2025
+        if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_PROCESSOR.contains(in_EventId)) Achievements.data_match_AlgaeInProcessor++; // 2025
+        if (Constants.Achievements.EVENT_IDS_PICKUP_CORAL_GROUND.contains(in_EventId)) Achievements.data_match_CoralPickupGround++; // 2025
+        if (Constants.Achievements.EVENT_IDS_PLACE_CORAL.contains(in_EventId)) Achievements.data_match_CoralLevel[Integer.parseInt(ach_desc.substring(ach_desc.length() - 1))]++; // 2025
+        if ((Constants.Achievements.EVENT_IDS_SCORING.contains(in_EventId)) && Globals.isDefended) Achievements.data_ScoreWhileDefended++; // 2025
 
         int GroupId = Globals.EventList.getEventGroup(in_EventId);
 
@@ -377,18 +377,17 @@ public class Logger {
         // Undo any achievements from this event being undone.
         String ach_desc = Globals.EventList.getEventDescription(lastEventId);
         Achievements.data_NumEvents--;
-        if (ach_desc.equals("Score Algae in Net")) Achievements.data_match_AlgaeInNet--; // 2025
-        if (ach_desc.equals("Score Algae in Processor")) Achievements.data_match_AlgaeInProcessor--; // 2025
-        if (ach_desc.equals("Pickup Coral - Ground")) Achievements.data_match_CoralPickupGround--; // 2025
-        if (ach_desc.contains("Place Coral L")) Achievements.data_match_CoralLevel[Integer.parseInt(ach_desc.substring(ach_desc.length() - 1))]--; // 2025
-        // Cheap way to see if it's a scoring event by looking at the color index for the event.  All scoring are index=0.
-        // To determine if they were not moving, we need to find the next previous item for it's group (4).  If that item
+        if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_NET.contains(lastEventId)) Achievements.data_match_AlgaeInNet--; // 2025
+        if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_PROCESSOR.contains(lastEventId)) Achievements.data_match_AlgaeInProcessor--; // 2025
+        if (Constants.Achievements.EVENT_IDS_PICKUP_CORAL_GROUND.contains(lastEventId)) Achievements.data_match_CoralPickupGround--; // 2025
+        if (Constants.Achievements.EVENT_IDS_PLACE_CORAL.contains(lastEventId)) Achievements.data_match_CoralLevel[Integer.parseInt(ach_desc.substring(ach_desc.length() - 1))]--; // 2025
+        // To determine if they were not moving, we need to find the next previous item for the "defended" group.  If that item
         // has some "next events", then it's toggled on and we need to decrement the achievement counter.
-        // Because the scouter can undo a lot of events, we can't rely on the current_event[4] to evaluate since this may
-        // be undoing an event well before the current_event[4] happened.
-        if (Globals.EventList.getEventColor(lastEventId) == 0)
+        // Because the scouter can undo a lot of events, we can't rely on the current_event[] to evaluate since this may
+        // be undoing an event well before the current defended event happened.
+        if (Constants.Achievements.EVENT_IDS_SCORING.contains(lastEventId))
             for (int i = lastIndex - 1; i > 0; i--) {
-                if (Globals.EventList.getEventGroup(match_log_events.get(i).EventId) == 4) {
+                if (Globals.EventList.getEventGroup(match_log_events.get(i).EventId) == Constants.Achievements.DEFENDED_EVENT_GROUP) {
                     if (!Globals.EventList.getNextEvents(match_log_events.get(i).EventId).isEmpty()) Achievements.data_ScoreWhileDefended--;
                     break;
                 }
