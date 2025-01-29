@@ -11,7 +11,7 @@ public class RuleOrphanEvents implements AchievementRule {
 
     @Override
     public boolean evaluate(){
-        if (perMatch) return (Achievements.data_match_OrphanEvents > 0);
-        else return (Achievements.data_OrphanEvents > threshold);
+        if (perMatch) return (Achievements.data_match_OrphanEvents >= threshold);
+        else return (Achievements.data_OrphanEvents >= threshold);
     }
 }

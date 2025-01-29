@@ -200,6 +200,7 @@ public class PostMatch extends AppCompatActivity {
             // If we need to reset the match, abort it all and go back
             if (postMatchBinding.checkboxReset.isChecked()) {
                 Globals.EventLogger.clear();
+                Achievements.data_FieldReset++;
 
                 Intent GoToPreMatch = new Intent(PostMatch.this, PreMatch.class);
                 startActivity(GoToPreMatch);
@@ -223,6 +224,10 @@ public class PostMatch extends AppCompatActivity {
             }
 
             Achievements.data_NumMatches++;
+            if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType).equals("Practice")) Achievements.data_PracticeType++;
+            if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType).startsWith("Semi")) Achievements.data_SemiFinalType++;
+            if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType).equals("Final")) Achievements.data_FinalType++;
+
             finish();
         });
     }

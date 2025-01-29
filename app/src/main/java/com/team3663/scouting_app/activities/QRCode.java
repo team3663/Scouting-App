@@ -18,7 +18,6 @@ import com.google.zxing.BarcodeFormat;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
-import com.team3663.scouting_app.data.MatchTypes;
 import com.team3663.scouting_app.databinding.QrCodeBinding;
 import com.team3663.scouting_app.utility.Logger;
 

@@ -20,7 +20,6 @@ import androidx.documentfile.provider.DocumentFile;
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
-import com.team3663.scouting_app.data.MatchTypes;
 import com.team3663.scouting_app.databinding.SubmitDataBinding;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
