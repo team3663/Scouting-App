@@ -256,7 +256,15 @@ public class Logger {
         // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;
 
+        String ach_desc = Globals.EventList.getEventDescription(in_EventId);
         Achievements.data_NumEvents++;
+
+        if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_NET.contains(in_EventId)) Achievements.data_match_AlgaeInNet++; // 2025
+        if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_PROCESSOR.contains(in_EventId)) Achievements.data_match_AlgaeInProcessor++; // 2025
+        if (Constants.Achievements.EVENT_IDS_PICKUP_CORAL_GROUND.contains(in_EventId)) Achievements.data_match_CoralPickupGround++; // 2025
+        if (Constants.Achievements.EVENT_IDS_PLACE_CORAL.contains(in_EventId)) Achievements.data_match_CoralLevel[Integer.parseInt(ach_desc.substring(ach_desc.length() - 1))]++; // 2025
+        if ((Constants.Achievements.EVENT_IDS_SCORING.contains(in_EventId)) && Globals.isDefended) Achievements.data_ScoreWhileDefended++; // 2025
+
         int GroupId = Globals.EventList.getEventGroup(in_EventId);
 
         // If this is NOT a new sequence, we need to write out the previous event id that goes with this one
@@ -365,6 +373,25 @@ public class Logger {
             Toast.makeText(appContext, R.string.match_bad_undo, Toast.LENGTH_SHORT).show();
             return -1;
         }
+
+        // Undo any achievements from this event being undone.
+        String ach_desc = Globals.EventList.getEventDescription(lastEventId);
+        Achievements.data_NumEvents--;
+        if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_NET.contains(lastEventId)) Achievements.data_match_AlgaeInNet--; // 2025
+        if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_PROCESSOR.contains(lastEventId)) Achievements.data_match_AlgaeInProcessor--; // 2025
+        if (Constants.Achievements.EVENT_IDS_PICKUP_CORAL_GROUND.contains(lastEventId)) Achievements.data_match_CoralPickupGround--; // 2025
+        if (Constants.Achievements.EVENT_IDS_PLACE_CORAL.contains(lastEventId)) Achievements.data_match_CoralLevel[Integer.parseInt(ach_desc.substring(ach_desc.length() - 1))]--; // 2025
+        // To determine if they were not moving, we need to find the next previous item for the "defended" group.  If that item
+        // has some "next events", then it's toggled on and we need to decrement the achievement counter.
+        // Because the scouter can undo a lot of events, we can't rely on the current_event[] to evaluate since this may
+        // be undoing an event well before the current defended event happened.
+        if (Constants.Achievements.EVENT_IDS_SCORING.contains(lastEventId))
+            for (int i = lastIndex - 1; i > 0; i--) {
+                if (Globals.EventList.getEventGroup(match_log_events.get(i).EventId) == Constants.Achievements.DEFENDED_EVENT_GROUP) {
+                    if (!Globals.EventList.getNextEvents(match_log_events.get(i).EventId).isEmpty()) Achievements.data_ScoreWhileDefended--;
+                    break;
+                }
+            }
 
         // Check the match_event_log to see if there's a previous sequence.  If so, use that to set
         // the current event.

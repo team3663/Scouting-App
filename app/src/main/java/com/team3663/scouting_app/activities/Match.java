@@ -682,7 +682,8 @@ public class Match extends AppCompatActivity {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_NOT_MOVING_START, 0,0,true);
                 matchBinding.switchNotMoving.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
                 start_time_not_moving = System.currentTimeMillis();
-                Achievements.data_match_Toggles++;
+                Achievements.data_match_Toggle_NotMoving++;
+                Achievements.data_Toggle_NotMoving++;
             } else {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_NOT_MOVING_END, 0,0,false);
                 matchBinding.switchNotMoving.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
@@ -715,7 +716,7 @@ public class Match extends AppCompatActivity {
             if (isChecked) {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENSE_START, 0,0,true);
                 matchBinding.switchDefense.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
-                Achievements.data_match_Toggles++;
+                Achievements.data_Toggle_Defense++;
             } else {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENSE_END, 0,0,false);
                 matchBinding.switchDefense.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
@@ -743,10 +744,12 @@ public class Match extends AppCompatActivity {
 
         // This gets called if either the switch is clicked on, or the slide toggle is flipped (covers both)
         matchBinding.switchDefended.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Globals.isDefended = isChecked;
+
             if (isChecked) {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENDED_START, 0,0,true);
                 matchBinding.switchDefended.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
-                Achievements.data_match_Toggles++;
+                Achievements.data_Toggle_Defended++;
             } else {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENDED_END, 0,0,false);
                 matchBinding.switchDefended.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);

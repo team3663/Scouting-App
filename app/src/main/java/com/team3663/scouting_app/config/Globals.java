@@ -47,6 +47,7 @@ public class Globals {
 
     public static Logger EventLogger = null;
     public static Achievements myAchievements;
+    public static boolean isDefended = false;
 
     public static int NumberMatchFilesKept;
     public static int MaxEventGroups = 0;
