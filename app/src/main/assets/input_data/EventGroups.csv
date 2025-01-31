@@ -2,3 +2,6 @@ EventGroup_Id,EventGroup_Name,E_EventGroup_ColorIndex
 1,Coral,
 2,Algae,
 3,Climb,
+4,Defended,
+5,Defense,
+6,NotMoving,

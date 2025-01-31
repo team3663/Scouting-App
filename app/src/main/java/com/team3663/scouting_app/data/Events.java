@@ -75,8 +75,8 @@ public class Events {
     // Member Function: Check if an event has a specific color to use
     public boolean hasEventColor(int in_EventId) {
         for (EventRow er : event_list) {
-            if ((er.id == in_EventId) && (!er.color.isEmpty()))
-                return true;
+            if (er.id == in_EventId)
+                return !er.color.isEmpty();
         }
 
         return false;
@@ -91,10 +91,13 @@ public class Events {
     public int getEventColor(int in_EventId) {
         for (EventRow er : event_list) {
             if (er.id == in_EventId)
-                return Integer.parseInt(er.color) - 1;
+                if (!er.color.isEmpty())
+                    return Integer.parseInt(er.color) - 1;
+                else
+                    return -1;
         }
 
-        return 0;
+        return -1;
     }
 
     // Member Function: Return a list of Events (description) for a give phase of the match (only ones that start a sequence)
@@ -171,11 +174,20 @@ public class Events {
         EventGroup.add(new EventGroup("",""));
     }
 
-
     // Member Function: Is this EventId one that happens in the FOP
     public boolean isEventInFOP(int in_EventId) {
         for (EventRow er : event_list) {
             if (er.id == in_EventId) return er.is_FOP_Event;
+        }
+
+        // default to NOT in FOP event
+        return false;
+    }
+
+    // Member Function: Is this EventId one that starts a new sequence of events
+    public boolean isEventStartOfSeq(int in_EventId) {
+        for (EventRow er : event_list) {
+            if (er.id == in_EventId) return er.is_seq_start;
         }
 
         // default to NOT in FOP event

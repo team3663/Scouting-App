@@ -47,6 +47,7 @@ public class Globals {
 
     public static Logger EventLogger = null;
     public static Achievements myAchievements;
+    public static boolean isDefended = false;
 
     public static int NumberMatchFilesKept;
     public static int MaxEventGroups = 0;
@@ -59,12 +60,13 @@ public class Globals {
     public static boolean isStartingGamePiece = true;
     public static boolean isShadowMode = false;
 
-    public static long startTime;
+    public static long startTime = 0;
 
     public static DocumentFile base_df = null;
     public static DocumentFile input_df = null;
     public static DocumentFile output_df = null;
 
     public static int transmitMatchNum;
+    public static int transmitMatchType;
     public static String deviceAddress;
 }

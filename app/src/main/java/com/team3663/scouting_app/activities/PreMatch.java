@@ -1,6 +1,7 @@
 package com.team3663.scouting_app.activities;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,13 +24,17 @@ import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.PreMatchBinding;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class PreMatch extends AppCompatActivity {
     // =============================================================================================
     // Global variables
     // =============================================================================================
     private PreMatchBinding preMatchBinding;
+    private boolean okay_to_proceed = false;
     // To store the inputted name
     protected static String ScouterName;
     private static final ArrayList<String> Start_Positions = Globals.StartPositionList.getDescriptionList();
@@ -329,6 +334,79 @@ public class PreMatch extends AppCompatActivity {
     }
 
     // =============================================================================================
+    // Function:    processNextButton
+    // Description: Process the Next button action - assumes all checks have been made
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void processNextButton() {
+        Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
+        Globals.NumberMatchFilesKept = Globals.sp.getInt(Constants.Prefs.NUM_MATCHES, 5);
+        CurrentTeamToScoutPosition = preMatchBinding.spinnerTeamToScout.getSelectedItemPosition();
+        Globals.startTime = 0;
+
+        // Set up the Logger
+        // Clear and null it out first if we have one set up already (could be there if BACK button was hit on Match)
+        if (Globals.EventLogger != null) {
+            Globals.EventLogger.clear();
+            Globals.EventLogger = null;
+        }
+        Globals.EventLogger = new Logger(getApplicationContext());
+
+        // Log all of the data from this page
+        Globals.CurrentTeamToScout = Integer.parseInt(preMatchBinding.spinnerTeamToScout.getSelectedItem().toString());
+        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_TEAM_TO_SCOUT, String.valueOf(Globals.CurrentTeamToScout));
+        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_SCOUTER, preMatchBinding.editScouterName.getText().toString().toUpperCase().replace(" ",""));
+        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_PLAY, String.valueOf(preMatchBinding.checkboxDidPlay.isChecked()));
+        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_WITH_GAME_PIECE, String.valueOf(Globals.isStartingGamePiece));
+        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_TEAM_SCOUTING, String.valueOf(Globals.CurrentScoutingTeam));
+        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_MATCH_TYPE, Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType));
+        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_SHADOW_MODE, String.valueOf(Globals.isShadowMode));
+
+        Achievements.data_TeamToScout = Globals.CurrentTeamToScout;
+
+        // If the robot is playing, log the starting position the scouter chose.
+        // If not, we need to log a few items that won't be logged elsewhere
+        if (preMatchBinding.checkboxDidPlay.isChecked()) {
+            int startPos = Globals.StartPositionList.getStartPositionId(preMatchBinding.spinnerStartingPosition.getSelectedItem().toString());
+            Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_POSITION, String.valueOf(startPos));
+            Globals.CurrentStartPosition = startPos;
+        } else {
+            Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_POSITION, String.valueOf(Constants.PreMatch.START_POS_DID_NOT_PLAY));
+            Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_TIME, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss")));
+            Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_LEAVE_START, String.valueOf(false));
+            Globals.EventLogger.LogData(Constants.Logger.LOGKEY_CLIMB_POSITION, String.valueOf(Constants.PreMatch.CLIMB_POS_DID_NOT_PLAY));
+        }
+
+        // Log if they started with a game piece (the match hasn't started so we need to specify a "0" time
+        // or else it will log as max match time which wastes extra log characters for no benefit)
+        if (Globals.isStartingGamePiece) {
+            Globals.EventLogger.LogEvent(Constants.Events.ID_AUTO_START_GAME_PIECE, 0, 0, true, 0);
+        }
+
+        // Save off some fields for next time or later usage
+        if ((ScouterName != null) && (!ScouterName.isEmpty()) && !ScouterName.equals(String.valueOf(preMatchBinding.editScouterName.getText())))
+            Globals.myAchievements.clearAllData();
+
+        ScouterName = String.valueOf(preMatchBinding.editScouterName.getText());
+
+        // If they didn't play skip everything else
+        if (preMatchBinding.checkboxDidPlay.isChecked()) {
+            Intent GoToMatch = new Intent(PreMatch.this, Match.class);
+            startActivity(GoToMatch);
+        } else {
+            // Reset the Saved Start position so that you have to choose it again
+            Globals.CurrentStartPosition = 0;
+
+            Intent GoToSubmitData = new Intent(PreMatch.this, SubmitData.class);
+            startActivity(GoToSubmitData);
+        }
+
+        finish();
+    }
+
+
+    // =============================================================================================
     // Function:    initNext
     // Description: Initialize the Next button
     // Parameters:  void
@@ -344,68 +422,37 @@ public class PreMatch extends AppCompatActivity {
                 startActivity(GoToSubmitData);
 
                 finish();
-            } else {
-                // Check we have all the fields entered that are needed.  Otherwise, pop a TOAST message instead
-                if (String.valueOf(preMatchBinding.editMatch.getText()).isEmpty() || preMatchBinding.spinnerTeamToScout.getSelectedItem().toString().equals(getString(R.string.pre_dropdown_no_items))
-                        || preMatchBinding.spinnerTeamToScout.getSelectedItem().toString().isEmpty() || String.valueOf(preMatchBinding.editScouterName.getText()).isEmpty()
-                        || (preMatchBinding.spinnerStartingPosition.getSelectedItem().toString().equals(Globals.StartPositionList.getStartPositionDescription(Constants.Data.ID_START_POS_DEFAULT))
-                        && preMatchBinding.checkboxDidPlay.isChecked())) {
-                    Toast.makeText(PreMatch.this, R.string.pre_missing_data, Toast.LENGTH_SHORT).show();
-                } else {
-                    Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
-                    Globals.NumberMatchFilesKept = Globals.sp.getInt(Constants.Prefs.NUM_MATCHES, 5);
-                    CurrentTeamToScoutPosition = preMatchBinding.spinnerTeamToScout.getSelectedItemPosition();
 
-                    // Set up the Logger
-                    // null it out first in case we have one set up already (could be there if BACK button was hit on Match)
-                    Globals.EventLogger = null;
-                    Globals.EventLogger = new Logger(getApplicationContext());
-
-                    // Log all of the data from this page
-                    Globals.CurrentTeamToScout = Integer.parseInt(preMatchBinding.spinnerTeamToScout.getSelectedItem().toString());
-                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_TEAM_TO_SCOUT, String.valueOf(Globals.CurrentTeamToScout));
-                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_SCOUTER, preMatchBinding.editScouterName.getText().toString().toUpperCase().replace(" ",""));
-                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_PLAY, String.valueOf(preMatchBinding.checkboxDidPlay.isChecked()));
-                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_WITH_GAME_PIECE, String.valueOf(Globals.isStartingGamePiece));
-                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_TEAM_SCOUTING, String.valueOf(Globals.CurrentScoutingTeam));
-                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_MATCH_TYPE, Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType));
-                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_SHADOW_MODE, String.valueOf(Globals.isShadowMode));
-
-                    Achievements.data_TeamToScout = Globals.CurrentTeamToScout;
-
-                    if (preMatchBinding.checkboxDidPlay.isChecked()) {
-                        int startPos = Globals.StartPositionList.getStartPositionId(preMatchBinding.spinnerStartingPosition.getSelectedItem().toString());
-                        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_POSITION, String.valueOf(startPos));
-                        Globals.CurrentStartPosition = startPos;
-                    }
-
-                    // Log if they started with a game piece (the match hasn't started so we need to specify a "0" time
-                    // or else it will log as max match time which wastes extra log characters for no benefit)
-                    if (Globals.isStartingGamePiece) {
-                        Globals.EventLogger.LogEvent(Constants.Events.ID_AUTO_START_GAME_PIECE, 0, 0, true, 0);
-                    }
-
-                    // Save off some fields for next time or later usage
-                    if ((ScouterName != null) && (!ScouterName.isEmpty()) && !ScouterName.equals(String.valueOf(preMatchBinding.editScouterName.getText())))
-                        Globals.myAchievements.clearAllData();
-
-                    ScouterName = String.valueOf(preMatchBinding.editScouterName.getText());
-
-                    // If they didn't play skip everything else
-                    if (preMatchBinding.checkboxDidPlay.isChecked()) {
-                        Intent GoToMatch = new Intent(PreMatch.this, Match.class);
-                        startActivity(GoToMatch);
-                    } else {
-                        // Reset the Saved Start position so that you have to choose it again
-                        Globals.CurrentStartPosition = 0;
-
-                        Intent GoToSubmitData = new Intent(PreMatch.this, SubmitData.class);
-                        startActivity(GoToSubmitData);
-                    }
-
-                    finish();
-                }
+                return;
             }
+
+            if (String.valueOf(preMatchBinding.editMatch.getText()).isEmpty() || preMatchBinding.spinnerTeamToScout.getSelectedItem().toString().equals(getString(R.string.pre_dropdown_no_items))
+                    || preMatchBinding.spinnerTeamToScout.getSelectedItem().toString().isEmpty() || String.valueOf(preMatchBinding.editScouterName.getText()).isEmpty()
+                    || (preMatchBinding.spinnerStartingPosition.getSelectedItem().toString().equals(Globals.StartPositionList.getStartPositionDescription(Constants.Data.ID_START_POS_DEFAULT))
+                    && preMatchBinding.checkboxDidPlay.isChecked())) {
+                Toast.makeText(PreMatch.this, R.string.pre_missing_data, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (isLogFileExisting()) {
+                new AlertDialog.Builder(view.getContext())
+                        .setTitle(getString(R.string.pre_already_scouted_title))
+                        .setMessage(getString(R.string.pre_already_scouted_message))
+
+                        // Specifying a listener allows you to take an action before dismissing the dialog.
+                        // The dialog is automatically dismissed when a dialog button is clicked.
+                        .setPositiveButton(getString(R.string.pre_already_scouted_button_positive), (dialog, which) -> {
+                            dialog.dismiss();
+                            backupLogFile(Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_d.csv");
+                            backupLogFile(Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv");
+                            processNextButton();
+                        })
+
+                        // A null listener allows the button to dismiss the dialog and take no further action.
+                        .setNegativeButton(getString(R.string.pre_already_scouted_button_negative), null)
+                        .show();
+            } else
+                processNextButton();
         });
     }
 
@@ -418,13 +465,13 @@ public class PreMatch extends AppCompatActivity {
     private void loadTeamToScout() {
         // If we have a match number load the team information for the match
         ArrayList<String> teamsInMatch = new ArrayList<>();
-        if (Globals.CurrentMatchNumber > 0) {
-            if (Globals.MatchList.isCurrentMatchValid())
-                teamsInMatch = Globals.MatchList.getListOfTeams();
-            else {
-                teamsInMatch = new ArrayList<>();
-                teamsInMatch.add(getString(R.string.pre_dropdown_no_items));
-            }
+
+        // See if this is a valid match number.  If not, default team list to "None" otherwise fill it
+        if (Globals.MatchList.isCurrentMatchValid())
+            teamsInMatch = Globals.MatchList.getListOfTeams();
+        else {
+            teamsInMatch = new ArrayList<>();
+            teamsInMatch.add(getString(R.string.pre_dropdown_no_items));
         }
 
         // If there's an override set, add it to the spinner
@@ -476,6 +523,41 @@ public class PreMatch extends AppCompatActivity {
         if (Globals.isShadowMode) {
             preMatchBinding.textShadowModeL.setText(getString(R.string.pre_shadow_mode));
             preMatchBinding.textShadowModeR.setText(getString(R.string.pre_shadow_mode));
+        }
+    }
+
+    // =============================================================================================
+    // Function:    isLogFileExisting
+    // Description: Check if the Log file(s) already exist
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private boolean isLogFileExisting() {
+        String filename_data = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_d.csv";
+        String filename_event = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv";
+
+        if (Globals.output_df.findFile(filename_data) != null) return true;
+        if (Globals.output_df.findFile(filename_event) != null) return true;
+
+        return false;
+    }
+
+    // =============================================================================================
+    // Function:    backupLogFile
+    // Description: Rename the Log files so we keep a backup rather than losing the data altogether
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void backupLogFile(String in_filename) {
+        String backupFilename;
+
+        if (Globals.output_df.findFile(in_filename) != null) {
+            for (int i = 1; ; ++i) {
+                backupFilename = in_filename + "(" + String.valueOf(i) + ")";
+                if (Globals.output_df.findFile(backupFilename) == null) break;
+            }
+
+            Objects.requireNonNull(Globals.output_df.findFile(in_filename)).renameTo(backupFilename);
         }
     }
 }

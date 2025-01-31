@@ -2,6 +2,9 @@ package com.team3663.scouting_app.config;
 
 import android.graphics.Color;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class Constants {
 
     public static class Logger {
@@ -37,14 +40,16 @@ public class Constants {
     }
 
     public static class Phases {
-        public static final String AUTO = "Auto";
-        public static final String TELEOP = "Teleop";
-        public static final String NONE = "";
+        public static final String AUTO = "AUTO";
+        public static final String TELEOP = "TELEOP";
+        public static final String NONE = "NONE";
     }
 
     public static class PreMatch {
-        public static final int NUMBER_OF_MATCH_TYPES = 3;
+        public static final int NUMBER_OF_MATCH_TYPES = 4;
         public static final int DEFAULT_MATCH_TYPE = 1;
+        public static final int START_POS_DID_NOT_PLAY = 0;
+        public static final int CLIMB_POS_DID_NOT_PLAY = 1;
     }
 
     public static class Match {
@@ -106,11 +111,21 @@ public class Constants {
     public static class QRCode{
         public static final int MAX_QR_DATA_SIZE= 2500;
         public static final int QR_LENGTH = 500;
+        public static final String EOF = "EOF";
     }
 
     public static class Achievements {
         public static final int START_DELAY = 500;
         public static final int DISPLAY_TIME = 3_000;
         public static final int INBETWEEN_DELAY = 1_000;
+        public static final ArrayList<Integer> EVENT_IDS_SCORE_ALGAE_IN_NET = new ArrayList<>(Arrays.asList(13, 34));
+        public static final ArrayList<Integer> EVENT_IDS_SCORE_ALGAE_IN_PROCESSOR = new ArrayList<>(Arrays.asList(11, 32));
+        public static final ArrayList<Integer> EVENT_IDS_PICKUP_CORAL_GROUND = new ArrayList<>(Arrays.asList(2, 21));
+        public static final ArrayList<Integer> EVENT_IDS_PLACE_CORAL = new ArrayList<>(Arrays.asList(4, 5, 6, 7, 24, 25, 26, 27));
+        public static final ArrayList<Integer> EVENT_IDS_SCORING = new ArrayList<>(Arrays.asList(4, 5, 6, 7, 11, 13, 24, 25, 26, 27, 32, 34));
+        public static final int DEFENDED_EVENT_GROUP = 4;
+        public static final String EVENT_TYPE_PRACTICE = "P";
+        public static final String EVENT_TYPE_SEMI = "S";
+        public static final String EVENT_TYPE_FINAL = "F";
     }
 }
