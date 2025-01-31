@@ -1,12 +1,12 @@
-﻿Comment_Id,Comment_IsActive,Comment_Text
-1,True,Robot became disabled or stopped moving
-2,True,Robot (or part of it) broke
-3,True,Robot didn't contribute much (no auto - low scoring - no defense)
-4,True,Poor human player (source)
-5,True,Poor human player (amp)
-6,True,Robot had note(s) stuck in it
-7,True,Evaded defense well
-8,True,Ineffective defense
-9,True,Committed a G-424 foul
-10,True,Clearly struggled to pick up a note
-11,True,Climb didn't count
+Comment_Id,Comment_IsActive,Comment_Text
+1,TRUE,Robot contacted opponents cage(s)
+2,TRUE,Robot struggled to pick up Algae
+3,TRUE,Robot struggled to pick up Coral
+4,TRUE,Robot climbed noticeably faster than others
+5,TRUE,Robot climbed noticeably slower than others
+6,TRUE,Robot touched another robot during climb
+7,TRUE,Climb didn't count
+8,TRUE,Evaded defense well
+9,TRUE,Ineffective defense
+10,TRUE,Robot didn't contribute much (no auto - low scoring - no defense)
+11,TRUE,Robot (or part of it) broke
