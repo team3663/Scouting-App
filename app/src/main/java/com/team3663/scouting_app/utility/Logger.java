@@ -278,9 +278,7 @@ public class Logger {
 
         // Determine elapsed time and round to 1 decimal places
         // Get min of elapsed time and match length in order to essentially cap the time that will be recorded
-        String string_time = String.valueOf(Math.min(Math.round((in_time - Globals.startTime) / 100.0) / 10.0, Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_TELEOP_LENGTH));
-
-        if (string_time.endsWith(".0")) string_time = string_time.substring(0, string_time.length() - 2);
+        String string_time = String.valueOf( (int) (Math.min(Math.round((in_time - Globals.startTime) / 100.0) / 10.0, Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_TELEOP_LENGTH) * 10));
 
         match_log_events.add(new LoggerEventRow(in_EventId, string_time, string_x, string_y, prev));
 
