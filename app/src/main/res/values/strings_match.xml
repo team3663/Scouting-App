@@ -10,8 +10,8 @@
     <string name="switch_not_moving">Not\nMoving</string>
     <string name="button_undo">Undo</string>
 
-    <string name="match_practice_watermark">PRACTICE</string>
-    <string name="match_status_practice">-=- PRACTICE MODE -=-</string>
+    <string name="match_practice_watermark">TRAINING</string>
+    <string name="match_status_practice">-=- TRAINING MODE -=-</string>
     <string name="match_bad_undo">Unable to UNDO the last event!</string>
     <string name="match_alert_cancel">Cancel</string>
     <string name="match_alert_endMatch_title">End Match</string>
