@@ -10,7 +10,7 @@
     <string name="pre_override">Override Team Number</string>
     <string name="pre_new_team_num">Team number:</string>
     <string name="pre_resubmit">Need to re-submit data? (or Quit?)</string>
-    <string name="pre_practice">Practice Mode</string>
+    <string name="pre_practice">Training Mode</string>
     <string name="pre_missing_data">Please fill in all fields</string>
     <string name="pre_dropdown_no_items">None</string>
     <string name="pre_shadow_mode">Shadow Mode</string>
