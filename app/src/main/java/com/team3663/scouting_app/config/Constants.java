@@ -118,11 +118,11 @@ public class Constants {
         public static final int START_DELAY = 500;
         public static final int DISPLAY_TIME = 3_000;
         public static final int INBETWEEN_DELAY = 1_000;
-        public static final ArrayList<Integer> EVENT_IDS_SCORE_ALGAE_IN_NET = new ArrayList<>(Arrays.asList(13, 34));
-        public static final ArrayList<Integer> EVENT_IDS_SCORE_ALGAE_IN_PROCESSOR = new ArrayList<>(Arrays.asList(11, 32));
+        public static final ArrayList<Integer> EVENT_IDS_SCORE_ALGAE_IN_NET = new ArrayList<>(Arrays.asList(10, 30));
+        public static final ArrayList<Integer> EVENT_IDS_SCORE_ALGAE_IN_PROCESSOR = new ArrayList<>(Arrays.asList(12, 32));
         public static final ArrayList<Integer> EVENT_IDS_PICKUP_CORAL_GROUND = new ArrayList<>(Arrays.asList(2, 21));
-        public static final ArrayList<Integer> EVENT_IDS_PLACE_CORAL = new ArrayList<>(Arrays.asList(4, 5, 6, 7, 24, 25, 26, 27));
-        public static final ArrayList<Integer> EVENT_IDS_SCORING = new ArrayList<>(Arrays.asList(4, 5, 6, 7, 11, 13, 24, 25, 26, 27, 32, 34));
+        public static final ArrayList<Integer> EVENT_IDS_PLACE_CORAL = new ArrayList<>(Arrays.asList(3, 4, 5, 6, 23, 24, 25, 26));
+        public static final ArrayList<Integer> EVENT_IDS_SCORING = new ArrayList<>(Arrays.asList(3, 4, 5, 6, 10, 12, 23, 24, 25, 26, 30, 32));
         public static final int DEFENDED_EVENT_GROUP = 4;
         public static final String EVENT_TYPE_PRACTICE = "P";
         public static final String EVENT_TYPE_SEMI = "S";
