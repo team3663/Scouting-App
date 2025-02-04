@@ -49,45 +49,45 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:orientation="vertical"/>
+                        android:orientation="vertical">
+
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:orientation="horizontal">
 
-                        <Button
+                        <ImageButton
                             android:id="@+id/but_PrevImage"
                             android:layout_width="55dp"
                             android:layout_height="55dp"
                             app:layout_constraintStart_toStartOf="parent"
                             android:layout_marginStart="15dp"
-                            android:textSize="24sp"
+                            android:backgroundTint="@color/cpr_bkgnd"
                             android:gravity="center"
-                            android:backgroundTint="@color/light_grey"
-                            android:textColor="@color/cpr_bkgnd"
-                            tools:ignore="HardcodedText,MissingConstraints" />
+                            app:srcCompat="@drawable/back_button"
+                            tools:ignore="ContentDescription" />
 
                         <TextView
                             android:id="@+id/text_ImagePage"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="50dp"
                             android:textColor="@color/cpr_green"
                             android:gravity="center"
                             android:layout_weight="1"
                             android:textSize="22sp" />
 
-                        <Button
+                        <ImageButton
                             android:id="@+id/but_NextImage"
                             android:layout_width="55dp"
                             android:layout_height="55dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             android:layout_marginEnd="15dp"
-                            android:textSize="24sp"
+                            android:backgroundTint="@color/cpr_bkgnd"
                             android:gravity="center"
-                            android:backgroundTint="@color/light_grey"
-                            android:textColor="@color/cpr_bkgnd"
-                            tools:ignore="HardcodedText,MissingConstraints" />
+                            app:srcCompat="@drawable/next_button"
+                            tools:ignore="ContentDescription" />
 
                     </LinearLayout>
 
@@ -121,7 +121,7 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginEnd="15dp"
                     android:textColor="@color/light_grey"
-                    android:textSize="20sp" />
+                    android:textSize="22sp" />
 
                 <TextView
                     android:id="@+id/text_FileStatsCompetition"

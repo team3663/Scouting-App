@@ -16,6 +16,7 @@ import androidx.documentfile.provider.DocumentFile;
 
 import com.google.zxing.BarcodeFormat;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
+import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.QrCodeBinding;
@@ -68,13 +69,24 @@ public class QRCode extends AppCompatActivity {
     private void InitQRData() {
         qrFileString = new QR_FileString(Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.transmitMatchType) + "_d.csv" + "\n" +
                 getFileAsString("d") + "\n" +
-                Constants.QRCode.EOF +
+                Constants.QRCode.EOF + "\n" +
                 Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv" + "\n" +
                 getFileAsString("e") + "\n" +
                 Constants.QRCode.EOF);
 
         qrCodeBinding.butPrevImage.setEnabled(false);
-        qrCodeBinding.butNextImage.setEnabled(qrFileString.getNumPages() > 1);
+        qrCodeBinding.butPrevImage.setClickable(false);
+        qrCodeBinding.butPrevImage.setVisibility(View.INVISIBLE);
+        if (qrFileString.getNumPages() > 1) {
+            qrCodeBinding.butNextImage.setEnabled(true);
+            qrCodeBinding.butNextImage.setClickable(true);
+            qrCodeBinding.butNextImage.setVisibility(View.VISIBLE);
+        }
+        else {
+            qrCodeBinding.butNextImage.setEnabled(false);
+            qrCodeBinding.butNextImage.setClickable(false);
+            qrCodeBinding.butNextImage.setVisibility(View.INVISIBLE);
+        }
 
         qrCodeBinding.textImagePage.setText(String.format("Image 1 of %s", String.valueOf(qrFileString.getNumPages())));
         currentImagePage = 0;
@@ -137,9 +149,21 @@ public class QRCode extends AppCompatActivity {
     private void InitNextImage() {
         qrCodeBinding.butNextImage.setOnClickListener(view -> {
             currentImagePage++;
+            qrCodeBinding.textImagePage.setText(String.format("Image %s of %s", String.valueOf(currentImagePage + 1), String.valueOf(qrFileString.getNumPages())));
             qrCodeBinding.butPrevImage.setEnabled(true);
-            qrCodeBinding.butNextImage.setEnabled(currentImagePage < qrFileString.getNumPages());
-            qrCodeBinding.textImagePage.setText(String.format("Image %s of %s", String.valueOf(currentImagePage), String.valueOf(qrFileString.getNumPages())));
+            qrCodeBinding.butPrevImage.setClickable(true);
+            qrCodeBinding.butPrevImage.setVisibility(View.VISIBLE);
+
+            if (currentImagePage < qrFileString.getNumPages() - 1) {
+                qrCodeBinding.butNextImage.setEnabled(true);
+                qrCodeBinding.butNextImage.setClickable(true);
+                qrCodeBinding.butNextImage.setVisibility(View.VISIBLE);
+            }
+            else {
+                qrCodeBinding.butNextImage.setEnabled(false);
+                qrCodeBinding.butNextImage.setClickable(false);
+                qrCodeBinding.butNextImage.setVisibility(View.INVISIBLE);
+            }
 
             generateQRImage();
         });
@@ -154,9 +178,21 @@ public class QRCode extends AppCompatActivity {
     private void InitPrevImage() {
         qrCodeBinding.butPrevImage.setOnClickListener(view -> {
             currentImagePage--;
+            qrCodeBinding.textImagePage.setText(String.format("Image %s of %s", String.valueOf(currentImagePage + 1), String.valueOf(qrFileString.getNumPages())));
             qrCodeBinding.butNextImage.setEnabled(true);
-            qrCodeBinding.butPrevImage.setEnabled(currentImagePage > 0);
-            qrCodeBinding.textImagePage.setText(String.format("Image %s of %s", String.valueOf(currentImagePage), String.valueOf(qrFileString.getNumPages())));
+            qrCodeBinding.butNextImage.setClickable(true);
+            qrCodeBinding.butNextImage.setVisibility(View.VISIBLE);
+
+            if (currentImagePage > 0) {
+                qrCodeBinding.butPrevImage.setEnabled(true);
+                qrCodeBinding.butPrevImage.setClickable(true);
+                qrCodeBinding.butPrevImage.setVisibility(View.VISIBLE);
+            }
+            else {
+                qrCodeBinding.butPrevImage.setEnabled(false);
+                qrCodeBinding.butPrevImage.setClickable(false);
+                qrCodeBinding.butPrevImage.setVisibility(View.INVISIBLE);
+            }
 
             generateQRImage();
         });

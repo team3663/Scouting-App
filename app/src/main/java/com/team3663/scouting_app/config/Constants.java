@@ -104,7 +104,7 @@ public class Constants {
     }
 
     public static class AppLaunch {
-        public static final long SPLASH_SCREEN_DELAY = 100;
+        public static final long SPLASH_SCREEN_DELAY = 10;
         public static final int ACTIVITY_CODE_SETTINGS = 1;
         public static final int ACTIVITY_CODE_STORAGE = 2;
     }
