@@ -25,6 +25,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class QRCode extends AppCompatActivity {
     // =============================================================================================
@@ -47,11 +48,16 @@ public class QRCode extends AppCompatActivity {
             return insets;
         });
 
+        // Global variables
+        int current_QR_Page = 0;
+
         // Initialize activity components
         InitQRData();
-        InitQREvent();
         InitBack();
         InitNext();
+        InitNextPage();
+        InitPrevPage();
+        generateQRImage();
      }
 
     // =============================================================================================
@@ -173,5 +179,59 @@ public class QRCode extends AppCompatActivity {
         }
 
         return file_as_string;
+    }
+
+    // =============================================================================================
+    // Function:    generateQRImage
+    // Description: Generate the QR code for the current "page" of data
+    // Parameters:  in_QRFileString
+    //                  The structure representing what we need to generate the QR code for
+    //              in_Page
+    //                  The "page" of data we need to generate the QR code for
+    // Output:      void
+    // =============================================================================================
+    public void generateQRImage(QR_FileString in_QRFileString, int in_Page) {
+        BarcodeEncoder be = new BarcodeEncoder();
+        String qrData = in_QRFileString.getPage(in_Page);
+
+        try {
+            Bitmap bm = be.encodeBitmap(qrData, BarcodeFormat.QR_CODE, Constants.QRCode.QR_LENGTH, Constants.QRCode.QR_LENGTH);
+            qrCodeBinding.imageQRData.setImageBitmap(bm);
+        } catch (Exception e) {
+            Toast.makeText(QRCode.this, "Failed to generate QR Code!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    // =============================================================================================
+    // Class:       QR_FileString
+    // Description: Defines a structure/class to hold the information for the file data we'll use
+    //              to generate the QR codes
+    // =============================================================================================
+    private static class QR_FileString {
+        int size;
+        ArrayList<String> file_page = new ArrayList<>();
+
+        // Constructor
+        public QR_FileString (String in_data) {
+            size = in_data.length();
+
+            int begin = 0;
+            int end;
+
+            while (begin < size) {
+                if (size - begin <= Constants.QRCode.PREFERRED_QR_DATA_SIZE) end = size - 1;
+                else end = begin + Constants.QRCode.PREFERRED_QR_DATA_SIZE - 1;
+
+                file_page.add(in_data.substring(begin, end));
+                begin = end + 1;
+            }
+        }
+
+        public String getPage(int in_Page) {
+            if (in_Page >= 0) && (in_Page < file_page.size())
+                return file_page.get(in_Page);
+
+            return "";
+        }
     }
 }
