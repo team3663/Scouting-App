@@ -87,7 +87,7 @@ public class Matches {
 
         // Member Function: do we have valid match data for this one
         public boolean isCurrentMatchValid() {
-            return (Globals.CurrentMatchNumber > 0) && (Globals.CurrentMatchNumber <= match_list_for_type.size());
+            return (Globals.CurrentMatchNumber > 0) && (Globals.CurrentMatchNumber < match_list_for_type.size());
         }
 
         // Member Function: Return a list of team numbers for this match (must be set in Globals.CurrentMatchNumber)
