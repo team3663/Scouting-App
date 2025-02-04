@@ -116,7 +116,7 @@ public class Achievements {
         ach19.addRule(new RuleFieldReset(1));
         achievement_list.add(ach19);
 
-        Achievement ach20 = new Achievement(19, "Maybe it IS my fault", "Experienced 2 field resets", 10);
+        Achievement ach20 = new Achievement(20, "Maybe it IS my fault", "Experienced 2 field resets", 10);
         ach20.addRule(new RuleFieldReset(2));
         achievement_list.add(ach20);
 
@@ -124,6 +124,10 @@ public class Achievements {
         ach21.addRule(new RuleScoreCoral(3, 6));
         ach21.addRule(new RuleScoreCoral(4, 6));
         achievement_list.add(ach21);
+
+        Achievement ach22 = new Achievement(22, "This seat is mine now", "Scouted for 60 minutes non-stop", 30);
+        ach22.addRule(new RuleTimeScouting(3_600_000)); // 30 minutes
+        achievement_list.add(ach22);
     }
 
     // Member Function: pop (to the screen) any achievements "met" but not already "popped"
