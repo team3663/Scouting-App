@@ -34,7 +34,7 @@ public class QRCode extends AppCompatActivity {
     private QrCodeBinding qrCodeBinding;
     private Logger logger;
     private QR_FileString qrFileString;
-    private int currentImagePage = 0;
+    private int currentImagePage;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -73,7 +73,12 @@ public class QRCode extends AppCompatActivity {
                 getFileAsString("e") + "\n" +
                 Constants.QRCode.EOF);
 
-        generateQRImage(qrFileString, 0);
+        qrCodeBinding.butPrevImage.setEnabled(false);
+        qrCodeBinding.butNextImage.setEnabled(qrFileString.getNumPages() > 1);
+
+        qrCodeBinding.textImagePage.setText(String.format("Image 1 of %s", String.valueOf(qrFileString.getNumPages())));
+        currentImagePage = 0;
+        generateQRImage();
     }
 
     // =============================================================================================
@@ -111,6 +116,19 @@ public class QRCode extends AppCompatActivity {
     }
 
     // =============================================================================================
+    // Function:    InitFileStats
+    // Description: Initialize the File Stats fields
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void InitFileStats() {
+        qrCodeBinding.textFileStatsCompetition.setText(Globals.CompetitionList.getCompetitionDescription(Globals.CurrentCompetitionId));
+        qrCodeBinding.textFileStatsMatch.setText(String.valueOf(Globals.transmitMatchNum));
+        qrCodeBinding.textFileStatsMatchType.setText(Globals.MatchTypeList.getMatchTypeDescription(Globals.transmitMatchType));
+        qrCodeBinding.textFileStatsFileSize.setText(String.format("%s bytes", String.valueOf(qrFileString.getSize())));
+    }
+
+    // =============================================================================================
     // Function:    InitNextImage
     // Description: Initialize the Next Match button
     // Parameters:  void
@@ -118,9 +136,12 @@ public class QRCode extends AppCompatActivity {
     // =============================================================================================
     private void InitNextImage() {
         qrCodeBinding.butNextImage.setOnClickListener(view -> {
-            // TODO: enable previmage button
-            // TODO: if last page, disable nextimage button
-            // TODO: update imagetext "Image x / y"
+            currentImagePage++;
+            qrCodeBinding.butPrevImage.setEnabled(true);
+            qrCodeBinding.butNextImage.setEnabled(currentImagePage < qrFileString.getNumPages());
+            qrCodeBinding.textImagePage.setText(String.format("Image %s of %s", String.valueOf(currentImagePage), String.valueOf(qrFileString.getNumPages())));
+
+            generateQRImage();
         });
     }
 
@@ -132,9 +153,12 @@ public class QRCode extends AppCompatActivity {
     // =============================================================================================
     private void InitPrevImage() {
         qrCodeBinding.butPrevImage.setOnClickListener(view -> {
-            // TODO: enable nextimage button
-            // TODO: if first page, disable previmage button
-            // TODO: update imagetext "Image x / y"
+            currentImagePage--;
+            qrCodeBinding.butNextImage.setEnabled(true);
+            qrCodeBinding.butPrevImage.setEnabled(currentImagePage > 0);
+            qrCodeBinding.textImagePage.setText(String.format("Image %s of %s", String.valueOf(currentImagePage), String.valueOf(qrFileString.getNumPages())));
+
+            generateQRImage();
         });
     }
 
@@ -188,9 +212,9 @@ public class QRCode extends AppCompatActivity {
     //                  The "page" of data we need to generate the QR code for
     // Output:      void
     // =============================================================================================
-    public void generateQRImage(QR_FileString in_QRFileString, int in_Page) {
+    public void generateQRImage() {
         BarcodeEncoder be = new BarcodeEncoder();
-        String qrData = in_QRFileString.getPage(in_Page);
+        String qrData = qrFileString.getPage(currentImagePage);
 
         try {
             Bitmap bm = be.encodeBitmap(qrData, BarcodeFormat.QR_CODE, Constants.QRCode.QR_LENGTH, Constants.QRCode.QR_LENGTH);
@@ -207,10 +231,11 @@ public class QRCode extends AppCompatActivity {
     // =============================================================================================
     private static class QR_FileString {
         ArrayList<String> file_page = new ArrayList<>();
+        int size = 0;
 
         // Constructor
         public QR_FileString (String in_data) {
-            int size = in_data.length();
+            size = in_data.length();
             int begin = 0;
             int end;
 
@@ -225,15 +250,24 @@ public class QRCode extends AppCompatActivity {
 
         // Member Function: Return the (partial) String for the data for a particular page
         public String getPage(int in_Page) {
-            if ((in_Page >= 0) && (in_Page < file_page.size()))
-                return file_page.get(in_Page);
+            if (file_page == null) return "";
 
-            return "";
+            if ((in_Page < 0) || (in_Page >= file_page.size()))
+                return "";
+
+            return file_page.get(in_Page);
         }
 
         // Member Function: Return the number of pages of data we have
         public int getNumPages() {
+            if (file_page == null) return 0;
+
             return file_page.size();
+        }
+
+        // Member Function: Return the number of pages of data we have
+        public int getSize() {
+            return size;
         }
     }
 }
