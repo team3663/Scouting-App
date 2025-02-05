@@ -207,7 +207,8 @@ public class PostMatch extends AppCompatActivity {
             } else {
                 // Log all of the data from this page
                 Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_LEAVE_START, String.valueOf(postMatchBinding.checkboxDidLeave.isChecked()));
-                Globals.EventLogger.LogData(Constants.Logger.LOGKEY_CLIMB_POSITION, String.valueOf(Globals.ClimbPositionList.getClimbPositionId(postMatchBinding.spinnerClimbPosition.getSelectedItem().toString())));
+                Globals.EventLogger.LogData(Constants.Logger.LOGKEY_CLIMB_POSITION,
+                        String.valueOf(Globals.ClimbPositionList.getClimbPositionId(postMatchBinding.spinnerClimbPosition.getSelectedItem().toString())));
                 String comment_sep_ID = "";
                 for (Integer comment_dropID : CommentList) {
                     String comment = CommentArray.get(comment_dropID);
@@ -224,9 +225,14 @@ public class PostMatch extends AppCompatActivity {
             }
 
             Achievements.data_NumMatches++;
-            if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType).startsWith(Constants.Achievements.EVENT_TYPE_PRACTICE)) Achievements.data_PracticeType++;
-            if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType).startsWith(Constants.Achievements.EVENT_TYPE_SEMI)) Achievements.data_SemiFinalType++;
-            if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType).startsWith(Constants.Achievements.EVENT_TYPE_FINAL)) Achievements.data_FinalType++;
+            Achievements.data_match_ClimbType = String.valueOf(Globals.ClimbPositionList.getClimbPositionId(
+                    postMatchBinding.spinnerClimbPosition.getSelectedItem().toString()));
+            if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType)
+                    .startsWith(Constants.Achievements.EVENT_TYPE_PRACTICE)) Achievements.data_PracticeType++;
+            if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType)
+                    .startsWith(Constants.Achievements.EVENT_TYPE_SEMI)) Achievements.data_SemiFinalType++;
+            if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType)
+                    .startsWith(Constants.Achievements.EVENT_TYPE_FINAL)) Achievements.data_FinalType++;
 
             finish();
         });

@@ -2,6 +2,7 @@ package com.team3663.scouting_app.utility.achievements;
 
 import com.team3663.scouting_app.config.Globals;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -11,6 +12,7 @@ import java.util.Arrays;
 // =================================================================================================
 public class Achievements {
     private static final ArrayList<Achievement> achievement_list = new ArrayList<>();
+
     // Scouter data
     public static int data_NumMatches = 0;
     public static int data_TeamToScout = 0;
@@ -26,14 +28,17 @@ public class Achievements {
     public static int data_Toggle_NotMoving = 0;
     public static int data_ScoreWhileDefended = 0;
     public static int data_FieldReset = 0;
+
     // Scouter data per match
     public static int data_match_OrphanEvents = 0;
     public static int data_match_AlgaeInNet = 0;
     public static int data_match_AlgaeInProcessor = 0;
+    public static int data_match_AlgaePickup = 0;
     public static int[] data_match_CoralLevel = {0, 0, 0, 0, 0};
     public static int data_match_CoralPickupGround = 0;
     public static int data_match_CoralPickupStation = 0;
     public static int data_match_Toggle_NotMoving = 0;
+    public static String data_match_ClimbType;
 
     // Constructor: Define all of the achievements and the rule(s) they are based on
     public Achievements() {
@@ -116,7 +121,7 @@ public class Achievements {
         ach19.addRule(new RuleFieldReset(1));
         achievement_list.add(ach19);
 
-        Achievement ach20 = new Achievement(19, "Maybe it IS my fault", "Experienced 2 field resets", 10);
+        Achievement ach20 = new Achievement(20, "Maybe it IS my fault", "Experienced 2 field resets", 10);
         ach20.addRule(new RuleFieldReset(2));
         achievement_list.add(ach20);
 
@@ -124,6 +129,18 @@ public class Achievements {
         ach21.addRule(new RuleScoreCoral(3, 6));
         ach21.addRule(new RuleScoreCoral(4, 6));
         achievement_list.add(ach21);
+
+        Achievement ach22 = new Achievement(22, "Swiss Army Bot",
+                "Scored in every location; Picked up Coral in both places; Picked up Algae; Climbed", 75);
+        ach22.addRule(new RuleCoralPickup("ground", 1));
+        ach22.addRule(new RuleCoralPickup("station", 1));
+        ach22.addRule(new RuleAlgaePickup(1));
+        for (int i = 1; i <= 4; i++)
+            ach22.addRule(new RuleScoreCoral(i, 1));
+        ach22.addRule(new RuleScoreAlgae("processor", 1));
+        ach22.addRule(new RuleScoreAlgae("net", 1));
+        ach22.addRule(new RuleClimbed(Arrays.asList("Shallow Cage", "Deep Cage")));
+        achievement_list.add(ach22);
     }
 
     // Member Function: pop (to the screen) any achievements "met" but not already "popped"
@@ -142,7 +159,7 @@ public class Achievements {
     }
 
     // Member Function: Clear all data on achievements (ie: new scouter)
-    public void clearAllData(){
+    public void clearAllData() {
         data_NumMatches = 0;
         data_TeamToScout = 0;
         data_StartTime = 0;
@@ -162,21 +179,23 @@ public class Achievements {
     }
 
     // Member Function: Clear all data on achievements (ie: new scouter)
-    public void clearMatchData(){
+    public void clearMatchData() {
         data_match_Toggle_NotMoving = 0;
         data_match_OrphanEvents = 0;
         data_match_AlgaeInNet = 0;
         data_match_AlgaeInProcessor = 0;
+        data_match_AlgaePickup = 0;
         Arrays.fill(data_match_CoralLevel, 0);
         data_match_CoralPickupGround = 0;
         data_match_CoralPickupStation = 0;
+        data_match_ClimbType = null;
     }
 
     // =============================================================================================
     // Class:       Achievement
     // Description: Everything about a single achievement
     // =============================================================================================
-     public static class Achievement {
+    public static class Achievement {
         private final ArrayList<AchievementRule> rules = new ArrayList<>();
         private final int id;
         private final String title;

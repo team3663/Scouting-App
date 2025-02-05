@@ -217,7 +217,7 @@ public class SubmitData extends AppCompatActivity {
             currentAchievement++;
             if (currentAchievement < poplist.size()) {
                 startNext = new popOneAndGo_TimerTask();
-                achievement_timer.schedule(startNext, Constants.Achievements.INBETWEEN_DELAY);
+                achievement_timer.schedule(startNext, Constants.Achievements.IN_BETWEEN_DELAY);
             }
             else closeAchievements();
         }

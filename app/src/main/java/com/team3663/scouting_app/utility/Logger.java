@@ -259,9 +259,11 @@ public class Logger {
         String ach_desc = Globals.EventList.getEventDescription(in_EventId);
         Achievements.data_NumEvents++;
 
+        if (Constants.Achievements.EVENT_IDS_PICKUP_ALGAE.contains(in_EventId)) Achievements.data_match_AlgaePickup++; // 2025
         if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_NET.contains(in_EventId)) Achievements.data_match_AlgaeInNet++; // 2025
         if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_PROCESSOR.contains(in_EventId)) Achievements.data_match_AlgaeInProcessor++; // 2025
         if (Constants.Achievements.EVENT_IDS_PICKUP_CORAL_GROUND.contains(in_EventId)) Achievements.data_match_CoralPickupGround++; // 2025
+        if (Constants.Achievements.EVENT_IDS_PICKUP_CORAL_STATION.contains(in_EventId)) Achievements.data_match_CoralPickupStation++; // 2025
         if (Constants.Achievements.EVENT_IDS_PLACE_CORAL.contains(in_EventId)) Achievements.data_match_CoralLevel[Integer.parseInt(ach_desc.substring(ach_desc.length() - 1))]++; // 2025
         if ((Constants.Achievements.EVENT_IDS_SCORING.contains(in_EventId)) && Globals.isDefended) Achievements.data_ScoreWhileDefended++; // 2025
 

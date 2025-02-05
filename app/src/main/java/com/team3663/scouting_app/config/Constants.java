@@ -117,10 +117,12 @@ public class Constants {
     public static class Achievements {
         public static final int START_DELAY = 500;
         public static final int DISPLAY_TIME = 3_000;
-        public static final int INBETWEEN_DELAY = 1_000;
+        public static final int IN_BETWEEN_DELAY = 1_000;
+        public static final ArrayList<Integer> EVENT_IDS_PICKUP_ALGAE = new ArrayList<>(Arrays.asList(8, 28));
         public static final ArrayList<Integer> EVENT_IDS_SCORE_ALGAE_IN_NET = new ArrayList<>(Arrays.asList(10, 30));
         public static final ArrayList<Integer> EVENT_IDS_SCORE_ALGAE_IN_PROCESSOR = new ArrayList<>(Arrays.asList(12, 32));
         public static final ArrayList<Integer> EVENT_IDS_PICKUP_CORAL_GROUND = new ArrayList<>(Arrays.asList(2, 21));
+        public static final ArrayList<Integer> EVENT_IDS_PICKUP_CORAL_STATION = new ArrayList<>(Arrays.asList(1, 20));
         public static final ArrayList<Integer> EVENT_IDS_PLACE_CORAL = new ArrayList<>(Arrays.asList(3, 4, 5, 6, 23, 24, 25, 26));
         public static final ArrayList<Integer> EVENT_IDS_SCORING = new ArrayList<>(Arrays.asList(3, 4, 5, 6, 10, 12, 23, 24, 25, 26, 30, 32));
         public static final int DEFENDED_EVENT_GROUP = 4;
