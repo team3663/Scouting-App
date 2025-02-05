@@ -85,7 +85,7 @@ public class Achievements {
         ach12.addRule(new RuleScoreAlgae("processor", 2));
         achievement_list.add(ach12);
 
-        Achievement ach13 = new Achievement(13, "Hit all elevator buttons", "Scored Coral on all Reef levels", 40);
+        Achievement ach13 = new Achievement(13, "Hit all the elevator buttons", "Scored Coral on all Reef levels", 40);
         ach13.addRule(new RuleScoreCoral(1, 1));
         ach13.addRule(new RuleScoreCoral(2, 1));
         ach13.addRule(new RuleScoreCoral(3, 1));
@@ -108,7 +108,7 @@ public class Achievements {
         ach17.addRule(new RuleScoreDefended(1));
         achievement_list.add(ach17);
 
-        Achievement ach18 = new Achievement(18, "Mater, I need a lift", "Broken down more than once", 5);
+        Achievement ach18 = new Achievement(18, "Mater! I need a lift", "Broken down more than once", 5);
         ach18.addRule(new RuleToggles("notmoving", false, 2));
         achievement_list.add(ach18);
 
