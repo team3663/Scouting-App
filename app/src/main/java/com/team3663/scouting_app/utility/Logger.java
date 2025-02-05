@@ -266,6 +266,7 @@ public class Logger {
         if (Constants.Achievements.EVENT_IDS_PICKUP_CORAL_STATION.contains(in_EventId)) Achievements.data_match_CoralPickupStation++; // 2025
         if (Constants.Achievements.EVENT_IDS_PLACE_CORAL.contains(in_EventId)) Achievements.data_match_CoralLevel[Integer.parseInt(ach_desc.substring(ach_desc.length() - 1))]++; // 2025
         if ((Constants.Achievements.EVENT_IDS_SCORING.contains(in_EventId)) && Globals.isDefended) Achievements.data_ScoreWhileDefended++; // 2025
+        if (Constants.Achievements.EVENT_ID_CLIMB_SUCCESS == in_EventId) Achievements.data_match_ClimbSuccess++;
 
         int GroupId = Globals.EventList.getEventGroup(in_EventId);
 
@@ -380,7 +381,9 @@ public class Logger {
         if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_NET.contains(lastEventId)) Achievements.data_match_AlgaeInNet--; // 2025
         if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_PROCESSOR.contains(lastEventId)) Achievements.data_match_AlgaeInProcessor--; // 2025
         if (Constants.Achievements.EVENT_IDS_PICKUP_CORAL_GROUND.contains(lastEventId)) Achievements.data_match_CoralPickupGround--; // 2025
+        if (Constants.Achievements.EVENT_IDS_PICKUP_CORAL_STATION.contains(lastEventId)) Achievements.data_match_CoralPickupStation--; // 2025
         if (Constants.Achievements.EVENT_IDS_PLACE_CORAL.contains(lastEventId)) Achievements.data_match_CoralLevel[Integer.parseInt(ach_desc.substring(ach_desc.length() - 1))]--; // 2025
+        if (Constants.Achievements.EVENT_ID_CLIMB_SUCCESS == lastEventId) Achievements.data_match_ClimbSuccess--;
         // To determine if they were not moving, we need to find the next previous item for the "defended" group.  If that item
         // has some "next events", then it's toggled on and we need to decrement the achievement counter.
         // Because the scouter can undo a lot of events, we can't rely on the current_event[] to evaluate since this may

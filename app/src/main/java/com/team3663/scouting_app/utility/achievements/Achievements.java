@@ -2,7 +2,6 @@ package com.team3663.scouting_app.utility.achievements;
 
 import com.team3663.scouting_app.config.Globals;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -38,7 +37,7 @@ public class Achievements {
     public static int data_match_CoralPickupGround = 0;
     public static int data_match_CoralPickupStation = 0;
     public static int data_match_Toggle_NotMoving = 0;
-    public static String data_match_ClimbType;
+    public static int data_match_ClimbSuccess = 0;
 
     // Constructor: Define all of the achievements and the rule(s) they are based on
     public Achievements() {
@@ -130,17 +129,18 @@ public class Achievements {
         ach21.addRule(new RuleScoreCoral(4, 6));
         achievement_list.add(ach21);
 
-        Achievement ach22 = new Achievement(22, "Swiss Army Bot",
-                "Scored in every location; Picked up Coral in both places; Picked up Algae; Climbed", 75);
-        ach22.addRule(new RuleCoralPickup("ground", 1));
-        ach22.addRule(new RuleCoralPickup("station", 1));
-        ach22.addRule(new RuleAlgaePickup(1));
-        for (int i = 1; i <= 4; i++)
-            ach22.addRule(new RuleScoreCoral(i, 1));
-        ach22.addRule(new RuleScoreAlgae("processor", 1));
-        ach22.addRule(new RuleScoreAlgae("net", 1));
-        ach22.addRule(new RuleClimbed(Arrays.asList("Shallow Cage", "Deep Cage")));
-        achievement_list.add(ach22);
+        Achievement ach23 = new Achievement(23, "Swiss Army Bot", "This bot did everything", 75);
+        ach23.addRule(new RuleCoralPickup("ground", 1));
+        ach23.addRule(new RuleCoralPickup("station", 1));
+        ach23.addRule(new RuleAlgaePickup(1));
+        ach23.addRule(new RuleScoreCoral(1, 1));
+        ach23.addRule(new RuleScoreCoral(2, 1));
+        ach23.addRule(new RuleScoreCoral(3, 1));
+        ach23.addRule(new RuleScoreCoral(4, 1));
+        ach23.addRule(new RuleScoreAlgae("processor", 1));
+        ach23.addRule(new RuleScoreAlgae("net", 1));
+        ach23.addRule(new RuleClimbed(1));
+        achievement_list.add(ach23);
     }
 
     // Member Function: pop (to the screen) any achievements "met" but not already "popped"
@@ -188,7 +188,7 @@ public class Achievements {
         Arrays.fill(data_match_CoralLevel, 0);
         data_match_CoralPickupGround = 0;
         data_match_CoralPickupStation = 0;
-        data_match_ClimbType = null;
+        data_match_ClimbSuccess = 0;
     }
 
     // =============================================================================================

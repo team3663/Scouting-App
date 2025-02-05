@@ -225,8 +225,6 @@ public class PostMatch extends AppCompatActivity {
             }
 
             Achievements.data_NumMatches++;
-            Achievements.data_match_ClimbType = String.valueOf(Globals.ClimbPositionList.getClimbPositionId(
-                    postMatchBinding.spinnerClimbPosition.getSelectedItem().toString()));
             if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType)
                     .startsWith(Constants.Achievements.EVENT_TYPE_PRACTICE)) Achievements.data_PracticeType++;
             if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType)

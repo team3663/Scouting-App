@@ -1,16 +1,14 @@
 package com.team3663.scouting_app.utility.achievements;
 
-import java.util.List;
-
 public class RuleClimbed implements AchievementRule {
-    private final List<String> acceptedClimbs;
+    private final int threshold;
 
-    public RuleClimbed(List<String> acceptedClimbs) {
-        this.acceptedClimbs = acceptedClimbs;
+    public RuleClimbed(int in_threshold) {
+        threshold = in_threshold;
     }
 
     @Override
     public boolean evaluate() {
-        return acceptedClimbs.contains(Achievements.data_match_ClimbType);
+        return Achievements.data_match_ClimbSuccess >= threshold;
     }
 }
