@@ -28,7 +28,7 @@ public class Achievements {
     public static int data_Toggle_NotMoving = 0;
     public static int data_ScoreWhileDefended = 0;
     public static int data_FieldReset = 0;
-    public static int[] data_NumMatchTypes = new int[Globals.CompetitionList.size() + 1];
+    public static int[] data_NumMatchesByCompetition = new int[Globals.CompetitionList.size() + 1];
 
     // Scouter data per match
     public static int data_match_OrphanEvents = 0;
@@ -180,7 +180,7 @@ public class Achievements {
         data_Toggle_NotMoving = 0;
         data_ScoreWhileDefended = 0;
         data_FieldReset = 0;
-        data_NumMatchTypes = new int[Globals.CompetitionList.size()];
+        data_NumMatchesByCompetition = new int[Globals.CompetitionList.size()];
 
         clearMatchData();
     }
