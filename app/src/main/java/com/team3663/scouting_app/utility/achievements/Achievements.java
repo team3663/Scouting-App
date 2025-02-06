@@ -1,5 +1,6 @@
 package com.team3663.scouting_app.utility.achievements;
 
+import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 // =================================================================================================
 public class Achievements {
     private static final ArrayList<Achievement> achievement_list = new ArrayList<>();
+
     // Scouter data
     public static int data_NumMatches = 0;
     public static int data_TeamToScout = 0;
@@ -26,14 +28,18 @@ public class Achievements {
     public static int data_Toggle_NotMoving = 0;
     public static int data_ScoreWhileDefended = 0;
     public static int data_FieldReset = 0;
+    public static int[] data_NumMatchesByCompetition = new int[Globals.CompetitionList.size() + 1];
+
     // Scouter data per match
     public static int data_match_OrphanEvents = 0;
     public static int data_match_AlgaeInNet = 0;
     public static int data_match_AlgaeInProcessor = 0;
+    public static int data_match_AlgaePickup = 0;
     public static int[] data_match_CoralLevel = {0, 0, 0, 0, 0};
     public static int data_match_CoralPickupGround = 0;
     public static int data_match_CoralPickupStation = 0;
     public static int data_match_Toggle_NotMoving = 0;
+    public static int data_match_ClimbSuccess = 0;
 
     // Constructor: Define all of the achievements and the rule(s) they are based on
     public Achievements() {
@@ -125,9 +131,27 @@ public class Achievements {
         ach21.addRule(new RuleScoreCoral(4, 6));
         achievement_list.add(ach21);
 
+
         Achievement ach22 = new Achievement(22, "This seat is mine now", "Scouted for 60 minutes non-stop", 30);
         ach22.addRule(new RuleTimeScouting(3_600_000)); // 30 minutes
         achievement_list.add(ach22);
+
+        Achievement ach23 = new Achievement(23, "Swiss Army Bot", "This bot did everything", 75);
+        ach23.addRule(new RuleCoralPickup("ground", 1));
+        ach23.addRule(new RuleCoralPickup("station", 1));
+        ach23.addRule(new RuleAlgaePickup(1));
+        ach23.addRule(new RuleScoreCoral(1, 1));
+        ach23.addRule(new RuleScoreCoral(2, 1));
+        ach23.addRule(new RuleScoreCoral(3, 1));
+        ach23.addRule(new RuleScoreCoral(4, 1));
+        ach23.addRule(new RuleScoreAlgae("processor", 1));
+        ach23.addRule(new RuleScoreAlgae("net", 1));
+        ach23.addRule(new RuleClimbed(1));
+        achievement_list.add(ach23);
+
+        Achievement ach24 = new Achievement(24, "World Renowned Scouter", "Scouted at Worlds", 10);
+        ach24.addRule(new RuleCompetition(Constants.Achievements.COMPETITION_WORLDS_IDS, 1));
+        achievement_list.add(ach24);
     }
 
     // Member Function: pop (to the screen) any achievements "met" but not already "popped"
@@ -146,7 +170,7 @@ public class Achievements {
     }
 
     // Member Function: Clear all data on achievements (ie: new scouter)
-    public void clearAllData(){
+    public void clearAllData() {
         data_NumMatches = 0;
         data_TeamToScout = 0;
         data_StartTime = 0;
@@ -161,26 +185,29 @@ public class Achievements {
         data_Toggle_NotMoving = 0;
         data_ScoreWhileDefended = 0;
         data_FieldReset = 0;
+        data_NumMatchesByCompetition = new int[Globals.CompetitionList.size()];
 
         clearMatchData();
     }
 
     // Member Function: Clear all data on achievements (ie: new scouter)
-    public void clearMatchData(){
+    public void clearMatchData() {
         data_match_Toggle_NotMoving = 0;
         data_match_OrphanEvents = 0;
         data_match_AlgaeInNet = 0;
         data_match_AlgaeInProcessor = 0;
+        data_match_AlgaePickup = 0;
         Arrays.fill(data_match_CoralLevel, 0);
         data_match_CoralPickupGround = 0;
         data_match_CoralPickupStation = 0;
+        data_match_ClimbSuccess = 0;
     }
 
     // =============================================================================================
     // Class:       Achievement
     // Description: Everything about a single achievement
     // =============================================================================================
-     public static class Achievement {
+    public static class Achievement {
         private final ArrayList<AchievementRule> rules = new ArrayList<>();
         private final int id;
         private final String title;
