@@ -27,6 +27,8 @@ public class Achievements {
     public static int data_Toggle_NotMoving = 0;
     public static int data_ScoreWhileDefended = 0;
     public static int data_FieldReset = 0;
+    public static int data_WorldMatches = 0;
+    public static int data_WorldNewtonMatches = 0;
 
     // Scouter data per match
     public static int data_match_OrphanEvents = 0;
@@ -141,6 +143,10 @@ public class Achievements {
         ach23.addRule(new RuleScoreAlgae("net", 1));
         ach23.addRule(new RuleClimbed(1));
         achievement_list.add(ach23);
+
+        Achievement ach24 = new Achievement(24, "World Renowned Scouter", "Scouted at Worlds", 10);
+        ach24.addRule(new RuleCompetition("worlds", 1));
+        achievement_list.add(ach24);
     }
 
     // Member Function: pop (to the screen) any achievements "met" but not already "popped"
@@ -174,6 +180,8 @@ public class Achievements {
         data_Toggle_NotMoving = 0;
         data_ScoreWhileDefended = 0;
         data_FieldReset = 0;
+        data_WorldMatches = 0;
+        data_WorldNewtonMatches = 0;
 
         clearMatchData();
     }

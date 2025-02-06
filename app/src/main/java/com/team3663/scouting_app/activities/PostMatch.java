@@ -225,6 +225,8 @@ public class PostMatch extends AppCompatActivity {
             }
 
             Achievements.data_NumMatches++;
+            if (Constants.Achievements.COMPETITION_WORLDS_IDS.contains(Globals.CurrentMatchType)) Achievements.data_WorldMatches++;
+            if (Constants.Achievements.COMPETITION_WORLDS_NEWTON_ID == Globals.CurrentMatchType) Achievements.data_WorldNewtonMatches++;
             if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType)
                     .startsWith(Constants.Achievements.EVENT_TYPE_PRACTICE)) Achievements.data_PracticeType++;
             if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType)
