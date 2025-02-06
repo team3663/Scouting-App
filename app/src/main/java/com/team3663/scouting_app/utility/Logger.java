@@ -378,6 +378,7 @@ public class Logger {
         // Undo any achievements from this event being undone.
         String ach_desc = Globals.EventList.getEventDescription(lastEventId);
         Achievements.data_NumEvents--;
+        if (Constants.Achievements.EVENT_IDS_PICKUP_ALGAE.contains(lastEventId)) Achievements.data_match_AlgaePickup++; // 2025
         if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_NET.contains(lastEventId)) Achievements.data_match_AlgaeInNet--; // 2025
         if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_PROCESSOR.contains(lastEventId)) Achievements.data_match_AlgaeInProcessor--; // 2025
         if (Constants.Achievements.EVENT_IDS_PICKUP_CORAL_GROUND.contains(lastEventId)) Achievements.data_match_CoralPickupGround--; // 2025
