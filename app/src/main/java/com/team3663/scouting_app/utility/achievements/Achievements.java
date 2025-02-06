@@ -1,5 +1,6 @@
 package com.team3663.scouting_app.utility.achievements;
 
+import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 
 import java.util.ArrayList;
@@ -27,8 +28,7 @@ public class Achievements {
     public static int data_Toggle_NotMoving = 0;
     public static int data_ScoreWhileDefended = 0;
     public static int data_FieldReset = 0;
-    public static int data_WorldMatches = 0;
-    public static int data_WorldNewtonMatches = 0;
+    public static int[] data_NumMatchTypes = new int[Globals.CompetitionList.size()];
 
     // Scouter data per match
     public static int data_match_OrphanEvents = 0;
@@ -145,7 +145,7 @@ public class Achievements {
         achievement_list.add(ach23);
 
         Achievement ach24 = new Achievement(24, "World Renowned Scouter", "Scouted at Worlds", 10);
-        ach24.addRule(new RuleCompetition("worlds", 1));
+        ach24.addRule(new RuleCompetition(Constants.Achievements.COMPETITION_WORLDS_IDS, 1));
         achievement_list.add(ach24);
     }
 
@@ -180,8 +180,7 @@ public class Achievements {
         data_Toggle_NotMoving = 0;
         data_ScoreWhileDefended = 0;
         data_FieldReset = 0;
-        data_WorldMatches = 0;
-        data_WorldNewtonMatches = 0;
+        data_NumMatchTypes = new int[Globals.CompetitionList.size()];
 
         clearMatchData();
     }

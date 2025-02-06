@@ -132,5 +132,6 @@ public class Constants {
         public static final String EVENT_TYPE_FINAL = "F";
         public static final ArrayList<Integer> COMPETITION_WORLDS_IDS = new ArrayList<>(Arrays.asList(7, 8));
         public static final int COMPETITION_WORLDS_NEWTON_ID = 7;
+        public static final int COMPETITION_WORLDS_EINSTEIN_ID = 8;
     }
 }
