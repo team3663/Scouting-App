@@ -3,6 +3,8 @@
     <string name="qr_heading">QR Code</string>
     <string name="qr_but_back">Back</string>
     <string name="qr_but_next">Next Match</string>
-    <string name="qr_text_data">Scouting Data</string>
-    <string name="qr_text_event">Scouting Events</string>
+    <string name="qr_text_file_stats_competition">Competition:</string>
+    <string name="qr_text_file_stats_match">Match Number:</string>
+    <string name="qr_text_file_stats_match_type">Match Type:</string>
+    <string name="qr_text_file_stats_size">File Size:</string>
 </resources>

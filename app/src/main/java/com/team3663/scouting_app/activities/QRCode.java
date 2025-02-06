@@ -16,6 +16,7 @@ import androidx.documentfile.provider.DocumentFile;
 
 import com.google.zxing.BarcodeFormat;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
+import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.QrCodeBinding;
@@ -25,6 +26,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class QRCode extends AppCompatActivity {
     // =============================================================================================
@@ -32,6 +34,8 @@ public class QRCode extends AppCompatActivity {
     // =============================================================================================
     private QrCodeBinding qrCodeBinding;
     private Logger logger;
+    private QR_FileString qrFileString;
+    private int currentImagePage;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -49,33 +53,12 @@ public class QRCode extends AppCompatActivity {
 
         // Initialize activity components
         InitQRData();
-        InitQREvent();
         InitBack();
         InitNext();
+        InitFileStats();
+        InitNextImage();
+        InitPrevImage();
      }
-
-    // =============================================================================================
-    // Function:    InitQREvent
-    // Description: Initialize the QR image for the Event file
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void InitQREvent() {
-        BarcodeEncoder be = new BarcodeEncoder();
-        String qrDataEvent= Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv" + "\n" + getFileAsString("e") + "\n" + Constants.QRCode.EOF;
-
-        if (qrDataEvent.length()> Constants.QRCode.MAX_QR_DATA_SIZE){
-            Toast.makeText(QRCode.this, " Data file is too big for this method", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        try {
-            Bitmap bm = be.encodeBitmap(qrDataEvent, BarcodeFormat.QR_CODE,Constants.QRCode.QR_LENGTH, Constants.QRCode.QR_LENGTH);
-            qrCodeBinding.imageQREvent.setImageBitmap(bm);
-        } catch (Exception e) {
-            Toast.makeText(QRCode.this, "Failed to generate QR Code!", Toast.LENGTH_LONG).show();
-        }
-    }
 
     // =============================================================================================
     // Function:    InitQRData
@@ -84,20 +67,30 @@ public class QRCode extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void InitQRData() {
-        BarcodeEncoder be = new BarcodeEncoder();
-        String qrData = Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.transmitMatchType) + "_d.csv" + "\n" + getFileAsString("d") + "\n" + Constants.QRCode.EOF;
+        qrFileString = new QR_FileString(Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.transmitMatchType) + "_d.csv" + "\n" +
+                getFileAsString("d") + "\n" +
+                Constants.QRCode.EOF + "\n" +
+                Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv" + "\n" +
+                getFileAsString("e") + "\n" +
+                Constants.QRCode.EOF);
 
-        if (qrData.length()> Constants.QRCode.MAX_QR_DATA_SIZE){
-            Toast.makeText(QRCode.this, " Data file is too big for this method", Toast.LENGTH_LONG).show();
-            return;
+        qrCodeBinding.butPrevImage.setEnabled(false);
+        qrCodeBinding.butPrevImage.setClickable(false);
+        qrCodeBinding.butPrevImage.setVisibility(View.INVISIBLE);
+        if (qrFileString.getNumPages() > 1) {
+            qrCodeBinding.butNextImage.setEnabled(true);
+            qrCodeBinding.butNextImage.setClickable(true);
+            qrCodeBinding.butNextImage.setVisibility(View.VISIBLE);
+        }
+        else {
+            qrCodeBinding.butNextImage.setEnabled(false);
+            qrCodeBinding.butNextImage.setClickable(false);
+            qrCodeBinding.butNextImage.setVisibility(View.INVISIBLE);
         }
 
-        try {
-            Bitmap bm = be.encodeBitmap(qrData, BarcodeFormat.QR_CODE, Constants.QRCode.QR_LENGTH, Constants.QRCode.QR_LENGTH);
-            qrCodeBinding.imageQRData.setImageBitmap(bm);
-        } catch (Exception e) {
-            Toast.makeText(QRCode.this, "Failed to generate QR Code!", Toast.LENGTH_LONG).show();
-        }
+        qrCodeBinding.textImagePage.setText(String.format("Image 1 of %s", String.valueOf(qrFileString.getNumPages())));
+        currentImagePage = 0;
+        generateQRImage();
     }
 
     // =============================================================================================
@@ -116,7 +109,7 @@ public class QRCode extends AppCompatActivity {
     }
 
     // =============================================================================================
-    // Function:    initNext
+    // Function:    InitNext
     // Description: Initialize the Next Match button
     // Parameters:  void
     // Output:      void
@@ -131,6 +124,77 @@ public class QRCode extends AppCompatActivity {
             startActivity(GoToPreMatch);
 
             finish();
+        });
+    }
+
+    // =============================================================================================
+    // Function:    InitFileStats
+    // Description: Initialize the File Stats fields
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void InitFileStats() {
+        qrCodeBinding.textFileStatsCompetition.setText(Globals.CompetitionList.getCompetitionDescription(Globals.CurrentCompetitionId));
+        qrCodeBinding.textFileStatsMatch.setText(String.valueOf(Globals.transmitMatchNum));
+        qrCodeBinding.textFileStatsMatchType.setText(Globals.MatchTypeList.getMatchTypeDescription(Globals.transmitMatchType));
+        qrCodeBinding.textFileStatsFileSize.setText(String.format("%s bytes", String.valueOf(qrFileString.getSize())));
+    }
+
+    // =============================================================================================
+    // Function:    InitNextImage
+    // Description: Initialize the Next Match button
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void InitNextImage() {
+        qrCodeBinding.butNextImage.setOnClickListener(view -> {
+            currentImagePage++;
+            qrCodeBinding.textImagePage.setText(String.format("Image %s of %s", String.valueOf(currentImagePage + 1), String.valueOf(qrFileString.getNumPages())));
+            qrCodeBinding.butPrevImage.setEnabled(true);
+            qrCodeBinding.butPrevImage.setClickable(true);
+            qrCodeBinding.butPrevImage.setVisibility(View.VISIBLE);
+
+            if (currentImagePage < qrFileString.getNumPages() - 1) {
+                qrCodeBinding.butNextImage.setEnabled(true);
+                qrCodeBinding.butNextImage.setClickable(true);
+                qrCodeBinding.butNextImage.setVisibility(View.VISIBLE);
+            }
+            else {
+                qrCodeBinding.butNextImage.setEnabled(false);
+                qrCodeBinding.butNextImage.setClickable(false);
+                qrCodeBinding.butNextImage.setVisibility(View.INVISIBLE);
+            }
+
+            generateQRImage();
+        });
+    }
+
+    // =============================================================================================
+    // Function:    InitPrevImage
+    // Description: Initialize the Next Match button
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void InitPrevImage() {
+        qrCodeBinding.butPrevImage.setOnClickListener(view -> {
+            currentImagePage--;
+            qrCodeBinding.textImagePage.setText(String.format("Image %s of %s", String.valueOf(currentImagePage + 1), String.valueOf(qrFileString.getNumPages())));
+            qrCodeBinding.butNextImage.setEnabled(true);
+            qrCodeBinding.butNextImage.setClickable(true);
+            qrCodeBinding.butNextImage.setVisibility(View.VISIBLE);
+
+            if (currentImagePage > 0) {
+                qrCodeBinding.butPrevImage.setEnabled(true);
+                qrCodeBinding.butPrevImage.setClickable(true);
+                qrCodeBinding.butPrevImage.setVisibility(View.VISIBLE);
+            }
+            else {
+                qrCodeBinding.butPrevImage.setEnabled(false);
+                qrCodeBinding.butPrevImage.setClickable(false);
+                qrCodeBinding.butPrevImage.setVisibility(View.INVISIBLE);
+            }
+
+            generateQRImage();
         });
     }
 
@@ -173,5 +237,73 @@ public class QRCode extends AppCompatActivity {
         }
 
         return file_as_string;
+    }
+
+    // =============================================================================================
+    // Function:    generateQRImage
+    // Description: Generate the QR code for the current "page" of data
+    // Parameters:  in_QRFileString
+    //                  The structure representing what we need to generate the QR code for
+    //              in_Page
+    //                  The "page" of data we need to generate the QR code for
+    // Output:      void
+    // =============================================================================================
+    public void generateQRImage() {
+        BarcodeEncoder be = new BarcodeEncoder();
+        String qrData = qrFileString.getPage(currentImagePage);
+
+        try {
+            Bitmap bm = be.encodeBitmap(qrData, BarcodeFormat.QR_CODE, Constants.QRCode.QR_LENGTH, Constants.QRCode.QR_LENGTH);
+            qrCodeBinding.imageQRData.setImageBitmap(bm);
+        } catch (Exception e) {
+            Toast.makeText(QRCode.this, "Failed to generate QR Code!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    // =============================================================================================
+    // Class:       QR_FileString
+    // Description: Defines a structure/class to hold the information for the file data we'll use
+    //              to generate the QR codes
+    // =============================================================================================
+    private static class QR_FileString {
+        ArrayList<String> file_page = new ArrayList<>();
+        int size = 0;
+
+        // Constructor
+        public QR_FileString (String in_data) {
+            size = in_data.length();
+            int begin = 0;
+            int end;
+
+            while (begin < size) {
+                if (size - begin <= Constants.QRCode.PREFERRED_QR_DATA_SIZE) end = size - 1;
+                else end = begin + Constants.QRCode.PREFERRED_QR_DATA_SIZE - 1;
+
+                file_page.add(in_data.substring(begin, end));
+                begin = end + 1;
+            }
+        }
+
+        // Member Function: Return the (partial) String for the data for a particular page
+        public String getPage(int in_Page) {
+            if (file_page == null) return "";
+
+            if ((in_Page < 0) || (in_Page >= file_page.size()))
+                return "";
+
+            return file_page.get(in_Page);
+        }
+
+        // Member Function: Return the number of pages of data we have
+        public int getNumPages() {
+            if (file_page == null) return 0;
+
+            return file_page.size();
+        }
+
+        // Member Function: Return the number of pages of data we have
+        public int getSize() {
+            return size;
+        }
     }
 }

@@ -104,12 +104,13 @@ public class Constants {
     }
 
     public static class AppLaunch {
-        public static final long SPLASH_SCREEN_DELAY = 100;
+        public static final long SPLASH_SCREEN_DELAY = 10;
         public static final int ACTIVITY_CODE_SETTINGS = 1;
         public static final int ACTIVITY_CODE_STORAGE = 2;
     }
     public static class QRCode{
         public static final int MAX_QR_DATA_SIZE= 2500;
+        public static final int PREFERRED_QR_DATA_SIZE= 2000;
         public static final int QR_LENGTH = 500;
         public static final String EOF = "EOF";
     }
