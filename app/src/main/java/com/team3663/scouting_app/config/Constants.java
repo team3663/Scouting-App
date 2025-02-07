@@ -4,6 +4,7 @@ import android.graphics.Color;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Constants {
 
@@ -124,6 +125,7 @@ public class Constants {
         public static final ArrayList<Integer> EVENT_IDS_SCORE_ALGAE_IN_PROCESSOR = new ArrayList<>(Arrays.asList(12, 32));
         public static final ArrayList<Integer> EVENT_IDS_PICKUP_CORAL_GROUND = new ArrayList<>(Arrays.asList(2, 21));
         public static final ArrayList<Integer> EVENT_IDS_PICKUP_CORAL_STATION = new ArrayList<>(Arrays.asList(1, 20));
+        public static final ArrayList<Integer> EVENT_IDS_DROP_CORAL = new ArrayList<>(Arrays.asList(7, 27));
         public static final ArrayList<Integer> EVENT_IDS_PLACE_CORAL = new ArrayList<>(Arrays.asList(3, 4, 5, 6, 23, 24, 25, 26));
         public static final ArrayList<Integer> EVENT_IDS_SCORING = new ArrayList<>(Arrays.asList(3, 4, 5, 6, 10, 12, 23, 24, 25, 26, 30, 32));
         public static final int EVENT_ID_CLIMB_SUCCESS = 41;
@@ -131,8 +133,8 @@ public class Constants {
         public static final String EVENT_TYPE_PRACTICE = "P";
         public static final String EVENT_TYPE_SEMI = "S";
         public static final String EVENT_TYPE_FINAL = "F";
-        public static final ArrayList<Integer> COMPETITION_WORLDS_IDS = new ArrayList<>(Arrays.asList(7, 8));
-        public static final int COMPETITION_WORLDS_NEWTON_ID = 7;
-        public static final int COMPETITION_WORLDS_EINSTEIN_ID = 8;
+        public static final ArrayList<Integer> COMPETITION_IDS_WORLDS = new ArrayList<>(Arrays.asList(7, 8));
+        public static final ArrayList<Integer> COMPETITION_IDS_DCMP = new ArrayList<>(List.of(6));
+        public static final ArrayList<Integer> COMPETITION_IDS_EINSTEIN = new ArrayList<>(List.of(8));
     }
 }

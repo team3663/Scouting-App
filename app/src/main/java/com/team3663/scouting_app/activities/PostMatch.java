@@ -225,10 +225,7 @@ public class PostMatch extends AppCompatActivity {
             }
 
             Achievements.data_NumMatches++;
-            if (Constants.Achievements.COMPETITION_WORLDS_EINSTEIN_ID == Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1))
-                Achievements.data_NumMatchesByCompetition[Constants.Achievements.COMPETITION_WORLDS_EINSTEIN_ID]++;
-            if (Constants.Achievements.COMPETITION_WORLDS_NEWTON_ID == Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1))
-                Achievements.data_NumMatchesByCompetition[Constants.Achievements.COMPETITION_WORLDS_NEWTON_ID]++;
+            Achievements.data_NumMatchesByCompetition[Globals.CurrentCompetitionId]++;
             if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType)
                     .startsWith(Constants.Achievements.EVENT_TYPE_PRACTICE)) Achievements.data_PracticeType++;
             if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType)

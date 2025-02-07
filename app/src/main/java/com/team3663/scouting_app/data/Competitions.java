@@ -15,8 +15,8 @@ public class Competitions {
     }
 
     // Member Function: Add a row of competition info into the list giving all of the data individually
-    public void addCompetitionRow(String in_Id, String in_description) {
-        competition_list.add(new CompetitionRow(in_Id, in_description));
+    public void addCompetitionRow(String in_Id, String in_description, String in_attended) {
+        competition_list.add(new CompetitionRow(in_Id, in_description, in_attended));
     }
 
     // Member Function: return the size of the list
@@ -34,6 +34,20 @@ public class Competitions {
         // Make an array list of Competition Ids
         for (CompetitionRow cr : competition_list) {
             ret.add(cr.description);
+        }
+
+        return ret;
+    }
+
+    // Member Function: get whether this competition was attended in person
+    public boolean isAttended(int in_id) {
+        boolean ret = false;
+
+        for (CompetitionRow cr : competition_list) {
+            if (in_id == cr.id) {
+                ret = cr.attended;
+                break;
+            }
         }
 
         return ret;
@@ -79,11 +93,14 @@ public class Competitions {
     private static class CompetitionRow {
         private final int id;
         private final String description;
+        private final boolean attended;
 
         // Constructor with individual data
-        public CompetitionRow(String in_id, String in_description) {
+        public CompetitionRow(String in_id, String in_description, String in_attended) {
             id = Integer.parseInt(in_id);
             description = in_description;
+            if (in_attended.isEmpty()) attended = false;
+            else attended = Boolean.valueOf(in_attended);
         }
     }
 }
