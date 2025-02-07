@@ -38,6 +38,7 @@ public class Achievements {
     public static int[] data_match_CoralLevel = {0, 0, 0, 0, 0};
     public static int data_match_CoralPickupGround = 0;
     public static int data_match_CoralPickupStation = 0;
+    public static int data_match_CoralDropped = 0;
     public static int data_match_Toggle_NotMoving = 0;
     public static int data_match_ClimbSuccess = 0;
 
@@ -150,8 +151,30 @@ public class Achievements {
         achievement_list.add(ach23);
 
         Achievement ach24 = new Achievement(24, "World Renowned Scouter", "Scouted at Worlds", 10);
-        ach24.addRule(new RuleCompetition(Constants.Achievements.COMPETITION_WORLDS_IDS, 1));
+        ach24.addRule(new RuleCompetition(Constants.Achievements.COMPETITION_IDS_WORLDS, 1));
         achievement_list.add(ach24);
+
+        Achievement ach25 = new Achievement(25, "Did you get my good side?", "Video scouted a match", 10);
+        ach25.addRule(new RuleAttendedCompetition(false, 1));
+        achievement_list.add(ach25);
+
+        Achievement ach26 = new Achievement(26, "Nobel Peace Prize winner", "Scouted an Einstein match", 200);
+        ach26.addRule(new RuleCompetition(Constants.Achievements.COMPETITION_IDS_EINSTEIN, 1));
+        achievement_list.add(ach26);
+
+        Achievement ach27 = new Achievement(27, "Butter Fingers", "Dropped 5 Coral in a match", 10);
+        ach27.addRule(new RuleCoralDrop(5));
+        achievement_list.add(ach27);
+
+        // #28 - Achievement Hunter -> Tableau Only
+        // #29 - In for a penny - in for a pound -> Tableau Only
+        // #30 - In only counts once -> Tableau Only
+        // #31 - Globe Trotters -> Tableau Only
+        // #32 - Making this a career -> Tableau Only
+
+        Achievement ach33 = new Achievement(33, "Driving Cars Makes Patience", "Scouted at DCMP", 10);
+        ach33.addRule(new RuleCompetition(Constants.Achievements.COMPETITION_IDS_DCMP, 1));
+        achievement_list.add(ach33);
     }
 
     // Member Function: pop (to the screen) any achievements "met" but not already "popped"
@@ -200,6 +223,7 @@ public class Achievements {
         Arrays.fill(data_match_CoralLevel, 0);
         data_match_CoralPickupGround = 0;
         data_match_CoralPickupStation = 0;
+        data_match_CoralDropped = 0;
         data_match_ClimbSuccess = 0;
     }
 

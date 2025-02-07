@@ -264,6 +264,7 @@ public class Logger {
         if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_PROCESSOR.contains(in_EventId)) Achievements.data_match_AlgaeInProcessor++; // 2025
         if (Constants.Achievements.EVENT_IDS_PICKUP_CORAL_GROUND.contains(in_EventId)) Achievements.data_match_CoralPickupGround++; // 2025
         if (Constants.Achievements.EVENT_IDS_PICKUP_CORAL_STATION.contains(in_EventId)) Achievements.data_match_CoralPickupStation++; // 2025
+        if (Constants.Achievements.EVENT_IDS_DROP_CORAL.contains(in_EventId)) Achievements.data_match_CoralDropped++; // 2025
         if (Constants.Achievements.EVENT_IDS_PLACE_CORAL.contains(in_EventId)) Achievements.data_match_CoralLevel[Integer.parseInt(ach_desc.substring(ach_desc.length() - 1))]++; // 2025
         if ((Constants.Achievements.EVENT_IDS_SCORING.contains(in_EventId)) && Globals.isDefended) Achievements.data_ScoreWhileDefended++; // 2025
         if (Constants.Achievements.EVENT_ID_CLIMB_SUCCESS == in_EventId) Achievements.data_match_ClimbSuccess++;
@@ -383,6 +384,7 @@ public class Logger {
         if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_PROCESSOR.contains(lastEventId)) Achievements.data_match_AlgaeInProcessor--; // 2025
         if (Constants.Achievements.EVENT_IDS_PICKUP_CORAL_GROUND.contains(lastEventId)) Achievements.data_match_CoralPickupGround--; // 2025
         if (Constants.Achievements.EVENT_IDS_PICKUP_CORAL_STATION.contains(lastEventId)) Achievements.data_match_CoralPickupStation--; // 2025
+        if (Constants.Achievements.EVENT_IDS_DROP_CORAL.contains(lastEventId)) Achievements.data_match_CoralDropped--; // 2025
         if (Constants.Achievements.EVENT_IDS_PLACE_CORAL.contains(lastEventId)) Achievements.data_match_CoralLevel[Integer.parseInt(ach_desc.substring(ach_desc.length() - 1))]--; // 2025
         if (Constants.Achievements.EVENT_ID_CLIMB_SUCCESS == lastEventId) Achievements.data_match_ClimbSuccess--;
         // To determine if they were not moving, we need to find the next previous item for the "defended" group.  If that item

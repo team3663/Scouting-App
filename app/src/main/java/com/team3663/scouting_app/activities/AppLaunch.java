@@ -333,7 +333,7 @@ public class AppLaunch extends AppCompatActivity {
                     if (Boolean.parseBoolean(info[1]))
                         Globals.CommentList.addCommentRow(info[0], info[2]);
                 } else if (in_fileName.equals(getString(R.string.file_competitions))) {
-                    Globals.CompetitionList.addCompetitionRow(info[0], info[4]);
+                    Globals.CompetitionList.addCompetitionRow(info[0], info[4], info[6]);
                 } else if (in_fileName.equals(getString(R.string.file_devices))) {
                     Globals.DeviceList.addDeviceRow(info[0], info[1], info[5]);
                 } else if (in_fileName.equals(getString(R.string.file_event_groups))) {
