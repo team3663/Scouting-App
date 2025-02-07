@@ -125,7 +125,7 @@ public class Constants {
         public static final ArrayList<Integer> EVENT_IDS_SCORE_ALGAE_IN_PROCESSOR = new ArrayList<>(Arrays.asList(12, 32));
         public static final ArrayList<Integer> EVENT_IDS_PICKUP_CORAL_GROUND = new ArrayList<>(Arrays.asList(2, 21));
         public static final ArrayList<Integer> EVENT_IDS_PICKUP_CORAL_STATION = new ArrayList<>(Arrays.asList(1, 20));
-        public static final ArrayList<Integer> EVENT_IDS_DROP_CORAL = new ArrayList<>(Arrays.asList(7, 14));
+        public static final ArrayList<Integer> EVENT_IDS_DROP_CORAL = new ArrayList<>(Arrays.asList(7, 27));
         public static final ArrayList<Integer> EVENT_IDS_PLACE_CORAL = new ArrayList<>(Arrays.asList(3, 4, 5, 6, 23, 24, 25, 26));
         public static final ArrayList<Integer> EVENT_IDS_SCORING = new ArrayList<>(Arrays.asList(3, 4, 5, 6, 10, 12, 23, 24, 25, 26, 30, 32));
         public static final int EVENT_ID_CLIMB_SUCCESS = 41;
