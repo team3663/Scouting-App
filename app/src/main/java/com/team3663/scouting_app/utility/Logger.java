@@ -52,7 +52,7 @@ public class Logger {
         if (Globals.isPractice) return;
 
         // Add an empty logging row so that Seq# is the same as the index
-        match_log_events.add(new LoggerEventRow(-1, "", "", "", ""));
+        match_log_events.add(new LoggerEventRow(-1, 0, 0, 0, ""));
     }
 
     // Member Function: Clear out any saved data from the logger.
@@ -229,8 +229,8 @@ public class Logger {
             // We do this to save 2 characters in the .csv file that we need to transmit.
             int normalized_x = 0;
             int normalized_y = 0;
-            if (Constants.Match.IMAGE_WIDTH > 0) normalized_x = (int)(10_000.0 * Integer.parseInt(ler.X) / Constants.Match.IMAGE_WIDTH);
-            if (Constants.Match.IMAGE_HEIGHT > 0) normalized_y = (int)(10_000.0 * Integer.parseInt(ler.Y) / Constants.Match.IMAGE_HEIGHT);
+            if (Constants.Match.IMAGE_WIDTH > 0) normalized_x = (int)(10_000.0 * ler.X / Constants.Match.IMAGE_WIDTH);
+            if (Constants.Match.IMAGE_HEIGHT > 0) normalized_y = (int)(10_000.0 * ler.Y / Constants.Match.IMAGE_HEIGHT);
 
             String csv_line = i + "," + ler.EventId + "," + ler.LogTime + "," + normalized_x + "," + normalized_y + "," + ler.PrevSeq;
             try {
@@ -277,14 +277,24 @@ public class Logger {
             prev = String.valueOf(previous_seq[GroupId]);
 
         // Determine string values for x, y. Truncate them.
-        String string_x = String.valueOf((int) in_X);
-        String string_y = String.valueOf((int) in_Y);
+        int log_x = (int) in_X;
+        int log_y = (int) in_Y;
 
-        // Determine elapsed time and round to 1 decimal places
-        // Get min of elapsed time and match length in order to essentially cap the time that will be recorded
-        String string_time = String.valueOf( (int) (Math.min(Math.round((in_time - Globals.startTime) / 100.0) / 10.0, Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_TELEOP_LENGTH) * 10));
+        // Determine elapsed time and round to a tenth of a second with no decimal (so 10.3 seconds is 103 tenths)
+        // Get min of elapsed time and match length in order to essentially cap the time that will be recorded based on Match Phase
+        int log_time;
+        switch (Globals.CurrentMatchPhase) {
+            case Constants.Phases.AUTO:
+                log_time = (int) (Math.min(Math.round((in_time - Globals.startTime) / 100.0), Constants.Match.TIMER_AUTO_LENGTH * 10));
+                break;
+            case Constants.Phases.TELEOP:
+                log_time = (int) (Math.min(Math.round((in_time - Globals.startTime) / 100.0), (Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_TELEOP_LENGTH) * 10));
+                break;
+            default:
+                log_time = 0;
+        }
 
-        match_log_events.add(new LoggerEventRow(in_EventId, string_time, string_x, string_y, prev));
+        match_log_events.add(new LoggerEventRow(in_EventId, log_time, log_x, log_y, prev));
 
         // Save off this event as the "current" event for its group.
         current_event[GroupId] = in_EventId;
@@ -446,18 +456,23 @@ public class Logger {
     // =============================================================================================
     private static class LoggerEventRow {
         int EventId;
-        String LogTime;
-        String X;
-        String Y;
+        int LogTime;
+        int X;
+        int Y;
         String PrevSeq;
 
         // Constructor: create a new LogEventRow
-        public LoggerEventRow(int in_EventId, String in_Time, String in_X, String in_Y, String in_PrevSeq) {
+        public LoggerEventRow(int in_EventId, int in_Time, int in_X, int in_Y, String in_PrevSeq) {
             EventId = in_EventId;
-            LogTime = in_Time;
             X = in_X;
             Y = in_Y;
             PrevSeq = in_PrevSeq;
+
+            // Ensure we are always generating a positive (or zero) increment to the logged time to prevent negative sequence cycle times
+            // This can mostly happen only between AUTO and TELEOP in the 3 second gap, but good to have here to ensure the integrity of the data
+            int prev_time = 0;
+            if ((Globals.EventLogger != null) && (!Globals.EventLogger.match_log_events.isEmpty())) prev_time = Globals.EventLogger.match_log_events.get(Globals.EventLogger.match_log_events.size() - 1).LogTime;
+            LogTime = Math.max(in_Time, prev_time);
         }
     }
 }

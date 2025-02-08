@@ -40,7 +40,7 @@ public class Globals {
     public static int CurrentTeamOverrideNum;
     public static int CurrentPrefTeamPos;
     public static int CurrentTeamToScout;
-    public static String CurrentMatchPhase;
+    public static String CurrentMatchPhase = Constants.Phases.NONE;
     public static int CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
 
     public static String CheckBoxTextPadding = "       ";
