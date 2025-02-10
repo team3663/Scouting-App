@@ -276,11 +276,11 @@ public class QRCode extends AppCompatActivity {
             int end;
 
             while (begin < size) {
-                if (size - begin <= Constants.QRCode.PREFERRED_QR_DATA_SIZE) end = size - 1;
-                else end = begin + Constants.QRCode.PREFERRED_QR_DATA_SIZE - 1;
+                if (size - begin <= Constants.QRCode.PREFERRED_QR_DATA_SIZE) end = size;
+                else end = begin + Constants.QRCode.PREFERRED_QR_DATA_SIZE;
 
                 file_page.add(in_data.substring(begin, end));
-                begin = end + 1;
+                begin = end;
             }
         }
 
