@@ -8,4 +8,7 @@
     <string name="post_but_reset">Reset</string>
     <string name="post_but_submit">Submit</string>
     <string name="post_dropdown_items_selected">selected</string>
+    <string name="post_stats">Stats:</string>
+    <string name="post_statsCoral">Coral:</string>
+    <string name="post_statsAlgae">Algae:</string>
 </resources>

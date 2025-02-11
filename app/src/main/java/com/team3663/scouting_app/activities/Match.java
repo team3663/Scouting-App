@@ -123,9 +123,10 @@ public class Match extends AppCompatActivity {
     public boolean onContextItemSelected(@NonNull MenuItem in_item) {
         // Take action on whether we're showing the detail event menu or the group event menu
         if (showing_event_detail_menu) {
-            if (!Globals.isPractice)
-                matchBinding.textStatus.setText(Objects.requireNonNull(in_item.getTitle()));
             int event_id = Globals.EventList.getEventId(Objects.requireNonNull(in_item.getTitle()).toString());
+
+            if (!Globals.isPractice) setEventStatus(event_id);
+
             Globals.EventLogger.LogEvent(event_id, current_X_Relative, current_Y_Relative, Globals.EventList.isEventStartOfSeq(event_id), currentTouchTime);
             matchBinding.butUndo.setVisibility(View.VISIBLE);
             matchBinding.butUndo.setEnabled(true);
@@ -646,19 +647,33 @@ public class Match extends AppCompatActivity {
                 });
             }
             else {
-                SpannableString ss = new SpannableString(Globals.EventList.getEventDescription(Logger.current_event[Globals.EventList.getEventGroup(last_event_id)]));
-                ss.setSpan(new AbsoluteSizeSpan(24), 0, ss.length(), 0);
-
-                // If this menuItem has a color to use, then use it
-                if (Globals.ColorList.isColorValid(Globals.CurrentColorId - 1)) {
-                    int eventID = Logger.current_event[Globals.EventList.getEventGroup(last_event_id)];
-                    if (Globals.EventList.hasEventColor(eventID))
-                        ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColor(Globals.CurrentColorId - 1, Globals.EventList.getEventColor(eventID))), 0, ss.length(), 0);
-                }
-
-                matchBinding.textStatus.setText(ss);
+                setEventStatus(last_event_id);
             }
         });
+    }
+
+    // =============================================================================================
+    // Function:    setEventStatus
+    // Description: Set the status text for a given event text
+    // Parameters:  in_event_id
+    //                  The ID value for the event we want to display
+    // Output:      void
+    // =============================================================================================
+    private void setEventStatus(int in_event_id) {
+        SpannableString ss = new SpannableString(Globals.EventList.getEventDescription(in_event_id));
+
+        // Ensure the text will fit, based on the length of the string.
+        if (ss.length() > Constants.Match.STATUS_TEXT_LONG_LENGTH) ss.setSpan(new AbsoluteSizeSpan(Constants.Match.STATUS_TEXT_LONG_SIZE), 0, ss.length(), 0);
+        else if (ss.length() > Constants.Match.STATUS_TEXT_MED_LENGTH) ss.setSpan(new AbsoluteSizeSpan(Constants.Match.STATUS_TEXT_MED_SIZE), 0, ss.length(), 0);
+        else ss.setSpan(new AbsoluteSizeSpan(Constants.Match.STATUS_TEXT_DEFAULT_SIZE), 0, ss.length(), 0);
+
+        // If this menuItem has a color to use, then use it
+        if (Globals.ColorList.isColorValid(Globals.CurrentColorId - 1)) {
+            if (Globals.EventList.hasEventColor(in_event_id))
+                ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColor(Globals.CurrentColorId - 1, Globals.EventList.getEventColor(in_event_id))), 0, ss.length(), 0);
+        }
+
+        matchBinding.textStatus.setText(ss);
     }
 
     // =============================================================================================
