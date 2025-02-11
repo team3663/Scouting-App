@@ -52,6 +52,7 @@ public class PostMatch extends AppCompatActivity {
         initComments();
         initReset();
         initSubmit();
+        initStats();
     }
 
     // =============================================================================================
@@ -235,5 +236,15 @@ public class PostMatch extends AppCompatActivity {
 
             finish();
         });
+    }
+
+    // =============================================================================================
+    // Function:    initStats
+    // Description: Initialize the Stats field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initStats() {
+        //use achievement data
     }
 }
