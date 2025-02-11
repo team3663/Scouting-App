@@ -67,6 +67,12 @@ public class Constants {
         public static final String ORIENTATION_LANDSCAPE_REVERSE = "lr";
         public static int IMAGE_HEIGHT = 0;
         public static int IMAGE_WIDTH = 0;
+        public static int STATUS_TEXT_LONG_LENGTH = 22;
+        public static int STATUS_TEXT_MED_LENGTH = 14;
+        public static int STATUS_TEXT_LONG_SIZE = 14;
+        public static int STATUS_TEXT_MED_SIZE = 18;
+        public static int STATUS_TEXT_DEFAULT_SIZE = 24;
+
     }
 
     public static class Data {
