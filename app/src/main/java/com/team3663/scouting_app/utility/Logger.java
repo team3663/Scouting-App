@@ -252,10 +252,11 @@ public class Logger {
     }
 
     // Member Function: Log a time-based event
-    public void LogEvent(int in_EventId, float in_X, float in_Y, boolean in_NewSequence, double in_time) {
+    public void LogEvent(int in_EventId, float in_X, float in_Y, double in_time) {
         // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;
 
+        // Update Achievement data
         String ach_desc = Globals.EventList.getEventDescription(in_EventId);
         Achievements.data_NumEvents++;
 
@@ -269,11 +270,13 @@ public class Logger {
         if ((Constants.Achievements.EVENT_IDS_SCORING.contains(in_EventId)) && Globals.isDefended) Achievements.data_ScoreWhileDefended++; // 2025
         if (Constants.Achievements.EVENT_ID_CLIMB_SUCCESS == in_EventId) Achievements.data_match_ClimbSuccess++;
 
+        // Determine the EventGroup Id this event belongs to
         int GroupId = Globals.EventList.getEventGroup(in_EventId);
 
         // If this is NOT a new sequence, we need to write out the previous event id that goes with this one
         String prev = "";
-        if (!in_NewSequence)
+
+        if (!Globals.EventList.isEventStartOfSeq(in_EventId))
             prev = String.valueOf(previous_seq[GroupId]);
 
         // Determine string values for x, y. Truncate them.
@@ -305,11 +308,19 @@ public class Logger {
     }
 
     // Member Function: Log a time-based event (with no time passed in)
-    public void LogEvent(int in_EventId, float in_X, float in_Y, boolean in_NewSequence){
+    public void LogEvent(int in_EventId, float in_X, float in_Y){
         // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;
 
-        LogEvent(in_EventId, in_X, in_Y, in_NewSequence, System.currentTimeMillis());
+        LogEvent(in_EventId, in_X, in_Y, System.currentTimeMillis());
+    }
+
+    // Member Function: Log a time-based event (with no time passed in)
+    public void LogEvent(int in_EventId){
+        // If this is a practice, there's nothing to do
+        if (Globals.isPractice) return;
+
+        LogEvent(in_EventId, 0, 0, System.currentTimeMillis());
     }
 
     // Member Function: Log a non-time based event - just store this for later.
@@ -427,11 +438,18 @@ public class Logger {
 
         // For any events AFTER this removed event, we need to decrement the "PrevSeq" since they all
         // shifted up one slot IF it pointed to something AFTER where we removed
-        for (int i = lastIndex; i < match_log_events.size(); ++i){
+        for (int i = lastIndex; i < match_log_events.size(); ++i) {
             ler = match_log_events.get(i);
             if (!ler.PrevSeq.isEmpty() && (Integer.parseInt(ler.PrevSeq) > lastIndex)) {
                 ler.PrevSeq = String.valueOf(Integer.parseInt(ler.PrevSeq) - 1);
             }
+        }
+
+        // For any previous_seq event groups that have a value > lastIndex, we also need to decrement them.
+        // Only toggles should be affected here.
+        for (int i = 1; i <= Globals.MaxEventGroups; ++i) {
+            if (previous_seq[i] > lastIndex)
+                previous_seq[i]--;
         }
 
         // Set the default return code to be -1 (there's no more previous events)

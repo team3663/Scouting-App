@@ -127,7 +127,7 @@ public class Match extends AppCompatActivity {
 
             if (!Globals.isPractice) setEventStatus(event_id);
 
-            Globals.EventLogger.LogEvent(event_id, current_X_Relative, current_Y_Relative, Globals.EventList.isEventStartOfSeq(event_id), currentTouchTime);
+            Globals.EventLogger.LogEvent(event_id, current_X_Relative, current_Y_Relative, currentTouchTime);
             matchBinding.butUndo.setVisibility(View.VISIBLE);
             matchBinding.butUndo.setEnabled(true);
             showing_event_detail_menu = false;
@@ -379,9 +379,6 @@ public class Match extends AppCompatActivity {
         Globals.CurrentMatchPhase = Constants.Phases.NONE;
 
         // If either of the toggles are on turn them off
-        if (matchBinding.switchNotMoving.isChecked()) Globals.EventLogger.LogEvent(Constants.Events.ID_NOT_MOVING_END, 0, 0, false);
-        if (matchBinding.switchDefense.isChecked()) Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENSE_END, 0, 0, false);
-        if (matchBinding.switchDefended.isChecked()) Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENDED_END, 0, 0, false);
         matchBinding.switchNotMoving.setChecked(false);
         matchBinding.switchDefense.setChecked(false);
         matchBinding.switchDefended.setChecked(false);
@@ -694,13 +691,13 @@ public class Match extends AppCompatActivity {
         matchBinding.switchNotMoving.setOnCheckedChangeListener((buttonView, isChecked) -> {
             // If the button is being turned ON make it RED otherwise LTGRAY
             if (isChecked) {
-                Globals.EventLogger.LogEvent(Constants.Events.ID_NOT_MOVING_START, 0,0,true);
+                Globals.EventLogger.LogEvent(Constants.Events.ID_NOT_MOVING_START);
                 matchBinding.switchNotMoving.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
                 start_time_not_moving = System.currentTimeMillis();
                 Achievements.data_match_Toggle_NotMoving++;
                 Achievements.data_Toggle_NotMoving++;
             } else {
-                Globals.EventLogger.LogEvent(Constants.Events.ID_NOT_MOVING_END, 0,0,false);
+                Globals.EventLogger.LogEvent(Constants.Events.ID_NOT_MOVING_END);
                 matchBinding.switchNotMoving.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
                 Achievements.data_IdleTime += (int)(System.currentTimeMillis() - start_time_not_moving);
             }
@@ -729,11 +726,11 @@ public class Match extends AppCompatActivity {
         matchBinding.switchDefense.setOnCheckedChangeListener((buttonView, isChecked) -> {
             // If the button is being turned ON make it RED otherwise LTGRAY
             if (isChecked) {
-                Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENSE_START, 0,0,true);
+                Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENSE_START);
                 matchBinding.switchDefense.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
                 Achievements.data_Toggle_Defense++;
             } else {
-                Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENSE_END, 0,0,false);
+                Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENSE_END);
                 matchBinding.switchDefense.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
             }
         });
@@ -762,11 +759,11 @@ public class Match extends AppCompatActivity {
             Globals.isDefended = isChecked;
 
             if (isChecked) {
-                Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENDED_START, 0,0,true);
+                Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENDED_START);
                 matchBinding.switchDefended.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
                 Achievements.data_Toggle_Defended++;
             } else {
-                Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENDED_END, 0,0,false);
+                Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENDED_END);
                 matchBinding.switchDefended.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
             }
         });
