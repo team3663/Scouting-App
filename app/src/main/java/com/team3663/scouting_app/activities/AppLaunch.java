@@ -31,7 +31,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -316,7 +318,29 @@ public class AppLaunch extends AppCompatActivity {
             br.readLine();
             while ((line = br.readLine()) != null) {
                 // Split out the csv line.
-                String[] info = line.split(",", -1);
+                String[] info;
+
+                if (line.contains("\"")) {
+                    boolean inQuotes = false;
+                    StringBuilder sb = new StringBuilder();
+                    List<String> tokens = new ArrayList<>();
+                    char[] chars = line.toCharArray();
+
+                    for (char c : chars) {
+                        if (c == '\"') {
+                            inQuotes = !inQuotes;
+                            sb.append(c);
+                        } else if (c == ',' && !inQuotes) {
+                            tokens.add(sb.toString());
+                            sb.setLength(0);
+                        } else {
+                            sb.append(c);
+                        }
+                    }
+                    tokens.add(sb.toString());
+                    info = tokens.toArray(new String[0]);
+                }
+                else info = line.split(",", -1);
 
                 // A bit messy but we need to know which Global to add the data to, and which fields to pass in.
                 // Switch needs a constant in the "case" expression, and complains about using getResources().

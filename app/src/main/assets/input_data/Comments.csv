@@ -2,11 +2,13 @@ Comment_Id,Comment_IsActive,Comment_Text
 1,TRUE,Robot contacted opponents cage(s)
 2,TRUE,Robot struggled to pick up Algae
 3,TRUE,Robot struggled to pick up Coral
-4,TRUE,Robot climbed noticeably faster than others
-5,TRUE,Robot climbed noticeably slower than others
-6,TRUE,Robot touched another robot during climb
-7,TRUE,Climb didn't count
-8,TRUE,Evaded defense well
-9,TRUE,Ineffective defense
-10,TRUE,Robot didn't contribute much (no auto - low scoring - no defense)
-11,TRUE,Robot (or part of it) broke
+4,TRUE,Robot spent noticeably longer time at Coral station
+5,TRUE,Robot climbed noticeably faster than others
+6,TRUE,Robot climbed noticeably slower than others
+7,TRUE,Robot caused another robot climb to fail
+8,TRUE,Climb didn't count
+9,TRUE,Evaded defense well
+10,TRUE,Ineffective defense
+11,TRUE,Played really good defense
+12,TRUE,Robot didn't contribute much (no auto - low scoring - no defense)
+13,TRUE,Robot (or part of it) broke
