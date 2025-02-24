@@ -15,7 +15,7 @@ android {
         minSdk = 30
         targetSdk = 34
         versionCode = 24
-        versionName = "2.2.2"
+        versionName = "2.3.0"
 
         setProperty("archivesBaseName", "CPR-Scout-$versionName")
 
@@ -36,9 +36,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    buildFeatures {
-        viewBinding = true
-    }
 }
 
 dependencies {
