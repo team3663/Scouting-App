@@ -36,10 +36,6 @@ public class Constants {
         public static final String NO_TEAM = "No Team Exists"; // use to check if no team exists for a given team number
     }
 
-    public static class Matches {
-        public static final String NO_MATCH = "No Match"; // use to check if no match info exists for a given match number
-    }
-
     public static class Phases {
         public static final String AUTO = "AUTO";
         public static final String TELEOP = "TELEOP";

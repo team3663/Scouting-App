@@ -12,3 +12,7 @@ Comment_Id,Comment_IsActive,Comment_Text
 11,TRUE,Played really good defense
 12,TRUE,Robot didn't contribute much (no auto - low scoring - no defense)
 13,TRUE,Robot (or part of it) broke
+14,TRUE,Robot was quite tippy
+15,TRUE,Robot tipped over
+16,TRUE,Game piece got stuck in the robot
+17,TRUE,Robot got stuck on a game piece

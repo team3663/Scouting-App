@@ -191,6 +191,7 @@ public class PreMatch extends AppCompatActivity {
                     // Save off what you selected for if you go to the match and then back
                     CurrentTeamToScoutPosition = preMatchBinding.spinnerTeamToScout.getSelectedItemPosition();
                 }
+                else preMatchBinding.textTeamToScoutName.setText("");
             }
 
             @Override
@@ -418,6 +419,11 @@ public class PreMatch extends AppCompatActivity {
         but_Next.setOnClickListener(view -> {
             // If we should re-submit data, go to the submit page immediately
             if (preMatchBinding.checkboxResubmit.isChecked()) {
+                // Decrement the team number since we're only going to resubmit data.  When we return,
+                // it will increment it for the "next match" will set it back (in this case) to the
+                // original value.
+                Globals.CurrentMatchNumber--;
+
                 Intent GoToSubmitData = new Intent(PreMatch.this, SubmitData.class);
                 startActivity(GoToSubmitData);
 

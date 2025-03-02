@@ -120,6 +120,9 @@ public class QRCode extends AppCompatActivity {
             Globals.isStartingGamePiece = true;
             Globals.isPractice = false;
 
+            // Increases the team number so that it auto fills for the next match correctly
+            Globals.CurrentMatchNumber++;
+
             Intent GoToPreMatch = new Intent(QRCode.this, PreMatch.class);
             startActivity(GoToPreMatch);
 
