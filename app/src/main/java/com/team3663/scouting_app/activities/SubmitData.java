@@ -69,10 +69,6 @@ public class SubmitData extends AppCompatActivity {
         initBluetooth();
         initQuit();
         initNext();
-
-        // Increases the team number so that it auto fills for the next match correctly
-        //  and do it after the logger is closed so that this can't mess the logger up
-        Globals.CurrentMatchNumber++;
     }
 
     // =============================================================================================
@@ -362,6 +358,9 @@ public class SubmitData extends AppCompatActivity {
             // Reset pre-Match settings for next time
             Globals.isStartingGamePiece = true;
             Globals.isPractice = false;
+
+            // Increases the team number so that it auto fills for the next match correctly
+            Globals.CurrentMatchNumber++;
 
             Intent GoToPreMatch = new Intent(SubmitData.this, PreMatch.class);
             startActivity(GoToPreMatch);

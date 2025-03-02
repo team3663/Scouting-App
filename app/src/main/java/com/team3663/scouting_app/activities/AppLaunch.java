@@ -56,7 +56,7 @@ public class AppLaunch extends AppCompatActivity {
                     if (in_data.getIntExtra(Constants.Settings.RELOAD_DATA_KEY, 0) == 1) {
                         try {
                             Globals.MatchList.clear();
-                            Globals.MatchList.addMatchRow(Constants.Matches.NO_MATCH);
+                            Globals.MatchList.addMatchRowForNoMatch();
                             LoadDataFile(getString(R.string.file_matches), getString(R.string.applaunch_loading_matches), getString(R.string.applaunch_file_error_matches));
                             Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
                             appLaunchBinding.textStatus.setText("");
@@ -370,10 +370,7 @@ public class AppLaunch extends AppCompatActivity {
                     // Use only the match information that equals the competition we're in.
                     if (Integer.parseInt(info[0]) == Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1)) {
                         Globals.CurrentMatchType = Globals.MatchTypeList.getMatchTypeId(info[1]);
-                        for (int i = Globals.MatchList.size(); i < Integer.parseInt(info[2]); i++) {
-                            Globals.MatchList.addMatchRow(Constants.Matches.NO_MATCH);
-                        }
-                        Globals.MatchList.addMatchRow(info[1], info[3], info[4], info[5], info[6], info[7], info[8]);
+                        Globals.MatchList.addMatchRow(info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8]);
                     }
                 } else if (in_fileName.equals(getString(R.string.file_start_positions))) {
                     if (Boolean.parseBoolean(info[1]))

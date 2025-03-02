@@ -25,15 +25,22 @@ public class Matches {
     }
 
     // Member Function: Add a row of match info into the list giving the data in a csv format
-    public void addMatchRow(String in_csvRow) {
-        match_list.get(Globals.CurrentMatchType - 1).addMatchRow(in_csvRow);
+    public void addMatchRowForNoMatch() {
+        match_list.get(Globals.CurrentMatchType - 1).addMatchRowForNoMatch();
     }
 
-    // Member Function: Add a row of match info into the list giving the data in a csv format
-    public void addMatchRow(String in_match_type_short_form, String in_red1, String in_red2, String in_red3, String in_blue1, String in_blue2, String in_blue3) {
+    // Member Function: Add a row of match info into the list giving the individual data
+    public void addMatchRow(String in_match_type_short_form, String in_MatchNum, String in_red1, String in_red2, String in_red3, String in_blue1, String in_blue2, String in_blue3) {
         int match_type = Globals.MatchTypeList.getMatchTypeId(in_match_type_short_form);
-        match_list.get(match_type - 1).addMatchRow(in_red1, in_red2, in_red3, in_blue1, in_blue2, in_blue3);
 
+        for (int i = Globals.MatchList.size(); i < Integer.parseInt(in_MatchNum); i++) {
+            match_list.get(match_type - 1).addMatchRowForNoMatch();
+        }
+
+        if (Integer.parseInt(in_MatchNum) < match_list.get(match_type - 1).size())
+            match_list.get(match_type - 1).setMatchRow(in_MatchNum, in_red1, in_red2, in_red3, in_blue1, in_blue2, in_blue3);
+        else
+            match_list.get(match_type - 1).addMatchRow(in_red1, in_red2, in_red3, in_blue1, in_blue2, in_blue3);
     }
 
     // Member Function: do we have valid match data for this one
@@ -76,13 +83,18 @@ public class Matches {
         }
 
         // Member Function: Add a row of match info into the list giving the data in a csv format
-        public void addMatchRow(String in_csvRow) {
-            match_list_for_type.add(new MatchInfoRow(in_csvRow));
+        public void addMatchRowForNoMatch() {
+            match_list_for_type.add(new MatchInfoRow());
         }
 
         // Member Function: Add a row of match info into the list giving the data individually
         public void addMatchRow(String in_red1, String in_red2, String in_red3, String in_blue1, String in_blue2, String in_blue3) {
             match_list_for_type.add(new MatchInfoRow(in_red1, in_red2, in_red3, in_blue1, in_blue2, in_blue3));
+        }
+
+        // Member Function: Set a row of match info into the list giving the data individually
+        public void setMatchRow(String in_MatchNum, String in_red1, String in_red2, String in_red3, String in_blue1, String in_blue2, String in_blue3) {
+            match_list_for_type.set(Integer.parseInt(in_MatchNum), new MatchInfoRow(in_red1, in_red2, in_red3, in_blue1, in_blue2, in_blue3));
         }
 
         // Member Function: do we have valid match data for this one
@@ -166,21 +178,8 @@ public class Matches {
             private String blue2 = "";
             private String blue3 = "";
 
-            // Constructor with a csv string
-            public MatchInfoRow(String in_csvRow) {
-                if (!in_csvRow.equals(Constants.Matches.NO_MATCH)) {
-                    String[] data = in_csvRow.split(",");
-
-                    // Validate we have enough values otherwise this was a bad row and we'll get an out-of-bounds exception
-                    if (data.length == 9) {
-                        red1 = data[3].trim();
-                        red2 = data[4].trim();
-                        red3 = data[5].trim();
-                        blue1 = data[6].trim();
-                        blue2 = data[7].trim();
-                        blue3 = data[8].trim();
-                    }
-                }
+            // Constructor with no match information
+            public MatchInfoRow() {
             }
 
             // Constructor with values
