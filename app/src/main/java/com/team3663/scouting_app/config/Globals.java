@@ -39,6 +39,7 @@ public class Globals {
     public static int CurrentColorId;
     public static int CurrentTeamOverrideNum;
     public static int CurrentPrefTeamPos;
+    public static int CurrentFieldOrientationPos;
     public static int CurrentTeamToScout;
     public static String CurrentMatchPhase = Constants.Phases.NONE;
     public static int CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
@@ -60,13 +61,12 @@ public class Globals {
     public static boolean isStartingGamePiece = true;
     public static boolean isShadowMode = false;
 
-    public static long startTime = 0;
+    public static long StartTime = 0;
 
     public static DocumentFile base_df = null;
     public static DocumentFile input_df = null;
     public static DocumentFile output_df = null;
 
-    public static int transmitMatchNum;
-    public static int transmitMatchType;
-    public static String deviceAddress;
+    public static int TransmitMatchNum;
+    public static int TransmitMatchType;
 }

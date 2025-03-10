@@ -48,6 +48,7 @@ public class Settings extends AppCompatActivity {
         initCompetition();
         initDevice();
         initPrefTeamPos();
+        initFieldOrientation();
         initScoutingTeam();
         initNumMatches();
         initColors();
@@ -76,23 +77,32 @@ public class Settings extends AppCompatActivity {
                 intent.putExtra(Constants.Settings.RELOAD_DATA_KEY, 1);
             Globals.spe.putInt(Constants.Prefs.COMPETITION_ID, CompetitionId);
         }
+
         int DeviceId = Globals.DeviceList.getDeviceId(settingsBinding.spinnerDevice.getSelectedItem().toString());
         if (DeviceId > 0) {
             Globals.spe.putInt(Constants.Prefs.DEVICE_ID, DeviceId);
         }
+
         String ScoutingTeam = String.valueOf(settingsBinding.editScoutingTeam.getText());
         if (!ScoutingTeam.isEmpty()) {
             Globals.spe.putInt(Constants.Prefs.SCOUTING_TEAM, Integer.parseInt(ScoutingTeam));
         }
+
         int NumMatches = Integer.parseInt(settingsBinding.editNumMatches.getText().toString());
         if (NumMatches < 1) NumMatches = 1;
         Globals.spe.putInt(Constants.Prefs.NUM_MATCHES, NumMatches);
+
         int ColorId = Globals.ColorList.getColorId(settingsBinding.spinnerColor.getSelectedItem().toString());
         if (ColorId > 0) {
             Globals.spe.putInt(Constants.Prefs.COLOR_CONTEXT_MENU, ColorId);
         }
+
         Globals.CurrentPrefTeamPos = settingsBinding.spinnerPrefTeamPos.getSelectedItemPosition();
         Globals.spe.putInt(Constants.Prefs.PREF_TEAM_POS, Globals.CurrentPrefTeamPos);
+        Globals.spe.apply();
+
+        Globals.CurrentFieldOrientationPos = settingsBinding.spinnerOrientation.getSelectedItemPosition();
+        Globals.spe.putInt(Constants.Prefs.PREF_ORIENTATION, Globals.CurrentFieldOrientationPos);
         Globals.spe.apply();
 
         setResult(RESULT_OK, intent);
@@ -187,6 +197,38 @@ public class Settings extends AppCompatActivity {
 
         // Define the actions when an item is selected.  Set text color and set description text
         settingsBinding.spinnerPrefTeamPos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Settings.this.runOnUiThread(() -> {
+
+                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+    }
+
+    // =============================================================================================
+    // Function:    initFieldOrientation
+    // Description: Initialize the Preferred Field Orientation field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initFieldOrientation() {
+        // Adds PreferredFieldOrientation information to spinner
+        ArrayAdapter<String> adp_PrefOrientation = new ArrayAdapter<>(this,
+                R.layout.cpr_spinner, Constants.Settings.PREF_FIELD_ORIENTATION);
+        adp_PrefOrientation.setDropDownViewResource(R.layout.cpr_spinner_item);
+        settingsBinding.spinnerOrientation.setAdapter(adp_PrefOrientation);
+
+        // Set the selection (if there is one) to the saved one
+        int savedPrefOrientation = Globals.sp.getInt(Constants.Prefs.PREF_ORIENTATION, 0);
+        settingsBinding.spinnerOrientation.setSelection(savedPrefOrientation, true);
+
+        // Define the actions when an item is selected.  Set text color and set description text
+        settingsBinding.spinnerOrientation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Settings.this.runOnUiThread(() -> {

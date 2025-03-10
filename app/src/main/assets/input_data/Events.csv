@@ -33,6 +33,7 @@ Events_Id,Events_GroupId,Events_Phase,Events_Name,Events_StartOfSeq,Events_Appli
 40,3,TELEOP,Climb Start,TRUE,TRUE,41:42,
 41,3,TELEOP,Climb Success,FALSE,TRUE,,1
 42,3,TELEOP,Climb Failed,FALSE,TRUE,,2
+43,3,TELEOP,Park,TRUE,TRUE,,
 60,4,NONE,Defended_Start,TRUE,FALSE,61,
 61,4,NONE,Defended_End,FALSE,FALSE,,
 62,5,NONE,PlayDefense_Start,TRUE,FALSE,63,

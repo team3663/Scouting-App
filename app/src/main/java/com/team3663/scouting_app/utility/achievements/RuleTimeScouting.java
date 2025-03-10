@@ -11,6 +11,6 @@ public class RuleTimeScouting implements AchievementRule {
 
     @Override
     public boolean evaluate(){
-        return ((Globals.startTime > 0) && (System.currentTimeMillis() - Globals.startTime >= threshold));
+        return ((Globals.StartTime > 0) && (System.currentTimeMillis() - Globals.StartTime >= threshold));
     }
 }

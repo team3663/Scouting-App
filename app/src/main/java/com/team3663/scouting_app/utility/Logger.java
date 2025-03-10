@@ -288,10 +288,10 @@ public class Logger {
         int log_time;
         switch (Globals.CurrentMatchPhase) {
             case Constants.Phases.AUTO:
-                log_time = (int) (Math.min(Math.round((in_time - Globals.startTime) / 100.0), Constants.Match.TIMER_AUTO_LENGTH * 10));
+                log_time = (int) (Math.min(Math.round((in_time - Globals.StartTime) / 100.0), Constants.Match.TIMER_AUTO_LENGTH * 10));
                 break;
             case Constants.Phases.TELEOP:
-                log_time = (int) (Math.min(Math.round((in_time - Globals.startTime) / 100.0), (Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_TELEOP_LENGTH) * 10));
+                log_time = (int) (Math.min(Math.round((in_time - Globals.StartTime) / 100.0), (Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_TELEOP_LENGTH) * 10));
                 break;
             default:
                 log_time = 0;

@@ -16,11 +16,9 @@ import androidx.documentfile.provider.DocumentFile;
 
 import com.google.zxing.BarcodeFormat;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
-import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.QrCodeBinding;
-import com.team3663.scouting_app.utility.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,9 +31,8 @@ public class QRCode extends AppCompatActivity {
     // Global variables
     // =============================================================================================
     private QrCodeBinding qrCodeBinding;
-    private Logger logger;
-    private QR_FileString qrFileString;
-    private int currentImagePage;
+    static private QR_FileString qrFileString;
+    static private int currentImagePage;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -67,10 +64,10 @@ public class QRCode extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void InitQRData() {
-        qrFileString = new QR_FileString(Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.transmitMatchType) + "_d.csv" + "\n" +
+        qrFileString = new QR_FileString(Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.TransmitMatchType) + "_d.csv" + "\n" +
                 getFileAsString("d") + "\n" +
                 Constants.QRCode.EOF + "\n" +
-                Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv" + "\n" +
+                Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv" + "\n" +
                 getFileAsString("e") + "\n" +
                 Constants.QRCode.EOF);
 
@@ -104,6 +101,7 @@ public class QRCode extends AppCompatActivity {
             Intent GoToSubmitData = new Intent(QRCode.this, SubmitData.class);
             startActivity(GoToSubmitData);
 
+            qrFileString = null;
             finish();
         });
     }
@@ -126,6 +124,7 @@ public class QRCode extends AppCompatActivity {
             Intent GoToPreMatch = new Intent(QRCode.this, PreMatch.class);
             startActivity(GoToPreMatch);
 
+            qrFileString = null;
             finish();
         });
     }
@@ -138,8 +137,8 @@ public class QRCode extends AppCompatActivity {
     // =============================================================================================
     private void InitFileStats() {
         qrCodeBinding.textFileStatsCompetition.setText(Globals.CompetitionList.getCompetitionDescription(Globals.CurrentCompetitionId));
-        qrCodeBinding.textFileStatsMatch.setText(String.valueOf(Globals.transmitMatchNum));
-        qrCodeBinding.textFileStatsMatchType.setText(Globals.MatchTypeList.getMatchTypeDescription(Globals.transmitMatchType));
+        qrCodeBinding.textFileStatsMatch.setText(String.valueOf(Globals.TransmitMatchNum));
+        qrCodeBinding.textFileStatsMatchType.setText(Globals.MatchTypeList.getMatchTypeDescription(Globals.TransmitMatchType));
         qrCodeBinding.textFileStatsFileSize.setText(String.format("%s bytes", String.valueOf(qrFileString.getSize())));
     }
 
@@ -215,8 +214,8 @@ public class QRCode extends AppCompatActivity {
         if (!(in_Extension.equals("d") || in_Extension.equals("e")))
             return "";
 
-        String filename = Globals.CurrentCompetitionId + "_" + Globals.transmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.transmitMatchType) + "_" + in_Extension + ".csv";
-        String file_as_string = "";
+        String filename = Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.TransmitMatchType) + "_" + in_Extension + ".csv";
+        StringBuilder file_as_string = new StringBuilder();
         String line;
 
         try {
@@ -230,16 +229,16 @@ public class QRCode extends AppCompatActivity {
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
             while ((line = br.readLine()) != null) {
-                if (!file_as_string.isEmpty())
-                    file_as_string += "\n";
+                if (file_as_string.length() > 0)
+                    file_as_string.append("\n");
 
-                file_as_string += line;
+                file_as_string.append(line);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return file_as_string;
+        return file_as_string.toString();
     }
 
     // =============================================================================================

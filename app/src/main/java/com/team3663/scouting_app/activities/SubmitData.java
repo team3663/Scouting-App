@@ -83,13 +83,13 @@ public class SubmitData extends AppCompatActivity {
         adp_MatchType.setDropDownViewResource(R.layout.cpr_spinner_item);
         submitDataBinding.spinnerMatchType.setAdapter(adp_MatchType);
 
-        Globals.transmitMatchType = Globals.CurrentMatchType;
+        Globals.TransmitMatchType = Globals.CurrentMatchType;
 
         // Search through the list of match types until you find the one that is correct then get its position in the list
         // and set that one as selected
         int start_Pos_DropId = 0;
         for (int i = 0; i < Match_Types.size(); i++) {
-            if (Match_Types.get(i).equals(Globals.MatchTypeList.getMatchTypeDescription(Globals.transmitMatchType))) {
+            if (Match_Types.get(i).equals(Globals.MatchTypeList.getMatchTypeDescription(Globals.TransmitMatchType))) {
                 start_Pos_DropId = i;
                 break;
             }
@@ -103,8 +103,8 @@ public class SubmitData extends AppCompatActivity {
                 // Save off what you selected to be used until changed again
                 int newMatchType = Globals.MatchTypeList.getMatchTypeId(submitDataBinding.spinnerMatchType.getSelectedItem().toString());
 
-                if (newMatchType != Globals.transmitMatchType) {
-                    Globals.transmitMatchType = newMatchType;
+                if (newMatchType != Globals.TransmitMatchType) {
+                    Globals.TransmitMatchType = newMatchType;
                     initMatch();
                 }
             }
@@ -134,7 +134,7 @@ public class SubmitData extends AppCompatActivity {
         // Parse out the match number from the filename.  If this is a "d" file from the right
         // competition (as defined in Settings) and matching device then add it to the list.
         for (DocumentFile df : file_list) {
-            if (df.isFile() && df.getName().endsWith("_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.transmitMatchType) + "_d.csv")) {
+            if (df.isFile() && df.getName().endsWith("_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.TransmitMatchType) + "_d.csv")) {
                 String[] file_parts = df.getName().split("_");
                 if ((Integer.parseInt(file_parts[0]) == Globals.CurrentCompetitionId) &&
                         (Integer.parseInt(file_parts[2]) == Globals.CurrentDeviceId))
@@ -293,7 +293,7 @@ public class SubmitData extends AppCompatActivity {
             // Reset pre-Match settings for next time
             Globals.isStartingGamePiece = true;
             Globals.isPractice = false;
-            Globals.transmitMatchNum= Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
+            Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
 
             Intent GoToQRCode = new Intent(SubmitData.this, QRCode.class);
             startActivity(GoToQRCode);
@@ -313,7 +313,7 @@ public class SubmitData extends AppCompatActivity {
             // Reset pre-Match settings for next time
             Globals.isStartingGamePiece = true;
             Globals.isPractice = false;
-            Globals.transmitMatchNum= Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
+            Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
 
 
 //            Intent GoToBluetooth = new Intent(SubmitData.this, Bluetooth.class);
