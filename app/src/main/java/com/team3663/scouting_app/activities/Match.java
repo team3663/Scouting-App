@@ -223,10 +223,10 @@ public class Match extends AppCompatActivity {
     @SuppressLint({"DiscouragedApi", "SetTextI18n"})
     public void startMatch() {
         // Record the current/start time of the match to calculate elapsed time
-        Globals.startTime = System.currentTimeMillis();
+        Globals.StartTime = System.currentTimeMillis();
 
         // Achievements
-        if (Achievements.data_StartTime == 0) Achievements.data_StartTime = Globals.startTime;
+        if (Achievements.data_StartTime == 0) Achievements.data_StartTime = Globals.StartTime;
         Globals.myAchievements.clearMatchData();
 
         // Log the starting time
@@ -280,7 +280,7 @@ public class Match extends AppCompatActivity {
     @SuppressLint({"SetTextI18n", "DefaultLocale"})
     public void startTeleop() {
         // Set the start Time so that the Display Time will be correct
-        Globals.startTime = System.currentTimeMillis() - Constants.Match.TIMER_AUTO_LENGTH * 1_000;
+        Globals.StartTime = System.currentTimeMillis() - Constants.Match.TIMER_AUTO_LENGTH * 1_000;
         matchBinding.textTime.setText(Constants.Match.TIMER_TELEOP_LENGTH / 60 + ":" + String.format("%02d", Constants.Match.TIMER_TELEOP_LENGTH % 60));
 
         match_Timer.schedule(teleop_timertask, Constants.Match.TIMER_TELEOP_LENGTH * 1_000);
@@ -428,9 +428,9 @@ public class Match extends AppCompatActivity {
             int elapsedSeconds;
 
             if (Globals.CurrentMatchPhase.equals(Constants.Phases.AUTO)) {
-                elapsedSeconds = (int) (Constants.Match.TIMER_AUTO_LENGTH - Math.round((System.currentTimeMillis() - Globals.startTime) / 1_000.0));
+                elapsedSeconds = (int) (Constants.Match.TIMER_AUTO_LENGTH - Math.round((System.currentTimeMillis() - Globals.StartTime) / 1_000.0));
             } else {
-                elapsedSeconds = (int) (Constants.Match.TIMER_TELEOP_LENGTH + Constants.Match.TIMER_AUTO_LENGTH - Math.round((System.currentTimeMillis() - Globals.startTime) / 1_000.0));
+                elapsedSeconds = (int) (Constants.Match.TIMER_TELEOP_LENGTH + Constants.Match.TIMER_AUTO_LENGTH - Math.round((System.currentTimeMillis() - Globals.StartTime) / 1_000.0));
             }
             if (elapsedSeconds < 0) elapsedSeconds = 0;
             matchBinding.textTime.setText(elapsedSeconds / 60 + ":" + String.format("%02d", elapsedSeconds % 60));
@@ -470,6 +470,7 @@ public class Match extends AppCompatActivity {
     // Parameters:  void
     // Output:      void
     // =============================================================================================
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void initRotation() {
         // Set up a listener for Orientation changes so we can flip the field properly (which means we
         // ignore the flip for the field image in a sense)
@@ -477,28 +478,36 @@ public class Match extends AppCompatActivity {
         // we call the rotation.  Keeping track of the current orientation should help!
         // KEY: actually calling setRotation works, but severely messes up the context menu.  SO, we'll
         // hack it by just loading a "flipped" image to display.
-        currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE;
-        OEL = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
-            @SuppressLint("UseCompatLoadingForDrawables")
-            @Override
-            public void onOrientationChanged(int rotation_degrees) {
-                // If the device is in the 0 to 180 degree range, make it Landscape
-                if ((rotation_degrees >= 0) && (rotation_degrees < 180) && !currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) {
-                    matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field_image));
-                    currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE;
+        if (Globals.CurrentFieldOrientationPos == 0) {  // Automatic
+            currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE;
+            OEL = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
+                @SuppressLint("UseCompatLoadingForDrawables")
+                @Override
+                public void onOrientationChanged(int rotation_degrees) {
+                    // If the device is in the 0 to 180 degree range, make it Landscape
+                    if ((rotation_degrees >= 0) && (rotation_degrees < 180) && !currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) {
+                        matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field_image));
+                        currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE;
+                    }
+                    // If the device is in the 180 to 359 degree range, make it Landscape
+                    // We can get passed a -1 if the device can't tell (it's lying flat) and we want to ignore that
+                    else if ((rotation_degrees >= 180) && !currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE_REVERSE)) {
+                        matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field_image_flipped));
+                        currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE_REVERSE;
+                    }
                 }
-                // If the device is in the 180 to 359 degree range, make it Landscape
-                // We can get passed a -1 if the device can't tell (it's lying flat) and we want to ignore that
-                else if ((rotation_degrees >= 180) && !currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE_REVERSE)) {
-                    matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field_image_flipped));
-                    currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE_REVERSE;
-                }
-            }
-        };
+            };
 
-        // Enable orientation listening if we can!
-        if (OEL.canDetectOrientation()) {
-            OEL.enable();
+            // Enable orientation listening if we can!
+            if (OEL.canDetectOrientation()) {
+                OEL.enable();
+            }
+        } else if (Globals.CurrentFieldOrientationPos == 1) {   // Blue On Left
+            currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE;
+            matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field_image));
+        } else {    // Red On Left
+            matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field_image_flipped));
+            currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE_REVERSE;
         }
     }
 
@@ -564,11 +573,11 @@ public class Match extends AppCompatActivity {
                     break;
                 case Constants.Phases.AUTO:
                     // If we're going to teleop manually, log the start time offset
-                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_TIME_OFFSET, String.valueOf(Math.round((Constants.Match.TIMER_AUTO_LENGTH * 1000.0 - System.currentTimeMillis() + Globals.startTime) / 10.0) / 100.0));
+                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_TIME_OFFSET, String.valueOf(Math.round((Constants.Match.TIMER_AUTO_LENGTH * 1000.0 - System.currentTimeMillis() + Globals.StartTime) / 10.0) / 100.0));
                     startTeleop();
                     break;
                 case Constants.Phases.TELEOP:
-                    if (Globals.startTime + (Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_TELEOP_LENGTH) * 1000 > System.currentTimeMillis())
+                    if (Globals.StartTime + (Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_TELEOP_LENGTH) * 1000 > System.currentTimeMillis())
                         new AlertDialog.Builder(view.getContext())
                                 .setTitle(getString(R.string.match_alert_endMatch_title))
                                 .setMessage(getString(R.string.match_alert_endMatch_message))

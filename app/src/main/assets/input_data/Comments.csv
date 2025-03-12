@@ -16,3 +16,8 @@ Comment_Id,Comment_IsActive,Comment_Text
 15,TRUE,Robot tipped over
 16,TRUE,Game piece got stuck in the robot
 17,TRUE,Robot got stuck on a game piece
+18,FALSE,Team was difficult to work with
+19,FALSE,Human player consistently missed algae
+20,FALSE,Human player was extremely slow at feeding coral to robots
+21,FALSE,Human player didn't work well with other teams
+22,FALSE,Team fouled excessively while playing defense

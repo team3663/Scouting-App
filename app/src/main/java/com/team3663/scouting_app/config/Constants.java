@@ -99,10 +99,12 @@ public class Constants {
         public static final String COLOR_CONTEXT_MENU = "ColorContextMenu";
         public static final String PREF_TEAM_POS = "PreferredTeamPosition";
         public static final String STORAGE_URI = "StorageURI";
+        public static final String PREF_ORIENTATION = "PreferredFieldOrientation";
     }
 
     public static class Settings {
         public static final String[] PREF_TEAM_POS = new String[]{"No Preference", "Blue 1", "Blue 2", "Blue 3", "Red 1", "Red 2", "Red 3"};
+        public static final String[] PREF_FIELD_ORIENTATION = new String[]{"Automatic", "Blue On Left", "Red On Left"};
         public static final String RELOAD_DATA_KEY = "ReloadData";
     }
 
