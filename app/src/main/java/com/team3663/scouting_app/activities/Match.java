@@ -233,7 +233,7 @@ public class Match extends AppCompatActivity {
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_TIME, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss")));
 
         // Disable orientation listening if we can!  Once we start the match don't allow rotation anymore
-        if (OEL.canDetectOrientation()) {
+        if (OEL != null && OEL.canDetectOrientation()) {
             OEL.disable();
         }
 
