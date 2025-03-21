@@ -220,6 +220,7 @@ public class PostMatch extends AppCompatActivity {
 
                 // Reset the Saved Start position so that you have to choose it again
                 Globals.CurrentStartPosition = 0;
+                Globals.TransmitMatchNum = 0;
 
                 Intent GoToSubmitData = new Intent(PostMatch.this, SubmitData.class);
                 startActivity(GoToSubmitData);

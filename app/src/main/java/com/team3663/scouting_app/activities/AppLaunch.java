@@ -25,6 +25,7 @@ import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.AppLaunchBinding;
+import com.team3663.scouting_app.utility.Debug;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,7 +34,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -434,6 +434,8 @@ public class AppLaunch extends AppCompatActivity {
                     (Globals.sp.getInt(Constants.Prefs.DEVICE_ID, -1) == -1)) {
                 Toast.makeText(AppLaunch.this, R.string.applaunch_not_configured, Toast.LENGTH_SHORT).show();
             } else {
+                Globals.DebugLogger = new Debug(getApplicationContext());
+
                 // Go to the first page
                 Intent GoToPreMatch = new Intent(AppLaunch.this, PreMatch.class);
                 startActivity(GoToPreMatch);

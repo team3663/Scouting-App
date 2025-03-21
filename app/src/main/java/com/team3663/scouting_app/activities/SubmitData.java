@@ -257,11 +257,9 @@ public class SubmitData extends AppCompatActivity {
             for (Achievements.PoppedAchievement pa : poplist) {
                 ach_sep_ID += ":" + pa.id;
             }
-            if (!poplist.isEmpty()) {
-                ach_sep_ID = ach_sep_ID.substring(1);
-                Globals.EventLogger.LogData(Constants.Logger.LOGKEY_ACHIEVEMENT, ach_sep_ID);
-            }
 
+            ach_sep_ID = ach_sep_ID.substring(1);
+            Globals.EventLogger.LogData(Constants.Logger.LOGKEY_ACHIEVEMENT, ach_sep_ID);
             achievement_timer.schedule(startOne, Constants.Achievements.START_DELAY);
         }
     }
@@ -279,7 +277,15 @@ public class SubmitData extends AppCompatActivity {
         adp_Match.setDropDownViewResource(R.layout.cpr_spinner_item);
         submitDataBinding.spinnerMatch.setAdapter(adp_Match);
         // Set the selection (if there are any) to the latest match (largest value in the list)
-        if (adp_Match.getCount() > 0) submitDataBinding.spinnerMatch.setSelection(adp_Match.getCount() - 1, true);
+        int position;
+
+        if (Globals.TransmitMatchNum == 0)
+            position = adp_Match.getCount() - 1;
+        else
+            position = adp_Match.getPosition(String.valueOf(Globals.TransmitMatchNum));
+
+        if (position >= 0)
+            submitDataBinding.spinnerMatch.setSelection(position, true);
     }
 
     // =============================================================================================
@@ -319,7 +325,7 @@ public class SubmitData extends AppCompatActivity {
 //            Intent GoToBluetooth = new Intent(SubmitData.this, Bluetooth.class);
 //            startActivity(GoToBluetooth);
 
-            finish();
+//            finish();
         });
     }
 

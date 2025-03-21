@@ -6,6 +6,7 @@ import android.net.Uri;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.team3663.scouting_app.data.MatchTypes;
+import com.team3663.scouting_app.utility.Debug;
 import com.team3663.scouting_app.utility.Logger;
 import com.team3663.scouting_app.data.ClimbPositions;
 import com.team3663.scouting_app.data.Colors;
@@ -47,6 +48,7 @@ public class Globals {
     public static String CheckBoxTextPadding = "       ";
 
     public static Logger EventLogger = null;
+    public static Debug DebugLogger = null;
     public static Achievements myAchievements;
     public static boolean isDefended = false;
 
@@ -60,6 +62,7 @@ public class Globals {
     public static boolean isPractice = false;
     public static boolean isStartingGamePiece = true;
     public static boolean isShadowMode = false;
+    public static boolean isDebugMode = false;
 
     public static long StartTime = 0;
 
