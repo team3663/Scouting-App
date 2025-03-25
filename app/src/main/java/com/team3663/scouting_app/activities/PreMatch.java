@@ -61,6 +61,7 @@ public class PreMatch extends AppCompatActivity {
         Globals.CurrentDeviceId = Globals.sp.getInt(Constants.Prefs.DEVICE_ID, 0);
         Globals.CurrentColorId = Globals.sp.getInt(Constants.Prefs.COLOR_CONTEXT_MENU, 1);
         Globals.CurrentPrefTeamPos = Globals.sp.getInt(Constants.Prefs.PREF_TEAM_POS, 0);
+        Globals.CurrentFieldOrientationPos = Globals.sp.getInt(Constants.Prefs.PREF_ORIENTATION, 0);
 
         // Initialize activity components
         initMatchNumber();
