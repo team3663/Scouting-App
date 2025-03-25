@@ -70,7 +70,28 @@ public class Matches {
         }
     }
 
-        // =============================================================================================
+    // Member Function: Return the alliance that the team is on
+    public String getAllianceForTeam(int in_Team) {
+        String ret = "";
+        String Team = String.valueOf(in_Team);
+
+        if (!this.isCurrentMatchValid()) return ret;
+        int currMatch = Globals.CurrentMatchNumber;
+
+        if (Team.equals(match_list.get(Globals.CurrentMatchType - 1).match_list_for_type.get(currMatch).blue1) ||
+                Team.equals(match_list.get(Globals.CurrentMatchType - 1).match_list_for_type.get(currMatch).blue2) ||
+                Team.equals(match_list.get(Globals.CurrentMatchType - 1).match_list_for_type.get(currMatch).blue3)) {
+
+            ret = "BLUE";
+        }
+        else {
+            ret = "RED";
+        }
+
+        return ret;
+    }
+
+    // =============================================================================================
     // Class:       MatchesForType
     // Description: Defines a structure/class to hold the information for all Matches
     // =============================================================================================
