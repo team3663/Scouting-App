@@ -147,6 +147,12 @@
             android:background="@color/dark_grey"
             android:layout_height="490dp">
 
+            <TextView
+                android:id="@+id/textRobot"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@android:color/holo_orange_dark"/>
+
             <ImageView
                 android:id="@+id/image_FieldView"
                 android:layout_width="fill_parent"
