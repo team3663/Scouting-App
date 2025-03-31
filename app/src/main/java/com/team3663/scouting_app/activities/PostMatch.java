@@ -46,6 +46,8 @@ public class PostMatch extends AppCompatActivity {
             return insets;
         });
 
+        Globals.DebugLogger.In("PostMatch:onCreate");
+
         // Initialize activity components
         initDidLeave();
         initClimbingPos();
@@ -53,6 +55,8 @@ public class PostMatch extends AppCompatActivity {
         initReset();
         initSubmit();
         initStats();
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -62,6 +66,8 @@ public class PostMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initClimbingPos() {
+        Globals.DebugLogger.In("PostMatch:initClimbingPos");
+
         //Creating the single select dropdown menu for the climb positions
         Spinner spinner_ClimbPos = findViewById(R.id.spinnerClimbPosition);
         //accessing the array in strings.xml
@@ -69,6 +75,8 @@ public class PostMatch extends AppCompatActivity {
                 R.layout.cpr_spinner, Globals.ClimbPositionList.getDescriptionList());
         adp_ClimbPos.setDropDownViewResource(R.layout.cpr_spinner_item);
         spinner_ClimbPos.setAdapter(adp_ClimbPos);
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -78,6 +86,8 @@ public class PostMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initComments() {
+        Globals.DebugLogger.In("PostMatch:initComments");
+
         // initialize comment reasons arrays
         selectedComment = new boolean[CommentArray.size()];
 
@@ -85,6 +95,8 @@ public class PostMatch extends AppCompatActivity {
         postMatchBinding.dropComments.setText(new_text);
         //code for how to open the dropdown menu when clicked and select items
         postMatchBinding.dropComments.setOnClickListener(view -> {
+            Globals.DebugLogger.In("PostMatch:dropComments:Click");
+
             AlertDialog.Builder builder = new AlertDialog.Builder(PostMatch.this)
                 .setTitle("Select All That Apply")
                 .setCancelable(false)
@@ -94,6 +106,10 @@ public class PostMatch extends AppCompatActivity {
             String[] CA = new String[CommentArray.size()];
             CommentArray.toArray(CA);
             builder.setMultiChoiceItems(CA, selectedComment, (dialogInterface, i, b) -> {
+                Globals.DebugLogger.Params.add("i=" + i);
+                Globals.DebugLogger.Params.add("b=" + b);
+                Globals.DebugLogger.In("PostMatch:Comments:Select");
+
                 // check condition
                 if (b) {
                     // when checkbox selected
@@ -106,10 +122,14 @@ public class PostMatch extends AppCompatActivity {
                     // Remove position from comment list
                     CommentList.remove(Integer.valueOf(i));
                 }
+
+                Globals.DebugLogger.Out();
             });
 
             //adds the "ok" button to the dropdown menu
             builder.setPositiveButton("OK", (dialogInterface, i) -> {
+                Globals.DebugLogger.In("PostMatch:Comments:OK");
+
                 // Initialize string builder
                 StringBuilder stringBuilder = new StringBuilder();
                 // use for loop
@@ -127,12 +147,18 @@ public class PostMatch extends AppCompatActivity {
                 // set number of selected on CommentsTextView
                 String new_text2 = CommentList.size() + " " + getString(R.string.post_dropdown_items_selected);
                 postMatchBinding.dropComments.setText(new_text2);
+
+                Globals.DebugLogger.Out();
             });
 
             //adds the "cancel" button to the dropdown menu
             builder.setNegativeButton("Cancel", (dialogInterface, i) -> {
+                Globals.DebugLogger.In("PostMatch:Comments:Cancel");
+
                 // dismiss dialog
                 dialogInterface.dismiss();
+
+                Globals.DebugLogger.Out();
             });
 
             // show dialog
@@ -141,6 +167,8 @@ public class PostMatch extends AppCompatActivity {
 
             //Overriding the handler for the neutral button
             dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(v -> {
+                Globals.DebugLogger.In("PostMatch:Comments:Clear");
+
                 // remove all selection
                 Arrays.fill(selectedComment, false);
                 // clear comment list and uncheck entries
@@ -148,8 +176,14 @@ public class PostMatch extends AppCompatActivity {
                 for (int i = 0; i < dialog.getListView().getCount(); ++i) {
                     dialog.getListView().setItemChecked(i, false);
                 }
+
+                Globals.DebugLogger.Out();
             });
+
+            Globals.DebugLogger.Out();
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -159,6 +193,8 @@ public class PostMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initDidLeave() {
+        Globals.DebugLogger.In("PostMatch:initDidLeave");
+
         // Default values
         postMatchBinding.checkboxDidLeave.setChecked(true);
 
@@ -167,6 +203,8 @@ public class PostMatch extends AppCompatActivity {
         // So add it in now.
         String new_text = postMatchBinding.checkboxDidLeave.getText() + Globals.CheckBoxTextPadding;
         postMatchBinding.checkboxDidLeave.setText(new_text);
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -176,16 +214,24 @@ public class PostMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initReset() {
+        Globals.DebugLogger.In("PostMatch:initReset");
+
         // Default values
         postMatchBinding.checkboxReset.setChecked(false);
 
         postMatchBinding.checkboxReset.setOnClickListener(view -> {
+            Globals.DebugLogger.In("PostMatch:checkboxReset:Click");
+
             if (postMatchBinding.checkboxReset.isChecked()) {
                 postMatchBinding.butNext.setText(getString(R.string.post_but_reset));
             } else {
                 postMatchBinding.butNext.setText(getString(R.string.post_but_submit));
             }
+
+            Globals.DebugLogger.Out();
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -195,9 +241,13 @@ public class PostMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initSubmit() {
+        Globals.DebugLogger.In("PostMatch:initSubmit");
+
         // Create a button for when you are done inputting info
         // finishes scouting the team and submits info
         postMatchBinding.butNext.setOnClickListener(view -> {
+            Globals.DebugLogger.In("PostMatch:butNext:Click");
+
             // If we need to reset the match, abort it all and go back
             if (postMatchBinding.checkboxReset.isChecked()) {
                 Globals.EventLogger.clear();
@@ -235,8 +285,11 @@ public class PostMatch extends AppCompatActivity {
             if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType)
                     .startsWith(Constants.Achievements.EVENT_TYPE_FINAL)) Achievements.data_FinalType++;
 
+            Globals.DebugLogger.Out();
             finish();
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -246,6 +299,8 @@ public class PostMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initStats() {
+        Globals.DebugLogger.In("PostMatch:initStats");
+
         String statsCoral = "";
         String statsAlgae = "";
 
@@ -259,6 +314,7 @@ public class PostMatch extends AppCompatActivity {
 
         postMatchBinding.textStatsCoral.setText(statsCoral);
         postMatchBinding.textStatsAlgae.setText(statsAlgae);
-        //use achievement data
+
+        Globals.DebugLogger.Out();
     }
 }

@@ -17,6 +17,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.team3663.scouting_app.utility.DebugLogger;
 import com.team3663.scouting_app.utility.Logger;
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
@@ -28,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Optional;
 
 public class PreMatch extends AppCompatActivity {
     // =============================================================================================
@@ -54,6 +56,8 @@ public class PreMatch extends AppCompatActivity {
             return insets;
         });
 
+        Globals.DebugLogger.In("PreMatch:onCreate");
+
         // Now that we are starting to scout data, set the Global values
         if (Globals.sp == null) Globals.sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
         Globals.CurrentScoutingTeam = Globals.sp.getInt(Constants.Prefs.SCOUTING_TEAM, 0);
@@ -76,6 +80,8 @@ public class PreMatch extends AppCompatActivity {
         initNext();
         initAchievements();
         initShadowMode();
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -85,6 +91,8 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initMatchNumber() {
+        Globals.DebugLogger.In("PreMatch:initMatchNumber");
+
         if (Globals.CurrentMatchNumber > 0)
             // MUST CONVERT TO STRING or it crashes with out warning
             preMatchBinding.editMatch.setText(String.valueOf(Globals.CurrentMatchNumber));
@@ -117,6 +125,8 @@ public class PreMatch extends AppCompatActivity {
                 loadTeamToScout();
             }
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -126,6 +136,8 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initMatchType() {
+        Globals.DebugLogger.In("PreMatch:initMatchType");
+
         // Adds the items from the match type array to the list
         ArrayAdapter<String> adp_MatchType = new ArrayAdapter<>(this, R.layout.cpr_spinner, Match_Types);
         adp_MatchType.setDropDownViewResource(R.layout.cpr_spinner_item);
@@ -146,6 +158,10 @@ public class PreMatch extends AppCompatActivity {
         preMatchBinding.spinnerMatchType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Globals.DebugLogger.Params.add("i=" + i);
+                Globals.DebugLogger.Params.add("l=" + l);
+                Globals.DebugLogger.In("PreMatch:spinnerMatchType:onItemSelected");
+
                 // Save off what you selected to be used until changed again
                 int newMatchType = Globals.MatchTypeList.getMatchTypeId(preMatchBinding.spinnerMatchType.getSelectedItem().toString());
 
@@ -158,11 +174,15 @@ public class PreMatch extends AppCompatActivity {
                     preMatchBinding.textTeamToScoutName.setText("");
                     loadTeamToScout();
                 }
+
+                Globals.DebugLogger.Out();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {}
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -172,11 +192,17 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initTeamNumber() {
+        Globals.DebugLogger.In("PreMatch:initTeamMember");
+
         loadTeamToScout();
 
         preMatchBinding.spinnerTeamToScout.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Globals.DebugLogger.Params.add("i=" + i);
+                Globals.DebugLogger.Params.add("l=" + l);
+                Globals.DebugLogger.In("PreMatch:spinnerTeamToScout:onItemSelected");
+
                 String TeamToScoutStr = preMatchBinding.spinnerTeamToScout.getSelectedItem().toString();
                 if (!TeamToScoutStr.isEmpty() && !TeamToScoutStr.equals(getString(R.string.pre_dropdown_no_items))) {
                     int TeamToScout = Integer.parseInt(TeamToScoutStr);
@@ -192,11 +218,15 @@ public class PreMatch extends AppCompatActivity {
                     CurrentTeamToScoutPosition = preMatchBinding.spinnerTeamToScout.getSelectedItemPosition();
                 }
                 else preMatchBinding.textTeamToScoutName.setText("");
+
+                Globals.DebugLogger.Out();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {}
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -206,8 +236,12 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initScouterName() {
+        Globals.DebugLogger.In("PreMatch:initScouterName");
+
         // Create a text box to input the scouters name
         preMatchBinding.editScouterName.setText(ScouterName);
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -217,6 +251,8 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initDidPlay() {
+        Globals.DebugLogger.In("PreMatch:initDidPlay");
+
         // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
         // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)
         // So add it in now.
@@ -225,6 +261,8 @@ public class PreMatch extends AppCompatActivity {
 
         // Default checkboxes
         preMatchBinding.checkboxDidPlay.setChecked(true);
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -234,6 +272,8 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initStartingGamePiece() {
+        Globals.DebugLogger.In("PreMatch:initStartingGamePiece");
+
         // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
         // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)
         // So add it in now.
@@ -245,6 +285,8 @@ public class PreMatch extends AppCompatActivity {
 
         // Default checkboxes
         preMatchBinding.checkboxStartGamePiece.setChecked(Globals.isStartingGamePiece);
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -254,6 +296,8 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initStartingPos() {
+        Globals.DebugLogger.In("PreMatch:initStartingPos");
+
         // Adds the items from the starting positions array to the list
         ArrayAdapter<String> adp_StartPos = new ArrayAdapter<>(this, R.layout.cpr_spinner, Start_Positions);
         adp_StartPos.setDropDownViewResource(R.layout.cpr_spinner_item);
@@ -268,6 +312,8 @@ public class PreMatch extends AppCompatActivity {
             }
         }
         preMatchBinding.spinnerStartingPosition.setSelection(start_Pos_DropId);
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -277,6 +323,8 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initOverride() {
+        Globals.DebugLogger.In("PreMatch:initOverride");
+
         // Default the override button to disabled
         // If we have a match number, enable the override
         preMatchBinding.checkboxOverride.setEnabled(Globals.CurrentMatchNumber > 0);
@@ -287,13 +335,19 @@ public class PreMatch extends AppCompatActivity {
         preMatchBinding.butAddOverrideTeamNum.setVisibility(View.INVISIBLE);
 
         preMatchBinding.checkboxOverride.setOnClickListener(view -> {
+            Globals.DebugLogger.In("PreMatch:checkboxOverride:Click");
+
             int state = View.VISIBLE;
             if (!preMatchBinding.checkboxOverride.isChecked()) state = View.INVISIBLE;                    preMatchBinding.textOverride.setVisibility(state);
             preMatchBinding.editOverrideTeamNum.setVisibility(state);
             preMatchBinding.butAddOverrideTeamNum.setVisibility(state);
+
+            Globals.DebugLogger.Out();
         });
 
         preMatchBinding.butAddOverrideTeamNum.setOnClickListener(view -> {
+            Globals.DebugLogger.In("PreMatch:butAddOverrideTeamNum:Click");
+
             // Set the global override number
             String new_override = preMatchBinding.editOverrideTeamNum.getText().toString();
 
@@ -307,7 +361,11 @@ public class PreMatch extends AppCompatActivity {
             preMatchBinding.textOverride.setVisibility(View.INVISIBLE);
             preMatchBinding.editOverrideTeamNum.setVisibility(View.INVISIBLE);
             preMatchBinding.butAddOverrideTeamNum.setVisibility(View.INVISIBLE);
+
+            Globals.DebugLogger.Out();
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -317,8 +375,12 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initResubmit() {
+        Globals.DebugLogger.In("PreMatch:initResubmit");
+
         // Default checkboxes
         preMatchBinding.checkboxResubmit.setChecked(false);
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -328,10 +390,14 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initPractice() {
+        Globals.DebugLogger.In("PreMatch:initPractice");
+
         preMatchBinding.checkboxPractice.setOnClickListener(view -> Globals.isPractice = preMatchBinding.checkboxPractice.isChecked());
 
         // Default checkboxes
         preMatchBinding.checkboxPractice.setChecked(Globals.isPractice);
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -341,6 +407,8 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void processNextButton() {
+        Globals.DebugLogger.In("PreMatch:processNextButton");
+
         Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
         Globals.NumberMatchFilesKept = Globals.sp.getInt(Constants.Prefs.NUM_MATCHES, 5);
         CurrentTeamToScoutPosition = preMatchBinding.spinnerTeamToScout.getSelectedItemPosition();
@@ -403,6 +471,7 @@ public class PreMatch extends AppCompatActivity {
             startActivity(GoToSubmitData);
         }
 
+        Globals.DebugLogger.Out();
         finish();
     }
 
@@ -414,9 +483,13 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initNext() {
+        Globals.DebugLogger.In("PreMatch:initNext");
+
         // Create a button for when you are done inputting info
         Button but_Next = preMatchBinding.butNext;
         but_Next.setOnClickListener(view -> {
+            Globals.DebugLogger.In("PreMatch:butNext:click");
+
             // If we should re-submit data, go to the submit page immediately
             if (preMatchBinding.checkboxResubmit.isChecked()) {
                 // Decrement the team number since we're only going to resubmit data.  When we return,
@@ -459,7 +532,11 @@ public class PreMatch extends AppCompatActivity {
                         .show();
             } else
                 processNextButton();
+
+            Globals.DebugLogger.Out();
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -469,6 +546,8 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void loadTeamToScout() {
+        Globals.DebugLogger.In("PreMatch:loadTeamToScout");
+
         // If we have a match number load the team information for the match
         ArrayList<String> teamsInMatch = new ArrayList<>();
 
@@ -506,6 +585,8 @@ public class PreMatch extends AppCompatActivity {
             CurrentTeamToScoutPosition = 0;
 
         preMatchBinding.spinnerTeamToScout.setSelection(CurrentTeamToScoutPosition);
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -515,8 +596,12 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initAchievements() {
+        Globals.DebugLogger.In("PreMatch:initAchievements");
+
         if (Globals.myAchievements == null)
             Globals.myAchievements = new Achievements();
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -526,10 +611,14 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initShadowMode() {
+        Globals.DebugLogger.In("PreMatch:initShadowMode");
+
         if (Globals.isShadowMode) {
             preMatchBinding.textShadowModeL.setText(getString(R.string.pre_shadow_mode));
             preMatchBinding.textShadowModeR.setText(getString(R.string.pre_shadow_mode));
         }
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -539,13 +628,18 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private boolean isLogFileExisting() {
+        Globals.DebugLogger.In("PreMatch:isLogFileExisting");
+
+        boolean ret = false;
         String filename_data = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_d.csv";
         String filename_event = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv";
 
-        if (Globals.output_df.findFile(filename_data) != null) return true;
-        if (Globals.output_df.findFile(filename_event) != null) return true;
+        if (Globals.output_df.findFile(filename_data) != null) ret = true;
+        if (Globals.output_df.findFile(filename_event) != null) ret = true;
 
-        return false;
+        Globals.DebugLogger.Out();
+
+        return ret;
     }
 
     // =============================================================================================
@@ -555,6 +649,8 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void backupLogFile(String in_filename) {
+        Globals.DebugLogger.In("PreMatch:backupLogFile");
+
         String backupFilename;
 
         if (Globals.output_df.findFile(in_filename) != null) {
@@ -565,5 +661,7 @@ public class PreMatch extends AppCompatActivity {
 
             Objects.requireNonNull(Globals.output_df.findFile(in_filename)).renameTo(backupFilename);
         }
+
+        Globals.DebugLogger.Out();
     }
 }

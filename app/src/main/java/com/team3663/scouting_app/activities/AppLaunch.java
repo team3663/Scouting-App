@@ -25,7 +25,7 @@ import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.AppLaunchBinding;
-import com.team3663.scouting_app.utility.Debug;
+import com.team3663.scouting_app.utility.DebugLogger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -127,6 +127,9 @@ public class AppLaunch extends AppCompatActivity {
 
         // While loading Matches, we messed with Globals.CurrentMatchType, so reset it
         Globals.CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
+
+        // Set up the debug logger
+        Globals.DebugLogger = new DebugLogger(getApplicationContext());
     }
 
     // =============================================================================================
@@ -434,8 +437,6 @@ public class AppLaunch extends AppCompatActivity {
                     (Globals.sp.getInt(Constants.Prefs.DEVICE_ID, -1) == -1)) {
                 Toast.makeText(AppLaunch.this, R.string.applaunch_not_configured, Toast.LENGTH_SHORT).show();
             } else {
-                Globals.DebugLogger = new Debug(getApplicationContext());
-
                 // Go to the first page
                 Intent GoToPreMatch = new Intent(AppLaunch.this, PreMatch.class);
                 startActivity(GoToPreMatch);

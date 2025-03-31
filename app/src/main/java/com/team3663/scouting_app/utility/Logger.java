@@ -39,6 +39,8 @@ public class Logger {
 
     // Constructor: create the new logger
     public Logger(Context in_context) {
+        Globals.DebugLogger.In("Logger:constructor");
+
         appContext = in_context;
 
         // Default all arrays to -1
@@ -53,16 +55,24 @@ public class Logger {
 
         // Add an empty logging row so that Seq# is the same as the index
         match_log_events.add(new LoggerEventRow(-1, 0, 0, 0, ""));
+
+        Globals.DebugLogger.Out();
     }
 
     // Member Function: Clear out any saved data from the logger.
     public void clear() {
+        Globals.DebugLogger.In("Logger:clear");
+
         match_log_events.clear();
         match_log_data.clear();
+
+        Globals.DebugLogger.Out();
     }
 
     // Member Function: Close out the logger.  Write out all of the non-time based match data and close the files.
     public void close() {
+        Globals.DebugLogger.In("Logger:close");
+
         // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;
 
@@ -116,10 +126,15 @@ public class Logger {
         WriteOutDataFile(data_df);
         WriteOutEventFile(event_df);
         this.clear();
+
+        Globals.DebugLogger.Out();
     }
 
     // Member Function: Find the correct data in the Key/Value Pair variable
     private String FindValueInPair(String in_Key) {
+        Globals.DebugLogger.Params.add("in_Key=" + in_Key);
+        Globals.DebugLogger.In("Logger:FindValueInPair");
+
         String ret = "";
 
         // loop through the pairs and stop if you find a key match.  Append the value if found.
@@ -130,11 +145,15 @@ public class Logger {
             }
         }
 
+        Globals.DebugLogger.Out();
         return ret;
     }
 
     // Member Function: Write out the "D" file
     private void WriteOutDataFile(DocumentFile in_data_df) {
+        Globals.DebugLogger.Params.add("in_data_df=" + in_data_df.getName());
+        Globals.DebugLogger.In("Logger:WriteOutDataFile");
+
         if (!in_data_df.canWrite()) Toast.makeText(appContext, "File not writeable: " + in_data_df.getName(), Toast.LENGTH_LONG).show();
 
         OutputStream fos_data;
@@ -194,10 +213,15 @@ public class Logger {
             Toast.makeText(appContext, "Failed to close out data log file. (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
             throw new RuntimeException(e);
         }
+
+        Globals.DebugLogger.Out();
     }
 
     // Member Function: Write out the "E" file
     private void WriteOutEventFile(DocumentFile in_event_df) {
+        Globals.DebugLogger.Params.add("in_event_df=" + in_event_df.getName());
+        Globals.DebugLogger.In("Logger:WriteOutEventFile");
+
         if (!in_event_df.canWrite()) Toast.makeText(appContext, "File not writeable: " + in_event_df.getName(), Toast.LENGTH_LONG).show();
 
         OutputStream fos_event;
@@ -249,10 +273,18 @@ public class Logger {
             Toast.makeText(appContext, "Failed to close out event log file. (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
             throw new RuntimeException(e);
         }
+
+        Globals.DebugLogger.Out();
     }
 
     // Member Function: Log a time-based event
     public void LogEvent(int in_EventId, float in_X, float in_Y, double in_time) {
+        Globals.DebugLogger.Params.add("in_EventId=" + in_EventId);
+        Globals.DebugLogger.Params.add("in_X=" + in_X);
+        Globals.DebugLogger.Params.add("in_Y=" + in_Y);
+        Globals.DebugLogger.Params.add("in_time=" + in_time);
+        Globals.DebugLogger.In("Logger:LogEvent");
+
         // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;
 
@@ -305,22 +337,36 @@ public class Logger {
         // Save this off as the previous event (to link the next one to it).
         // Safe to do this everytime since if we start a new sequence, we override (above) to blank.
         previous_seq[GroupId] = match_log_events.size() - 1;
+
+        Globals.DebugLogger.Out();
     }
 
     // Member Function: Log a time-based event (with no time passed in)
     public void LogEvent(int in_EventId, float in_X, float in_Y){
+        Globals.DebugLogger.Params.add("in_EventId=" + in_EventId);
+        Globals.DebugLogger.Params.add("in_X=" + in_X);
+        Globals.DebugLogger.Params.add("in_Y=" + in_Y);
+        Globals.DebugLogger.In("Logger:LogEvent");
+
         // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;
 
         LogEvent(in_EventId, in_X, in_Y, System.currentTimeMillis());
+
+        Globals.DebugLogger.Out();
     }
 
     // Member Function: Log a time-based event (with no time passed in)
     public void LogEvent(int in_EventId){
+        Globals.DebugLogger.Params.add("in_EventId=" + in_EventId);
+        Globals.DebugLogger.In("Logger:LogEvent");
+
         // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;
 
         LogEvent(in_EventId, 0, 0, System.currentTimeMillis());
+
+        Globals.DebugLogger.Out();
     }
 
     // Member Function: Log a non-time based event - just store this for later.
@@ -333,6 +379,8 @@ public class Logger {
 
     // Member Function: Check if the last logged event is an orphan
     public boolean isLastEventAnOrphan() {
+        Globals.DebugLogger.In("Logger:isLastEventAnOrphan");
+
         boolean foundLast;
         boolean rc = false;
         LoggerEventRow ler;
@@ -368,11 +416,14 @@ public class Logger {
             }
         }
 
+        Globals.DebugLogger.Out();
         return rc;
     }
 
     // Member Function: Undo the last logged Event and return the previous EventId
     public int UndoLastEvent() {
+        Globals.DebugLogger.In("Logger:UndoLastEvent");
+
         int lastIndex = -1;
         int lastEventId = -1;
         int lastEventGroupId;
@@ -465,6 +516,7 @@ public class Logger {
             }
         }
 
+        Globals.DebugLogger.Out();
         return rc;
     }
 
@@ -481,6 +533,13 @@ public class Logger {
 
         // Constructor: create a new LogEventRow
         public LoggerEventRow(int in_EventId, int in_Time, int in_X, int in_Y, String in_PrevSeq) {
+            Globals.DebugLogger.Params.add("in_EventId=" + in_EventId);
+            Globals.DebugLogger.Params.add("in_Time=" + in_Time);
+            Globals.DebugLogger.Params.add("in_X=" + in_X);
+            Globals.DebugLogger.Params.add("in_Y=" + in_Y);
+            Globals.DebugLogger.Params.add("in_PrevSeq=" + in_PrevSeq);
+            Globals.DebugLogger.In("Logger:LoggerEventRow:constructor");
+
             EventId = in_EventId;
             X = in_X;
             Y = in_Y;
@@ -491,6 +550,8 @@ public class Logger {
             int prev_time = 0;
             if ((Globals.EventLogger != null) && (!Globals.EventLogger.match_log_events.isEmpty())) prev_time = Globals.EventLogger.match_log_events.get(Globals.EventLogger.match_log_events.size() - 1).LogTime;
             LogTime = Math.max(in_Time, prev_time);
+
+            Globals.DebugLogger.Out();
         }
     }
 }

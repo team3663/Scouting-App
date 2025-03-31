@@ -21,6 +21,7 @@ import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.SubmitDataBinding;
+import com.team3663.scouting_app.utility.DebugLogger;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
 import java.util.ArrayList;
@@ -53,6 +54,8 @@ public class SubmitData extends AppCompatActivity {
             return insets;
         });
 
+        Globals.DebugLogger.In("SubmitData:onCreate");
+
         // Initialize activity components that need the Logger
         initAchievements();
 
@@ -69,6 +72,8 @@ public class SubmitData extends AppCompatActivity {
         initBluetooth();
         initQuit();
         initNext();
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -78,6 +83,8 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initMatchType() {
+        Globals.DebugLogger.In("SubmitData:initMatchType");
+
         // Adds the items from the match type array to the list
         ArrayAdapter<String> adp_MatchType = new ArrayAdapter<>(this, R.layout.cpr_spinner, Match_Types);
         adp_MatchType.setDropDownViewResource(R.layout.cpr_spinner_item);
@@ -100,6 +107,10 @@ public class SubmitData extends AppCompatActivity {
         submitDataBinding.spinnerMatchType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Globals.DebugLogger.Params.add("i=" + i);
+                Globals.DebugLogger.Params.add("l=" + l);
+                Globals.DebugLogger.In("SubmitData:MatchType:Select");
+
                 // Save off what you selected to be used until changed again
                 int newMatchType = Globals.MatchTypeList.getMatchTypeId(submitDataBinding.spinnerMatchType.getSelectedItem().toString());
 
@@ -107,11 +118,15 @@ public class SubmitData extends AppCompatActivity {
                     Globals.TransmitMatchType = newMatchType;
                     initMatch();
                 }
+
+                Globals.DebugLogger.Out();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {}
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -122,6 +137,8 @@ public class SubmitData extends AppCompatActivity {
     // Output:      ArrayList<String> - list of match numbers sorts numerically
     // =============================================================================================
     private ArrayList<String> FindMatches() {
+        Globals.DebugLogger.In("SubmitData:FindMatches");
+
         ArrayList<Integer> ret_int = new ArrayList<>();
         ArrayList<String> ret = new ArrayList<>();
 
@@ -145,6 +162,8 @@ public class SubmitData extends AppCompatActivity {
         // Sort the list (numerically) and then copy into the String version
         Collections.sort(ret_int);
         for (Integer i : ret_int) ret.add(i.toString());
+
+        Globals.DebugLogger.Out();
         return ret;
     }
 
@@ -156,6 +175,8 @@ public class SubmitData extends AppCompatActivity {
     private class popOneAndGo_TimerTask extends TimerTask {
         @Override
         public void run() {
+            Globals.DebugLogger.In("SubmitData:popOneAndGo");
+
             TimerTask achievement_timerTask_Start;
             TimerTask achievement_timerTask_End;
 
@@ -165,6 +186,8 @@ public class SubmitData extends AppCompatActivity {
                 achievement_timer.schedule(achievement_timerTask_Start, 1);
                 achievement_timer.schedule(achievement_timerTask_End, Constants.Achievements.DISPLAY_TIME);
             }
+
+            Globals.DebugLogger.Out();
         }
     }
 
@@ -175,6 +198,8 @@ public class SubmitData extends AppCompatActivity {
     private class AchievementTimerTaskStart extends TimerTask {
         @Override
         public void run() {
+            Globals.DebugLogger.In("SubmitData:AchievementTimerStart");
+
             SubmitData.this.runOnUiThread(() -> {
                 submitDataBinding.textAchievementTitle.setText(poplist.get(currentAchievement).title);
                 submitDataBinding.textAchievementDesc.setText(poplist.get(currentAchievement).description);
@@ -192,6 +217,8 @@ public class SubmitData extends AppCompatActivity {
 //                in_submitDataBinding.textAchievement.clearAnimation();
 
             media.start();
+
+            Globals.DebugLogger.Out();
         }
     }
 
@@ -202,6 +229,8 @@ public class SubmitData extends AppCompatActivity {
     private class AchievementTimerTaskEnd extends TimerTask {
         @Override
         public void run() {
+            Globals.DebugLogger.In("SubmitData:AchievementTimerEnd");
+
             TimerTask startNext;
 
             SubmitData.this.runOnUiThread(() -> {
@@ -216,6 +245,8 @@ public class SubmitData extends AppCompatActivity {
                 achievement_timer.schedule(startNext, Constants.Achievements.IN_BETWEEN_DELAY);
             }
             else closeAchievements();
+
+            Globals.DebugLogger.Out();
         }
     }
 
@@ -226,9 +257,13 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void closeAchievements() {
+        Globals.DebugLogger.In("SubmitData:closeAchievements");
+
         if (media.isPlaying()) media.stop();
         media.reset();
         media.release();
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -238,6 +273,8 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initAchievements() {
+        Globals.DebugLogger.In("SubmitData:initAchievements");
+
         TimerTask startOne;
         startOne = new popOneAndGo_TimerTask();
 
@@ -262,6 +299,8 @@ public class SubmitData extends AppCompatActivity {
             Globals.EventLogger.LogData(Constants.Logger.LOGKEY_ACHIEVEMENT, ach_sep_ID);
             achievement_timer.schedule(startOne, Constants.Achievements.START_DELAY);
         }
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -271,6 +310,8 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initMatch() {
+        Globals.DebugLogger.In("SubmitData:initMatch");
+
         // Adds the items from the match log files array to the list
         ArrayAdapter<String> adp_Match = new ArrayAdapter<>(this,
                 R.layout.cpr_spinner, FindMatches());
@@ -286,6 +327,8 @@ public class SubmitData extends AppCompatActivity {
 
         if (position >= 0)
             submitDataBinding.spinnerMatch.setSelection(position, true);
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -295,7 +338,11 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initQR() {
+        Globals.DebugLogger.In("SubmitData:initQR");
+
         submitDataBinding.butQRCode.setOnClickListener(view -> {
+            Globals.DebugLogger.In("SubmitData:butQRCode:Click");
+
             // Reset pre-Match settings for next time
             Globals.isStartingGamePiece = true;
             Globals.isPractice = false;
@@ -304,8 +351,11 @@ public class SubmitData extends AppCompatActivity {
             Intent GoToQRCode = new Intent(SubmitData.this, QRCode.class);
             startActivity(GoToQRCode);
 
+            Globals.DebugLogger.Out();
             finish();
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -315,7 +365,11 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initBluetooth() {
+        Globals.DebugLogger.In("SubmitData:initBluetooth");
+
         submitDataBinding.butSendBT.setOnClickListener(view -> {
+            Globals.DebugLogger.In("SubmitData:butSendBT:Click");
+
             // Reset pre-Match settings for next time
             Globals.isStartingGamePiece = true;
             Globals.isPractice = false;
@@ -325,8 +379,11 @@ public class SubmitData extends AppCompatActivity {
 //            Intent GoToBluetooth = new Intent(SubmitData.this, Bluetooth.class);
 //            startActivity(GoToBluetooth);
 
+            Globals.DebugLogger.Out();
 //            finish();
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -336,6 +393,8 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initQuit() {
+        Globals.DebugLogger.In("SubmitData:initQuit");
+
         submitDataBinding.butQuit.setOnClickListener(view -> new AlertDialog.Builder(view.getContext())
             .setTitle(getString(R.string.submit_alert_quit_title))
             .setMessage(getString(R.string.submit_alert_quit_message))
@@ -351,6 +410,8 @@ public class SubmitData extends AppCompatActivity {
             .setNegativeButton(getString(R.string.submit_alert_cancel), null)
             .show()
         );
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -360,7 +421,11 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initNext() {
+        Globals.DebugLogger.In("SubmitData:initNext");
+
         submitDataBinding.butNext.setOnClickListener(view -> {
+            Globals.DebugLogger.In("SubmitData:butNext:Click");
+
             // Reset pre-Match settings for next time
             Globals.isStartingGamePiece = true;
             Globals.isPractice = false;
@@ -371,7 +436,10 @@ public class SubmitData extends AppCompatActivity {
             Intent GoToPreMatch = new Intent(SubmitData.this, PreMatch.class);
             startActivity(GoToPreMatch);
 
+            Globals.DebugLogger.Out();
             finish();
         });
+
+        Globals.DebugLogger.Out();
     }
 }

@@ -19,12 +19,12 @@ import java.util.Objects;
 // Class:       Debug
 // Description: Allows debugging information to be written to disk
 // =============================================================================================
-public class Debug {
+public class DebugLogger {
     private static int Indent = 0;
     private static DocumentFile file_df = null;
     private final Context appContext;
-    public static ArrayList<String> Params;
-    public Debug(Context in_context) {
+    public ArrayList<String> Params = new ArrayList<>();
+    public DebugLogger(Context in_context) {
         appContext = in_context;
         DocumentFile df_logfiledir = Globals.output_df.getParentFile();
         String filename = "applog.txt";
@@ -32,20 +32,23 @@ public class Debug {
         assert df_logfiledir != null;
         if (df_logfiledir.findFile(filename) != null) Objects.requireNonNull(df_logfiledir.findFile(filename)).delete();
 
-        file_df = df_logfiledir.createFile("text/csv", filename);
+        file_df = df_logfiledir.createFile("text/plain", filename);
 
         assert file_df != null;
         if (!file_df.canWrite()) Toast.makeText(appContext, "File not writeable: " + file_df.getName(), Toast.LENGTH_LONG).show();
     }
 
-    public void In(String in_FunctionName) throws IOException {
-        String padding = " ";
-        Indent += 2;
-        in_FunctionName = in_FunctionName + ": ";
+    public void In(String in_FunctionName) {
+        String padding = "|  ";
+        String outline;
+
+        if (Params.size() > 0)
+            in_FunctionName = in_FunctionName + ": (";
+
         OutputStream fos_logdata;
 
         try {
-            fos_logdata = appContext.getContentResolver().openOutputStream(file_df.getUri());
+            fos_logdata = appContext.getContentResolver().openOutputStream(file_df.getUri(), "wa");
         } catch (Exception e) {
             Toast.makeText(appContext, "Failed to create output stream: " + file_df.getName() + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
             throw new RuntimeException(e);
@@ -54,14 +57,23 @@ public class Debug {
         try {
             // Write out the data
             assert fos_logdata != null;
-            fos_logdata.write(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS ")).getBytes(StandardCharsets.UTF_8));
-            fos_logdata.write(padding.repeat(Indent).getBytes(StandardCharsets.UTF_8));
-            fos_logdata.write(in_FunctionName.getBytes(StandardCharsets.UTF_8));
+            outline = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS   "));
+            outline += padding.repeat(Indent);
+            outline += in_FunctionName;
+
             for (String param : Params) {
-                param += ", ";
-                fos_logdata.write(param.getBytes(StandardCharsets.UTF_8));
+                if (param.equals(Params.get(0)))
+                    outline += param;
+                else
+                    outline += ", " + param;
             }
-            fos_logdata.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
+
+            if (!Params.isEmpty())
+                outline += ")";
+
+            outline += System.lineSeparator();
+
+            fos_logdata.write(outline.getBytes(StandardCharsets.UTF_8));
 
             fos_logdata.flush();
             fos_logdata.close();
@@ -72,9 +84,10 @@ public class Debug {
         }
 
         Params.clear();
+        Indent++;
     }
 
     public void Out() {
-        Indent -= 2;
+        Indent--;
     }
 }

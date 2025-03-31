@@ -74,6 +74,7 @@ public class Match extends AppCompatActivity {
             return insets;
         });
 
+        Globals.DebugLogger.In("Match:onCreate");
         Globals.CurrentMatchPhase = Constants.Phases.NONE;
 
         // Initialize activity components
@@ -88,12 +89,20 @@ public class Match extends AppCompatActivity {
         initTime();
         initBackButton();
         initContextMenu();
+
+        Globals.DebugLogger.Out();
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu in_menu, View in_v, ContextMenu.ContextMenuInfo in_menuInfo) {
         super.onCreateContextMenu(in_menu, in_v, in_menuInfo);
 
+        Globals.DebugLogger.Params.add("in_menu=" + in_menu.toString());
+        if (in_menuInfo == null)
+            Globals.DebugLogger.Params.add("in_menuInfo=<null>");
+        else
+            Globals.DebugLogger.Params.add("in_menuInfo=" + in_menuInfo.toString());
+        Globals.DebugLogger.In("Match:onCreateContextMenu");
 
         // Check to make sure the game is going
         if (!Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) {
@@ -116,11 +125,16 @@ public class Match extends AppCompatActivity {
                 createEventContextSubMenu(in_menu);
             }
         }
+
+        Globals.DebugLogger.Out();
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem in_item) {
+        Globals.DebugLogger.Params.add("in_item=" + in_item);
+        Globals.DebugLogger.In("Match:onContextItemSelected");
+
         // Take action on whether we're showing the detail event menu or the group event menu
         if (showing_event_detail_menu) {
             int event_id = Globals.EventList.getEventId(Objects.requireNonNull(in_item.getTitle()).toString());
@@ -138,6 +152,7 @@ public class Match extends AppCompatActivity {
             matchBinding.viewContextSubMenuView.showContextMenu(current_X_Absolute, current_Y_Absolute);
         }
 
+        Globals.DebugLogger.Out();
         return true;
     }
 
@@ -149,6 +164,9 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint({"DiscouragedApi", "SetTextI18n"})
     public void createEventContextMenu(ContextMenu in_menu) {
+        Globals.DebugLogger.Params.add("in_menu=" + in_menu.toString());
+        Globals.DebugLogger.In("Match:createEventContextMenu");
+
         // Loop through the groups, and if there are events for this group in this phase of the game,
         // add the group to the menu
         for (int i = 1; i <= Globals.MaxEventGroups; ++i) {
@@ -171,6 +189,8 @@ public class Match extends AppCompatActivity {
 
             item.setTitle(ss);
         }
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -181,6 +201,9 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint({"DiscouragedApi", "SetTextI18n"})
     public void createEventContextSubMenu(ContextMenu in_menu) {
+        Globals.DebugLogger.Params.add("in_menu=" + in_menu.toString());
+        Globals.DebugLogger.In("Match:createEventContextSubMenu");
+
         // In case there's not a valid group, exit out.  This shouldn't happen.
         if (showing_event_detail_group < 1) return;
 
@@ -212,6 +235,8 @@ public class Match extends AppCompatActivity {
 
             item.setTitle(ss);
         }
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -222,6 +247,8 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint({"DiscouragedApi", "SetTextI18n"})
     public void startMatch() {
+        Globals.DebugLogger.In("Match:startMatch");
+
         // Record the current/start time of the match to calculate elapsed time
         Globals.StartTime = System.currentTimeMillis();
 
@@ -268,6 +295,8 @@ public class Match extends AppCompatActivity {
         matchBinding.butMatchControl.setText(getString(R.string.button_start_teleop));
         matchBinding.butMatchControl.setBackgroundColor(getColor(R.color.dark_yellow));
         matchBinding.butMatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.start_teleop, 0);
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -279,6 +308,8 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint({"SetTextI18n", "DefaultLocale"})
     public void startTeleop() {
+        Globals.DebugLogger.In("Match:startTeleop");
+
         // Set the start Time so that the Display Time will be correct
         Globals.StartTime = System.currentTimeMillis() - Constants.Match.TIMER_AUTO_LENGTH * 1_000;
         matchBinding.textTime.setText(Constants.Match.TIMER_TELEOP_LENGTH / 60 + ":" + String.format("%02d", Constants.Match.TIMER_TELEOP_LENGTH % 60));
@@ -305,6 +336,8 @@ public class Match extends AppCompatActivity {
             matchBinding.butMatchControl.setBackgroundColor(getColor(R.color.dark_red));
             matchBinding.butMatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.stop_match, 0);
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -315,6 +348,8 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint("SetTextI18n")
     public void endTeleop() {
+        Globals.DebugLogger.In("Match:endTeleop");
+
         // Certain actions can't be set from a non-UI thread (like within a TimerTask that runs on a
         // separate thread). So we need to make a Runner that will execute on the UI thread to set this.
         Match.this.runOnUiThread(() -> {
@@ -323,6 +358,8 @@ public class Match extends AppCompatActivity {
             matchBinding.butMatchControl.setBackgroundColor(getColor(R.color.white));
             matchBinding.butMatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.next_button, 0);
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -333,6 +370,8 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint("SetTextI18n")
     public void endMatchCheck() {
+        Globals.DebugLogger.In("Match:endMatchCheck");
+
         // See if there's an orphaned event.  If so, double check we REALLY want to end the match
         if (Globals.EventLogger.isLastEventAnOrphan()) {
             new AlertDialog.Builder(Match.this)
@@ -353,6 +392,8 @@ public class Match extends AppCompatActivity {
                     .show();
         }
         else endMatch();
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -363,6 +404,8 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint("SetTextI18n")
     public void endMatch() {
+        Globals.DebugLogger.In("Match:endMatch");
+
         // Get rid of the Scheduled events that are over/have ended
         // Need to set match_Timer and TimerTasks to null so we can create "new" ones at the start of the next match
         if (match_Timer != null) {
@@ -387,6 +430,7 @@ public class Match extends AppCompatActivity {
         Intent GoToPostMatch = new Intent(Match.this, PostMatch.class);
         startActivity(GoToPostMatch);
 
+        Globals.DebugLogger.Out();
         finish();
     }
 
@@ -397,9 +441,13 @@ public class Match extends AppCompatActivity {
     public class AutoTimerTask extends TimerTask {
         @Override
         public void run() {
+            Globals.DebugLogger.In("Match:AutoTimerTask");
+
             if (Globals.CurrentMatchPhase.equals(Constants.Phases.AUTO)) {
                 startTeleop();
             }
+
+            Globals.DebugLogger.Out();
         }
     }
 
@@ -410,9 +458,13 @@ public class Match extends AppCompatActivity {
     public class TeleopTimerTask extends TimerTask {
         @Override
         public void run() {
+            Globals.DebugLogger.In("Match:TeleopTimerTask");
+
             if (Globals.CurrentMatchPhase.equals(Constants.Phases.TELEOP)) {
                 endTeleop();
             }
+
+            Globals.DebugLogger.Out();
         }
     }
 
@@ -424,6 +476,8 @@ public class Match extends AppCompatActivity {
         @SuppressLint({"SetTextI18n", "DefaultLocale"})
         @Override
         public void run() {
+            Globals.DebugLogger.In("Match:GameTimeTimerTask");
+
             // Get elapsed time in seconds without decimal and round to make it more accurate and not skip numbers
             int elapsedSeconds;
 
@@ -434,6 +488,8 @@ public class Match extends AppCompatActivity {
             }
             if (elapsedSeconds < 0) elapsedSeconds = 0;
             matchBinding.textTime.setText(elapsedSeconds / 60 + ":" + String.format("%02d", elapsedSeconds % 60));
+
+            Globals.DebugLogger.Out();
         }
     }
 
@@ -444,6 +500,8 @@ public class Match extends AppCompatActivity {
     public class FlashingTimerTask extends TimerTask {
         @Override
         public void run() {
+            // Globals.DebugLogger.In("Match:FlashingTimerTask");
+
             // If the button is ON then toggle the background color between COLOR_FLASH and COLOR_NORMAL
             // Always start by setting it to "normal" to avoid the case where you toggle it off during the Thread.sleep
             // since it will remain BUTTON_COLOR_FLASH even though it's off.
@@ -461,6 +519,8 @@ public class Match extends AppCompatActivity {
             if (matchBinding.switchNotMoving.isChecked()) matchBinding.switchNotMoving.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
             if (matchBinding.switchDefense.isChecked()) matchBinding.switchDefense.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
             if (matchBinding.switchDefended.isChecked()) matchBinding.switchDefended.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
+
+            // Globals.DebugLogger.Out();
         }
     }
 
@@ -472,6 +532,8 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint("UseCompatLoadingForDrawables")
     private void initRotation() {
+        Globals.DebugLogger.In("Match:initRotation");
+
         // Set up a listener for Orientation changes so we can flip the field properly (which means we
         // ignore the flip for the field image in a sense)
         // This listener will get triggered for every slight movement so we'll need to be careful on how
@@ -484,6 +546,8 @@ public class Match extends AppCompatActivity {
                 @SuppressLint("UseCompatLoadingForDrawables")
                 @Override
                 public void onOrientationChanged(int rotation_degrees) {
+                    Globals.DebugLogger.In("Match:onOrientationChanged");
+
                     // If the device is in the 0 to 180 degree range, make it Landscape
                     if ((rotation_degrees >= 0) && (rotation_degrees < 180) && !currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) {
                         matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field_image));
@@ -495,6 +559,8 @@ public class Match extends AppCompatActivity {
                         matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field_image_flipped));
                         currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE_REVERSE;
                     }
+
+                    Globals.DebugLogger.Out();
                 }
             };
 
@@ -509,6 +575,8 @@ public class Match extends AppCompatActivity {
             matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field_image_flipped));
             currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE_REVERSE;
         }
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -518,10 +586,14 @@ public class Match extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initTime() {
+        Globals.DebugLogger.In("Match:initTime");
+
         // Initialize the match timer textbox settings
         matchBinding.textTime.setVisibility(View.INVISIBLE);
         matchBinding.textTime.setBackgroundColor(Color.TRANSPARENT);
         matchBinding.textTime.setTextSize(24F);
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -531,6 +603,8 @@ public class Match extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initStatus() {
+        Globals.DebugLogger.In("Match:initStatus");
+
         // If this is a practice, put a message in the Status and set the image to Practice mode
         if (Globals.isPractice) {
             matchBinding.textStatus.setTextColor(Color.YELLOW);
@@ -541,6 +615,8 @@ public class Match extends AppCompatActivity {
             matchBinding.textStatus.setTextColor(Color.LTGRAY);
             matchBinding.textPractice.setText("");
         }
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -550,9 +626,13 @@ public class Match extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initTeam() {
+        Globals.DebugLogger.In("Match:initTeam");
+
         String new_team = Globals.CurrentTeamToScout + " - " + Globals.TeamList.get(Globals.CurrentTeamToScout);
         matchBinding.textTeam.setText(new_team);
         matchBinding.textTeam.setTextColor(Color.WHITE);
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -562,10 +642,14 @@ public class Match extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initStartButton() {
+        Globals.DebugLogger.In("Match:initStartButton");
+
         // Initialize the match Control Button settings
         matchBinding.butMatchControl.setText(getString(R.string.button_start_match));
         matchBinding.butMatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_green));
         matchBinding.butMatchControl.setOnClickListener(view -> {
+            Globals.DebugLogger.In("Match:butMatchControl:Click");
+
             // Checks the current phase and makes the button press act accordingly
             switch (Globals.CurrentMatchPhase) {
                 case Constants.Phases.NONE:
@@ -595,7 +679,11 @@ public class Match extends AppCompatActivity {
                     else endMatchCheck();
                     break;
             }
+
+            Globals.DebugLogger.Out();
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -605,9 +693,13 @@ public class Match extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initBackButton() {
+        Globals.DebugLogger.In("Match:initBackButton");
+
         // Map the button variable to the actual button
         // If clicked, go back to the previous page
         matchBinding.butBack.setOnClickListener(view -> {
+            Globals.DebugLogger.In("Match:butBack:Click");
+
             // If this is a practice, we need to clear out the Logger since we have an instance of Logger, but during
             // practice, we don't open any files.  If the next time we get here from Pre-Match, if it's NOT a practice,
             // we'll try to write out to the same "dummy" Logger and crash.  Resetting the Logger here ensures we do the
@@ -623,8 +715,11 @@ public class Match extends AppCompatActivity {
             Intent GoToPreviousPage = new Intent(Match.this, PreMatch.class);
             startActivity(GoToPreviousPage);
 
+            Globals.DebugLogger.Out();
             finish();
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -634,11 +729,15 @@ public class Match extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initUndoButton() {
+        Globals.DebugLogger.In("Match:initUndoButton");
+
         matchBinding.butUndo.setVisibility(View.INVISIBLE);
         matchBinding.butUndo.setEnabled(false);
 
         // If clicked, undo the last event selected
         matchBinding.butUndo.setOnClickListener(view -> {
+            Globals.DebugLogger.In("Match:butUndo:Click");
+
             int last_event_id;
             last_event_id = Globals.EventLogger.UndoLastEvent();
 
@@ -655,7 +754,11 @@ public class Match extends AppCompatActivity {
             else {
                 setEventStatus(last_event_id);
             }
+
+            Globals.DebugLogger.Out();
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -666,6 +769,9 @@ public class Match extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void setEventStatus(int in_event_id) {
+        Globals.DebugLogger.Params.add("in_event_id=" + in_event_id);
+        Globals.DebugLogger.In("Match:setEventStatus");
+
         SpannableString ss = new SpannableString(Globals.EventList.getEventDescription(in_event_id));
 
         // Ensure the text will fit, based on the length of the string.
@@ -680,6 +786,8 @@ public class Match extends AppCompatActivity {
         }
 
         matchBinding.textStatus.setText(ss);
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -689,6 +797,8 @@ public class Match extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initNotMoving() {
+        Globals.DebugLogger.In("Match:initNotMoving");
+
         // Initialize the Not Moving Switch settings
         matchBinding.switchNotMoving.setTextColor(Constants.Match.BUTTON_TEXT_COLOR_DISABLED);
         matchBinding.switchNotMoving.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
@@ -698,6 +808,9 @@ public class Match extends AppCompatActivity {
 
         // This gets called if either the switch is clicked on, or the slide toggle is flipped (covers both)
         matchBinding.switchNotMoving.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Globals.DebugLogger.Params.add("isChecked=" + isChecked);
+            Globals.DebugLogger.In("Match:switchNotMoving:Changed");
+
             // If the button is being turned ON make it RED otherwise LTGRAY
             if (isChecked) {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_NOT_MOVING_START);
@@ -710,11 +823,15 @@ public class Match extends AppCompatActivity {
                 matchBinding.switchNotMoving.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
                 Achievements.data_IdleTime += (int)(System.currentTimeMillis() - start_time_not_moving);
             }
+
+            Globals.DebugLogger.Out();
         });
 
         matchBinding.switchNotMoving.setOnClickListener(view -> {
             // Need this listener or else the onCheckedChanged won't fire either.
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -724,6 +841,8 @@ public class Match extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initDefense() {
+        Globals.DebugLogger.In("Match:initDefense");
+
         // Initialize the Defense Switch settings
         matchBinding.switchDefense.setTextColor(Constants.Match.BUTTON_TEXT_COLOR_DISABLED);
         matchBinding.switchDefense.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
@@ -733,6 +852,9 @@ public class Match extends AppCompatActivity {
 
         // This gets called if either the switch is clicked on, or the slide toggle is flipped (covers both)
         matchBinding.switchDefense.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Globals.DebugLogger.Params.add("isChecked=" + isChecked);
+            Globals.DebugLogger.In("Match:switchDefense:Changed");
+
             // If the button is being turned ON make it RED otherwise LTGRAY
             if (isChecked) {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENSE_START);
@@ -742,11 +864,15 @@ public class Match extends AppCompatActivity {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENSE_END);
                 matchBinding.switchDefense.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
             }
+
+            Globals.DebugLogger.Out();
         });
 
         matchBinding.switchDefense.setOnClickListener(view -> {
             // Need this listener or else the onCheckedChanged won't fire either.
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -756,6 +882,8 @@ public class Match extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initDefended() {
+        Globals.DebugLogger.In("Match:initDefended");
+
         // Initialize the Defended Switch settings
         matchBinding.switchDefended.setTextColor(Constants.Match.BUTTON_TEXT_COLOR_DISABLED);
         matchBinding.switchDefended.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
@@ -765,6 +893,9 @@ public class Match extends AppCompatActivity {
 
         // This gets called if either the switch is clicked on, or the slide toggle is flipped (covers both)
         matchBinding.switchDefended.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Globals.DebugLogger.Params.add("isChecked=" + isChecked);
+            Globals.DebugLogger.In("Match:switchDefended:Changed");
+
             Globals.isDefended = isChecked;
 
             if (isChecked) {
@@ -775,11 +906,15 @@ public class Match extends AppCompatActivity {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENDED_END);
                 matchBinding.switchDefended.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
             }
+
+            Globals.DebugLogger.Out();
         });
 
         matchBinding.switchDefended.setOnClickListener(view -> {
             // Need this listener or else the onCheckedChanged won't fire either.
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -790,6 +925,8 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint("ClickableViewAccessibility")
     private void initContextMenu() {
+        Globals.DebugLogger.In("Match:initContextMenu");
+
         // Define a context menu
         RelativeLayout ContextMenu = matchBinding.ContextMenu;
 
@@ -799,6 +936,10 @@ public class Match extends AppCompatActivity {
 
         // So that it activates on a normal click instead of a long click
         ContextMenu.setOnTouchListener((view, motionEvent) -> {
+            Globals.DebugLogger.Params.add("X=" + motionEvent.getX());
+            Globals.DebugLogger.Params.add("Y=" + motionEvent.getY());
+            Globals.DebugLogger.In("Match:ContextMenu:Touch");
+
             // Save where we touched the field image regardless of its orientation
             current_X_Absolute = motionEvent.getX();
             current_Y_Absolute = motionEvent.getY();
@@ -813,7 +954,11 @@ public class Match extends AppCompatActivity {
             }
 
             matchBinding.imageFieldView.showContextMenu(current_X_Absolute, current_Y_Absolute);
+
+            Globals.DebugLogger.Out();
             return false;
         });
+
+        Globals.DebugLogger.Out();
     }
 }
