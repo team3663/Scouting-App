@@ -55,6 +55,8 @@ public class Match extends AppCompatActivity {
 
     // Define a Timer and TimerTasks so you can schedule things
     Timer match_Timer;
+    Timer robot_Timer;
+    TimerTask robot_timertask;
     TimerTask auto_timertask;
     TimerTask teleop_timertask;
     TimerTask gametime_timertask;
@@ -89,6 +91,7 @@ public class Match extends AppCompatActivity {
         initTime();
         initBackButton();
         initContextMenu();
+        initRobotStartLocation();
 
         Globals.DebugLogger.Out();
     }
@@ -264,6 +267,9 @@ public class Match extends AppCompatActivity {
             OEL.disable();
         }
 
+        // Hide the starting location of the robot
+        matchBinding.textRobot.setVisibility(View.INVISIBLE);
+
         // Create the Timers and timer tasks
         match_Timer = new Timer();
         auto_timertask = new AutoTimerTask();
@@ -412,7 +418,14 @@ public class Match extends AppCompatActivity {
             match_Timer.cancel();
             match_Timer.purge();
         }
+        if (robot_Timer != null) {
+            robot_Timer.cancel();
+            robot_Timer.purge();
+        }
+
         match_Timer = null;
+        robot_Timer = null;
+        robot_timertask = null;
         auto_timertask = null;
         teleop_timertask = null;
         gametime_timertask = null;
@@ -559,6 +572,9 @@ public class Match extends AppCompatActivity {
                         matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field_image_flipped));
                         currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE_REVERSE;
                     }
+
+                    // Set the robot starting location based on the new rotation
+                    initRobotStartLocation();
 
                     Globals.DebugLogger.Out();
                 }
@@ -960,5 +976,81 @@ public class Match extends AppCompatActivity {
         });
 
         Globals.DebugLogger.Out();
+    }
+
+    // =============================================================================================
+    // Function:    initRobotStartLocation
+    // Description: Initialize the Robot starting location
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    @SuppressLint("ClickableViewAccessibility")
+    private void initRobotStartLocation() {
+        robot_timertask = new RobotTimerTask();
+
+        robot_Timer = new Timer();
+        robot_Timer.schedule(robot_timertask, 250);
+    }
+
+    // =============================================================================================
+    // Class:       RobotTimerTask
+    // Description: Defines the TimerTask trigger to set the location of the robot starting position
+    // =============================================================================================
+    public class RobotTimerTask extends TimerTask {
+        @Override
+        public void run() {
+            setRobotStartLocation();
+        }
+    }
+
+    // =============================================================================================
+    // Function:    setRobotStartLocation
+    // Description: Initialize the Robot starting location
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    @SuppressLint("ClickableViewAccessibility")
+    private void setRobotStartLocation() {
+        int x, y;
+        int x_offset = 30, y_offset = 15;
+        int max_x = matchBinding.imageFieldView.getWidth();
+        int max_y = matchBinding.imageFieldView.getHeight();
+        boolean blue_alliance = Globals.MatchList.getAllianceForTeam(Globals.CurrentTeamToScout).equals("BLUE");
+
+        if ((blue_alliance && currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) ||
+            (!blue_alliance && currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE_REVERSE)))
+        {
+            x = (max_x * 43 / 100) - x_offset;
+            switch (Globals.CurrentStartPosition) {
+                case 1:
+                    y = max_y * 25 / 100;
+                    break;
+                case 3:
+                    y = max_y * 75 / 100;
+                    break;
+                default:
+                    y = max_y / 2;
+                    break;
+            }
+        }
+        else {
+            x = max_x * 57 / 100;
+            switch (Globals.CurrentStartPosition) {
+                case 1:
+                    y = max_y * 75 / 100;
+                    break;
+                case 3:
+                    y = max_y * 25 / 100;
+                    break;
+                default:
+                    y = max_y / 2;
+                    break;
+            }
+        }
+
+        // Make sure we see the starting location of the robot
+        matchBinding.textRobot.setX(x);
+        matchBinding.textRobot.setY(y - y_offset);
+        matchBinding.textRobot.setVisibility(View.VISIBLE);
     }
 }
