@@ -986,10 +986,14 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint("ClickableViewAccessibility")
     private void initRobotStartLocation() {
+        Globals.DebugLogger.In("Match:initRobotStartLocation");
+
         robot_timertask = new RobotTimerTask();
 
         robot_Timer = new Timer();
         robot_Timer.schedule(robot_timertask, 250);
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -999,7 +1003,11 @@ public class Match extends AppCompatActivity {
     public class RobotTimerTask extends TimerTask {
         @Override
         public void run() {
+            Globals.DebugLogger.In("Match:RobotTimerTask");
+
             setRobotStartLocation();
+
+            Globals.DebugLogger.Out();
         }
     }
 
@@ -1011,6 +1019,8 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint("ClickableViewAccessibility")
     private void setRobotStartLocation() {
+        Globals.DebugLogger.In("Match:setRobotStartLocation");
+
         int x, y;
         int x_offset = 30, y_offset = 15;
         int max_x = matchBinding.imageFieldView.getWidth();
@@ -1052,5 +1062,7 @@ public class Match extends AppCompatActivity {
         matchBinding.textRobot.setX(x);
         matchBinding.textRobot.setY(y - y_offset);
         matchBinding.textRobot.setVisibility(View.VISIBLE);
+
+        Globals.DebugLogger.Out();
     }
 }
