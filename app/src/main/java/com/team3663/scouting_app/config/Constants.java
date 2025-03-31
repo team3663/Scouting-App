@@ -137,8 +137,8 @@ public class Constants {
         public static final String EVENT_TYPE_PRACTICE = "P";
         public static final String EVENT_TYPE_SEMI = "S";
         public static final String EVENT_TYPE_FINAL = "F";
-        public static final ArrayList<Integer> COMPETITION_IDS_WORLDS = new ArrayList<>(Arrays.asList(7, 8));
-        public static final ArrayList<Integer> COMPETITION_IDS_DCMP = new ArrayList<>(List.of(6));
-        public static final ArrayList<Integer> COMPETITION_IDS_EINSTEIN = new ArrayList<>(List.of(8));
+        public static final ArrayList<Integer> COMPETITION_IDS_WORLDS = new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17));
+        public static final ArrayList<Integer> COMPETITION_IDS_DCMP = new ArrayList<>(List.of(9));
+        public static final ArrayList<Integer> COMPETITION_IDS_EINSTEIN = new ArrayList<>(List.of(17));
     }
 }
