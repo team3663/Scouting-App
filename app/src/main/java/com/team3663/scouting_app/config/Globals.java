@@ -35,7 +35,6 @@ public class Globals {
     public static int CurrentMatchNumber;
     public static int CurrentScoutingTeam;
     public static int CurrentDeviceId;
-    public static int CurrentStartPosition;
     public static int CurrentColorId;
     public static int CurrentTeamOverrideNum;
     public static int CurrentPrefTeamPos;
