@@ -34,7 +34,6 @@ public class PreMatch extends AppCompatActivity {
     // Global variables
     // =============================================================================================
     private PreMatchBinding preMatchBinding;
-    private boolean okay_to_proceed = false;
     // To store the inputted name
     protected static String ScouterName;
     private static final ArrayList<String> Start_Positions = Globals.StartPositionList.getDescriptionList();
@@ -70,7 +69,6 @@ public class PreMatch extends AppCompatActivity {
         initScouterName();
         initDidPlay();
         initStartingGamePiece();
-        initStartingPos();
         initOverride();
         initResubmit();
         initPractice();
@@ -249,29 +247,6 @@ public class PreMatch extends AppCompatActivity {
     }
 
     // =============================================================================================
-    // Function:    initStartingPos
-    // Description: Initialize the Start Position field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initStartingPos() {
-        // Adds the items from the starting positions array to the list
-        ArrayAdapter<String> adp_StartPos = new ArrayAdapter<>(this, R.layout.cpr_spinner, Start_Positions);
-        adp_StartPos.setDropDownViewResource(R.layout.cpr_spinner_item);
-        preMatchBinding.spinnerStartingPosition.setAdapter(adp_StartPos);
-        // Search through the list of Start Positions till you find the one that is correct then get its position in the list
-        //  and set that one as selected
-        int start_Pos_DropId = 0;
-        for (int i = 0; i < Start_Positions.size(); i++) {
-            if (Start_Positions.get(i).equals(Globals.StartPositionList.getStartPositionDescription(Globals.CurrentStartPosition))) {
-                start_Pos_DropId = i;
-                break;
-            }
-        }
-        preMatchBinding.spinnerStartingPosition.setSelection(start_Pos_DropId);
-    }
-
-    // =============================================================================================
     // Function:    initOverride
     // Description: Initialize the Override fields
     // Parameters:  void
@@ -364,27 +339,11 @@ public class PreMatch extends AppCompatActivity {
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_TEAM_SCOUTING, String.valueOf(Globals.CurrentScoutingTeam));
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_MATCH_TYPE, Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType));
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_SHADOW_MODE, String.valueOf(Globals.isShadowMode));
+        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_TIME, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss")));
+        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_LEAVE_START, String.valueOf(false));
+        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_CLIMB_POSITION, String.valueOf(Constants.PreMatch.CLIMB_POS_DID_NOT_PLAY));
 
         Achievements.data_TeamToScout = Globals.CurrentTeamToScout;
-
-        // If the robot is playing, log the starting position the scouter chose.
-        // If not, we need to log a few items that won't be logged elsewhere
-        if (preMatchBinding.checkboxDidPlay.isChecked()) {
-            int startPos = Globals.StartPositionList.getStartPositionId(preMatchBinding.spinnerStartingPosition.getSelectedItem().toString());
-            Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_POSITION, String.valueOf(startPos));
-            Globals.CurrentStartPosition = startPos;
-        } else {
-            Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_POSITION, String.valueOf(Constants.PreMatch.START_POS_DID_NOT_PLAY));
-            Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_TIME, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss")));
-            Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_LEAVE_START, String.valueOf(false));
-            Globals.EventLogger.LogData(Constants.Logger.LOGKEY_CLIMB_POSITION, String.valueOf(Constants.PreMatch.CLIMB_POS_DID_NOT_PLAY));
-        }
-
-        // Log if they started with a game piece (the match hasn't started so we need to specify a "0" time
-        // or else it will log as max match time which wastes extra log characters for no benefit)
-        if (Globals.isStartingGamePiece) {
-            Globals.EventLogger.LogEvent(Constants.Events.ID_AUTO_START_GAME_PIECE, 0, 0, 0);
-        }
 
         // Save off some fields for next time or later usage
         if ((ScouterName != null) && (!ScouterName.isEmpty()) && !ScouterName.equals(String.valueOf(preMatchBinding.editScouterName.getText())))
@@ -397,9 +356,6 @@ public class PreMatch extends AppCompatActivity {
             Intent GoToMatch = new Intent(PreMatch.this, Match.class);
             startActivity(GoToMatch);
         } else {
-            // Reset the Saved Start position so that you have to choose it again
-            Globals.CurrentStartPosition = 0;
-
             Intent GoToSubmitData = new Intent(PreMatch.this, SubmitData.class);
             startActivity(GoToSubmitData);
         }
@@ -434,9 +390,7 @@ public class PreMatch extends AppCompatActivity {
             }
 
             if (String.valueOf(preMatchBinding.editMatch.getText()).isEmpty() || preMatchBinding.spinnerTeamToScout.getSelectedItem().toString().equals(getString(R.string.pre_dropdown_no_items))
-                    || preMatchBinding.spinnerTeamToScout.getSelectedItem().toString().isEmpty() || String.valueOf(preMatchBinding.editScouterName.getText()).isEmpty()
-                    || (preMatchBinding.spinnerStartingPosition.getSelectedItem().toString().equals(Globals.StartPositionList.getStartPositionDescription(Constants.Data.ID_START_POS_DEFAULT))
-                    && preMatchBinding.checkboxDidPlay.isChecked())) {
+                    || preMatchBinding.spinnerTeamToScout.getSelectedItem().toString().isEmpty() || String.valueOf(preMatchBinding.editScouterName.getText()).isEmpty()) {
                 Toast.makeText(PreMatch.this, R.string.pre_missing_data, Toast.LENGTH_SHORT).show();
                 return;
             }

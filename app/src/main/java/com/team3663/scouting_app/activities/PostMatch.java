@@ -218,9 +218,6 @@ public class PostMatch extends AppCompatActivity {
                 if (!comment_sep_ID.isEmpty()) comment_sep_ID = comment_sep_ID.substring(1);
                 Globals.EventLogger.LogData(Constants.Logger.LOGKEY_COMMENTS, comment_sep_ID);
 
-                // Reset the Saved Start position so that you have to choose it again
-                Globals.CurrentStartPosition = 0;
-
                 Intent GoToSubmitData = new Intent(PostMatch.this, SubmitData.class);
                 startActivity(GoToSubmitData);
             }

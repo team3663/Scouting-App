@@ -21,4 +21,5 @@
     <string name="match_alert_orphanedEvent_message">The last event recorded could have following events.\nQuitting now will leave this incomplete.\nYou can still quit or go back and complete the event sequence.</string>
     <string name="match_alert_orphanedEvent_positive">Quit anyway</string>
     <string name="match_alert_orphanedEvent_negative">Return to match</string>
+    <string name="match_select_start_location">Select Starting Location</string>
 </resources>
