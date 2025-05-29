@@ -342,46 +342,50 @@ public class AppLaunch extends AppCompatActivity {
                 }
                 else info = line.split(",", -1);
 
-                // A bit messy but we need to know which Global to add the data to, and which fields to pass in.
-                // Switch needs a constant in the "case" expression, and complains about using getResources().
-                if (in_fileName.equals(getString(R.string.file_climb_positions))) {
-                    if (Boolean.parseBoolean(info[1]))
-                        Globals.ClimbPositionList.addClimbPositionRow(info[0], info[2]);
-                } else if (in_fileName.equals(getString(R.string.file_colors))) {
-                    // We don't know how many color codes there will be so re-split the line and pass in the csv of color choices
-                    if (Boolean.parseBoolean(info[1])) {
-                        String[] info_colors = line.split(",", 4);
-                        Globals.ColorList.addColorRow(info[0], info[2], info_colors[3]);
+                // Before we process this line, make sure it's not empty.  If so, just skip it.
+                // An empty line (even with spaces) will have a length of 1.  We always will want at least 2 values.
+                if (info.length > 1) {
+                    // A bit messy but we need to know which Global to add the data to, and which fields to pass in.
+                    // Switch needs a constant in the "case" expression, and complains about using getResources().
+                    if (in_fileName.equals(getString(R.string.file_climb_positions))) {
+                        if (Boolean.parseBoolean(info[1]))
+                            Globals.ClimbPositionList.addClimbPositionRow(info[0], info[2]);
+                    } else if (in_fileName.equals(getString(R.string.file_colors))) {
+                        // We don't know how many color codes there will be so re-split the line and pass in the csv of color choices
+                        if (Boolean.parseBoolean(info[1])) {
+                            String[] info_colors = line.split(",", 4);
+                            Globals.ColorList.addColorRow(info[0], info[2], info_colors[3]);
+                        }
+                    } else if (in_fileName.equals(getString(R.string.file_comments))) {
+                        if (Boolean.parseBoolean(info[1]))
+                            Globals.CommentList.addCommentRow(info[0], info[2]);
+                    } else if (in_fileName.equals(getString(R.string.file_competitions))) {
+                        Globals.CompetitionList.addCompetitionRow(info[0], info[4], info[6]);
+                    } else if (in_fileName.equals(getString(R.string.file_devices))) {
+                        Globals.DeviceList.addDeviceRow(info[0], info[1], info[5]);
+                    } else if (in_fileName.equals(getString(R.string.file_event_groups))) {
+                        Globals.EventList.addEventGroup(info[0], info[1]);
+                    } else if (in_fileName.equals(getString(R.string.file_events))) {
+                        Globals.EventList.addEventRow(info[0], info[1], info[3], info[2].toUpperCase(), info[4], info[5], info[6], info[7]);
+                    } else if (in_fileName.equals(getString(R.string.file_match_types))) {
+                        Globals.MatchTypeList.addMatchTypeRow(info[0], info[1], info[2]);
+                    } else if (in_fileName.equals(getString(R.string.file_matches))) {
+                        // Use only the match information that equals the competition we're in.
+                        if (Integer.parseInt(info[0]) == Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1)) {
+                            Globals.CurrentMatchType = Globals.MatchTypeList.getMatchTypeId(info[1]);
+                            Globals.MatchList.addMatchRow(info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8]);
+                        }
+                    } else if (in_fileName.equals(getString(R.string.file_start_positions))) {
+                        if (Boolean.parseBoolean(info[1]))
+                            Globals.StartPositionList.addStartPositionRow(info[0], info[2]);
+                    } else if (in_fileName.equals(getString(R.string.file_teams))) {
+                        // Need to make sure there's no gaps so the team number and index align
+                        for (int i = index; i < Integer.parseInt(info[0]); i++) {
+                            Globals.TeamList.add(Constants.Teams.NO_TEAM);
+                        }
+                        Globals.TeamList.add(info[1]);
+                        index = Integer.parseInt(info[0]) + 1;
                     }
-                } else if (in_fileName.equals(getString(R.string.file_comments))) {
-                    if (Boolean.parseBoolean(info[1]))
-                        Globals.CommentList.addCommentRow(info[0], info[2]);
-                } else if (in_fileName.equals(getString(R.string.file_competitions))) {
-                    Globals.CompetitionList.addCompetitionRow(info[0], info[4], info[6]);
-                } else if (in_fileName.equals(getString(R.string.file_devices))) {
-                    Globals.DeviceList.addDeviceRow(info[0], info[1], info[5]);
-                } else if (in_fileName.equals(getString(R.string.file_event_groups))) {
-                    Globals.EventList.addEventGroup(info[0], info[1]);
-                } else if (in_fileName.equals(getString(R.string.file_events))) {
-                    Globals.EventList.addEventRow(info[0], info[1], info[3], info[2].toUpperCase(), info[4], info[5], info[6], info[7]);
-                } else if (in_fileName.equals(getString(R.string.file_match_types))) {
-                    Globals.MatchTypeList.addMatchTypeRow(info[0], info[1], info[2]);
-                } else if (in_fileName.equals(getString(R.string.file_matches))) {
-                    // Use only the match information that equals the competition we're in.
-                    if (Integer.parseInt(info[0]) == Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1)) {
-                        Globals.CurrentMatchType = Globals.MatchTypeList.getMatchTypeId(info[1]);
-                        Globals.MatchList.addMatchRow(info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8]);
-                    }
-                } else if (in_fileName.equals(getString(R.string.file_start_positions))) {
-                    if (Boolean.parseBoolean(info[1]))
-                        Globals.StartPositionList.addStartPositionRow(info[0], info[2]);
-                } else if (in_fileName.equals(getString(R.string.file_teams))) {
-                    // Need to make sure there's no gaps so the team number and index align
-                    for (int i = index; i < Integer.parseInt(info[0]); i++) {
-                        Globals.TeamList.add(Constants.Teams.NO_TEAM);
-                    }
-                    Globals.TeamList.add(info[1]);
-                    index = Integer.parseInt(info[0]) + 1;
                 }
             }
         } catch (ArrayIndexOutOfBoundsException e) {
