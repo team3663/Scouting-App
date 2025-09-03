@@ -85,7 +85,7 @@ public class QRCode extends AppCompatActivity {
             qrCodeBinding.butNextImage.setVisibility(View.INVISIBLE);
         }
 
-        qrCodeBinding.textImagePage.setText(String.format("Image 1 of %s", String.valueOf(qrFileString.getNumPages())));
+        qrCodeBinding.textImagePage.setText(String.format("Image 1 of %s", qrFileString.getNumPages()));
         currentImagePage = 0;
         generateQRImage();
     }
@@ -139,19 +139,19 @@ public class QRCode extends AppCompatActivity {
         qrCodeBinding.textFileStatsCompetition.setText(Globals.CompetitionList.getCompetitionDescription(Globals.CurrentCompetitionId));
         qrCodeBinding.textFileStatsMatch.setText(String.valueOf(Globals.TransmitMatchNum));
         qrCodeBinding.textFileStatsMatchType.setText(Globals.MatchTypeList.getMatchTypeDescription(Globals.TransmitMatchType));
-        qrCodeBinding.textFileStatsFileSize.setText(String.format("%s bytes", String.valueOf(qrFileString.getSize())));
+        qrCodeBinding.textFileStatsFileSize.setText(String.format("%s bytes", qrFileString.getSize()));
     }
 
     // =============================================================================================
     // Function:    InitNextImage
-    // Description: Initialize the Next Match button
+    // Description: Initialize the Next Image button
     // Parameters:  void
     // Output:      void
     // =============================================================================================
     private void InitNextImage() {
         qrCodeBinding.butNextImage.setOnClickListener(view -> {
             currentImagePage++;
-            qrCodeBinding.textImagePage.setText(String.format("Image %s of %s", String.valueOf(currentImagePage + 1), String.valueOf(qrFileString.getNumPages())));
+            qrCodeBinding.textImagePage.setText(String.format("Image %s of %s", currentImagePage + 1, qrFileString.getNumPages()));
             qrCodeBinding.butPrevImage.setEnabled(true);
             qrCodeBinding.butPrevImage.setClickable(true);
             qrCodeBinding.butPrevImage.setVisibility(View.VISIBLE);
@@ -173,14 +173,14 @@ public class QRCode extends AppCompatActivity {
 
     // =============================================================================================
     // Function:    InitPrevImage
-    // Description: Initialize the Next Match button
+    // Description: Initialize the Previous Image button
     // Parameters:  void
     // Output:      void
     // =============================================================================================
     private void InitPrevImage() {
         qrCodeBinding.butPrevImage.setOnClickListener(view -> {
             currentImagePage--;
-            qrCodeBinding.textImagePage.setText(String.format("Image %s of %s", String.valueOf(currentImagePage + 1), String.valueOf(qrFileString.getNumPages())));
+            qrCodeBinding.textImagePage.setText(String.format("Image %s of %s", currentImagePage + 1, qrFileString.getNumPages()));
             qrCodeBinding.butNextImage.setEnabled(true);
             qrCodeBinding.butNextImage.setClickable(true);
             qrCodeBinding.butNextImage.setVisibility(View.VISIBLE);
@@ -269,7 +269,7 @@ public class QRCode extends AppCompatActivity {
     // =============================================================================================
     private static class QR_FileString {
         ArrayList<String> file_page = new ArrayList<>();
-        int size = 0;
+        int size;
 
         // Constructor
         public QR_FileString (String in_data) {

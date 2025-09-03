@@ -1,6 +1,7 @@
 package com.team3663.scouting_app.activities;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.UriPermission;
@@ -14,6 +15,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.core.graphics.Insets;
@@ -44,16 +47,13 @@ public class AppLaunch extends AppCompatActivity {
     private AppLaunchBinding appLaunchBinding;
     public static Timer appLaunch_timer = new Timer();
 
-    @Override
-    protected void onActivityResult(int in_requestCode, int in_resultCode, Intent in_data) {
-        super.onActivityResult(in_requestCode, in_resultCode, in_data);
-
-        // check that it is the SecondActivity with an OK result
-        if (in_resultCode == RESULT_OK) { // Activity.RESULT_OK
-            switch (in_requestCode) {
-                case Constants.AppLaunch.ACTIVITY_CODE_SETTINGS:
-                    // get String data from Intent
-                    if (in_data.getIntExtra(Constants.Settings.RELOAD_DATA_KEY, 0) == 1) {
+    ActivityResultLauncher<Intent> settingsActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    // There are no request codes
+                    Intent data = result.getData();
+                    if (Objects.requireNonNull(data).getIntExtra(Constants.Settings.RELOAD_DATA_KEY, 0) == 1) {
                         try {
                             Globals.MatchList.clear();
                             Globals.MatchList.addMatchRowForNoMatch();
@@ -64,9 +64,16 @@ public class AppLaunch extends AppCompatActivity {
                             throw new RuntimeException(e);
                         }
                     }
-                    break;
-                case Constants.AppLaunch.ACTIVITY_CODE_STORAGE:
-                    Uri treeUri = in_data.getData();
+                }
+            });
+
+    ActivityResultLauncher<Intent> storageActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    // There are no request codes
+                    Intent data = result.getData();
+                    Uri treeUri = Objects.requireNonNull(data).getData();
                     if (treeUri != null) {
                         getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                         Globals.spe.putString(Constants.Prefs.STORAGE_URI, treeUri.toString());
@@ -75,10 +82,8 @@ public class AppLaunch extends AppCompatActivity {
                     }
 
                     loadData();
-                    break;
-            }
-        }
-    }
+                }
+            });
 
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
     @Override
@@ -165,23 +170,16 @@ public class AppLaunch extends AppCompatActivity {
             @Override
             public void run() {
                 // Force all lists to be empty (just to be sure)
-                Globals.ClimbPositionList.clear();
                 Globals.ColorList.clear();
                 Globals.CommentList.clear();
                 Globals.CompetitionList.clear();
                 Globals.DeviceList.clear();
                 Globals.EventList.clear();
                 Globals.MatchList.clear();
-                Globals.StartPositionList.clear();
                 Globals.TeamList.clear();
 
                 // Load the data with a BRIEF delay between.  :)
                 try {
-                    // First index (zero) needs to be a "NO TEAM" entry so the rest line up when they are loaded
-                    Globals.TeamList.add(Constants.Teams.NO_TEAM);
-
-                    LoadDataFile(getString(R.string.file_climb_positions), getString(R.string.applaunch_loading_climb_positions), getString(R.string.applaunch_file_error_climb_positions));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
                     LoadDataFile(getString(R.string.file_colors), getString(R.string.applaunch_loading_colors), getString(R.string.applaunch_file_error_colors));
                     Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
                     LoadDataFile(getString(R.string.file_comments), getString(R.string.applaunch_loading_comments), getString(R.string.applaunch_file_error_comments));
@@ -197,8 +195,6 @@ public class AppLaunch extends AppCompatActivity {
                     LoadDataFile(getString(R.string.file_match_types), getString(R.string.applaunch_loading_match_types), getString(R.string.applaunch_file_error_match_types));
                     Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
                     LoadDataFile(getString(R.string.file_matches), getString(R.string.applaunch_loading_matches), getString(R.string.applaunch_file_error_matches));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_start_positions), getString(R.string.applaunch_loading_start_positions), getString(R.string.applaunch_file_error_start_positions));
                     Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
                     LoadDataFile(getString(R.string.file_teams), getString(R.string.applaunch_loading_teams), getString(R.string.applaunch_file_error_teams));
                     Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
@@ -279,7 +275,6 @@ public class AppLaunch extends AppCompatActivity {
     // =============================================================================================
     // Function:    LoadDataFile
     // Description: Read from the .csv data file and populates the data into the in_List.
-    //              StartPositionList structure.
     //              If the in_PublicFileName doesn't exist, try to create if from the private one.
     //              If we can't read from the Public file, read from the Private one.
     // Parameters:  in_msgLoading
@@ -291,7 +286,6 @@ public class AppLaunch extends AppCompatActivity {
     public void LoadDataFile(String in_fileName, String in_msgLoading, String in_msgError) {
         boolean usePublic;
         String line;
-        int index = 1;
 
         // Ensure the public file exists, and if not, copy the private one there.
         // Return back if we should use the private or public file.
@@ -347,10 +341,7 @@ public class AppLaunch extends AppCompatActivity {
                 if (info.length > 1) {
                     // A bit messy but we need to know which Global to add the data to, and which fields to pass in.
                     // Switch needs a constant in the "case" expression, and complains about using getResources().
-                    if (in_fileName.equals(getString(R.string.file_climb_positions))) {
-                        if (Boolean.parseBoolean(info[1]))
-                            Globals.ClimbPositionList.addClimbPositionRow(info[0], info[2]);
-                    } else if (in_fileName.equals(getString(R.string.file_colors))) {
+                    if (in_fileName.equals(getString(R.string.file_colors))) {
                         // We don't know how many color codes there will be so re-split the line and pass in the csv of color choices
                         if (Boolean.parseBoolean(info[1])) {
                             String[] info_colors = line.split(",", 4);
@@ -366,7 +357,7 @@ public class AppLaunch extends AppCompatActivity {
                     } else if (in_fileName.equals(getString(R.string.file_event_groups))) {
                         Globals.EventList.addEventGroup(info[0], info[1]);
                     } else if (in_fileName.equals(getString(R.string.file_events))) {
-                        Globals.EventList.addEventRow(info[0], info[1], info[3], info[2].toUpperCase(), info[4], info[5], info[6], info[7]);
+                        Globals.EventList.addEventRow(info[0], info[1], info[3], info[2].toUpperCase(), info[4], info[5], info[6], info[8]);
                     } else if (in_fileName.equals(getString(R.string.file_match_types))) {
                         Globals.MatchTypeList.addMatchTypeRow(info[0], info[1], info[2]);
                     } else if (in_fileName.equals(getString(R.string.file_matches))) {
@@ -375,16 +366,8 @@ public class AppLaunch extends AppCompatActivity {
                             Globals.CurrentMatchType = Globals.MatchTypeList.getMatchTypeId(info[1]);
                             Globals.MatchList.addMatchRow(info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8]);
                         }
-                    } else if (in_fileName.equals(getString(R.string.file_start_positions))) {
-                        if (Boolean.parseBoolean(info[1]))
-                            Globals.StartPositionList.addStartPositionRow(info[0], info[2]);
                     } else if (in_fileName.equals(getString(R.string.file_teams))) {
-                        // Need to make sure there's no gaps so the team number and index align
-                        for (int i = index; i < Integer.parseInt(info[0]); i++) {
-                            Globals.TeamList.add(Constants.Teams.NO_TEAM);
-                        }
-                        Globals.TeamList.add(info[1]);
-                        index = Integer.parseInt(info[0]) + 1;
+                        Globals.TeamList.put(Integer.parseInt(info[0]), info[1]);
                     }
                 }
             }
@@ -409,8 +392,10 @@ public class AppLaunch extends AppCompatActivity {
         appLaunchBinding.imgButSettings.setClickable(false);
         appLaunchBinding.imgButSettings.setOnClickListener(view -> {
             Intent GoToSettings = new Intent(AppLaunch.this, Settings.class);
-            startActivityForResult(GoToSettings, Constants.AppLaunch.ACTIVITY_CODE_SETTINGS);
+            settingsActivityResultLauncher.launch(GoToSettings);
         });
+
+
     }
 
     // =============================================================================================
@@ -457,7 +442,6 @@ public class AppLaunch extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         Uri initialUri = Uri.parse(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toURI().toString());
         intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, initialUri);
-
-        startActivityForResult(intent, Constants.AppLaunch.ACTIVITY_CODE_STORAGE);
+        storageActivityResultLauncher.launch(intent);
     }
 }

@@ -1,4 +1,4 @@
-﻿Devices_Id,Devices_TeamNumber,Devices_Make,Devices_Model,Devices_SerialNumber,Devices_Description
+﻿Id,TeamNumber,Make,Model,SerialNumber,Description
 1,3663,Android,Galaxy Tab A7 Lite (SM-T220),R9PTB10XPBR,CPR - Blue 1
 2,3663,Android,Galaxy Tab A7 Lite (SM-T220),R9PT60B1PZD,CPR - Blue 2
 3,3663,Android,Galaxy Tab A7 Lite (SM-T220),R9PTB118PCL,CPR - Blue 3

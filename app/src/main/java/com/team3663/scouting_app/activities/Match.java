@@ -573,7 +573,7 @@ public class Match extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initTeam() {
-        String new_team = Globals.CurrentTeamToScout + " - " + Globals.TeamList.get(Globals.CurrentTeamToScout);
+        String new_team = Globals.CurrentTeamToScout + " - " + Globals.TeamList.getOrDefault(Globals.CurrentTeamToScout, "");
         matchBinding.textTeam.setText(new_team);
         matchBinding.textTeam.setTextColor(Color.WHITE);
     }
@@ -837,10 +837,10 @@ public class Match extends AppCompatActivity {
                 current_Y_Relative = Constants.Match.IMAGE_HEIGHT - current_Y_Absolute;
             }
 
-            if (!Globals.CurrentMatchPhase.equals(Constants.Phases.NONE))
-                matchBinding.imageFieldView.showContextMenu(current_X_Absolute, current_Y_Absolute);
-            else
+            if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE))
                 setRobotStartLocation(current_X_Absolute, current_Y_Absolute);
+            else
+                matchBinding.imageFieldView.showContextMenu(current_X_Absolute, current_Y_Absolute);
 
             return false;
         });
@@ -866,6 +866,15 @@ public class Match extends AppCompatActivity {
             starting_Y_Absolute = matchBinding.imageFieldView.getHeight() - starting_Y_Absolute;
         }
 
+        // Snap the robot to the correct starting line
+        if ((blue_alliance && currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) ||
+            (!blue_alliance && currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE_REVERSE))) {
+            starting_X_Absolute = Math.min(Math.max(in_X, matchBinding.imageFieldView.getWidth() * Constants.Match.START_LINE_X / 100.0f - offset), matchBinding.imageFieldView.getWidth() * Constants.Match.START_LINE_X / 100.0f + offset);
+        }
+        else {
+            starting_X_Absolute = Math.min(Math.max(in_X, matchBinding.imageFieldView.getWidth() * (100.0f - Constants.Match.START_LINE_X) / 100.0f - offset), matchBinding.imageFieldView.getWidth() * (100.0f - Constants.Match.START_LINE_X) / 100.0f + offset);
+        }
+
         // Save off the correct relative values based on the orientation
         if (currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE_REVERSE)) {
             starting_X_Relative = matchBinding.imageFieldView.getWidth() - starting_X_Absolute;
@@ -879,7 +888,8 @@ public class Match extends AppCompatActivity {
         matchBinding.textRobot.setX(starting_X_Absolute - offset);
         matchBinding.textRobot.setY(starting_Y_Absolute - offset);
 
-        // Enable these only if we had valid coordinates (avoid the initial call from the field rotation)
+        // Enable the robot
+        // This will be called initially as well as during screen rotations.  in_X will be 0 at that time.  Make it a no-op
         if (in_X > 0) {
             matchBinding.textRobot.setVisibility(View.VISIBLE);
             matchBinding.butMatchControl.setEnabled(true);

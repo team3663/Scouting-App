@@ -1,7 +1,7 @@
-﻿Competition_Id,Competition_Date,Competition_City,Competition_State,Competition_Name,Competition_TBACode,Competition_Attended
+﻿Id,Date,City,State,Name,TBACode,Attended
 1,2/27/2025,Salem,OR,Oregon State Fair,2025orsal,FALSE
 2,2/28/2025,Snohomish,WA,Glacier Peak,2025wasno,TRUE
-3,3/6/2024,Oregon City,OR,Clackamas Academy,2025orore,TRUE
+3,3/6/2025,Oregon City,OR,Clackamas Academy,2025orore,TRUE
 4,3/7/2025,Bellevue,WA,Sammamish,2025wasam,FALSE
 5,3/13/2025,Yakima,WA,SunDome,2025wayak,FALSE
 6,3/14/2025,Bonney Lake,WA,Bonney Lake,2025wabon,FALSE
@@ -9,11 +9,98 @@
 8,3/21/2025,Auburn,WA,Auburn,2025waahs,TRUE
 9,4/2/2025,Cheney,WA,PNW DCMP,2025pncmp,TRUE
 10,4/16/2025,Houston,TX,Worlds - Archimedes,2025arc,FALSE
-11,4/16/2025,Houston,TX,Worlds - Curie,2025cur,FALSE
+11,4/16/2025,Houston,TX,Worlds - Curie,2025cur,TRUE
 12,4/16/2025,Houston,TX,Worlds - Daly,2025dal,FALSE
 13,4/16/2025,Houston,TX,Worlds - Galileo,2025gal,FALSE
 14,4/16/2025,Houston,TX,Worlds - Hopper,2025hop,FALSE
 15,4/16/2025,Houston,TX,Worlds - Johnson,2025joh,FALSE
 16,4/16/2025,Houston,TX,Worlds - Milstein,2025mil,FALSE
-16,4/16/2025,Houston,TX,Worlds - Newton,2025new,FALSE
+103,4/16/2025,Houston,TX,Worlds - Newton,2025new,FALSE
 17,4/19/2025,Houston,TX,Worlds - Einstein,2025cmptx,FALSE
+18,4/3/2025,University Center,MI,MI DCMP - DTE Energy Foundation Division,2025micmp1,FALSE
+19,4/3/2025,University Center,MI,MI DCMP - Hemlock Semiconductor Division,2025micmp2,FALSE
+20,4/3/2025,University Center,MI,MI DCMP - Consumers Energy Division,2025micmp3,FALSE
+21,4/3/2025,University Center,MI,MI DCMP - Aptiv Division,2025micmp4,FALSE
+22,4/3/2025,Chesapeake,VA,Chesapeake DCMP,2025chcmp,FALSE
+23,4/2/2025,Houston,TX,FIT DCMP - Mercury Division,2025txcmp1,FALSE
+24,4/2/2025,Houston,TX,FIT DCMP - Apollo Division,2025txcmp2,FALSE
+25,4/3/2025,Greenwood,IN,Indiana DCMP,2025incmp,FALSE
+26,3/25/2025,Jerusalem,JM,Israel DCMP,2025iscmp,FALSE
+27,4/2/2025,Bethlehem,PA,Mid-Atlantic DCMP,2025mrcmp,FALSE
+28,4/4/2025,Greensboro,NC,North Carolina DCMP,2025nccmp,FALSE
+29,4/3/2025,Anderson,SC,South Carolina DCMP,2025sccmp,FALSE
+30,4/2/2025,West Springfield,MA,New England DCMP - Ballard Division,2025necmp1,FALSE
+31,4/2/2025,West Springfield,MA,New England DCMP - Sosik Division,2025necmp2,FALSE
+32,4/2/2025,Mississauga,ON,Ontario DCMP - Science Division,2025oncmp1,FALSE
+33,4/2/2025,Mississauga,ON,Ontario DCMP - Technology Division,2025oncmp2,FALSE
+34,4/2/2025,Macon,GA,Peachtree DCMP,2025gacmp,FALSE
+35,4/3/2025,Fresno,CA,Central Valley Regional,2025cafr,FALSE
+36,4/3/2025,Berkeley,CA,East Bay Regional,2025cabe,FALSE
+37,4/3/2025,West Allis,WI,Wisconsin Regional presented by GE HealthCare,2025wimi,FALSE
+38,4/3/2025,New York,NY,New York City Regional,2025nyny,FALSE
+39,4/2/2025,Lancaster,CA,Aerospace Valley Regional,2025caav,FALSE
+40,4/2/2025,Shawnee,OK,Oklahoma Regional,2025okok,FALSE
+41,4/2/2025,Minneapolis,MN,Minnesota North Star Regional,2025mnum,FALSE
+42,4/2/2025,St Cloud,MN,Minnesota Granite City Regional,2025mnmi2,FALSE
+104,4/2/2025,Kenner,LA,Bayou Regional,2025lake,FALSE
+43,4/2/2025,Sevierville,TN,Smoky Mountains Regional,2025tnkn,FALSE
+44,4/2/2025,Cleveland,OH,Buckeye Regional,2025ohcl,FALSE
+45,4/2/2025,Coral Gables,FL,South Florida Regional,2025flwp,FALSE
+46,3/27/2025,Pittsburg,CA,Contra Costa Regional,2025capt,FALSE
+47,3/27/2025,Mukwonago,WI,Phantom Lakes Regional,2025wimu,FALSE
+48,3/26/2025,Las Vegas,NV,Las Vegas Regional,2025nvlv,FALSE
+49,3/26/2025,Nampa,ID,Idaho Regional,2025idbo,FALSE
+50,3/26/2025,Riverside,MO,Greater Kansas City Regional,2025mokc,FALSE
+51,3/26/2025,Falcon Heights,MN,Minnesota 10000 Lakes Regional,2025mnmi,FALSE
+52,3/26/2025,Arlington Heights,IL,Midwest Regional,2025ilch,FALSE
+53,3/26/2025,Cedar Falls,IA,Iowa Regional,2025iacf,FALSE
+54,3/26/2025,Cincinnati,OH,Miami Valley Regional,2025ohmv,FALSE
+55,3/26/2025,Albany,NY,New York Tech Valley Regional,2025nytr,FALSE
+56,3/21/2025,San Francisco,CA,San Francisco Regional,2025casf,FALSE
+57,3/20/2025,Honolulu,HI,Hawaii Regional,2025hiho,FALSE
+58,3/20/2025,La Jolla,CA,San Diego Regional presented by Qualcomm,2025casd,FALSE
+59,3/20/2025,Vila Leopoldina,SP,Regional Brazil - Sao Paulo,2025brsp,FALSE
+60,3/19/2025,Tempe,AZ,Arizona East Regional,2025azgl,FALSE
+61,3/19/2025,Torreon,COA,Regional Laguna presented by Penoles,2025mxto,FALSE
+62,3/19/2025,Denver,CO,Colorado Regional,2025code,FALSE
+63,3/19/2025,La Crosse,WI,Seven Rivers Regional,2025wila,FALSE
+64,3/19/2025,Tulsa,OK,Green Country Regional,2025oktu,FALSE
+65,3/19/2025,Shawnee,KS,Heartland Regional,2025ksla,FALSE
+66,3/19/2025,Peoria,IL,Central Illinois Regional,2025ilpe,FALSE
+67,3/19/2025,Pittsburgh,PA,Greater Pittsburgh Regional,2025paca,FALSE
+68,3/19/2025,Hempstead,NY,FIRST Long Island Regional,2025nyli2,FALSE
+69,3/19/2025,Orlando,FL,Orlando Regional,2025flor,FALSE
+70,3/14/2025,Elk Grove,CA,Sacramento Regional,2025cada,FALSE
+71,3/14/2025,Cankaya,06,Ankara Regional,2025tuak,FALSE
+72,3/13/2025,Woodside,CA,Silicon Valley Regional,2025casj,FALSE
+73,3/13/2025,El Segundo,CA,Los Angeles Regional,2025cala,FALSE
+74,3/13/2025,Tallahassee,FL,Tallahassee Regional,2025flta,FALSE
+75,3/13/2025,Minhang District,SH,Shanghai Regional,2025cnsh,FALSE
+76,3/12/2025,Flagstaff,AZ,Arizona North Regional,2025azfg,FALSE
+77,3/12/2025,West Valley City,UT,Utah Regional,2025utwv,FALSE
+78,3/12/2025,Leon,GUA,Regional Leon presented by PrepaTec,2025mxle,FALSE
+79,3/12/2025,Grand Forks,ND,Great Northern Regional,2025ndgf,FALSE
+80,3/12/2025,Laurel,MS,Magnolia Regional,2025mslr,FALSE
+81,3/12/2025,St Louis,MO,St Louis Regional,2025mosl,FALSE
+82,3/12/2025,Huntsville,AL,Rocket City Regional,2025alhu,FALSE
+83,3/12/2025,Rochester,NY,Finger Lakes Regional,2025nyro,FALSE
+84,3/12/2025,Asa Sul,DF,Regional Brazil - Brasilia,2025brba,FALSE
+85,3/7/2025,Bakirkoy,34,Marmara Regional,2025tuis3,FALSE
+86,3/7/2025,Bakirkoy,34,Halic Regional,2025tuhc,FALSE
+87,3/6/2025,Port Hueneme,CA,Ventura County Regional,2025cave,FALSE
+88,3/6/2025,Wugu District,NWT,New Taipei City Regional,2025ntwc,FALSE
+89,3/6/2025,Cambridge Park,NSW,Southern Cross Regional,2025ausc,FALSE
+90,3/5/2025,Sedalia,MO,Central Missouri Regional,2025mose,FALSE
+91,3/5/2025,Searcy,AR,Arkansas Regional,2025arli,FALSE
+92,3/5/2025,Saint-Laurent,QC,Festival de Robotique Regional,2025qcmo,FALSE
+93,3/5/2025,Suffern,NY,Hudson Valley Regional,2025nysu,FALSE
+94,3/4/2025,Bakirkoy,34,Bosphorus Regional,2025tunis2,FALSE
+95,3/4/2025,Bakirkoy,34,Istanbul Regional,2025tunis,FALSE
+96,2/27/2025,Port Hueneme,CA,Hueneme Port Regional,2025caph,FALSE
+97,2/27/2025,Hollister,CA,Pinnacles Regional,2025camb,FALSE,
+98,2/26/2025,Costa Mesa,CA,Orange County Regional,2025caoc,FALSE
+99,2/26/2025,Vancouver,BC,Canadian Pacific Regional,2025bctvi,FALSE
+100,2/26/2025,Monterrey,MEX,Regional Monterrey presented by PrepaTec,2025mxmo,FALSE
+101,2/26/2025,Duluth,MN,Northern Lights Regional,2025mndu2,FALSE
+102,2/26/2025,Duluth,MN,Lake Superior Regional,2025mndu,FALSE
+105,7/10/2025,Indianapolis,IN,Indiana Robotics Invitational,2025iri,TRUE
