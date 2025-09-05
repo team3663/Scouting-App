@@ -394,8 +394,6 @@ public class AppLaunch extends AppCompatActivity {
             Intent GoToSettings = new Intent(AppLaunch.this, Settings.class);
             settingsActivityResultLauncher.launch(GoToSettings);
         });
-
-
     }
 
     // =============================================================================================
