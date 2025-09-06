@@ -14,8 +14,8 @@ android {
         applicationId = "com.team3663.scouting_app"
         minSdk = 30
         targetSdk = 34
-        versionCode = 31
-        versionName = "2.5.0"
+        versionCode = 32
+        versionName = "2.6.0"
 
         setProperty("archivesBaseName", "CPR-Scout-$versionName")
 

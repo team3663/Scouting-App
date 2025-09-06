@@ -1,4 +1,4 @@
-Comment_Id,Comment_IsActive,Comment_Text
+Id,isActive,Description
 1,TRUE,Robot contacted opponents cage(s)
 2,TRUE,Robot struggled to pick up Algae
 3,TRUE,Robot struggled to pick up Coral

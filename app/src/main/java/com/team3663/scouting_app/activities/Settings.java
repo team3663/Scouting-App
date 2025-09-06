@@ -158,7 +158,7 @@ public class Settings extends AppCompatActivity {
         if ((savedDeviceId > -1) && (adp_Device.getCount() >0)) {
             settingsBinding.spinnerDevice.setSelection(adp_Device.getPosition(Globals.DeviceList.getDeviceDescription(savedDeviceId)), true);
             settingsBinding.editScoutingTeam.setText(String.valueOf(Globals.DeviceList.getTeamNumberByDeviceId(savedDeviceId)));
-            settingsBinding.textScoutingTeamName.setText(Globals.TeamList.get(Globals.DeviceList.getTeamNumberByDeviceId(savedDeviceId)));
+            settingsBinding.textScoutingTeamName.setText(Globals.TeamList.getOrDefault(Globals.DeviceList.getTeamNumberByDeviceId(savedDeviceId), ""));
         }
 
         // Define the actions when an item is selected.  Set text color and set description text
@@ -168,7 +168,7 @@ public class Settings extends AppCompatActivity {
                 Settings.this.runOnUiThread(() -> {
                     int team_num = Globals.DeviceList.getTeamNumberByDescription(settingsBinding.spinnerDevice.getSelectedItem().toString());
                     settingsBinding.editScoutingTeam.setText(String.valueOf(team_num));
-                    settingsBinding.textScoutingTeamName.setText(Globals.TeamList.get(team_num));
+                    settingsBinding.textScoutingTeamName.setText(Globals.TeamList.getOrDefault(team_num, ""));
                 });
             }
 
@@ -256,11 +256,7 @@ public class Settings extends AppCompatActivity {
         String ScoutingTeamNumStr = String.valueOf(settingsBinding.editScoutingTeam.getText());
         if (!ScoutingTeamNumStr.isEmpty()) {
             int ScoutingTeamNum = Integer.parseInt(ScoutingTeamNumStr);
-            if (ScoutingTeamNum > 0 && ScoutingTeamNum < Globals.TeamList.size()) {
-                // This will crash the app instead of returning null if you pass it an invalid num
-                String ScoutingTeamName = Globals.TeamList.get(ScoutingTeamNum);
-                settingsBinding.textScoutingTeamName.setText(ScoutingTeamName);
-            } else settingsBinding.textScoutingTeamName.setText("");
+            settingsBinding.textScoutingTeamName.setText(Globals.TeamList.getOrDefault(ScoutingTeamNum, ""));
         }
 
         settingsBinding.editScoutingTeam.setOnFocusChangeListener((view, focus) -> {
@@ -268,11 +264,7 @@ public class Settings extends AppCompatActivity {
                 String ScoutingTeamNumStr1 = String.valueOf(settingsBinding.editScoutingTeam.getText());
                 if (!ScoutingTeamNumStr1.isEmpty()) {
                     int ScoutingTeamNum = Integer.parseInt(ScoutingTeamNumStr1);
-                    if (ScoutingTeamNum > 0 && ScoutingTeamNum < Globals.TeamList.size()) {
-                        // This will crash the app instead of returning null if you pass it an invalid num
-                        String ScoutingTeamName = Globals.TeamList.get(ScoutingTeamNum);
-                        settingsBinding.textScoutingTeamName.setText(ScoutingTeamName);
-                    } else settingsBinding.textScoutingTeamName.setText("");
+                    settingsBinding.textScoutingTeamName.setText(Globals.TeamList.getOrDefault(ScoutingTeamNum, ""));
                 }
             }
         });
@@ -336,8 +328,6 @@ public class Settings extends AppCompatActivity {
         // Default checkboxes
         settingsBinding.checkboxShadowMode.setChecked(false);
 
-        settingsBinding.checkboxShadowMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Globals.isShadowMode = isChecked;
-        });
+        settingsBinding.checkboxShadowMode.setOnCheckedChangeListener((buttonView, isChecked) -> Globals.isShadowMode = isChecked);
     }
 }

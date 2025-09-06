@@ -1,42 +1,43 @@
-Events_Id,Events_GroupId,Events_Phase,Events_Name,Events_StartOfSeq,Events_AppliesToFOP,Events_NextSet,Events_ColorIndex
-0,1,AUTO,StartingCoral,TRUE,FALSE,3:4:5:6:7,
-1,1,AUTO,Pickup Coral - Station,TRUE,TRUE,3:4:5:6:7,
-2,1,AUTO,Pickup Coral - Ground,TRUE,TRUE,3:4:5:6:7,
-3,1,AUTO,Place Coral L4,FALSE,TRUE,,1
-4,1,AUTO,Place Coral L3,FALSE,TRUE,,1
-5,1,AUTO,Place Coral L2,FALSE,TRUE,,1
-6,1,AUTO,Place Coral L1,FALSE,TRUE,,1
-7,1,AUTO,Drop Coral,FALSE,TRUE,,
-8,2,AUTO,Pickup Algae,TRUE,TRUE,10:11:12:13:14,
-9,2,AUTO,Remove Algae,TRUE,TRUE,,
-10,2,AUTO,Score Algae in Net,FALSE,TRUE,,1
-11,2,AUTO,Miss Algae in Net,FALSE,TRUE,,2
-12,2,AUTO,Score Algae in Processor,FALSE,TRUE,,1
-13,2,AUTO,Miss Algae in Processor,FALSE,TRUE,,2
-14,2,AUTO,Drop Algae,FALSE,TRUE,,2
-20,1,TELEOP,Pickup Coral - Station,TRUE,TRUE,23:24:25:26:27,
-21,1,TELEOP,Pickup Coral - Ground,TRUE,TRUE,23:24:25:26:27,
-22,1,TELEOP,Pickup Coral - Failed,TRUE,TRUE,,2
-23,1,TELEOP,Place Coral L4,FALSE,TRUE,,1
-24,1,TELEOP,Place Coral L3,FALSE,TRUE,,1
-25,1,TELEOP,Place Coral L2,FALSE,TRUE,,1
-26,1,TELEOP,Place Coral L1,FALSE,TRUE,,1
-27,1,TELEOP,Drop Coral,FALSE,TRUE,,
-28,2,TELEOP,Pickup Algae,TRUE,TRUE,30:31:32:33:34,
-29,2,TELEOP,Remove Algae,TRUE,TRUE,,
-30,2,TELEOP,Score Algae in Net,FALSE,TRUE,,1
-31,2,TELEOP,Miss Algae in Net,FALSE,TRUE,,2
-32,2,TELEOP,Score Algae in Processor,FALSE,TRUE,,1
-33,2,TELEOP,Miss Algae in Processor,FALSE,TRUE,,2
-34,2,TELEOP,Drop Algae,FALSE,TRUE,,
-35,2,TELEOP,Pickup Algae - Failed,TRUE,TRUE,,2
-40,3,TELEOP,Climb Start,TRUE,TRUE,41:42,
-41,3,TELEOP,Climb Success,FALSE,TRUE,,1
-42,3,TELEOP,Climb Failed,FALSE,TRUE,,2
-43,3,TELEOP,Park,TRUE,TRUE,,
-60,4,NONE,Defended_Start,TRUE,FALSE,61,
-61,4,NONE,Defended_End,FALSE,FALSE,,
-62,5,NONE,PlayDefense_Start,TRUE,FALSE,63,
-63,5,NONE,PlayDefense_End,FALSE,FALSE,,
-64,6,NONE,NotMoving_Start,TRUE,FALSE,65,
-65,6,NONE,NotMoving_End,FALSE,FALSE,,
+Id,GroupId,Phase,Name,StartOfSeq,AppliesToFOP,NextSet,Points,ColorIndex
+0,1,AUTO,StartingCoral,TRUE,FALSE,3:4:5:6:7,,
+1,1,AUTO,Pickup Coral - Station,TRUE,TRUE,3:4:5:6:7,,
+2,1,AUTO,Pickup Coral - Ground,TRUE,TRUE,3:4:5:6:7,,
+3,1,AUTO,Place Coral L4,FALSE,TRUE,,7,1
+4,1,AUTO,Place Coral L3,FALSE,TRUE,,6,1
+5,1,AUTO,Place Coral L2,FALSE,TRUE,,4,1
+6,1,AUTO,Place Coral L1,FALSE,TRUE,,3,1
+7,1,AUTO,Drop Coral,FALSE,TRUE,,,
+8,2,AUTO,Pickup Algae,TRUE,TRUE,10:11:12:13:14,,
+9,2,AUTO,Remove Algae,TRUE,TRUE,,,
+10,2,AUTO,Score Algae in Net,FALSE,TRUE,,4,1
+11,2,AUTO,Miss Algae in Net,FALSE,TRUE,,,2
+12,2,AUTO,Score Algae in Processor,FALSE,TRUE,,6,1
+13,2,AUTO,Miss Algae in Processor,FALSE,TRUE,,,2
+14,2,AUTO,Drop Algae,FALSE,TRUE,,,2
+20,1,TELEOP,Pickup Coral - Station,TRUE,TRUE,23:24:25:26:27,,
+21,1,TELEOP,Pickup Coral - Ground,TRUE,TRUE,23:24:25:26:27,,
+22,1,TELEOP,Pickup Coral - Failed,TRUE,TRUE,,,2
+23,1,TELEOP,Place Coral L4,FALSE,TRUE,,5,1
+24,1,TELEOP,Place Coral L3,FALSE,TRUE,,4,1
+25,1,TELEOP,Place Coral L2,FALSE,TRUE,,3,1
+26,1,TELEOP,Place Coral L1,FALSE,TRUE,,2,1
+27,1,TELEOP,Drop Coral,FALSE,TRUE,,,
+28,2,TELEOP,Pickup Algae,TRUE,TRUE,30:31:32:33:34,,
+29,2,TELEOP,Remove Algae,TRUE,TRUE,,,
+30,2,TELEOP,Score Algae in Net,FALSE,TRUE,,4,1
+31,2,TELEOP,Miss Algae in Net,FALSE,TRUE,,,2
+32,2,TELEOP,Score Algae in Processor,FALSE,TRUE,,6,1
+33,2,TELEOP,Miss Algae in Processor,FALSE,TRUE,,,2
+34,2,TELEOP,Drop Algae,FALSE,TRUE,,,
+35,2,TELEOP,Pickup Algae - Failed,TRUE,TRUE,,,2
+40,3,TELEOP,Climb Start,TRUE,TRUE,41:44:42,,
+41,3,TELEOP,Deep Climb Success,FALSE,TRUE,,12,1
+42,3,TELEOP,Climb Failed,FALSE,TRUE,,,2
+43,3,TELEOP,Park,TRUE,TRUE,,2,
+44,3,TELEOP,Shallow Climb Success,FALSE,TRUE,,6,1
+60,4,NONE,Defended_Start,TRUE,FALSE,61,,
+61,4,NONE,Defended_End,FALSE,FALSE,,,
+62,5,NONE,PlayDefense_Start,TRUE,FALSE,63,,
+63,5,NONE,PlayDefense_End,FALSE,FALSE,,,
+64,6,NONE,NotMoving_Start,TRUE,FALSE,65,,
+65,6,NONE,NotMoving_End,FALSE,FALSE,,,

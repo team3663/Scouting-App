@@ -8,7 +8,5 @@
     <string name="file_event_groups">EventGroups.csv</string>
     <string name="file_events">Events.csv</string>
     <string name="file_comments">Comments.csv</string>
-    <string name="file_climb_positions">ClimbPositions.csv</string>
-    <string name="file_start_positions">StartPositions.csv</string>
     <string name="file_colors">Colors.csv</string>
 </resources>

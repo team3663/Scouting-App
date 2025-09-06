@@ -36,7 +36,6 @@ public class PreMatch extends AppCompatActivity {
     private PreMatchBinding preMatchBinding;
     // To store the inputted name
     protected static String ScouterName;
-    private static final ArrayList<String> Start_Positions = Globals.StartPositionList.getDescriptionList();
     private static final ArrayList<String> Match_Types = Globals.MatchTypeList.getDescriptionList();
     public static int CurrentTeamToScoutPosition;
 
@@ -179,13 +178,8 @@ public class PreMatch extends AppCompatActivity {
                 String TeamToScoutStr = preMatchBinding.spinnerTeamToScout.getSelectedItem().toString();
                 if (!TeamToScoutStr.isEmpty() && !TeamToScoutStr.equals(getString(R.string.pre_dropdown_no_items))) {
                     int TeamToScout = Integer.parseInt(TeamToScoutStr);
-                    if (TeamToScout > 0 && TeamToScout < Globals.TeamList.size()) {
-                        // This will crash the app instead of returning null if you pass it an invalid num
-                        String ScoutingTeamName = Globals.TeamList.get(TeamToScout);
-                        preMatchBinding.textTeamToScoutName.setText(ScoutingTeamName);
-                    } else {
-                        preMatchBinding.textTeamToScoutName.setText("");
-                    }
+                    String ScoutingTeamName = Globals.TeamList.getOrDefault(TeamToScout, "");
+                    preMatchBinding.textTeamToScoutName.setText(ScoutingTeamName);
 
                     // Save off what you selected for if you go to the match and then back
                     CurrentTeamToScoutPosition = preMatchBinding.spinnerTeamToScout.getSelectedItemPosition();
@@ -341,7 +335,6 @@ public class PreMatch extends AppCompatActivity {
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_SHADOW_MODE, String.valueOf(Globals.isShadowMode));
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_TIME, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss")));
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_LEAVE_START, String.valueOf(false));
-        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_CLIMB_POSITION, String.valueOf(Constants.PreMatch.CLIMB_POS_DID_NOT_PLAY));
 
         Achievements.data_TeamToScout = Globals.CurrentTeamToScout;
 
@@ -425,7 +418,7 @@ public class PreMatch extends AppCompatActivity {
     // =============================================================================================
     private void loadTeamToScout() {
         // If we have a match number load the team information for the match
-        ArrayList<String> teamsInMatch = new ArrayList<>();
+        ArrayList<String> teamsInMatch;
 
         // See if this is a valid match number.  If not, default team list to "None" otherwise fill it
         if (Globals.MatchList.isCurrentMatchValid())
@@ -498,9 +491,7 @@ public class PreMatch extends AppCompatActivity {
         String filename_event = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv";
 
         if (Globals.output_df.findFile(filename_data) != null) return true;
-        if (Globals.output_df.findFile(filename_event) != null) return true;
-
-        return false;
+        return Globals.output_df.findFile(filename_event) != null;
     }
 
     // =============================================================================================
@@ -514,7 +505,7 @@ public class PreMatch extends AppCompatActivity {
 
         if (Globals.output_df.findFile(in_filename) != null) {
             for (int i = 1; ; ++i) {
-                backupFilename = in_filename + "(" + String.valueOf(i) + ")";
+                backupFilename = in_filename + "(" + i + ")";
                 if (Globals.output_df.findFile(backupFilename) == null) break;
             }
 

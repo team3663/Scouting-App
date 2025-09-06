@@ -1,4 +1,4 @@
-EventGroup_Id,EventGroup_Name,E_EventGroup_ColorIndex
+Id,Name,ColorIndex
 1,Coral,
 2,Algae,
 3,Climb,

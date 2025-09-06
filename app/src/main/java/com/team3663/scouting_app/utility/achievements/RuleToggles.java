@@ -18,7 +18,7 @@ public class RuleToggles implements AchievementRule {
                 return (Achievements.data_Toggle_Defense >= threshold);
             case "defended":
                 return (Achievements.data_Toggle_Defended >= threshold);
-            case "notmoving":
+            case "not moving":
                 if (perMatch) return (Achievements.data_match_Toggle_NotMoving >= threshold);
                 else return (Achievements.data_Toggle_NotMoving >= threshold);
         }

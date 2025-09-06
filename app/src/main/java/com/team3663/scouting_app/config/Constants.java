@@ -7,33 +7,21 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Constants {
-
     public static class Logger {
-        // Logger Keys - These are also the csv column header names
-        public static final String LOGKEY_SHADOW_MODE = "D_Shadow";
-        public static final String LOGKEY_ACHIEVEMENT = "D_Achievements";
-        public static final String LOGKEY_MATCH_TYPE = "D_MatchType";
-        public static final String LOGKEY_DID_PLAY = "D_DidPlay";
-        public static final String LOGKEY_START_POSITION = "D_StartPos";
-        public static final String LOGKEY_TEAM_SCOUTING = "D_TeamScouting";
-        public static final String LOGKEY_TEAM_TO_SCOUT = "D_Team";
-        public static final String LOGKEY_SCOUTER = "D_Scouter";
-        public static final String LOGKEY_DID_LEAVE_START = "D_DidLeaveStart";
-        public static final String LOGKEY_START_WITH_GAME_PIECE = "D_StartGamePiece";
-        public static final String LOGKEY_CLIMB_POSITION = "D_ClimbPos";
-        public static final String LOGKEY_COMMENTS = "D_Comments";
-        public static final String LOGKEY_START_TIME_OFFSET = "D_StartOffset";
-        public static final String LOGKEY_START_TIME = "D_Start";
-        public static final String LOGKEY_EVENT_SEQ = "E_Seq";
-        public static final String LOGKEY_EVENT_ID = "E_ID";
-        public static final String LOGKEY_EVENT_TIME = "E_Time";
-        public static final String LOGKEY_EVENT_X = "E_X";
-        public static final String LOGKEY_EVENT_Y = "E_Y";
-        public static final String LOGKEY_EVENT_PREVIOUS_SEQ = "E_PrevSeq";
-    }
-
-    public static class Teams {
-        public static final String NO_TEAM = "No Team Exists"; // use to check if no team exists for a given team number
+        // Logger Keys - Data File is written in order of the FILE_HEADER array
+        public static final String[] LOGKEY_DATA_FILE_HEADER = new String[]{"MatchType", "Shadow", "Team", "TeamScouting", "Scouter", "DidPlay", "StartGamePiece", "DidLeaveStart", "Comments", "Achievements", "StartOffset", "Start"};
+        public static final String LOGKEY_SHADOW_MODE = "Shadow";
+        public static final String LOGKEY_ACHIEVEMENT = "Achievements";
+        public static final String LOGKEY_MATCH_TYPE = "MatchType";
+        public static final String LOGKEY_DID_PLAY = "DidPlay";
+        public static final String LOGKEY_TEAM_SCOUTING = "TeamScouting";
+        public static final String LOGKEY_TEAM_TO_SCOUT = "Team";
+        public static final String LOGKEY_SCOUTER = "Scouter";
+        public static final String LOGKEY_DID_LEAVE_START = "DidLeaveStart";
+        public static final String LOGKEY_START_WITH_GAME_PIECE = "StartGamePiece";
+        public static final String LOGKEY_COMMENTS = "Comments";
+        public static final String LOGKEY_START_TIME_OFFSET = "StartOffset";
+        public static final String LOGKEY_START_TIME = "Start";
     }
 
     public static class Phases {
@@ -45,7 +33,6 @@ public class Constants {
     public static class PreMatch {
         public static final int NUMBER_OF_MATCH_TYPES = 4;
         public static final int DEFAULT_MATCH_TYPE = 1;
-        public static final int CLIMB_POS_DID_NOT_PLAY = 1;
     }
 
     public static class Match {
@@ -67,11 +54,10 @@ public class Constants {
         public static int STATUS_TEXT_LONG_SIZE = 14;
         public static int STATUS_TEXT_MED_SIZE = 18;
         public static int STATUS_TEXT_DEFAULT_SIZE = 24;
-
+        public static float START_LINE_X = 43.20f;
     }
 
     public static class Data {
-        public static final int ID_START_POS_DEFAULT = 0;
         public static final String PRIVATE_BASE_DIR = "input_data";
         public static final String PUBLIC_BASE_DIR = "CPR-Scouting";
         public static final String PUBLIC_INPUT_DIR = "Input";
@@ -109,11 +95,9 @@ public class Constants {
 
     public static class AppLaunch {
         public static final long SPLASH_SCREEN_DELAY = 10;
-        public static final int ACTIVITY_CODE_SETTINGS = 1;
-        public static final int ACTIVITY_CODE_STORAGE = 2;
     }
+
     public static class QRCode{
-        public static final int MAX_QR_DATA_SIZE= 2500;
         public static final int PREFERRED_QR_DATA_SIZE= 2000;
         public static final int QR_LENGTH = 500;
         public static final String EOF = "EOF";

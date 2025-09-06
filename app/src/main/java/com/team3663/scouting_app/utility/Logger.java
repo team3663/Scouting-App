@@ -83,7 +83,7 @@ public class Logger {
         }
 
         // If there's too many files, go through and delete ANY that are older than then Nth - 1
-        // What we'll do is collect attributes and names (_d files only) into two sync'd lists.
+        // What we'll do is collect attributes and names (_d files only) into two synchronized lists.
         // We'll take a copy of the last_created_list and sort it to easily find the create date of the Nth - 1 one.
         // Then we'll iterate through our original sync'd two lists and see if one should be deleted based on the
         // create date, and if so, use the matching name from the other list to do so.
@@ -147,44 +147,18 @@ public class Logger {
         }
 
         // Start the line (header as well) with the Match Type
-        String csv_header = Constants.Logger.LOGKEY_MATCH_TYPE;
-        String csv_line = FindValueInPair(Constants.Logger.LOGKEY_MATCH_TYPE);
+        StringBuilder csv_line = new StringBuilder();
+        for (String header : Constants.Logger.LOGKEY_DATA_FILE_HEADER) {
+            csv_line.append(",").append(FindValueInPair(header));
+        }
 
-        // Append to the csv line the values in the correct order
-        csv_header += "," + Constants.Logger.LOGKEY_SHADOW_MODE;
-        csv_header += "," + Constants.Logger.LOGKEY_TEAM_TO_SCOUT;
-        csv_header += "," + Constants.Logger.LOGKEY_TEAM_SCOUTING;
-        csv_header += "," + Constants.Logger.LOGKEY_SCOUTER;
-        csv_header += "," + Constants.Logger.LOGKEY_DID_PLAY;
-        csv_header += "," + Constants.Logger.LOGKEY_START_WITH_GAME_PIECE;
-        csv_header += "," + Constants.Logger.LOGKEY_START_POSITION;
-        csv_header += "," + Constants.Logger.LOGKEY_DID_LEAVE_START;
-        csv_header += "," + Constants.Logger.LOGKEY_CLIMB_POSITION;
-        csv_header += "," + Constants.Logger.LOGKEY_COMMENTS;
-        csv_header += "," + Constants.Logger.LOGKEY_ACHIEVEMENT;
-        csv_header += "," + Constants.Logger.LOGKEY_START_TIME_OFFSET;
-        csv_header += "," + Constants.Logger.LOGKEY_START_TIME;
-
-        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_SHADOW_MODE);
-        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_TEAM_TO_SCOUT);
-        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_TEAM_SCOUTING);
-        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_SCOUTER);
-        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_DID_PLAY);
-        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_START_WITH_GAME_PIECE);
-        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_START_POSITION);
-        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_DID_LEAVE_START);
-        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_CLIMB_POSITION);
-        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_COMMENTS);
-        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_ACHIEVEMENT);
-        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_START_TIME_OFFSET);
-        csv_line += "," + FindValueInPair(Constants.Logger.LOGKEY_START_TIME);
+        // Trim leading ","
+        if (csv_line.length() > 0) csv_line.delete(0, 1);
 
         try {
             // Write out the data
             assert fos_data != null;
-            fos_data.write(csv_header.getBytes(StandardCharsets.UTF_8));
-            fos_data.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
-            fos_data.write(csv_line.getBytes(StandardCharsets.UTF_8));
+            fos_data.write(csv_line.toString().getBytes(StandardCharsets.UTF_8));
             fos_data.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
 
             fos_data.flush();
@@ -203,18 +177,7 @@ public class Logger {
         OutputStream fos_event;
         try {
             fos_event = appContext.getContentResolver().openOutputStream(in_event_df.getUri());
-
-            // Write out the header for for the file_event csv file
-            String csv_header = Constants.Logger.LOGKEY_EVENT_SEQ;
-            csv_header += "," + Constants.Logger.LOGKEY_EVENT_ID;
-            csv_header += "," + Constants.Logger.LOGKEY_EVENT_TIME;
-            csv_header += "," + Constants.Logger.LOGKEY_EVENT_X;
-            csv_header += "," + Constants.Logger.LOGKEY_EVENT_Y;
-            csv_header += "," + Constants.Logger.LOGKEY_EVENT_PREVIOUS_SEQ;
-
             assert fos_event != null;
-            fos_event.write(csv_header.getBytes(StandardCharsets.UTF_8));
-            fos_event.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             Toast.makeText(appContext, "Failed to create output stream: " + in_event_df.getName() + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
             throw new RuntimeException(e);
@@ -305,14 +268,6 @@ public class Logger {
         // Save this off as the previous event (to link the next one to it).
         // Safe to do this everytime since if we start a new sequence, we override (above) to blank.
         previous_seq[GroupId] = match_log_events.size() - 1;
-    }
-
-    // Member Function: Log a time-based event (with no time passed in)
-    public void LogEvent(int in_EventId, float in_X, float in_Y){
-        // If this is a practice, there's nothing to do
-        if (Globals.isPractice) return;
-
-        LogEvent(in_EventId, in_X, in_Y, System.currentTimeMillis());
     }
 
     // Member Function: Log a time-based event (with no time passed in)

@@ -100,7 +100,7 @@ public class Competitions {
             id = Integer.parseInt(in_id);
             description = in_description;
             if (in_attended.isEmpty()) attended = false;
-            else attended = Boolean.valueOf(in_attended);
+            else attended = Boolean.parseBoolean(in_attended);
         }
     }
 }

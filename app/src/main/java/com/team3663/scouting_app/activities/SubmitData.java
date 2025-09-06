@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import androidx.activity.EdgeToEdge;
@@ -25,6 +23,7 @@ import com.team3663.scouting_app.utility.achievements.Achievements;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -35,7 +34,7 @@ public class SubmitData extends AppCompatActivity {
     private SubmitDataBinding submitDataBinding;
     private static final Timer achievement_timer = new Timer();
     private static MediaPlayer media;
-    private static ArrayList<Achievements.PoppedAchievement> poplist;
+    private static ArrayList<Achievements.PoppedAchievement> pop_list;
     private static int currentAchievement = 0;
     private static final ArrayList<String> Match_Types = Globals.MatchTypeList.getDescriptionList();
 
@@ -134,7 +133,7 @@ public class SubmitData extends AppCompatActivity {
         // Parse out the match number from the filename.  If this is a "d" file from the right
         // competition (as defined in Settings) and matching device then add it to the list.
         for (DocumentFile df : file_list) {
-            if (df.isFile() && df.getName().endsWith("_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.TransmitMatchType) + "_d.csv")) {
+            if (df.isFile() && Objects.requireNonNull(df.getName()).endsWith("_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.TransmitMatchType) + "_d.csv")) {
                 String[] file_parts = df.getName().split("_");
                 if ((Integer.parseInt(file_parts[0]) == Globals.CurrentCompetitionId) &&
                         (Integer.parseInt(file_parts[2]) == Globals.CurrentDeviceId))
@@ -159,7 +158,7 @@ public class SubmitData extends AppCompatActivity {
             TimerTask achievement_timerTask_Start;
             TimerTask achievement_timerTask_End;
 
-            if (!poplist.isEmpty() && currentAchievement < poplist.size()) {
+            if (!pop_list.isEmpty() && currentAchievement < pop_list.size()) {
                 achievement_timerTask_Start = new AchievementTimerTaskStart();
                 achievement_timerTask_End = new AchievementTimerTaskEnd();
                 achievement_timer.schedule(achievement_timerTask_Start, 1);
@@ -176,10 +175,10 @@ public class SubmitData extends AppCompatActivity {
         @Override
         public void run() {
             SubmitData.this.runOnUiThread(() -> {
-                submitDataBinding.textAchievementTitle.setText(poplist.get(currentAchievement).title);
-                submitDataBinding.textAchievementDesc.setText(poplist.get(currentAchievement).description);
+                submitDataBinding.textAchievementTitle.setText(pop_list.get(currentAchievement).title);
+                submitDataBinding.textAchievementDesc.setText(pop_list.get(currentAchievement).description);
 
-                Animation animation = AnimationUtils.loadAnimation(SubmitData.this, R.anim.blink);
+                //Animation animation = AnimationUtils.loadAnimation(SubmitData.this, R.anim.blink);
 
                 submitDataBinding.imageAchievement.setVisibility(View.VISIBLE);
                 submitDataBinding.textAchievementTitle.setVisibility(View.VISIBLE);
@@ -211,7 +210,7 @@ public class SubmitData extends AppCompatActivity {
             });
 
             currentAchievement++;
-            if (currentAchievement < poplist.size()) {
+            if (currentAchievement < pop_list.size()) {
                 startNext = new popOneAndGo_TimerTask();
                 achievement_timer.schedule(startNext, Constants.Achievements.IN_BETWEEN_DELAY);
             }
@@ -249,17 +248,17 @@ public class SubmitData extends AppCompatActivity {
         media = MediaPlayer.create(this, R.raw.achievement);
         media.setVolume(1,1);
 
-        poplist = Achievements.popAchievements();
+        pop_list = Achievements.popAchievements();
 
         // If achievement need to be popped, first log them, and then set up a timer to show them.
-        if (!poplist.isEmpty()) {
-            String ach_sep_ID = "";
-            for (Achievements.PoppedAchievement pa : poplist) {
-                ach_sep_ID += ":" + pa.id;
+        if (!pop_list.isEmpty()) {
+            StringBuilder ach_sep_ID = new StringBuilder();
+            for (Achievements.PoppedAchievement pa : pop_list) {
+                ach_sep_ID.append(":").append(pa.id);
             }
-            if (!poplist.isEmpty()) {
-                ach_sep_ID = ach_sep_ID.substring(1);
-                Globals.EventLogger.LogData(Constants.Logger.LOGKEY_ACHIEVEMENT, ach_sep_ID);
+            if (!pop_list.isEmpty()) {
+                ach_sep_ID = new StringBuilder(ach_sep_ID.substring(1));
+                Globals.EventLogger.LogData(Constants.Logger.LOGKEY_ACHIEVEMENT, ach_sep_ID.toString());
             }
 
             achievement_timer.schedule(startOne, Constants.Achievements.START_DELAY);
