@@ -3,8 +3,6 @@ package com.team3663.scouting_app.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -50,31 +48,10 @@ public class PostMatch extends AppCompatActivity {
 
         // Initialize activity components
         initDidLeave();
-        initClimbingPos();
         initComments();
         initReset();
         initSubmit();
         initStats();
-
-        Globals.DebugLogger.Out();
-    }
-
-    // =============================================================================================
-    // Function:    initClimbingPos
-    // Description: Initialize the Climbing Position field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initClimbingPos() {
-        Globals.DebugLogger.In("PostMatch:initClimbingPos");
-
-        //Creating the single select dropdown menu for the climb positions
-        Spinner spinner_ClimbPos = findViewById(R.id.spinnerClimbPosition);
-        //accessing the array in strings.xml
-        ArrayAdapter<String> adp_ClimbPos = new ArrayAdapter<> (this,
-                R.layout.cpr_spinner, Globals.ClimbPositionList.getDescriptionList());
-        adp_ClimbPos.setDropDownViewResource(R.layout.cpr_spinner_item);
-        spinner_ClimbPos.setAdapter(adp_ClimbPos);
 
         Globals.DebugLogger.Out();
     }
@@ -258,15 +235,13 @@ public class PostMatch extends AppCompatActivity {
             } else {
                 // Log all of the data from this page
                 Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_LEAVE_START, String.valueOf(postMatchBinding.checkboxDidLeave.isChecked()));
-                Globals.EventLogger.LogData(Constants.Logger.LOGKEY_CLIMB_POSITION,
-                        String.valueOf(Globals.ClimbPositionList.getClimbPositionId(postMatchBinding.spinnerClimbPosition.getSelectedItem().toString())));
-                String comment_sep_ID = "";
+                StringBuilder comment_sep_ID = new StringBuilder();
                 for (Integer comment_dropID : CommentList) {
                     String comment = CommentArray.get(comment_dropID);
-                    comment_sep_ID += ":" + Globals.CommentList.getCommentId(comment);
+                    comment_sep_ID.append(":").append(Globals.CommentList.getCommentId(comment));
                 }
-                if (!comment_sep_ID.isEmpty()) comment_sep_ID = comment_sep_ID.substring(1);
-                Globals.EventLogger.LogData(Constants.Logger.LOGKEY_COMMENTS, comment_sep_ID);
+                if (comment_sep_ID.length() > 0) comment_sep_ID = new StringBuilder(comment_sep_ID.substring(1));
+                Globals.EventLogger.LogData(Constants.Logger.LOGKEY_COMMENTS, comment_sep_ID.toString());
 
                 // Reset the Saved Start position so that you have to choose it again
                 Globals.CurrentStartPosition = 0;
@@ -300,19 +275,18 @@ public class PostMatch extends AppCompatActivity {
     // =============================================================================================
     private void initStats() {
         Globals.DebugLogger.In("PostMatch:initStats");
-
-        String statsCoral = "";
+        StringBuilder statsCoral = new StringBuilder();
         String statsAlgae = "";
 
         for (int i = 4; i >0; --i) {
-            statsCoral += "Placed L" + i + ": " + Achievements.data_match_CoralLevel[i] + "\n";
+            statsCoral.append("Placed L").append(i).append(": ").append(Achievements.data_match_CoralLevel[i]).append("\n");
         }
-        statsCoral += "Dropped: " + Achievements.data_match_CoralDropped;
+        statsCoral.append("Dropped: ").append(Achievements.data_match_CoralDropped);
 
         statsAlgae += "Net: " + Achievements.data_match_AlgaeInNet + "\n";
         statsAlgae += "Processor: " + Achievements.data_match_AlgaeInProcessor;
 
-        postMatchBinding.textStatsCoral.setText(statsCoral);
+        postMatchBinding.textStatsCoral.setText(statsCoral.toString());
         postMatchBinding.textStatsAlgae.setText(statsAlgae);
 
         Globals.DebugLogger.Out();

@@ -49,6 +49,10 @@ public class Match extends AppCompatActivity {
     private static float current_Y_Relative = 0;
     private static float current_X_Absolute = 0;
     private static float current_Y_Absolute = 0;
+    private static float starting_X_Relative = 0;
+    private static float starting_Y_Relative = 0;
+    private static float starting_X_Absolute = 0;
+    private static float starting_Y_Absolute = 0;
     private static long start_time_not_moving;
     private static boolean showing_event_detail_menu = false;
     private static int showing_event_detail_group;
@@ -269,6 +273,10 @@ public class Match extends AppCompatActivity {
 
         // Hide the starting location of the robot
         matchBinding.textRobot.setVisibility(View.INVISIBLE);
+
+        // Log the starting location (the match hasn't started so we need to specify a "0" time
+        // or else it will log as max match time which wastes extra log characters for no benefit)
+        Globals.EventLogger.LogEvent(Constants.Events.ID_AUTO_START_GAME_PIECE, starting_X_Relative, starting_Y_Relative, 0);
 
         // Create the Timers and timer tasks
         match_Timer = new Timer();
@@ -574,7 +582,7 @@ public class Match extends AppCompatActivity {
                     }
 
                     // Set the robot starting location based on the new rotation
-                    initRobotStartLocation();
+                    setRobotStartLocation(0, 0);
 
                     Globals.DebugLogger.Out();
                 }
@@ -644,7 +652,8 @@ public class Match extends AppCompatActivity {
     private void initTeam() {
         Globals.DebugLogger.In("Match:initTeam");
 
-        String new_team = Globals.CurrentTeamToScout + " - " + Globals.TeamList.get(Globals.CurrentTeamToScout);
+        String new_team = Globals.CurrentTeamToScout + " - " + Globals.TeamList.getOrDefault(Globals.CurrentTeamToScout, "");
+
         matchBinding.textTeam.setText(new_team);
         matchBinding.textTeam.setTextColor(Color.WHITE);
 
@@ -661,6 +670,8 @@ public class Match extends AppCompatActivity {
         Globals.DebugLogger.In("Match:initStartButton");
 
         // Initialize the match Control Button settings
+        matchBinding.butMatchControl.setEnabled(false);
+        matchBinding.butMatchControl.setClickable(false);
         matchBinding.butMatchControl.setText(getString(R.string.button_start_match));
         matchBinding.butMatchControl.setBackgroundColor(ContextCompat.getColor(this.getApplicationContext(), R.color.dark_green));
         matchBinding.butMatchControl.setOnClickListener(view -> {
@@ -962,14 +973,17 @@ public class Match extends AppCompatActivity {
 
             // Save where we touched the field image relative to the fields orientation
             if (currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) {
-                current_X_Relative = motionEvent.getX();
-                current_Y_Relative = motionEvent.getY();
+                current_X_Relative = current_X_Absolute;
+                current_Y_Relative = current_Y_Absolute;
             } else {
-                current_X_Relative = Constants.Match.IMAGE_WIDTH - motionEvent.getX();
-                current_Y_Relative = Constants.Match.IMAGE_HEIGHT - motionEvent.getY();
+                current_X_Relative = Constants.Match.IMAGE_WIDTH - current_X_Absolute;
+                current_Y_Relative = Constants.Match.IMAGE_HEIGHT - current_Y_Absolute;
             }
 
-            matchBinding.imageFieldView.showContextMenu(current_X_Absolute, current_Y_Absolute);
+            if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE))
+                setRobotStartLocation(current_X_Absolute, current_Y_Absolute);
+            else
+                matchBinding.imageFieldView.showContextMenu(current_X_Absolute, current_Y_Absolute);
 
             Globals.DebugLogger.Out();
             return false;
@@ -979,20 +993,57 @@ public class Match extends AppCompatActivity {
     }
 
     // =============================================================================================
-    // Function:    initRobotStartLocation
+    // Function:    setRobotStartLocation
     // Description: Initialize the Robot starting location
     // Parameters:  void
     // Output:      void
     // =============================================================================================
     @SuppressLint("ClickableViewAccessibility")
-    private void initRobotStartLocation() {
-        Globals.DebugLogger.In("Match:initRobotStartLocation");
+    private void setRobotStartLocation(float in_X, float in_Y) {
+        Globals.DebugLogger.In("Match:setRobotStartLocation");
 
-        robot_timertask = new RobotTimerTask();
+        float offset = (float) (matchBinding.textRobot.getWidth() / 2);
+        boolean blue_alliance = Globals.MatchList.getAllianceForTeam(Globals.CurrentTeamToScout).equals("BLUE");
 
-        robot_Timer = new Timer();
-        robot_Timer.schedule(robot_timertask, 250);
+        if (in_X > 0) {
+            starting_X_Absolute = in_X;
+            starting_Y_Absolute = in_Y;
+        } else if ((blue_alliance && currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) ||
+                (!blue_alliance && currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE_REVERSE))) {
+            starting_X_Absolute = matchBinding.imageFieldView.getWidth() - starting_X_Absolute;
+            starting_Y_Absolute = matchBinding.imageFieldView.getHeight() - starting_Y_Absolute;
+        }
 
+        // Snap the robot to the correct starting line
+        if ((blue_alliance && currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) ||
+            (!blue_alliance && currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE_REVERSE))) {
+            starting_X_Absolute = Math.min(Math.max(in_X, matchBinding.imageFieldView.getWidth() * Constants.Match.START_LINE_X / 100.0f - offset), matchBinding.imageFieldView.getWidth() * Constants.Match.START_LINE_X / 100.0f + offset);
+        }
+        else {
+            starting_X_Absolute = Math.min(Math.max(in_X, matchBinding.imageFieldView.getWidth() * (100.0f - Constants.Match.START_LINE_X) / 100.0f - offset), matchBinding.imageFieldView.getWidth() * (100.0f - Constants.Match.START_LINE_X) / 100.0f + offset);
+        }
+
+        // Save off the correct relative values based on the orientation
+        if (currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE_REVERSE)) {
+            starting_X_Relative = matchBinding.imageFieldView.getWidth() - starting_X_Absolute;
+            starting_Y_Relative = matchBinding.imageFieldView.getHeight() - starting_Y_Absolute;
+        } else {
+            starting_X_Relative = starting_X_Absolute;
+            starting_Y_Relative = starting_Y_Absolute;
+        }
+
+        // Make sure we see the starting location of the robot
+        matchBinding.textRobot.setX(starting_X_Absolute - offset);
+        matchBinding.textRobot.setY(starting_Y_Absolute - offset);
+
+        // Enable the robot
+        // This will be called initially as well as during screen rotations.  in_X will be 0 at that time.  Make it a no-op
+        if (in_X > 0) {
+            matchBinding.textRobot.setVisibility(View.VISIBLE);
+            matchBinding.butMatchControl.setEnabled(true);
+            matchBinding.butMatchControl.setClickable(true);
+            matchBinding.textStatus.setText("");
+          
         Globals.DebugLogger.Out();
     }
 
@@ -1012,56 +1063,18 @@ public class Match extends AppCompatActivity {
     }
 
     // =============================================================================================
-    // Function:    setRobotStartLocation
+    // Function:    initRobotStartLocation
     // Description: Initialize the Robot starting location
     // Parameters:  void
     // Output:      void
     // =============================================================================================
     @SuppressLint("ClickableViewAccessibility")
-    private void setRobotStartLocation() {
-        Globals.DebugLogger.In("Match:setRobotStartLocation");
+    private void initRobotStartLocation() {
+        Globals.DebugLogger.In("Match:initRobotStartLocation");
 
-        int x, y;
-        int x_offset = 30, y_offset = 15;
-        int max_x = matchBinding.imageFieldView.getWidth();
-        int max_y = matchBinding.imageFieldView.getHeight();
-        boolean blue_alliance = Globals.MatchList.getAllianceForTeam(Globals.CurrentTeamToScout).equals("BLUE");
-
-        if ((blue_alliance && currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) ||
-            (!blue_alliance && currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE_REVERSE)))
-        {
-            x = (max_x * 43 / 100) - x_offset;
-            switch (Globals.CurrentStartPosition) {
-                case 1:
-                    y = max_y * 25 / 100;
-                    break;
-                case 3:
-                    y = max_y * 75 / 100;
-                    break;
-                default:
-                    y = max_y / 2;
-                    break;
-            }
-        }
-        else {
-            x = max_x * 57 / 100;
-            switch (Globals.CurrentStartPosition) {
-                case 1:
-                    y = max_y * 75 / 100;
-                    break;
-                case 3:
-                    y = max_y * 25 / 100;
-                    break;
-                default:
-                    y = max_y / 2;
-                    break;
-            }
-        }
-
-        // Make sure we see the starting location of the robot
-        matchBinding.textRobot.setX(x);
-        matchBinding.textRobot.setY(y - y_offset);
-        matchBinding.textRobot.setVisibility(View.VISIBLE);
+        // Hide the starting location of the robot
+        matchBinding.textRobot.setVisibility(View.INVISIBLE);
+        matchBinding.textStatus.setText(R.string.match_select_start_location);
 
         Globals.DebugLogger.Out();
     }

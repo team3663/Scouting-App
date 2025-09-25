@@ -118,7 +118,7 @@ public class Achievements {
         achievement_list.add(ach17);
 
         Achievement ach18 = new Achievement(18, "Mater! I need a lift", "Broken down more than once", 5);
-        ach18.addRule(new RuleToggles("notmoving", false, 2));
+        ach18.addRule(new RuleToggles("not moving", false, 2));
         achievement_list.add(ach18);
 
         Achievement ach19 = new Achievement(19, "It's not my fault", "Experienced a field reset", 5);

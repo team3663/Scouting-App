@@ -19,7 +19,7 @@ public class Events {
         EventGroup = new ArrayList<>();
 
         // EventGroup will use a 1-based group_id, so add a dummy record for index 0.
-        EventGroup.add(new EventGroup("",""));
+        EventGroup.add(new EventGroup("", ""));
 
         Globals.MaxEventGroups = 0;
     }
@@ -28,11 +28,11 @@ public class Events {
     public void addEventGroup(String in_id, String in_name) {
         int group_id = Integer.parseInt(in_id);
 
-        // Ensure we're adding the groupid (in_id) as the same index.  This shouldn't happen but in case there's a gap in group numbers.
+        // Ensure we're adding the group id (in_id) as the same index.  This shouldn't happen but in case there's a gap in group numbers.
         // 1. Ensure the array is at least as big as the group_id needs
         // 2. Just set the value at the right index to the name.
         for (int i = Globals.MaxEventGroups; i < group_id; ++i)
-            EventGroup.add(new EventGroup("",""));
+            EventGroup.add(new EventGroup("", ""));
 
         EventGroup.get(group_id).name = in_name;
         Globals.MaxEventGroups = Math.max(Globals.MaxEventGroups, Integer.parseInt(in_id));
@@ -171,7 +171,7 @@ public class Events {
         EventGroup.clear();
 
         // EventGroup will use a 1-based group_id, so add a dummy record for index 0.
-        EventGroup.add(new EventGroup("",""));
+        EventGroup.add(new EventGroup("", ""));
     }
 
     // Member Function: Is this EventId one that happens in the FOP
