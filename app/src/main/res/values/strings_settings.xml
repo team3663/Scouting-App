@@ -9,4 +9,5 @@
     <string name="settings_color">Color palette:</string>
     <string name="settings_orientation">Field orientation:</string>
     <string name="settings_shadowmode">Shadow Mode:</string>
+    <string name="settings_debugmode">Debug Mode:</string>
 </resources>

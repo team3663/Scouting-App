@@ -48,6 +48,8 @@ public class QRCode extends AppCompatActivity {
             return insets;
         });
 
+        Globals.DebugLogger.In("QRCode:onCreate");
+
         // Initialize activity components
         InitQRData();
         InitBack();
@@ -55,6 +57,8 @@ public class QRCode extends AppCompatActivity {
         InitFileStats();
         InitNextImage();
         InitPrevImage();
+
+        Globals.DebugLogger.Out();
      }
 
     // =============================================================================================
@@ -64,6 +68,8 @@ public class QRCode extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void InitQRData() {
+        Globals.DebugLogger.In("QRCode:InitQRData");
+
         qrFileString = new QR_FileString(Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.TransmitMatchType) + "_d.csv" + "\n" +
                 getFileAsString("d") + "\n" +
                 Constants.QRCode.EOF + "\n" +
@@ -88,6 +94,8 @@ public class QRCode extends AppCompatActivity {
         qrCodeBinding.textImagePage.setText(String.format("Image 1 of %s", qrFileString.getNumPages()));
         currentImagePage = 0;
         generateQRImage();
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -97,13 +105,21 @@ public class QRCode extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void InitBack() {
+        Globals.DebugLogger.In("QRCode:InitBack");
+
         qrCodeBinding.butBack.setOnClickListener(view -> {
+            Globals.DebugLogger.In("QRCode:butBack:Click");
+
             Intent GoToSubmitData = new Intent(QRCode.this, SubmitData.class);
             startActivity(GoToSubmitData);
 
             qrFileString = null;
+
+            Globals.DebugLogger.Out();
             finish();
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -113,7 +129,11 @@ public class QRCode extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void InitNext() {
+        Globals.DebugLogger.In("QRCode:InitNext");
+
         qrCodeBinding.butNext.setOnClickListener(view -> {
+            Globals.DebugLogger.In("QRCode:butNext:Click");
+
             // Reset pre-Match settings for next time
             Globals.isStartingGamePiece = true;
             Globals.isPractice = false;
@@ -125,8 +145,12 @@ public class QRCode extends AppCompatActivity {
             startActivity(GoToPreMatch);
 
             qrFileString = null;
+
+            Globals.DebugLogger.Out();
             finish();
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -136,10 +160,14 @@ public class QRCode extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void InitFileStats() {
+        Globals.DebugLogger.In("QRCode:InitFileStats");
+
         qrCodeBinding.textFileStatsCompetition.setText(Globals.CompetitionList.getCompetitionDescription(Globals.CurrentCompetitionId));
         qrCodeBinding.textFileStatsMatch.setText(String.valueOf(Globals.TransmitMatchNum));
         qrCodeBinding.textFileStatsMatchType.setText(Globals.MatchTypeList.getMatchTypeDescription(Globals.TransmitMatchType));
         qrCodeBinding.textFileStatsFileSize.setText(String.format("%s bytes", qrFileString.getSize()));
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -149,7 +177,11 @@ public class QRCode extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void InitNextImage() {
+        Globals.DebugLogger.In("QRCode:InitNextImage");
+
         qrCodeBinding.butNextImage.setOnClickListener(view -> {
+            Globals.DebugLogger.In("QRCode:butNextImage:Click");
+
             currentImagePage++;
             qrCodeBinding.textImagePage.setText(String.format("Image %s of %s", currentImagePage + 1, qrFileString.getNumPages()));
             qrCodeBinding.butPrevImage.setEnabled(true);
@@ -168,7 +200,11 @@ public class QRCode extends AppCompatActivity {
             }
 
             generateQRImage();
+
+            Globals.DebugLogger.Out();
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -178,7 +214,11 @@ public class QRCode extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void InitPrevImage() {
+        Globals.DebugLogger.In("QRCode:InitPrevImage");
+
         qrCodeBinding.butPrevImage.setOnClickListener(view -> {
+            Globals.DebugLogger.In("QRCode:butPrevImage:Click");
+
             currentImagePage--;
             qrCodeBinding.textImagePage.setText(String.format("Image %s of %s", currentImagePage + 1, qrFileString.getNumPages()));
             qrCodeBinding.butNextImage.setEnabled(true);
@@ -197,7 +237,11 @@ public class QRCode extends AppCompatActivity {
             }
 
             generateQRImage();
+
+            Globals.DebugLogger.Out();
         });
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -210,6 +254,9 @@ public class QRCode extends AppCompatActivity {
     // Output:      String representing the entire contents of the file
     // =============================================================================================
     public String getFileAsString(String in_Extension) {
+        Globals.DebugLogger.Params.add("in_Extension=" + in_Extension);
+        Globals.DebugLogger.In("QRCode:getFileAsString");
+
         // Validate we have a proper extension
         if (!(in_Extension.equals("d") || in_Extension.equals("e")))
             return "";
@@ -238,6 +285,7 @@ public class QRCode extends AppCompatActivity {
             throw new RuntimeException(e);
         }
 
+        Globals.DebugLogger.Out();
         return file_as_string.toString();
     }
 
@@ -251,6 +299,8 @@ public class QRCode extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     public void generateQRImage() {
+        Globals.DebugLogger.In("QRCode:generateQRImage");
+
         BarcodeEncoder be = new BarcodeEncoder();
         String qrData = qrFileString.getPage(currentImagePage);
 
@@ -260,6 +310,8 @@ public class QRCode extends AppCompatActivity {
         } catch (Exception e) {
             Toast.makeText(QRCode.this, "Failed to generate QR Code!", Toast.LENGTH_LONG).show();
         }
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -273,6 +325,8 @@ public class QRCode extends AppCompatActivity {
 
         // Constructor
         public QR_FileString (String in_data) {
+            Globals.DebugLogger.In("QRCode:QR_FileString:constructor");
+
             size = in_data.length();
             int begin = 0;
             int end;
@@ -284,28 +338,35 @@ public class QRCode extends AppCompatActivity {
                 file_page.add(in_data.substring(begin, end));
                 begin = end;
             }
+
+            Globals.DebugLogger.Out();
         }
 
         // Member Function: Return the (partial) String for the data for a particular page
         public String getPage(int in_Page) {
+            Globals.DebugLogger.Params.add("in_Page=" + in_Page);
+            Globals.DebugLogger.In("QRCode:QR_FileString:getPage");
+
             if (file_page == null) return "";
 
             if ((in_Page < 0) || (in_Page >= file_page.size()))
                 return "";
 
+            Globals.DebugLogger.Out();
             return file_page.get(in_Page);
         }
 
         // Member Function: Return the number of pages of data we have
         public int getNumPages() {
+            Globals.DebugLogger.In("QRCode:QR_FileString:getNumPages");
+
             if (file_page == null) return 0;
 
+            Globals.DebugLogger.Out();
             return file_page.size();
         }
 
         // Member Function: Return the number of pages of data we have
-        public int getSize() {
-            return size;
-        }
+        public int getSize() {return size; }
     }
 }

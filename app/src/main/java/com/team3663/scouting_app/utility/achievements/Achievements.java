@@ -44,6 +44,8 @@ public class Achievements {
 
     // Constructor: Define all of the achievements and the rule(s) they are based on
     public Achievements() {
+        Globals.DebugLogger.In("Achievements:constructor");
+
         Achievement ach1 = new Achievement(1, "Getting the hang of it", "Scouted 2 matches in a row", 10);
         ach1.addRule(new RuleNumMatches(2));
         achievement_list.add(ach1);
@@ -175,10 +177,14 @@ public class Achievements {
         Achievement ach33 = new Achievement(33, "Driving Cars Makes Patience", "Scouted at DCMP", 10);
         ach33.addRule(new RuleCompetition(Constants.Achievements.COMPETITION_IDS_DCMP, 1));
         achievement_list.add(ach33);
+
+        Globals.DebugLogger.Out();
     }
 
     // Member Function: pop (to the screen) any achievements "met" but not already "popped"
     public static ArrayList<PoppedAchievement> popAchievements() {
+        Globals.DebugLogger.In("Achievements:popAchievements");
+
         ArrayList<PoppedAchievement> ret = new ArrayList<>();
         for (Achievement a : achievement_list) {
             a.evaluate();
@@ -189,11 +195,14 @@ public class Achievements {
             }
         }
 
+        Globals.DebugLogger.Out();
         return ret;
     }
 
     // Member Function: Clear all data on achievements (ie: new scouter)
     public void clearAllData() {
+        Globals.DebugLogger.In("Achievements:clearAllData");
+
         data_NumMatches = 0;
         data_TeamToScout = 0;
         data_StartTime = 0;
@@ -211,10 +220,14 @@ public class Achievements {
         data_NumMatchesByCompetition = new int[Globals.CompetitionList.size()];
 
         clearMatchData();
+
+        Globals.DebugLogger.Out();
     }
 
     // Member Function: Clear all data on achievements (ie: new scouter)
     public void clearMatchData() {
+        Globals.DebugLogger.In("Achievements:clearMatchData");
+
         data_match_Toggle_NotMoving = 0;
         data_match_OrphanEvents = 0;
         data_match_AlgaeInNet = 0;
@@ -225,6 +238,8 @@ public class Achievements {
         data_match_CoralPickupStation = 0;
         data_match_CoralDropped = 0;
         data_match_ClimbSuccess = 0;
+
+        Globals.DebugLogger.Out();
     }
 
     // =============================================================================================
@@ -241,12 +256,20 @@ public class Achievements {
         private final int reward;
 
         private Achievement(int in_id, String in_title, String in_description, int in_reward) {
+            Globals.DebugLogger.Params.add("in_id=" + in_id);
+            Globals.DebugLogger.Params.add("in_title=" + in_title);
+            Globals.DebugLogger.Params.add("in_description=" + in_description);
+            Globals.DebugLogger.Params.add("in_reward=" + in_reward);
+            Globals.DebugLogger.In("Achievements:Achievement:constructor");
+
             id = in_id;
             title = in_title;
             description = in_description;
             met = false;
             popped = false;
             reward = in_reward;
+
+            Globals.DebugLogger.Out();
         }
 
         private void addRule(AchievementRule in_rule) {
@@ -254,12 +277,16 @@ public class Achievements {
         }
 
         private void evaluate() {
+            Globals.DebugLogger.In("Achievments:Achievement:evaluate");
+
             boolean rc = true;
             for (AchievementRule ar : rules) {
                 if (!ar.evaluate()) rc = false;
             }
 
             met = rc;
+
+            Globals.DebugLogger.Out();
         }
     }
 
@@ -273,9 +300,16 @@ public class Achievements {
         public String description;
 
         public PoppedAchievement(int in_id, String in_title, String in_description) {
+            Globals.DebugLogger.Params.add("in_id=" + in_id);
+            Globals.DebugLogger.Params.add("in_title=" + in_title);
+            Globals.DebugLogger.Params.add("in_description=" + in_description);
+            Globals.DebugLogger.In("Achievments:PoppedAchievement:constructor");
+
             id = in_id;
             title = in_title;
             description = in_description;
+
+            Globals.DebugLogger.Out();
         }
     }
 }

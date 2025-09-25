@@ -394,6 +394,37 @@
             tools:ignore="RtlSymmetry" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:orientation="horizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/checkbox_DebugMode"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+            android:textColor="@color/white"
+            android:gravity="end|center"
+            android:paddingEnd="0dp"
+            android:paddingStart="10dp"
+            android:textSize="24sp"
+            android:text="@string/settings_debugmode" />
+
+        <TextView
+            android:id="@+id/text_DebugModePadding"
+            android:layout_width="635dp"
+            android:layout_height="match_parent"
+            tools:ignore="RtlSymmetry" />
+    </LinearLayout>
+
 </LinearLayout>
 
 <Button

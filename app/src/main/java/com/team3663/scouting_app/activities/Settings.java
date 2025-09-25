@@ -53,6 +53,7 @@ public class Settings extends AppCompatActivity {
         initNumMatches();
         initColors();
         initShadowMode();
+        initDebugMode();
 
         // Define a Cancel Button
         settingsBinding.butCancel.setOnClickListener(view -> finish());
@@ -329,5 +330,25 @@ public class Settings extends AppCompatActivity {
         settingsBinding.checkboxShadowMode.setChecked(false);
 
         settingsBinding.checkboxShadowMode.setOnCheckedChangeListener((buttonView, isChecked) -> Globals.isShadowMode = isChecked);
+    }
+    // =============================================================================================
+    // Function:    initDebugMode
+    // Description: Initialize the Debug Mode field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initDebugMode() {
+        // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
+        // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)
+        // So add it in now.
+        String paddedText = settingsBinding.checkboxDebugMode.getText() + Globals.CheckBoxTextPadding;
+        settingsBinding.checkboxDebugMode.setText(paddedText);
+
+        // Default checkboxes
+        settingsBinding.checkboxDebugMode.setChecked(false);
+
+        settingsBinding.checkboxDebugMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Globals.isDebugMode = isChecked;
+        });
     }
 }
