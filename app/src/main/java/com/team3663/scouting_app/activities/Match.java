@@ -829,12 +829,14 @@ public class Match extends AppCompatActivity {
             current_Y_Absolute = motionEvent.getY();
 
             // Save where we touched the field image relative to the fields orientation
+            // Since the App has (0,0) in the top left, but our reporting will have (0,0) in the bottom left,
+            // we need to flip the Y coordinate.
             if (currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) {
                 current_X_Relative = current_X_Absolute;
-                current_Y_Relative = current_Y_Absolute;
+                current_Y_Relative = Constants.Match.IMAGE_HEIGHT - current_Y_Absolute;
             } else {
                 current_X_Relative = Constants.Match.IMAGE_WIDTH - current_X_Absolute;
-                current_Y_Relative = Constants.Match.IMAGE_HEIGHT - current_Y_Absolute;
+                current_Y_Relative = current_Y_Absolute;
             }
 
             if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE))
