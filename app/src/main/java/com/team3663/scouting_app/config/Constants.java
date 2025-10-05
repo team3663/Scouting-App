@@ -22,6 +22,7 @@ public class Constants {
         public static final String LOGKEY_COMMENTS = "Comments";
         public static final String LOGKEY_START_TIME_OFFSET = "StartOffset";
         public static final String LOGKEY_START_TIME = "Start";
+        public static final String FILE_LINE_SEPARATOR = "\r\n";
     }
 
     public static class Phases {
