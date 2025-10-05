@@ -159,7 +159,7 @@ public class Logger {
             // Write out the data
             assert fos_data != null;
             fos_data.write(csv_line.toString().getBytes(StandardCharsets.UTF_8));
-            fos_data.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
+            fos_data.write(Constants.Logger.FILE_LINE_SEPARATOR.getBytes(StandardCharsets.UTF_8));
 
             fos_data.flush();
             fos_data.close();
@@ -198,7 +198,7 @@ public class Logger {
             String csv_line = i + "," + ler.EventId + "," + ler.LogTime + "," + normalized_x + "," + normalized_y + "," + ler.PrevSeq;
             try {
                 fos_event.write(csv_line.getBytes(StandardCharsets.UTF_8));
-                fos_event.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
+                fos_event.write(Constants.Logger.FILE_LINE_SEPARATOR.getBytes(StandardCharsets.UTF_8));
             } catch (IOException e) {
                 Toast.makeText(appContext, "Failed to write out event data: " + csv_line + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
                 throw new RuntimeException(e);

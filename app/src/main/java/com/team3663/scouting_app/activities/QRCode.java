@@ -64,11 +64,11 @@ public class QRCode extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void InitQRData() {
-        qrFileString = new QR_FileString(Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.TransmitMatchType) + "_d.csv" + "\n" +
-                getFileAsString("d") + "\n" +
-                Constants.QRCode.EOF + "\n" +
-                Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv" + "\n" +
-                getFileAsString("e") + "\n" +
+        qrFileString = new QR_FileString(Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.TransmitMatchType) + "_d.csv" + Constants.Logger.FILE_LINE_SEPARATOR +
+                getFileAsString("d") + Constants.Logger.FILE_LINE_SEPARATOR +
+                Constants.QRCode.EOF + Constants.Logger.FILE_LINE_SEPARATOR +
+                Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv" + Constants.Logger.FILE_LINE_SEPARATOR +
+                getFileAsString("e") + Constants.Logger.FILE_LINE_SEPARATOR +
                 Constants.QRCode.EOF);
 
         qrCodeBinding.butPrevImage.setEnabled(false);
@@ -230,7 +230,7 @@ public class QRCode extends AppCompatActivity {
 
             while ((line = br.readLine()) != null) {
                 if (file_as_string.length() > 0)
-                    file_as_string.append("\n");
+                    file_as_string.append(Constants.Logger.FILE_LINE_SEPARATOR);
 
                 file_as_string.append(line);
             }

@@ -222,18 +222,18 @@ public class PostMatch extends AppCompatActivity {
     // =============================================================================================
     private void initStats() {
         StringBuilder statsCoral = new StringBuilder();
-        String statsAlgae = "";
+        StringBuilder statsAlgae = new StringBuilder();
 
         for (int i = 4; i >0; --i) {
             statsCoral.append("Placed L").append(i).append(": ").append(Achievements.data_match_CoralLevel[i]).append("\n");
         }
         statsCoral.append("Dropped: ").append(Achievements.data_match_CoralDropped);
 
-        statsAlgae += "Net: " + Achievements.data_match_AlgaeInNet + "\n";
-        statsAlgae += "Processor: " + Achievements.data_match_AlgaeInProcessor;
+        statsAlgae.append("Net: ").append(Achievements.data_match_AlgaeInNet).append("\n")
+            .append("Processor: ").append(Achievements.data_match_AlgaeInProcessor);
 
         postMatchBinding.textStatsCoral.setText(statsCoral.toString());
-        postMatchBinding.textStatsAlgae.setText(statsAlgae);
+        postMatchBinding.textStatsAlgae.setText(statsAlgae.toString());
         //use achievement data
     }
 }
