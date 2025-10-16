@@ -13,17 +13,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.documentfile.provider.DocumentFile;
 
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.SubmitDataBinding;
+import com.team3663.scouting_app.utility.Logger;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -77,7 +76,7 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initMatchType() {
-        // Adds the items from the match type array to the list
+        // Adds the match types from the log files to the list
         ArrayAdapter<String> adp_MatchType = new ArrayAdapter<>(this, R.layout.cpr_spinner, Match_Types);
         adp_MatchType.setDropDownViewResource(R.layout.cpr_spinner_item);
         submitDataBinding.spinnerMatchType.setAdapter(adp_MatchType);
@@ -124,17 +123,17 @@ public class SubmitData extends AppCompatActivity {
         ArrayList<Integer> ret_int = new ArrayList<>();
         ArrayList<String> ret = new ArrayList<>();
 
-        // Get the list of files
-        DocumentFile[] file_list = Globals.output_df.listFiles();
-
         // If there's no files, return nothing
-        if ((file_list.length == 0)) return ret;
+        if (Globals.FileList.isEmpty()) {
+            Logger.SearchForFiles();
+            if (Globals.FileList.isEmpty()) return ret;
+        }
 
         // Parse out the match number from the filename.  If this is a "d" file from the right
         // competition (as defined in Settings) and matching device then add it to the list.
-        for (DocumentFile df : file_list) {
-            if (df.isFile() && Objects.requireNonNull(df.getName()).endsWith("_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.TransmitMatchType) + "_d.csv")) {
-                String[] file_parts = df.getName().split("_");
+        for (String file_name : Globals.FileList.keySet()) {
+            if (file_name.endsWith("_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.TransmitMatchType) + ".csv")) {
+                String[] file_parts = file_name.split("_");
                 if ((Integer.parseInt(file_parts[0]) == Globals.CurrentCompetitionId) &&
                         (Integer.parseInt(file_parts[2]) == Globals.CurrentDeviceId))
                     ret_int.add(Integer.parseInt(file_parts[1]));

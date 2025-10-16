@@ -61,6 +61,7 @@ public class Globals {
     public static DocumentFile base_df = null;
     public static DocumentFile input_df = null;
     public static DocumentFile output_df = null;
+    public static HashMap<String, Long> FileList = new HashMap<>();
 
     public static int TransmitMatchNum;
     public static int TransmitMatchType;
