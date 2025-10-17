@@ -378,7 +378,6 @@ public class PreMatch extends AppCompatActivity {
                 startActivity(GoToSubmitData);
 
                 finish();
-
                 return;
             }
 
@@ -397,8 +396,8 @@ public class PreMatch extends AppCompatActivity {
                         // The dialog is automatically dismissed when a dialog button is clicked.
                         .setPositiveButton(getString(R.string.pre_already_scouted_button_positive), (dialog, which) -> {
                             dialog.dismiss();
-                            backupLogFile(Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_d.csv");
-                            backupLogFile(Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv");
+                            backupLogFile(Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + ".csv");
+                            Globals.FileList.remove(Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + ".csv");
                             processNextButton();
                         })
 
@@ -487,11 +486,9 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private boolean isLogFileExisting() {
-        String filename_data = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_d.csv";
-        String filename_event = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv";
+        String filename = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + ".csv";
 
-        if (Globals.output_df.findFile(filename_data) != null) return true;
-        return Globals.output_df.findFile(filename_event) != null;
+        return Globals.output_df.findFile(filename) != null;
     }
 
     // =============================================================================================

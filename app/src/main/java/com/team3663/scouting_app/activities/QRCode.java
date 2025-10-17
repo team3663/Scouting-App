@@ -64,12 +64,9 @@ public class QRCode extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void InitQRData() {
-        qrFileString = new QR_FileString(Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.TransmitMatchType) + "_d.csv" + Constants.Logger.FILE_LINE_SEPARATOR +
-                getFileAsString("d") + Constants.Logger.FILE_LINE_SEPARATOR +
-                Constants.QRCode.EOF + Constants.Logger.FILE_LINE_SEPARATOR +
-                Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv" + Constants.Logger.FILE_LINE_SEPARATOR +
-                getFileAsString("e") + Constants.Logger.FILE_LINE_SEPARATOR +
-                Constants.QRCode.EOF);
+        qrFileString = new QR_FileString(Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.TransmitMatchType) + ".csv" + Constants.Logger.FILE_LINE_SEPARATOR +
+                getFileAsString() + Constants.Logger.FILE_LINE_SEPARATOR +
+                Constants.QRCode.EOF + Constants.Logger.FILE_LINE_SEPARATOR);
 
         qrCodeBinding.butPrevImage.setEnabled(false);
         qrCodeBinding.butPrevImage.setClickable(false);
@@ -209,12 +206,8 @@ public class QRCode extends AppCompatActivity {
     //                  type of file ("d" or "e") we want to convert to a string
     // Output:      String representing the entire contents of the file
     // =============================================================================================
-    public String getFileAsString(String in_Extension) {
-        // Validate we have a proper extension
-        if (!(in_Extension.equals("d") || in_Extension.equals("e")))
-            return "";
-
-        String filename = Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.TransmitMatchType) + "_" + in_Extension + ".csv";
+    public String getFileAsString() {
+        String filename = Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.TransmitMatchType) + ".csv";
         StringBuilder file_as_string = new StringBuilder();
         String line;
 

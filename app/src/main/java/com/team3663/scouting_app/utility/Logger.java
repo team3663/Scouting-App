@@ -66,56 +66,55 @@ public class Logger {
         // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;
 
-        // Define the filenames/files to be used for this logger
-        String filename_data = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_d.csv";
-        String filename_event = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv";
+        // Define the filename/file to be used for this logger
+        String filename = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + ".csv";
+
+        // If the FileList is empty, assume we haven't checked for files and do so now.
+        if (Globals.FileList.isEmpty()) SearchForFiles();
 
         // Delete files to ensure we're not creating more than Constants.KEEP_NUMBER_OF_MATCHES
-        // Only look at _d.csv files, ensure it's a file, and store off CreationTime attribute
-        // Only look at files associated with the current competition
-        DocumentFile[] list_of_files = Globals.output_df.listFiles();
-        ArrayList<Integer> filename_match_list = new ArrayList<>();
-        for (DocumentFile df : list_of_files) {
-            String[] file_parts = Objects.requireNonNull(df.getName()).split("_");
-
-            if ((Integer.parseInt(file_parts[0]) == Globals.CurrentCompetitionId) && (file_parts[3].equals("d.csv")))
-                filename_match_list.add(Integer.parseInt(file_parts[1]));
-        }
-
-        // If there's too many files, go through and delete ANY that are older than then Nth - 1
-        // What we'll do is collect attributes and names (_d files only) into two synchronized lists.
-        // We'll take a copy of the last_created_list and sort it to easily find the create date of the Nth - 1 one.
-        // Then we'll iterate through our original sync'd two lists and see if one should be deleted based on the
-        // create date, and if so, use the matching name from the other list to do so.
-        if (filename_match_list.size() >= Globals.NumberMatchFilesKept) {
-            // Sort the list and find the Nth - 1 oldest file (because we're about to create the Nth)
-            Collections.sort(filename_match_list);
-            Collections.reverse(filename_match_list);
-
+        // If there's too many files, sort the files by LastModified date and delete the oldest ones.
+        if (Globals.FileList.size() >= Globals.NumberMatchFilesKept) {
+            // Sort the list descending and delete from the list those that are above the limit number of files
+            ArrayList<Long> last_modified = new ArrayList<>(Globals.FileList.values());
+            Collections.sort(last_modified);
+            Collections.reverse(last_modified);
+            long limit = last_modified.get(Globals.NumberMatchFilesKept - 1);
             DocumentFile file_df;
 
-            for (int i = Globals.NumberMatchFilesKept - 1; i < filename_match_list.size(); ++i) {
-                file_df = Globals.output_df.findFile(Globals.CurrentCompetitionId + "_" + filename_match_list.get(i) + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_d.csv");
-                if (file_df != null) file_df.delete();
-                file_df = Globals.output_df.findFile(Globals.CurrentCompetitionId + "_" + filename_match_list.get(i) + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + "_e.csv");
-                if (file_df != null) file_df.delete();
+            for (String delete_file_name : Globals.FileList.keySet()) {
+                if (Globals.FileList.get(delete_file_name) <= limit) {
+                    file_df = Globals.output_df.findFile(delete_file_name);
+                    if (file_df != null) file_df.delete();
+                    Globals.FileList.remove(delete_file_name);
+                }
             }
         }
 
-        // Check if the current file exists before creating it.  DocumentFile will create a "... (1).csv" file
-        // if it previously existed, instead of overwriting it.
-        if (Globals.output_df.findFile(filename_data) != null) Objects.requireNonNull(Globals.output_df.findFile(filename_data)).delete();
-        if (Globals.output_df.findFile(filename_event) != null) Objects.requireNonNull(Globals.output_df.findFile(filename_event)).delete();
+        // Check if the current file exists before creating it (delete if it does).
+        if (Globals.output_df.findFile(filename) != null) Objects.requireNonNull(Globals.output_df.findFile(filename)).delete();
 
-        DocumentFile data_df = Globals.output_df.createFile("text/csv", filename_data);
-        DocumentFile event_df = Globals.output_df.createFile("text/csv", filename_event);
+        DocumentFile match_df = Globals.output_df.createFile("text/csv", filename);
 
-        // Write out the log files
-        assert data_df != null;
-        assert event_df != null;
-        WriteOutDataFile(data_df);
-        WriteOutEventFile(event_df);
+        // Write out the log files and add it to the list
+        assert match_df != null;
+        WriteOutDataFile(match_df);
+        WriteOutEventFile(match_df);
+        Globals.FileList.put(match_df.getName(), match_df.lastModified());
         this.clear();
+    }
+
+    // Member Function: Search the output directory for any existing files.
+    static public void SearchForFiles() {
+        DocumentFile[] list_of_files = Globals.output_df.listFiles();
+
+        for (DocumentFile df : list_of_files) {
+            String[] file_parts = Objects.requireNonNull(df.getName()).split("_");
+
+            if ((Integer.parseInt(file_parts[0]) == Globals.CurrentCompetitionId) && (file_parts[3].endsWith(".csv"))) {
+                Globals.FileList.put(df.getName(), df.lastModified());
+            }
+        }
     }
 
     // Member Function: Find the correct data in the Key/Value Pair variable
@@ -146,8 +145,9 @@ public class Logger {
             throw new RuntimeException(e);
         }
 
-        // Start the line (header as well) with the Match Type
+        // Start the line (header as well) with the Record Type (1 for the Data line)
         StringBuilder csv_line = new StringBuilder();
+        csv_line.append(",1");
         for (String header : Constants.Logger.LOGKEY_DATA_FILE_HEADER) {
             csv_line.append(",").append(FindValueInPair(header));
         }
@@ -195,9 +195,15 @@ public class Logger {
             if (Constants.Match.IMAGE_WIDTH > 0) normalized_x = (int)(10_000.0 * ler.X / Constants.Match.IMAGE_WIDTH);
             if (Constants.Match.IMAGE_HEIGHT > 0) normalized_y = (int)(10_000.0 * ler.Y / Constants.Match.IMAGE_HEIGHT);
 
-            String csv_line = i + "," + ler.EventId + "," + ler.LogTime + "," + normalized_x + "," + normalized_y + "," + ler.PrevSeq;
+            StringBuilder csv_line = new StringBuilder();
+            csv_line.append(",").append(i)
+                    .append(",").append(ler.EventId)
+                    .append(",").append(ler.LogTime)
+                    .append(",").append(normalized_x)
+                    .append(",").append(normalized_y)
+                    .append(",").append(ler.PrevSeq);
             try {
-                fos_event.write(csv_line.getBytes(StandardCharsets.UTF_8));
+                fos_event.write(csv_line.toString().getBytes(StandardCharsets.UTF_8));
                 fos_event.write(Constants.Logger.FILE_LINE_SEPARATOR.getBytes(StandardCharsets.UTF_8));
             } catch (IOException e) {
                 Toast.makeText(appContext, "Failed to write out event data: " + csv_line + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
