@@ -1,6 +1,7 @@
 package com.team3663.scouting_app.data;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 // =============================================================================================
 // Class:       MatchTypes
@@ -24,7 +25,7 @@ public class MatchTypes {
         return matchType_list.size();
     }
 
-    // Member Function: Get back the Id for a given match type entry (needed for logging)
+    // Member Function: Get back the ShortForm for a given match type entry (needed for logging)
     public String getMatchTypeShortForm(int in_id) {
         String ret = "";
 
@@ -55,6 +56,20 @@ public class MatchTypes {
         // Loop through the match type list to find a matching id and return the description
         for (MatchTypeRow mtr : matchType_list) {
             if (mtr.id == in_id) {
+                ret = mtr.description;
+                break;
+            }
+        }
+        return ret;
+    }
+
+    // Member Function: Get back the Description for a given match type entry
+    public String getMatchTypeDescription(String in_short_form) {
+        String ret = "";
+
+        // Loop through the match type list to find a matching id and return the description
+        for (MatchTypeRow mtr : matchType_list) {
+            if (Objects.equals(mtr.short_form, in_short_form)) {
                 ret = mtr.description;
                 break;
             }

@@ -356,7 +356,6 @@ public class PreMatch extends AppCompatActivity {
         finish();
     }
 
-
     // =============================================================================================
     // Function:    initNext
     // Description: Initialize the Next button

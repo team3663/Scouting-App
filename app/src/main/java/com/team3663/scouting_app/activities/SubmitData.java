@@ -23,6 +23,7 @@ import com.team3663.scouting_app.utility.achievements.Achievements;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -35,7 +36,6 @@ public class SubmitData extends AppCompatActivity {
     private static MediaPlayer media;
     private static ArrayList<Achievements.PoppedAchievement> pop_list;
     private static int currentAchievement = 0;
-    private static final ArrayList<String> Match_Types = Globals.MatchTypeList.getDescriptionList();
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -76,8 +76,24 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initMatchType() {
-        // Adds the match types from the log files to the list
-        ArrayAdapter<String> adp_MatchType = new ArrayAdapter<>(this, R.layout.cpr_spinner, Match_Types);
+        // If there's no files, return nothing
+        if (Globals.FileList.isEmpty()) {
+            Logger.SearchForFiles();
+            if (Globals.FileList.isEmpty()) return;
+        }
+
+        // Add the match types from the log files to the list.  Use a hashmap so we don't have to track
+        // what we already found.
+        HashMap<String, Integer> file_types = new HashMap<>();
+
+        for (String file_name : Globals.FileList.keySet()) {
+            String[] file_parts = file_name.split("_");
+            file_types.put(Globals.MatchTypeList.getMatchTypeDescription(file_parts[3].substring(0,1)), 1);
+        }
+
+        // Convert HashMap to an ArrayList and use in the spinner
+        ArrayList<String> match_types = new ArrayList<>(file_types.keySet());
+        ArrayAdapter<String> adp_MatchType = new ArrayAdapter<>(this, R.layout.cpr_spinner, match_types);
         adp_MatchType.setDropDownViewResource(R.layout.cpr_spinner_item);
         submitDataBinding.spinnerMatchType.setAdapter(adp_MatchType);
 
@@ -86,8 +102,8 @@ public class SubmitData extends AppCompatActivity {
         // Search through the list of match types until you find the one that is correct then get its position in the list
         // and set that one as selected
         int start_Pos_DropId = 0;
-        for (int i = 0; i < Match_Types.size(); i++) {
-            if (Match_Types.get(i).equals(Globals.MatchTypeList.getMatchTypeDescription(Globals.TransmitMatchType))) {
+        for (int i = 0; i < match_types.size(); i++) {
+            if (match_types.get(i).equals(Globals.MatchTypeList.getMatchTypeDescription(Globals.TransmitMatchType))) {
                 start_Pos_DropId = i;
                 break;
             }
