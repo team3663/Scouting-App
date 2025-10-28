@@ -2,6 +2,11 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+var versionMajor = 3
+var versionMinor = 0
+var versionPatch = 0
+var versionBuild = 0
+
 android {
     namespace = "com.team3663.scouting_app"
     compileSdk = 34
@@ -14,8 +19,8 @@ android {
         applicationId = "com.team3663.scouting_app"
         minSdk = 30
         targetSdk = 34
-        versionCode = 33
-        versionName = "2.6.1"
+        versionCode = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+        versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
         setProperty("archivesBaseName", "CPR-Scout-$versionName")
 
