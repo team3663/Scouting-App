@@ -367,7 +367,7 @@ public class AppLaunch extends AppCompatActivity {
                             Globals.MatchList.addMatchRow(info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8]);
                         }
                     } else if (in_fileName.equals(getString(R.string.file_teams))) {
-                        Globals.TeamList.put(Integer.parseInt(info[0]), info[1]);
+                        Globals.TeamList.put(info[0], info[1]);
                     }
                 }
             }
@@ -414,7 +414,7 @@ public class AppLaunch extends AppCompatActivity {
             }
 
             // Default Globals
-            Globals.CurrentTeamOverrideNum = 0;
+            Globals.CurrentTeamOverrideNum = "";
 
             if ((Globals.sp == null) ||
                     (Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1) == -1) ||

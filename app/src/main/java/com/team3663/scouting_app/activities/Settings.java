@@ -85,7 +85,7 @@ public class Settings extends AppCompatActivity {
 
         String ScoutingTeam = String.valueOf(settingsBinding.editScoutingTeam.getText());
         if (!ScoutingTeam.isEmpty()) {
-            Globals.spe.putInt(Constants.Prefs.SCOUTING_TEAM, Integer.parseInt(ScoutingTeam));
+            Globals.spe.putString(Constants.Prefs.SCOUTING_TEAM, ScoutingTeam);
         }
 
         int NumMatches = Integer.parseInt(settingsBinding.editNumMatches.getText().toString());
@@ -166,8 +166,8 @@ public class Settings extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Settings.this.runOnUiThread(() -> {
-                    int team_num = Globals.DeviceList.getTeamNumberByDescription(settingsBinding.spinnerDevice.getSelectedItem().toString());
-                    settingsBinding.editScoutingTeam.setText(String.valueOf(team_num));
+                    String team_num = Globals.DeviceList.getTeamNumberByDescription(settingsBinding.spinnerDevice.getSelectedItem().toString());
+                    settingsBinding.editScoutingTeam.setText(team_num);
                     settingsBinding.textScoutingTeamName.setText(Globals.TeamList.getOrDefault(team_num, ""));
                 });
             }
