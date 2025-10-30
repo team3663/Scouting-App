@@ -15,7 +15,7 @@ public class Achievements {
 
     // Scouter data
     public static int data_NumMatches = 0;
-    public static int data_TeamToScout = 0;
+    public static String data_TeamToScout = "";
     public static long data_StartTime = 0;
     public static int data_NumEvents = 0;
     public static int data_IdleTime = 0;
@@ -195,7 +195,7 @@ public class Achievements {
     // Member Function: Clear all data on achievements (ie: new scouter)
     public void clearAllData() {
         data_NumMatches = 0;
-        data_TeamToScout = 0;
+        data_TeamToScout = "";
         data_StartTime = 0;
         data_NumEvents = 0;
         data_IdleTime = 0;

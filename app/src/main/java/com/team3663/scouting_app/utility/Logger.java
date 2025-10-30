@@ -96,10 +96,33 @@ public class Logger {
 
         DocumentFile match_df = Globals.output_df.createFile("text/csv", filename);
 
+        if ((match_df == null) || (!match_df.canWrite())) {
+            Toast.makeText(appContext, "File not writeable: " + filename, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        OutputStream fos;
+
+        try {
+            fos = appContext.getContentResolver().openOutputStream(match_df.getUri());
+        } catch (Exception e) {
+            Toast.makeText(appContext, "Failed to create output stream: " + match_df.getName() + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
+            throw new RuntimeException(e);
+        }
+
         // Write out the log files and add it to the list
-        assert match_df != null;
-        WriteOutDataFile(match_df);
-        WriteOutEventFile(match_df);
+        WriteOutDataFile(fos);
+        WriteOutEventFile(fos);
+
+        try {
+            fos.flush();
+            fos.close();
+            System.gc();
+        } catch (IOException e) {
+            Toast.makeText(appContext, "Failed to close out log file. (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
+            throw new RuntimeException(e);
+        }
+
         Globals.FileList.put(match_df.getName(), match_df.lastModified());
         this.clear();
     }
@@ -133,18 +156,7 @@ public class Logger {
     }
 
     // Member Function: Write out the "D" file
-    private void WriteOutDataFile(DocumentFile in_data_df) {
-        if (!in_data_df.canWrite()) Toast.makeText(appContext, "File not writeable: " + in_data_df.getName(), Toast.LENGTH_LONG).show();
-
-        OutputStream fos_data;
-
-        try {
-            fos_data = appContext.getContentResolver().openOutputStream(in_data_df.getUri());
-        } catch (Exception e) {
-            Toast.makeText(appContext, "Failed to create output stream: " + in_data_df.getName() + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
-            throw new RuntimeException(e);
-        }
-
+    private void WriteOutDataFile(OutputStream in_fos) {
         // Start the line (header as well) with the Record Type (1 for the Data line)
         StringBuilder csv_line = new StringBuilder();
         csv_line.append(",1");
@@ -157,13 +169,9 @@ public class Logger {
 
         try {
             // Write out the data
-            assert fos_data != null;
-            fos_data.write(csv_line.toString().getBytes(StandardCharsets.UTF_8));
-            fos_data.write(Constants.Logger.FILE_LINE_SEPARATOR.getBytes(StandardCharsets.UTF_8));
-
-            fos_data.flush();
-            fos_data.close();
-            System.gc();
+            assert in_fos != null;
+            in_fos.write(csv_line.toString().getBytes(StandardCharsets.UTF_8));
+            in_fos.write(Constants.Logger.FILE_LINE_SEPARATOR.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             Toast.makeText(appContext, "Failed to close out data log file. (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
             throw new RuntimeException(e);
@@ -171,18 +179,7 @@ public class Logger {
     }
 
     // Member Function: Write out the "E" file
-    private void WriteOutEventFile(DocumentFile in_event_df) {
-        if (!in_event_df.canWrite()) Toast.makeText(appContext, "File not writeable: " + in_event_df.getName(), Toast.LENGTH_LONG).show();
-
-        OutputStream fos_event;
-        try {
-            fos_event = appContext.getContentResolver().openOutputStream(in_event_df.getUri());
-            assert fos_event != null;
-        } catch (Exception e) {
-            Toast.makeText(appContext, "Failed to create output stream: " + in_event_df.getName() + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
-            throw new RuntimeException(e);
-        }
-
+    private void WriteOutEventFile(OutputStream in_fos) {
         // Form the output line that goes in the csv file.
         for (int i = 1; i < match_log_events.size(); ++i) {
             LoggerEventRow ler = match_log_events.get(i);
@@ -203,20 +200,12 @@ public class Logger {
                     .append(",").append(normalized_y)
                     .append(",").append(ler.PrevSeq);
             try {
-                fos_event.write(csv_line.toString().getBytes(StandardCharsets.UTF_8));
-                fos_event.write(Constants.Logger.FILE_LINE_SEPARATOR.getBytes(StandardCharsets.UTF_8));
+                in_fos.write(csv_line.toString().getBytes(StandardCharsets.UTF_8));
+                in_fos.write(Constants.Logger.FILE_LINE_SEPARATOR.getBytes(StandardCharsets.UTF_8));
             } catch (IOException e) {
                 Toast.makeText(appContext, "Failed to write out event data: " + csv_line + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
                 throw new RuntimeException(e);
             }
-        }
-
-        try {
-            fos_event.flush();
-            fos_event.close();
-        } catch (IOException e) {
-            Toast.makeText(appContext, "Failed to close out event log file. (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
-            throw new RuntimeException(e);
         }
     }
 

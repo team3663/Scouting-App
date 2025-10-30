@@ -18,7 +18,7 @@ import com.team3663.scouting_app.utility.achievements.Achievements;
 import java.util.HashMap;
 
 public class Globals {
-    public static HashMap<Integer, String> TeamList = new HashMap<>();
+    public static HashMap<String, String> TeamList = new HashMap<>();
     public static Competitions CompetitionList = new Competitions();
     public static MatchTypes MatchTypeList = new MatchTypes();
     public static Matches MatchList = new Matches();
@@ -29,14 +29,14 @@ public class Globals {
 
     public static int CurrentCompetitionId;
     public static int CurrentMatchNumber;
-    public static int CurrentScoutingTeam;
     public static int CurrentDeviceId;
     public static int CurrentColorId;
-    public static int CurrentTeamOverrideNum;
     public static int CurrentPrefTeamPos;
     public static int CurrentFieldOrientationPos;
-    public static int CurrentTeamToScout;
     public static String CurrentMatchPhase = Constants.Phases.NONE;
+    public static String CurrentScoutingTeam;
+    public static String CurrentTeamOverrideNum;
+    public static String CurrentTeamToScout;
     public static int CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
 
     public static String CheckBoxTextPadding = "       ";
