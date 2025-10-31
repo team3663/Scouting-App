@@ -124,8 +124,10 @@ public class Settings extends AppCompatActivity {
 
         // Set the selection (if there is one) to the saved one
         savedCompetitionId = Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1);
-        if ((savedCompetitionId > -1) && (adp_Competition.getCount() > 0))
-            settingsBinding.spinnerCompetition.setSelection(adp_Competition.getPosition(Globals.CompetitionList.getCompetitionDescription(savedCompetitionId)), true);
+        if ((savedCompetitionId > -1) && (adp_Competition.getCount() > 0)) {
+            int pos = adp_Competition.getPosition(Globals.CompetitionList.getCompetitionDescription(savedCompetitionId));
+            if (pos > -1) settingsBinding.spinnerCompetition.setSelection(pos, true);
+        }
 
         // Define the actions when an item is selected.  Set text color and set description text
         settingsBinding.spinnerCompetition.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

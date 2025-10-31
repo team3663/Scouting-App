@@ -15,7 +15,7 @@ public class RuleCompetition implements AchievementRule {
     public boolean evaluate() {
         int sum = 0;
         for (int compId : competitionsIds)
-            sum += Achievements.data_NumMatchesByCompetition[compId];
+            sum += Achievements.data_NumMatchesByCompetition.getOrDefault(compId, 0);
         return sum >= threshold;
     }
 }

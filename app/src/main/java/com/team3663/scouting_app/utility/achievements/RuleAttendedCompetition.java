@@ -17,7 +17,7 @@ public class RuleAttendedCompetition implements AchievementRule {
 
         for (int compId = 0 ; compId < Globals.CompetitionList.size(); ++compId)
             if (Globals.CompetitionList.isAttended(compId) == attended)
-                sum += Achievements.data_NumMatchesByCompetition[compId];
+                sum += Achievements.data_NumMatchesByCompetition.getOrDefault(compId, 0);
 
         return sum >= threshold;
     }
