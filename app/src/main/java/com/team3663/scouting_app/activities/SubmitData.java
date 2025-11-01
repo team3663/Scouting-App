@@ -167,19 +167,19 @@ public class SubmitData extends AppCompatActivity {
     //              removing.
     // =============================================================================================
     private class popOneAndGo_TimerTask extends TimerTask {
-        private final int myAchievementId;
-        private final int myNumAchievements;
+        private final Achievements.PoppedAchievement myAchievement;
+        private final boolean isLast;
 
 
-        popOneAndGo_TimerTask(int in_AchievementId, int num_of_achievements) {
-            this.myAchievementId = in_AchievementId;
-            this.myNumAchievements = num_of_achievements;
+        popOneAndGo_TimerTask(Achievements.PoppedAchievement in_pa, boolean in_isLast) {
+            this.myAchievement = in_pa;
+            this.isLast = in_isLast;
         }
 
         @Override
         public void run() {
-            achievement_timer.schedule(new AchievementTimerTaskStart(myAchievementId), 1);
-            achievement_timer.schedule(new AchievementTimerTaskEnd(myAchievementId == myNumAchievements - 1), Constants.Achievements.DISPLAY_TIME);
+            achievement_timer.schedule(new AchievementTimerTaskStart(myAchievement), 1);
+            achievement_timer.schedule(new AchievementTimerTaskEnd(isLast), Constants.Achievements.DISPLAY_TIME);
         }
     }
 
@@ -188,17 +188,17 @@ public class SubmitData extends AppCompatActivity {
     // Description: Defines the TimerTask trigger for when we need to start showing an achievement
     // =============================================================================================
     private class AchievementTimerTaskStart extends TimerTask {
-        private final int myAchievementId;
+        private final Achievements.PoppedAchievement myAchievement;
 
-        AchievementTimerTaskStart(int in_AchievementId) {
-            myAchievementId = in_AchievementId;
+        AchievementTimerTaskStart(Achievements.PoppedAchievement in_Achievement) {
+            myAchievement = in_Achievement;
         }
 
         @Override
         public void run() {
             SubmitData.this.runOnUiThread(() -> {
-                submitDataBinding.textAchievementTitle.setText(pop_list.get(myAchievementId).title);
-                submitDataBinding.textAchievementDesc.setText(pop_list.get(myAchievementId).description);
+                submitDataBinding.textAchievementTitle.setText(myAchievement.title);
+                submitDataBinding.textAchievementDesc.setText(myAchievement.description);
 
                 //Animation animation = AnimationUtils.loadAnimation(SubmitData.this, R.anim.blink);
 
@@ -272,10 +272,10 @@ public class SubmitData extends AppCompatActivity {
         if (!pop_list.isEmpty()) {
             StringBuilder ach_sep_ID = new StringBuilder();
 
-            for (int achievement_id = 0; achievement_id < pop_list.size(); achievement_id++) {
-                Achievements.PoppedAchievement pa = pop_list.get(achievement_id);
+            for (int achievement_index = 0; achievement_index < pop_list.size(); achievement_index++) {
+                Achievements.PoppedAchievement pa = pop_list.get(achievement_index);
                 ach_sep_ID.append(":").append(pa.id);
-                achievement_timer.schedule(new popOneAndGo_TimerTask(achievement_id, pop_list.size()), Constants.Achievements.START_DELAY + (long) Constants.Achievements.DISPLAY_TIME * achievement_id + (long) Constants.Achievements.IN_BETWEEN_DELAY * achievement_id);
+                achievement_timer.schedule(new popOneAndGo_TimerTask(pa, achievement_index == pop_list.size() - 1), Constants.Achievements.START_DELAY + (long) Constants.Achievements.DISPLAY_TIME * achievement_index + (long) Constants.Achievements.IN_BETWEEN_DELAY * achievement_index);
             }
 
             if (!pop_list.isEmpty()) {
