@@ -202,7 +202,7 @@ public class PostMatch extends AppCompatActivity {
             }
 
             Achievements.data_NumMatches++;
-            Achievements.data_NumMatchesByCompetition[Globals.CurrentCompetitionId]++;
+            Achievements.data_NumMatchesByCompetition.put(Globals.CurrentCompetitionId, Achievements.data_NumMatchesByCompetition.getOrDefault(Globals.CurrentCompetitionId, 0) + 1);
             if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType)
                     .startsWith(Constants.Achievements.EVENT_TYPE_PRACTICE)) Achievements.data_PracticeType++;
             if (Globals.MatchTypeList.getMatchTypeDescription(Globals.CurrentMatchType)
