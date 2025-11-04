@@ -71,20 +71,20 @@ public class Matches {
     }
 
     // Member Function: Return the alliance that the team is on
-    public String getAllianceForTeam(int in_Team) {
+    public String getAllianceForTeam(String in_Team) {
         String ret = "";
-        String Team = String.valueOf(in_Team);
 
         if (!this.isCurrentMatchValid()) return ret;
         int currMatch = Globals.CurrentMatchNumber;
 
-        if (Team.equals(match_list.get(Globals.CurrentMatchType - 1).match_list_for_type.get(currMatch).blue1) ||
-                Team.equals(match_list.get(Globals.CurrentMatchType - 1).match_list_for_type.get(currMatch).blue2) ||
-                Team.equals(match_list.get(Globals.CurrentMatchType - 1).match_list_for_type.get(currMatch).blue3)) {
-
+        if (in_Team.equals(match_list.get(Globals.CurrentMatchType - 1).match_list_for_type.get(currMatch).blue1) ||
+                in_Team.equals(match_list.get(Globals.CurrentMatchType - 1).match_list_for_type.get(currMatch).blue2) ||
+                in_Team.equals(match_list.get(Globals.CurrentMatchType - 1).match_list_for_type.get(currMatch).blue3)) {
             ret = "BLUE";
         }
-        else {
+        else if (in_Team.equals(match_list.get(Globals.CurrentMatchType - 1).match_list_for_type.get(currMatch).red1) ||
+                    in_Team.equals(match_list.get(Globals.CurrentMatchType - 1).match_list_for_type.get(currMatch).red2) ||
+                    in_Team.equals(match_list.get(Globals.CurrentMatchType - 1).match_list_for_type.get(currMatch).red3)) {
             ret = "RED";
         }
 

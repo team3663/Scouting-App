@@ -262,7 +262,7 @@ public class Match extends AppCompatActivity {
         matchBinding.butBack.setVisibility(View.INVISIBLE);
 
         // Clear out the team to override (kept it in case they hit the Back button)
-        Globals.CurrentTeamOverrideNum = 0;
+        Globals.CurrentTeamOverrideNum = "";
 
         // Show the time
         matchBinding.textTime.setVisibility(View.VISIBLE);

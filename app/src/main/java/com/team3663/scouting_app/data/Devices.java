@@ -43,8 +43,8 @@ public class Devices {
     }
 
     // Member Function: get the team number of this device by the description
-    public int getTeamNumberByDescription(String in_description) {
-        int ret = 0;
+    public String getTeamNumberByDescription(String in_description) {
+        String ret = "";
 
         for (DeviceRow dr : device_list) {
             if (in_description.equals(dr.description)) {
@@ -57,8 +57,8 @@ public class Devices {
     }
 
     // Member Function: get the team number of this device by the description
-    public int getTeamNumberByDeviceId(int in_Id) {
-        int ret = 0;
+    public String getTeamNumberByDeviceId(int in_Id) {
+        String ret = "";
 
         for (DeviceRow dr : device_list) {
             if (in_Id == dr.id) {
@@ -109,13 +109,13 @@ public class Devices {
     // =============================================================================================
     private static class DeviceRow {
         private final int id;
-        private final int team_number;
+        private final String team_number;
         private final String description;
 
         // Constructor with individual data
         public DeviceRow(String in_device_number, String in_team_number, String in_description) {
             id = Integer.parseInt(in_device_number);
-            team_number = Integer.parseInt(in_team_number);
+            team_number = in_team_number;
             description = in_description;
         }
     }
