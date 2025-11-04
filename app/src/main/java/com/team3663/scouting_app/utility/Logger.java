@@ -129,7 +129,10 @@ public class Logger {
 
     // Member Function: Search the output directory for any existing files.
     static public void SearchForFiles() {
-        DocumentFile[] list_of_files = Globals.output_df.listFiles();
+        DocumentFile[] list_of_files;
+
+        if (Globals.output_df == null) return;
+        list_of_files = Globals.output_df.listFiles();
 
         for (DocumentFile df : list_of_files) {
             String[] file_parts = Objects.requireNonNull(df.getName()).split("_");
