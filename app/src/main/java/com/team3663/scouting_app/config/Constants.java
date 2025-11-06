@@ -33,7 +33,7 @@ public class Constants {
 
     public static class PreMatch {
         public static final int NUMBER_OF_MATCH_TYPES = 4;
-        public static final int DEFAULT_MATCH_TYPE = 1;
+        public static final String DEFAULT_MATCH_TYPE = "q";
     }
 
     public static class Match {

@@ -37,7 +37,7 @@ public class Globals {
     public static String CurrentScoutingTeam;
     public static String CurrentTeamOverrideNum;
     public static String CurrentTeamToScout;
-    public static int CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
+    public static String CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
 
     public static String CheckBoxTextPadding = "       ";
 
@@ -64,5 +64,5 @@ public class Globals {
     public static HashMap<String, Long> FileList = new HashMap<>();
 
     public static int TransmitMatchNum;
-    public static int TransmitMatchType;
+    public static String TransmitMatchType;
 }

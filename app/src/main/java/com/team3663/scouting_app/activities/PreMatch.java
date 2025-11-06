@@ -145,10 +145,10 @@ public class PreMatch extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 // Save off what you selected to be used until changed again
-                int newMatchType = Globals.MatchTypeList.getMatchTypeId(preMatchBinding.spinnerMatchType.getSelectedItem().toString());
+                String newMatchType = Globals.MatchTypeList.getMatchTypeShortForm(preMatchBinding.spinnerMatchType.getSelectedItem().toString());
 
-                if (newMatchType != Globals.CurrentMatchType) {
-                    Globals.CurrentMatchType = Globals.MatchTypeList.getMatchTypeId(preMatchBinding.spinnerMatchType.getSelectedItem().toString());
+                if (!Objects.equals(newMatchType, Globals.CurrentMatchType)) {
+                    Globals.CurrentMatchType = newMatchType;
                     Globals.CurrentTeamOverrideNum = "";
                     Globals.CurrentMatchNumber = 0;
                     Globals.CurrentTeamToScout = "";
@@ -428,9 +428,9 @@ public class PreMatch extends AppCompatActivity {
         // If there's an override set, add it to the spinner
         if (!Globals.CurrentTeamOverrideNum.isEmpty()) {
             if (teamsInMatch.size() == 1)
-                teamsInMatch.set(0, String.valueOf(Globals.CurrentTeamOverrideNum));
+                teamsInMatch.set(0, Globals.CurrentTeamOverrideNum);
             else
-                teamsInMatch.add(String.valueOf(Globals.CurrentTeamOverrideNum));
+                teamsInMatch.add(Globals.CurrentTeamOverrideNum);
         }
 
         // Create and apply the adapter to the spinner.
