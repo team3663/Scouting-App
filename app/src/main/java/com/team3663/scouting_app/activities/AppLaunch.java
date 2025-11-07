@@ -56,7 +56,6 @@ public class AppLaunch extends AppCompatActivity {
                     if (Objects.requireNonNull(data).getIntExtra(Constants.Settings.RELOAD_DATA_KEY, 0) == 1) {
                         try {
                             Globals.MatchList.clear();
-                            Globals.MatchList.addMatchRowForNoMatch();
                             LoadDataFile(getString(R.string.file_matches), getString(R.string.applaunch_loading_matches), getString(R.string.applaunch_file_error_matches));
                             Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
                             appLaunchBinding.textStatus.setText("");
@@ -359,11 +358,11 @@ public class AppLaunch extends AppCompatActivity {
                     } else if (in_fileName.equals(getString(R.string.file_events))) {
                         Globals.EventList.addEventRow(info[0], info[1], info[3], info[2].toUpperCase(), info[4], info[5], info[6], info[8]);
                     } else if (in_fileName.equals(getString(R.string.file_match_types))) {
-                        Globals.MatchTypeList.addMatchTypeRow(info[0], info[1], info[2]);
+                        Globals.MatchTypeList.addMatchTypeRow(info[0], info[1]);
                     } else if (in_fileName.equals(getString(R.string.file_matches))) {
                         // Use only the match information that equals the competition we're in.
                         if (Integer.parseInt(info[0]) == Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1)) {
-                            Globals.CurrentMatchType = Globals.MatchTypeList.getMatchTypeId(info[1]);
+                            Globals.CurrentMatchType = info[1];
                             Globals.MatchList.addMatchRow(info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8]);
                         }
                     } else if (in_fileName.equals(getString(R.string.file_teams))) {

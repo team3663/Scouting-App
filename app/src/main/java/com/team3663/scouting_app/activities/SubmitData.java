@@ -24,6 +24,7 @@ import com.team3663.scouting_app.utility.achievements.Achievements;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -34,7 +35,6 @@ public class SubmitData extends AppCompatActivity {
     private SubmitDataBinding submitDataBinding;
     private static final Timer achievement_timer = new Timer();
     private static MediaPlayer media;
-    private static ArrayList<Achievements.PoppedAchievement> pop_list;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -114,9 +114,9 @@ public class SubmitData extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 // Save off what you selected to be used until changed again
-                int newMatchType = Globals.MatchTypeList.getMatchTypeId(submitDataBinding.spinnerMatchType.getSelectedItem().toString());
+                String newMatchType = Globals.MatchTypeList.getMatchTypeShortForm(submitDataBinding.spinnerMatchType.getSelectedItem().toString());
 
-                if (newMatchType != Globals.TransmitMatchType) {
+                if (!Objects.equals(newMatchType, Globals.TransmitMatchType)) {
                     Globals.TransmitMatchType = newMatchType;
                     initMatch();
                 }
@@ -258,6 +258,8 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initAchievements() {
+        ArrayList<Achievements.PoppedAchievement> pop_list = Achievements.popAchievements();
+
         // Keep Achievements invisible
         submitDataBinding.imageAchievement.setVisibility(View.INVISIBLE);
         submitDataBinding.textAchievementTitle.setVisibility(View.INVISIBLE);
@@ -265,8 +267,6 @@ public class SubmitData extends AppCompatActivity {
 
         media = MediaPlayer.create(this, R.raw.achievement);
         media.setVolume(1,1);
-
-        pop_list = Achievements.popAchievements();
 
         // If achievement need to be popped, first log them, and then set up a timer to show them.
         if (!pop_list.isEmpty()) {
