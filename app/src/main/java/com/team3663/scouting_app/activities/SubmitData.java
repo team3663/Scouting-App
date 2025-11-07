@@ -55,6 +55,7 @@ public class SubmitData extends AppCompatActivity {
 
         // We're done with the logger (only if not null - it can be null if we're resubmitting data from Pre-Match)
         if (Globals.EventLogger != null) {
+            Globals.EventLogger.WriteOutFiles();
             Globals.EventLogger.close();
             Globals.EventLogger = null;
         }

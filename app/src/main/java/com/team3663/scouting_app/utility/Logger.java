@@ -30,6 +30,7 @@ public class Logger {
     // Keep track of the previous sequence number (per event group) so we know how to link a subsequent
     // event for that group.  Helps tremendously with UNDO actions.  This is updated / used by the logger.
     private static final int[] previous_seq = new int[Globals.MaxEventGroups + 1];
+    private static String filename = "";
 
     // Public Global Variables
     // Keep track of the currently selected event (per event group) to be used to build the context menus
@@ -46,28 +47,22 @@ public class Logger {
         Arrays.fill(previous_seq, -1);
 
         // Ensure the things are reset
-        this.clear();
+        this.close();
 
         // If this is a practice, just exit
         if (Globals.isPractice) return;
+
+        // Define the filename/file to be used for this logger
+        filename = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + ".csv";
 
         // Add an empty logging row so that Seq# is the same as the index
         match_log_events.add(new LoggerEventRow(-1, 0, 0, 0, ""));
     }
 
-    // Member Function: Clear out any saved data from the logger.
-    public void clear() {
-        match_log_events.clear();
-        match_log_data.clear();
-    }
-
-    // Member Function: Close out the logger.  Write out all of the non-time based match data and close the files.
-    public void close() {
+    // Member Function: Write out all of the match data to disk.
+    public void WriteOutFiles() {
         // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;
-
-        // Define the filename/file to be used for this logger
-        String filename = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + ".csv";
 
         // If the FileList is empty, assume we haven't checked for files and do so now.
         if (Globals.FileList.isEmpty()) SearchForFiles();
@@ -115,6 +110,7 @@ public class Logger {
         WriteOutEventFile(fos);
 
         try {
+            assert fos != null;
             fos.flush();
             fos.close();
             System.gc();
@@ -124,7 +120,12 @@ public class Logger {
         }
 
         Globals.FileList.put(match_df.getName(), match_df.lastModified());
-        this.clear();
+    }
+
+    // Member Function: Close out the logger.
+    public void close() {
+        match_log_events.clear();
+        match_log_data.clear();
     }
 
     // Member Function: Search the output directory for any existing files.

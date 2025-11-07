@@ -84,7 +84,7 @@ public class PreMatch extends AppCompatActivity {
     // =============================================================================================
     private void initMatchNumber() {
         if (Globals.CurrentMatchNumber > 0)
-            // MUST CONVERT TO STRING or it crashes with out warning
+            // MUST CONVERT TO STRING or it crashes without warning
             preMatchBinding.editMatch.setText(String.valueOf(Globals.CurrentMatchNumber));
         else
             preMatchBinding.editMatch.setText("");
@@ -102,7 +102,7 @@ public class PreMatch extends AppCompatActivity {
                 if (MatchNumStr.isEmpty()) {
                     // Disable the override
                     preMatchBinding.checkboxOverride.setEnabled(false);
-                    Globals.CurrentMatchNumber = -1;
+                    Globals.CurrentMatchNumber = 0;
                     Globals.CurrentTeamOverrideNum = "";
                     CurrentTeamToScoutPosition = -1;
                 } else if (MatchNum != Globals.CurrentMatchNumber) {
@@ -318,7 +318,7 @@ public class PreMatch extends AppCompatActivity {
         // Set up the Logger
         // Clear and null it out first if we have one set up already (could be there if BACK button was hit on Match)
         if (Globals.EventLogger != null) {
-            Globals.EventLogger.clear();
+            Globals.EventLogger.close();
             Globals.EventLogger = null;
         }
         Globals.EventLogger = new Logger(getApplicationContext());
@@ -371,6 +371,12 @@ public class PreMatch extends AppCompatActivity {
                 // it will increment it for the "next match" will set it back (in this case) to the
                 // original value.
                 Globals.CurrentMatchNumber--;
+
+                // Since we're only resubmitting data, we should close the current logger
+                if (Globals.EventLogger != null) {
+                    Globals.EventLogger.close();
+                    Globals.EventLogger = null;
+                }
 
                 Intent GoToSubmitData = new Intent(PreMatch.this, SubmitData.class);
                 startActivity(GoToSubmitData);
