@@ -181,7 +181,7 @@ public class PostMatch extends AppCompatActivity {
         postMatchBinding.butNext.setOnClickListener(view -> {
             // If we need to reset the match, abort it all and go back
             if (postMatchBinding.checkboxReset.isChecked()) {
-                Globals.EventLogger.clear();
+                Globals.EventLogger.close();
                 Achievements.data_FieldReset++;
 
                 Intent GoToPreMatch = new Intent(PostMatch.this, PreMatch.class);
