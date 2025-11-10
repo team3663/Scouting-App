@@ -148,7 +148,7 @@ public class SubmitData extends AppCompatActivity {
         // Parse out the match number from the filename.  If this is a "d" file from the right
         // competition (as defined in Settings) and matching device then add it to the list.
         for (String file_name : Globals.FileList.keySet()) {
-            if (file_name.endsWith("_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.TransmitMatchType) + ".csv")) {
+            if (file_name.endsWith("_" + Globals.TransmitMatchType + ".csv")) {
                 String[] file_parts = file_name.split("_");
                 if ((Integer.parseInt(file_parts[0]) == Globals.CurrentCompetitionId) &&
                         (Integer.parseInt(file_parts[2]) == Globals.CurrentDeviceId))
@@ -270,7 +270,9 @@ public class SubmitData extends AppCompatActivity {
         media.setVolume(1,1);
 
         // If achievement need to be popped, first log them, and then set up a timer to show them.
-        if (!pop_list.isEmpty()) {
+        // If the logger doesn't exist, wait to pop the achievement until we do. (next match?)
+        // Because we try to log the achievement which will fail if there's no valid logger.
+        if (!pop_list.isEmpty() && Globals.EventLogger != null) {
             StringBuilder ach_sep_ID = new StringBuilder();
 
             for (int achievement_index = 0; achievement_index < pop_list.size(); achievement_index++) {
