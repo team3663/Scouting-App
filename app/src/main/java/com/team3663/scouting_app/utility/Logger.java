@@ -53,7 +53,7 @@ public class Logger {
         if (Globals.isPractice) return;
 
         // Define the filename/file to be used for this logger
-        filename = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType) + ".csv";
+        filename = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.CurrentMatchType + ".csv";
 
         // Add an empty logging row so that Seq# is the same as the index
         match_log_events.add(new LoggerEventRow(-1, 0, 0, 0, ""));
