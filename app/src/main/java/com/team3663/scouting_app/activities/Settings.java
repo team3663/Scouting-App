@@ -252,7 +252,7 @@ public class Settings extends AppCompatActivity {
     // =============================================================================================
     private void initScoutingTeam() {
         // MUST CONVERT TO STRING or it crashes with out warning
-        settingsBinding.editScoutingTeam.setText(String.valueOf(Globals.sp.getInt(Constants.Prefs.SCOUTING_TEAM, -1)));
+        settingsBinding.editScoutingTeam.setText(Globals.sp.getString(Constants.Prefs.SCOUTING_TEAM, ""));
 
         // Define a text box for the name of the Team to appear in when you enter the Number
         String ScoutingTeamNumStr = String.valueOf(settingsBinding.editScoutingTeam.getText());
