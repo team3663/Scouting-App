@@ -11,7 +11,7 @@ import java.util.ArrayList;
 // =============================================================================================
 public class Events {
     private final ArrayList<EventRow> event_list;
-    public ArrayList<EventGroup> EventGroup;
+    private final ArrayList<EventGroup> EventGroup;
 
     // Constructor
     public Events() {
