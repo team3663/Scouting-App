@@ -131,6 +131,9 @@ public class Match extends AppCompatActivity {
         if (showing_event_detail_menu) {
             int event_id = Globals.EventList.getEventId(Objects.requireNonNull(in_item.getTitle()).toString());
 
+            // If we get called with no valid event, just return
+            if (event_id == Constants.Events.ID_NO_EVENT) return true;
+
             if (!Globals.isPractice) setEventStatus(event_id);
 
             Globals.EventLogger.LogEvent(event_id, current_X_Relative, current_Y_Relative, currentTouchTime);
