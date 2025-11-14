@@ -11,7 +11,7 @@ import java.util.ArrayList;
 // =============================================================================================
 public class Events {
     private final ArrayList<EventRow> event_list;
-    private final ArrayList<EventGroup> EventGroup;
+    private static  ArrayList<EventGroup> EventGroup;
 
     // Constructor
     public Events() {
@@ -31,7 +31,7 @@ public class Events {
         // Ensure we're adding the group id (in_id) as the same index.  This shouldn't happen but in case there's a gap in group numbers.
         // 1. Ensure the array is at least as big as the group_id needs
         // 2. Just set the value at the right index to the name.
-        for (int i = Globals.MaxEventGroups; i < group_id; ++i)
+        for (int i = EventGroup.size(); i <= group_id; ++i)
             EventGroup.add(new EventGroup("", ""));
 
         EventGroup.get(group_id).name = in_name;
