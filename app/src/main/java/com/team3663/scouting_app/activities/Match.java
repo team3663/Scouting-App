@@ -860,7 +860,11 @@ public class Match extends AppCompatActivity {
     @SuppressLint("ClickableViewAccessibility")
     private void setRobotStartLocation(float in_X, float in_Y) {
         float offset = (float) (matchBinding.textRobot.getWidth() / 2);
-        boolean blue_alliance = Globals.MatchList.getAllianceForTeam(Globals.CurrentTeamToScout).equals("BLUE");
+        String alliance = Globals.MatchList.getAllianceForTeam(Globals.CurrentTeamToScout);
+
+        // If we don't know the alliance (didn't have match schedule?) then default to the PREFERRED position
+        if (alliance.isEmpty()) alliance = Constants.Settings.PREF_TEAM_POS[Globals.CurrentPrefTeamPos];
+        boolean blue_alliance = alliance.substring(0,1).equalsIgnoreCase("B");
 
         if (in_X > 0) {
             starting_X_Absolute = in_X;

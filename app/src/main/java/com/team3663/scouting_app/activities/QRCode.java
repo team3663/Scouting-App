@@ -64,7 +64,7 @@ public class QRCode extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void InitQRData() {
-        qrFileString = new QR_FileString(Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.TransmitMatchType) + ".csv" + Constants.Logger.FILE_LINE_SEPARATOR +
+        qrFileString = new QR_FileString(Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.TransmitMatchType + ".csv" + Constants.Logger.FILE_LINE_SEPARATOR +
                 getFileAsString() + Constants.Logger.FILE_LINE_SEPARATOR +
                 Constants.QRCode.EOF + Constants.Logger.FILE_LINE_SEPARATOR);
 
@@ -207,7 +207,7 @@ public class QRCode extends AppCompatActivity {
     // Output:      String representing the entire contents of the file
     // =============================================================================================
     public String getFileAsString() {
-        String filename = Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.MatchTypeList.getMatchTypeShortForm(Globals.TransmitMatchType) + ".csv";
+        String filename = Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.TransmitMatchType + ".csv";
         StringBuilder file_as_string = new StringBuilder();
         String line;
 
