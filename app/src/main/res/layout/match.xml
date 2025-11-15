@@ -138,8 +138,17 @@
                 android:paddingEnd="10dp"
                 android:layout_gravity="center_vertical"
                 android:textColor="@color/white"
-                tools:textSize="22sp"
                 tools:ignore="RtlSymmetry" />
+
+            <Chronometer
+                android:id="@+id/chronometer"
+                android:layout_width="1dp"
+                android:layout_height="65dp" />
+
+            <Chronometer
+                android:id="@+id/chronometerDelay"
+                android:layout_width="1dp"
+                android:layout_height="65dp" />
         </LinearLayout>
       
         <FrameLayout

@@ -214,7 +214,7 @@ public class Logger {
     }
 
     // Member Function: Log a time-based event
-    public void LogEvent(int in_EventId, float in_X, float in_Y, double in_time) {
+    public void LogEvent(int in_EventId, float in_X, float in_Y, long in_time) {
         // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;
 
@@ -250,10 +250,10 @@ public class Logger {
         int log_time;
         switch (Globals.CurrentMatchPhase) {
             case Constants.Phases.AUTO:
-                log_time = (int) (Math.min(Math.round((in_time - Globals.StartTime) / 100.0), Constants.Match.TIMER_AUTO_LENGTH * 10));
+                log_time = (int) (Math.min(Math.round(in_time / 100.0), Constants.Match.TIMER_AUTO_LENGTH * 10));
                 break;
             case Constants.Phases.TELEOP:
-                log_time = (int) (Math.min(Math.round((in_time - Globals.StartTime) / 100.0), (Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_TELEOP_LENGTH) * 10));
+                log_time = (int) (Math.min(Math.round(in_time / 100.0), (Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_TELEOP_LENGTH) * 10));
                 break;
             default:
                 log_time = 0;
@@ -270,11 +270,11 @@ public class Logger {
     }
 
     // Member Function: Log a time-based event (with no time passed in)
-    public void LogEvent(int in_EventId){
+    public void LogEvent(int in_EventId, long in_time){
         // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;
 
-        LogEvent(in_EventId, 0, 0, System.currentTimeMillis());
+        LogEvent(in_EventId, 0, 0, in_time);
     }
 
     // Member Function: Log a non-time based event - just store this for later.
