@@ -1,6 +1,7 @@
 package com.team3663.scouting_app.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 // =============================================================================================
 // Class:       Competitions
@@ -36,6 +37,7 @@ public class Competitions {
             ret.add(cr.description);
         }
 
+        Collections.sort(ret);
         return ret;
     }
 

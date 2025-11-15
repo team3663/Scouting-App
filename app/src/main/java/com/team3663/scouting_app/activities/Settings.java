@@ -257,16 +257,14 @@ public class Settings extends AppCompatActivity {
         // Define a text box for the name of the Team to appear in when you enter the Number
         String ScoutingTeamNumStr = String.valueOf(settingsBinding.editScoutingTeam.getText());
         if (!ScoutingTeamNumStr.isEmpty()) {
-            int ScoutingTeamNum = Integer.parseInt(ScoutingTeamNumStr);
-            settingsBinding.textScoutingTeamName.setText(Globals.TeamList.getOrDefault(ScoutingTeamNum, ""));
+            settingsBinding.textScoutingTeamName.setText(Globals.TeamList.getOrDefault(ScoutingTeamNumStr, ""));
         }
 
         settingsBinding.editScoutingTeam.setOnFocusChangeListener((view, focus) -> {
             if (!focus) {
                 String ScoutingTeamNumStr1 = String.valueOf(settingsBinding.editScoutingTeam.getText());
                 if (!ScoutingTeamNumStr1.isEmpty()) {
-                    int ScoutingTeamNum = Integer.parseInt(ScoutingTeamNumStr1);
-                    settingsBinding.textScoutingTeamName.setText(Globals.TeamList.getOrDefault(ScoutingTeamNum, ""));
+                    settingsBinding.textScoutingTeamName.setText(Globals.TeamList.getOrDefault(ScoutingTeamNumStr1, ""));
                 }
             }
         });
