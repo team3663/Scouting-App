@@ -60,12 +60,10 @@ public class Match extends AppCompatActivity {
     private static int showing_event_detail_group;
 
     // Define a Timer and TimerTasks so you can schedule things
-    CPR_Chronometer game_Timer;
-    CPR_Chronometer delay_Timer;
-    Chronometer game_Chronometer;
-    Chronometer delay_Chronometer;
-    Timer flashing_Timer;
-    TimerTask flashing_timertask;
+    private static CPR_Chronometer game_Timer;
+    private static CPR_Chronometer delay_Timer;
+    private static Timer flashing_Timer;
+    private static TimerTask flashing_timertask;
 
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ResourceAsColor"})
     @Override
@@ -256,9 +254,6 @@ public class Match extends AppCompatActivity {
         // Clear out the team to override (kept it in case they hit the Back button)
         Globals.CurrentTeamOverrideNum = "";
 
-        // Show the time
-        matchBinding.textTime.setVisibility(View.VISIBLE);
-
         // Calculate the image dimensions
         Constants.Match.IMAGE_WIDTH = matchBinding.imageFieldView.getWidth();
         Constants.Match.IMAGE_HEIGHT = matchBinding.imageFieldView.getHeight();
@@ -270,22 +265,14 @@ public class Match extends AppCompatActivity {
         matchBinding.butMatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.start_teleop, 0);
 
         // Create the Timers and timer tasks
-        game_Chronometer = matchBinding.chronometer;
-        delay_Chronometer = matchBinding.chronometerDelay;
-        delay_Timer = new CPR_Chronometer(delay_Chronometer);
-        game_Timer = new CPR_Chronometer(game_Chronometer);
-        game_Chronometer.start();
         game_Timer.start();
         flashing_Timer = new Timer();
         flashing_timertask = new FlashingTimerTask();
 
         // Set timer tasks
-        game_Timer.setOnChronometerTickListener(chronometer -> { game_Timer_tick(); });
+        game_Timer.setOnChronometerTickListener(chronometer -> game_Timer_tick());
         if (Achievements.data_StartTime == 0) Achievements.data_StartTime = game_Timer.getStartTime();
         flashing_Timer.scheduleAtFixedRate(flashing_timertask, 0, Constants.Match.BUTTON_FLASH_INTERVAL);
-
-        // Show starting time
-        matchBinding.textTime.setText("0:00");
     }
 
     // =============================================================================================
@@ -512,9 +499,14 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     private void initTime() {
         // Initialize the match timer textbox settings
-        matchBinding.textTime.setVisibility(View.INVISIBLE);
-        matchBinding.textTime.setBackgroundColor(Color.TRANSPARENT);
-        matchBinding.textTime.setTextSize(24F);
+        Chronometer game_Chronometer = matchBinding.chronometer;
+        game_Chronometer.setBackgroundColor(Color.TRANSPARENT);
+        game_Chronometer.setTextSize(24F);
+        game_Timer = new CPR_Chronometer(game_Chronometer);
+        game_Timer.setTime(0);
+
+        Chronometer delay_Chronometer = matchBinding.chronometerDelay;
+        delay_Timer = new CPR_Chronometer(delay_Chronometer);
     }
 
     // =============================================================================================
@@ -662,7 +654,6 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     private void game_Timer_tick() {
         int elapsedSeconds = game_Timer.getElapsedSeconds();
-        matchBinding.textTime.setText(elapsedSeconds / 60 + ":" + String.format("%02d", elapsedSeconds % 60));
 
         // Check if we need to move to Teleop
         if (Globals.CurrentMatchPhase.equals(Constants.Phases.AUTO) && (elapsedSeconds >= Constants.Match.TIMER_AUTO_LENGTH)) {

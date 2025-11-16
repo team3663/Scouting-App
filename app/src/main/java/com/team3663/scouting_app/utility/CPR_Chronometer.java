@@ -1,6 +1,6 @@
 package com.team3663.scouting_app.utility;
 
-import android.content.Context;
+import android.os.SystemClock;
 import android.widget.Chronometer;
 
 // =============================================================================================
@@ -9,7 +9,7 @@ import android.widget.Chronometer;
 //              code easier to implement.
 // =============================================================================================
 public class CPR_Chronometer {
-    private Chronometer chronometer;
+    private final Chronometer chronometer;
     private long pause_offset;
     private boolean is_running;
 
@@ -23,7 +23,7 @@ public class CPR_Chronometer {
     // Member Function: Start the timer
     public void start() {
         chronometer.start();
-        chronometer.setBase(System.currentTimeMillis());
+        chronometer.setBase(SystemClock.elapsedRealtime());
         pause_offset = 0;
         is_running = true;
     }
@@ -33,7 +33,7 @@ public class CPR_Chronometer {
         if (! is_running) return;
 
         chronometer.stop();
-        pause_offset = System.currentTimeMillis() - chronometer.getBase();
+        pause_offset = SystemClock.elapsedRealtime() - chronometer.getBase();
         is_running = false;
     }
 
@@ -42,7 +42,7 @@ public class CPR_Chronometer {
         if (! is_running) return;
 
         chronometer.stop();
-        pause_offset = System.currentTimeMillis() - chronometer.getBase();
+        pause_offset = SystemClock.elapsedRealtime() - chronometer.getBase();
         is_running = false;
     }
 
@@ -51,31 +51,26 @@ public class CPR_Chronometer {
         if (is_running || pause_offset == 0) return;
 
         chronometer.start();
-        chronometer.setBase(System.currentTimeMillis() - pause_offset);
+        chronometer.setBase(SystemClock.elapsedRealtime() - pause_offset);
         pause_offset = 0;
         is_running = true;
     }
 
     // Member Function: Get the number of seconds that have elapsed since the timer was started
     public int getElapsedSeconds() {
-        if (is_running) return (int) ((System.currentTimeMillis() - chronometer.getBase()) / 1000);
+        if (is_running) return (int) ((SystemClock.elapsedRealtime() - chronometer.getBase()) / 1000);
         return (int) (pause_offset / 1000);
     }
 
     // Member Function: Get the number of milliseconds that have elapsed since the timer was started
     public long getElapsedMilliSeconds() {
-        if (is_running) return (System.currentTimeMillis() - chronometer.getBase());
+        if (is_running) return (SystemClock.elapsedRealtime() - chronometer.getBase());
         return pause_offset;
     }
 
     // Member Function: Set the timer to the specified number of seconds
     public void setTime(int in_seconds) {
-        chronometer.setBase(System.currentTimeMillis() - in_seconds * 1000L);
-    }
-
-    // Member Function: Return whether the timer is running or not
-    public boolean isRunning() {
-        return is_running;
+        chronometer.setBase(SystemClock.elapsedRealtime() - (in_seconds * 1000L));
     }
 
     // Member Function: Set the listener for when the timer ticks
