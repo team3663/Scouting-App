@@ -13,7 +13,6 @@ import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.OrientationEventListener;
 import android.view.View;
-import android.widget.Chronometer;
 import android.widget.RelativeLayout;
 
 import androidx.activity.EdgeToEdge;
@@ -28,7 +27,6 @@ import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.MatchBinding;
-import com.team3663.scouting_app.utility.CPR_Chronometer;
 import com.team3663.scouting_app.utility.Logger;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
@@ -46,6 +44,7 @@ public class Match extends AppCompatActivity {
     private MatchBinding matchBinding;
     private static OrientationEventListener OEL = null; // needed to detect the screen being flipped around
     private static String currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE;
+    private static double currentTouchTime = 0;
     private static float current_X_Relative = 0;
     private static float current_Y_Relative = 0;
     private static float current_X_Absolute = 0;
@@ -55,15 +54,17 @@ public class Match extends AppCompatActivity {
     private static float starting_X_Absolute = 0;
     private static float starting_Y_Absolute = 0;
     private static long start_time_not_moving;
-    private static long currentTouchTime = 0;
     private static boolean showing_event_detail_menu = false;
     private static int showing_event_detail_group;
 
     // Define a Timer and TimerTasks so you can schedule things
-    private static CPR_Chronometer game_Timer;
-    private static CPR_Chronometer delay_Timer;
-    private static Timer flashing_Timer;
-    private static TimerTask flashing_timertask;
+    Timer match_Timer;
+    Timer robot_Timer;
+    TimerTask robot_timertask;
+    TimerTask auto_timertask;
+    TimerTask teleop_timertask;
+    TimerTask gametime_timertask;
+    TimerTask flashing_timertask;
 
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ResourceAsColor"})
     @Override
@@ -101,25 +102,25 @@ public class Match extends AppCompatActivity {
         super.onCreateContextMenu(in_menu, in_v, in_menuInfo);
 
         // Check to make sure the game is going
-        if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) return;
-
-        // Call the correct context menu
-        if (in_v.getId() == R.id.image_FieldView) {
+        if (!Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) {
             // Save off the time that this was touched
-            currentTouchTime = game_Timer.getElapsedMilliSeconds();
+            currentTouchTime = System.currentTimeMillis();
 
-            if (Globals.MaxEventGroups > 1) {
-                showing_event_detail_menu = false;
-                createEventContextMenu(in_menu);
-            } else {
+            // Call the correct context menu
+            if (in_v.getId() == R.id.image_FieldView)
+                if (Globals.MaxEventGroups > 1) {
+                    showing_event_detail_menu = false;
+                    createEventContextMenu(in_menu);
+                }
+                else {
+                    showing_event_detail_menu = true;
+                    showing_event_detail_group = Globals.MaxEventGroups;
+                    createEventContextSubMenu(in_menu);
+                }
+            else if (in_v.getId() == R.id.view_ContextSubMenuView) {
                 showing_event_detail_menu = true;
-                showing_event_detail_group = Globals.MaxEventGroups;
                 createEventContextSubMenu(in_menu);
             }
-        }
-        else if (in_v.getId() == R.id.view_ContextSubMenuView) {
-            showing_event_detail_menu = true;
-            createEventContextSubMenu(in_menu);
         }
     }
 
@@ -230,14 +231,15 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint({"DiscouragedApi", "SetTextI18n"})
     public void startMatch() {
+        // Record the current/start time of the match to calculate elapsed time
+        Globals.StartTime = System.currentTimeMillis();
+
         // Achievements
+        if (Achievements.data_StartTime == 0) Achievements.data_StartTime = Globals.StartTime;
         Globals.myAchievements.clearMatchData();
 
         // Log the starting time
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_TIME, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss")));
-        // Log the starting location (the match hasn't started so we need to specify a "0" time
-        // or else it will log as max match time which wastes extra log characters for no benefit)
-        Globals.EventLogger.LogEvent(Constants.Events.ID_AUTO_START_GAME_PIECE, starting_X_Relative, starting_Y_Relative, 0);
 
         // Disable orientation listening if we can!  Once we start the match don't allow rotation anymore
         if (OEL != null && OEL.canDetectOrientation()) {
@@ -246,6 +248,17 @@ public class Match extends AppCompatActivity {
 
         // Hide the starting location of the robot
         matchBinding.textRobot.setVisibility(View.INVISIBLE);
+
+        // Log the starting location (the match hasn't started so we need to specify a "0" time
+        // or else it will log as max match time which wastes extra log characters for no benefit)
+        Globals.EventLogger.LogEvent(Constants.Events.ID_AUTO_START_GAME_PIECE, starting_X_Relative, starting_Y_Relative, 0);
+
+        // Create the Timers and timer tasks
+        match_Timer = new Timer();
+        auto_timertask = new AutoTimerTask();
+        teleop_timertask = new TeleopTimerTask();
+        gametime_timertask = new GameTimeTimerTask();
+        flashing_timertask = new FlashingTimerTask();
 
         // Hide Back Button (too late to go back now!)
         matchBinding.butBack.setClickable(false);
@@ -266,40 +279,16 @@ public class Match extends AppCompatActivity {
         Constants.Match.IMAGE_WIDTH = matchBinding.imageFieldView.getWidth();
         Constants.Match.IMAGE_HEIGHT = matchBinding.imageFieldView.getHeight();
 
+        // Set timer tasks
+        match_Timer.schedule(auto_timertask, (Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_AUTO_TELEOP_DELAY) * 1_000);
+        match_Timer.scheduleAtFixedRate(gametime_timertask, 0, Constants.Match.TIMER_UPDATE_RATE);
+        match_Timer.scheduleAtFixedRate(flashing_timertask, 0, Constants.Match.BUTTON_FLASH_INTERVAL);
+
         // Set match Phase to be correct and Button text
         Globals.CurrentMatchPhase = Constants.Phases.AUTO;
         matchBinding.butMatchControl.setText(getString(R.string.button_start_teleop));
         matchBinding.butMatchControl.setBackgroundColor(getColor(R.color.dark_yellow));
         matchBinding.butMatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.start_teleop, 0);
-
-        // Create the Timers and timer tasks
-        game_Timer.start();
-        flashing_Timer = new Timer();
-        flashing_timertask = new FlashingTimerTask();
-
-        // Set timer tasks
-        game_Timer.setOnChronometerTickListener(chronometer -> game_Timer_tick());
-        if (Achievements.data_StartTime == 0) Achievements.data_StartTime = game_Timer.getStartTime();
-        flashing_Timer.scheduleAtFixedRate(flashing_timertask, 0, Constants.Match.BUTTON_FLASH_INTERVAL);
-    }
-
-    // =============================================================================================
-    // Function:    startTeleopDelay
-    // Description: Starts the small delay before we start Teleop.
-    // Output:      void
-    // Parameters:  N/A
-    // =============================================================================================
-    @SuppressLint({"SetTextI18n", "DefaultLocale"})
-    public void startTeleopDelay() {
-        // Set match Phase to be correct
-        Globals.CurrentMatchPhase = Constants.Phases.TELEOP;
-
-        game_Timer.pause();
-        delay_Timer.start();
-        delay_Timer.setOnChronometerTickListener(chronometer -> {
-            if (delay_Timer.getElapsedSeconds() >= Constants.Match.TIMER_AUTO_TELEOP_DELAY)
-                startTeleop();
-        });
     }
 
     // =============================================================================================
@@ -311,10 +300,11 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint({"SetTextI18n", "DefaultLocale"})
     public void startTeleop() {
-        // Set the game Time so that the Display Time will be correct
-        game_Timer.setTime(Constants.Match.TIMER_AUTO_LENGTH);
-        game_Timer.resume();
-        delay_Timer.stop();
+        // Set the start Time so that the Display Time will be correct
+        Globals.StartTime = System.currentTimeMillis() - Constants.Match.TIMER_AUTO_LENGTH * 1_000;
+        matchBinding.textTime.setText(Constants.Match.TIMER_TELEOP_LENGTH / 60 + ":" + String.format("%02d", Constants.Match.TIMER_TELEOP_LENGTH % 60));
+
+        match_Timer.schedule(teleop_timertask, Constants.Match.TIMER_TELEOP_LENGTH * 1_000);
 
         // Set match Phase to be correct and Button text
         Globals.CurrentMatchPhase = Constants.Phases.TELEOP;
@@ -351,9 +341,6 @@ public class Match extends AppCompatActivity {
             matchBinding.butMatchControl.setBackgroundColor(getColor(R.color.white));
             matchBinding.butMatchControl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.next_button, 0);
         });
-
-        // Stop the game timer
-        game_Timer.stop();
     }
 
     // =============================================================================================
@@ -395,13 +382,22 @@ public class Match extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     public void endMatch() {
         // Get rid of the Scheduled events that are over/have ended
-        // Need to set flashing_Timer and TimerTasks to null so we can create "new" ones at the start of the next match
-        if (flashing_Timer != null) {
-            flashing_Timer.cancel();
-            flashing_Timer.purge();
+        // Need to set match_Timer and TimerTasks to null so we can create "new" ones at the start of the next match
+        if (match_Timer != null) {
+            match_Timer.cancel();
+            match_Timer.purge();
+        }
+        if (robot_Timer != null) {
+            robot_Timer.cancel();
+            robot_Timer.purge();
         }
 
-        flashing_Timer = null;
+        match_Timer = null;
+        robot_Timer = null;
+        robot_timertask = null;
+        auto_timertask = null;
+        teleop_timertask = null;
+        gametime_timertask = null;
         flashing_timertask = null;
 
         // Reset match phase so that the next time we hit Start Match we do the right thing
@@ -417,6 +413,53 @@ public class Match extends AppCompatActivity {
         startActivity(GoToPostMatch);
 
         finish();
+    }
+
+    // =============================================================================================
+    // Class:       AutoTimerTask
+    // Description: Defines the TimerTask trigger to when the Auto phase of the game is over.
+    // =============================================================================================
+    public class AutoTimerTask extends TimerTask {
+        @Override
+        public void run() {
+            if (Globals.CurrentMatchPhase.equals(Constants.Phases.AUTO)) {
+                startTeleop();
+            }
+        }
+    }
+
+    // =============================================================================================
+    // Class:       TeleopTimerTask
+    // Description: Defines the TimerTask trigger to when the Teleop phase of the game is over.
+    // =============================================================================================
+    public class TeleopTimerTask extends TimerTask {
+        @Override
+        public void run() {
+            if (Globals.CurrentMatchPhase.equals(Constants.Phases.TELEOP)) {
+                endTeleop();
+            }
+        }
+    }
+
+    // =============================================================================================
+    // Class:       GameTimeTimerTask
+    // Description: Defines the TimerTask trigger to when the Teleop phase of the game is over.
+    // =============================================================================================
+    public class GameTimeTimerTask extends TimerTask {
+        @SuppressLint({"SetTextI18n", "DefaultLocale"})
+        @Override
+        public void run() {
+            // Get elapsed time in seconds without decimal and round to make it more accurate and not skip numbers
+            int elapsedSeconds;
+
+            if (Globals.CurrentMatchPhase.equals(Constants.Phases.AUTO)) {
+                elapsedSeconds = (int) (Constants.Match.TIMER_AUTO_LENGTH - Math.round((System.currentTimeMillis() - Globals.StartTime) / 1_000.0));
+            } else {
+                elapsedSeconds = (int) (Constants.Match.TIMER_TELEOP_LENGTH + Constants.Match.TIMER_AUTO_LENGTH - Math.round((System.currentTimeMillis() - Globals.StartTime) / 1_000.0));
+            }
+            if (elapsedSeconds < 0) elapsedSeconds = 0;
+            matchBinding.textTime.setText(elapsedSeconds / 60 + ":" + String.format("%02d", elapsedSeconds % 60));
+        }
     }
 
     // =============================================================================================
@@ -504,14 +547,9 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     private void initTime() {
         // Initialize the match timer textbox settings
-        Chronometer game_Chronometer = matchBinding.chronometer;
-        game_Chronometer.setBackgroundColor(Color.TRANSPARENT);
-        game_Chronometer.setTextSize(24F);
-        game_Timer = new CPR_Chronometer(game_Chronometer);
-        game_Timer.setTime(0);
-
-        Chronometer delay_Chronometer = matchBinding.chronometerDelay;
-        delay_Timer = new CPR_Chronometer(delay_Chronometer);
+        matchBinding.textTime.setVisibility(View.INVISIBLE);
+        matchBinding.textTime.setBackgroundColor(Color.TRANSPARENT);
+        matchBinding.textTime.setTextSize(24F);
     }
 
     // =============================================================================================
@@ -565,11 +603,11 @@ public class Match extends AppCompatActivity {
                     break;
                 case Constants.Phases.AUTO:
                     // If we're going to teleop manually, log the start time offset
-                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_TIME_OFFSET, String.valueOf(Math.round((Constants.Match.TIMER_AUTO_LENGTH * 1000.0 - game_Timer.getElapsedMilliSeconds()) / 10.0) / 100.0));
+                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_TIME_OFFSET, String.valueOf(Math.round((Constants.Match.TIMER_AUTO_LENGTH * 1000.0 - System.currentTimeMillis() + Globals.StartTime) / 10.0) / 100.0));
                     startTeleop();
                     break;
                 case Constants.Phases.TELEOP:
-                    if (game_Timer.getElapsedSeconds() < Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_TELEOP_LENGTH)
+                    if (Globals.StartTime + (Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_TELEOP_LENGTH) * 1000 > System.currentTimeMillis())
                         new AlertDialog.Builder(view.getContext())
                                 .setTitle(getString(R.string.match_alert_endMatch_title))
                                 .setMessage(getString(R.string.match_alert_endMatch_message))
@@ -651,27 +689,6 @@ public class Match extends AppCompatActivity {
     }
 
     // =============================================================================================
-    // Function:    game_Timer_tick
-    // Description: Process what needs to happen when the game timer ticks up a second.
-    //              Update the clock, check if we need to change game phase, etc.
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void game_Timer_tick() {
-        int elapsedSeconds = game_Timer.getElapsedSeconds();
-
-        // Check if we need to move to Teleop
-        if (Globals.CurrentMatchPhase.equals(Constants.Phases.AUTO) && (elapsedSeconds >= Constants.Match.TIMER_AUTO_LENGTH)) {
-            startTeleopDelay();
-        }
-
-        // Check if we need to move to Teleop
-        if (Globals.CurrentMatchPhase.equals(Constants.Phases.TELEOP) && elapsedSeconds >= Constants.Match.TIMER_AUTO_LENGTH + Constants.Match.TIMER_TELEOP_LENGTH) {
-            endTeleop();
-        }
-    }
-
-    // =============================================================================================
     // Function:    setEventStatus
     // Description: Set the status text for a given event text
     // Parameters:  in_event_id
@@ -713,13 +730,13 @@ public class Match extends AppCompatActivity {
         matchBinding.switchNotMoving.setOnCheckedChangeListener((buttonView, isChecked) -> {
             // If the button is being turned ON make it RED otherwise LTGRAY
             if (isChecked) {
-                Globals.EventLogger.LogEvent(Constants.Events.ID_NOT_MOVING_START, game_Timer.getElapsedMilliSeconds());
+                Globals.EventLogger.LogEvent(Constants.Events.ID_NOT_MOVING_START);
                 matchBinding.switchNotMoving.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
                 start_time_not_moving = System.currentTimeMillis();
                 Achievements.data_match_Toggle_NotMoving++;
                 Achievements.data_Toggle_NotMoving++;
             } else {
-                Globals.EventLogger.LogEvent(Constants.Events.ID_NOT_MOVING_END, game_Timer.getElapsedMilliSeconds());
+                Globals.EventLogger.LogEvent(Constants.Events.ID_NOT_MOVING_END);
                 matchBinding.switchNotMoving.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
                 Achievements.data_IdleTime += (int)(System.currentTimeMillis() - start_time_not_moving);
             }
@@ -748,11 +765,11 @@ public class Match extends AppCompatActivity {
         matchBinding.switchDefense.setOnCheckedChangeListener((buttonView, isChecked) -> {
             // If the button is being turned ON make it RED otherwise LTGRAY
             if (isChecked) {
-                Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENSE_START, game_Timer.getElapsedMilliSeconds());
+                Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENSE_START);
                 matchBinding.switchDefense.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
                 Achievements.data_Toggle_Defense++;
             } else {
-                Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENSE_END, game_Timer.getElapsedMilliSeconds());
+                Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENSE_END);
                 matchBinding.switchDefense.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
             }
         });
@@ -781,11 +798,11 @@ public class Match extends AppCompatActivity {
             Globals.isDefended = isChecked;
 
             if (isChecked) {
-                Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENDED_START, game_Timer.getElapsedMilliSeconds());
+                Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENDED_START);
                 matchBinding.switchDefended.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
                 Achievements.data_Toggle_Defended++;
             } else {
-                Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENDED_END, game_Timer.getElapsedMilliSeconds());
+                Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENDED_END);
                 matchBinding.switchDefended.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
             }
         });

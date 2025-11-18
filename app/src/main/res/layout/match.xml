@@ -130,19 +130,16 @@
                 android:layout_height="65dp"
                 android:layout_gravity="center_vertical"/>
 
-            <Chronometer
-                android:id="@+id/chronometer"
+            <TextView
+                android:id="@+id/text_Time"
                 android:layout_width="70dp"
                 android:layout_height="65dp"
                 android:gravity="end|center"
+                android:paddingEnd="10dp"
                 android:layout_gravity="center_vertical"
                 android:textColor="@color/white"
-                android:textSize="24sp"/>
-
-            <Chronometer
-                android:id="@+id/chronometerDelay"
-                android:layout_width="1dp"
-                android:layout_height="65dp" />
+                tools:textSize="22sp"
+                tools:ignore="RtlSymmetry" />
         </LinearLayout>
       
         <FrameLayout
