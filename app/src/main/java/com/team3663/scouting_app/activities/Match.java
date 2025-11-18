@@ -254,6 +254,14 @@ public class Match extends AppCompatActivity {
         // Clear out the team to override (kept it in case they hit the Back button)
         Globals.CurrentTeamOverrideNum = "";
 
+        // Show the time
+        matchBinding.textTime.setVisibility(View.VISIBLE);
+
+        // Show the switch for "Not Moving" in Auto
+        matchBinding.switchNotMoving.setEnabled(true);
+        matchBinding.switchNotMoving.setTextColor(Color.WHITE);
+        matchBinding.switchNotMoving.setVisibility(View.VISIBLE);
+
         // Calculate the image dimensions
         Constants.Match.IMAGE_WIDTH = matchBinding.imageFieldView.getWidth();
         Constants.Match.IMAGE_HEIGHT = matchBinding.imageFieldView.getHeight();
@@ -314,9 +322,6 @@ public class Match extends AppCompatActivity {
         // Certain actions can't be set from a non-UI thread (like within a TimerTask that runs on a
         // separate thread). So we need to make a Runner that will execute on the UI thread to set this.
         Match.this.runOnUiThread(() -> {
-            matchBinding.switchNotMoving.setEnabled(true);
-            matchBinding.switchNotMoving.setTextColor(Color.WHITE);
-            matchBinding.switchNotMoving.setVisibility(View.VISIBLE);
             matchBinding.switchDefense.setEnabled(true);
             matchBinding.switchDefense.setTextColor(Color.WHITE);
             matchBinding.switchDefense.setVisibility(View.VISIBLE);
