@@ -187,16 +187,12 @@ public class Matches {
         // Description: Defines a structure/class to hold the information for each Match
         // =============================================================================================
         private static class MatchInfoRow {
-            private String red1 = "";
-            private String red2 = "";
-            private String red3 = "";
-            private String blue1 = "";
-            private String blue2 = "";
-            private String blue3 = "";
-
-            // Constructor with no match information
-            public MatchInfoRow() {
-            }
+            private final String red1;
+            private final String red2;
+            private final String red3;
+            private final String blue1;
+            private final String blue2;
+            private final String blue3;
 
             // Constructor with values
             public MatchInfoRow(String in_red1, String in_red2, String in_red3, String in_blue1, String in_blue2, String in_blue3) {
