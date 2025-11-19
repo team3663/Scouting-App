@@ -1,5 +1,7 @@
 package com.team3663.scouting_app.utility.achievements;
 
+import android.os.SystemClock;
+
 import com.team3663.scouting_app.config.Globals;
 
 public class RuleTimeScouting implements AchievementRule {
@@ -11,6 +13,6 @@ public class RuleTimeScouting implements AchievementRule {
 
     @Override
     public boolean evaluate(){
-        return ((Achievements.data_StartTime > 0) && (System.currentTimeMillis() - Achievements.data_StartTime >= threshold));
+        return ((Achievements.data_StartTime > 0) && (SystemClock.elapsedRealtime() - Achievements.data_StartTime >= threshold));
     }
 }
