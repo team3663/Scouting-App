@@ -56,8 +56,6 @@ public class Globals {
     public static boolean isStartingGamePiece = true;
     public static boolean isShadowMode = false;
 
-    public static long StartTime = 0;
-
     public static DocumentFile base_df = null;
     public static DocumentFile input_df = null;
     public static DocumentFile output_df = null;

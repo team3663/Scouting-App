@@ -174,6 +174,7 @@ public class AppLaunch extends AppCompatActivity {
                 Globals.CompetitionList.clear();
                 Globals.DeviceList.clear();
                 Globals.EventList.clear();
+                Globals.MatchTypeList.clear();
                 Globals.MatchList.clear();
                 Globals.TeamList.clear();
 
