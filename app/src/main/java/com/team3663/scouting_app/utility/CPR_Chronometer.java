@@ -39,7 +39,7 @@ public class CPR_Chronometer {
 
     // Member Function: Pause the timer if it was running
     public void pause() {
-        if (! is_running) return;
+        if (!is_running) return;
 
         chronometer.stop();
         pause_offset = SystemClock.elapsedRealtime() - chronometer.getBase();
