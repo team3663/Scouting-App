@@ -271,8 +271,8 @@ public class QRCode extends AppCompatActivity {
             int end;
 
             while (begin < size) {
-                if (size - begin <= Constants.QRCode.PREFERRED_QR_DATA_SIZE) end = size;
-                else end = begin + Constants.QRCode.PREFERRED_QR_DATA_SIZE;
+                if (size - begin <= Globals.CurrentQRSize) end = size;
+                else end = begin + Globals.CurrentQRSize;
 
                 file_page.add(in_data.substring(begin, end));
                 begin = end;

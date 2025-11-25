@@ -52,6 +52,7 @@ public class Settings extends AppCompatActivity {
         initScoutingTeam();
         initNumMatches();
         initColors();
+        initQRSize();
         initShadowMode();
 
         // Define a Cancel Button
@@ -99,7 +100,9 @@ public class Settings extends AppCompatActivity {
 
         Globals.CurrentPrefTeamPos = settingsBinding.spinnerPrefTeamPos.getSelectedItemPosition();
         Globals.spe.putInt(Constants.Prefs.PREF_TEAM_POS, Globals.CurrentPrefTeamPos);
-        Globals.spe.apply();
+
+        Globals.CurrentQRSize  = Integer.parseInt(settingsBinding.editQRSize.getText().toString());
+        Globals.spe.putInt(Constants.Prefs.QR_SIZE, Globals.CurrentQRSize);
 
         Globals.CurrentFieldOrientationPos = settingsBinding.spinnerOrientation.getSelectedItemPosition();
         Globals.spe.putInt(Constants.Prefs.PREF_ORIENTATION, Globals.CurrentFieldOrientationPos);
@@ -278,7 +281,7 @@ public class Settings extends AppCompatActivity {
     // =============================================================================================
     private void initNumMatches() {
         // Restore number of files to keep from saved preferences
-        settingsBinding.editNumMatches.setText(String.valueOf(Globals.sp.getInt(Constants.Prefs.NUM_MATCHES, 5)));
+        settingsBinding.editNumMatches.setText(String.valueOf(Globals.sp.getInt(Constants.Prefs.NUM_MATCHES, 50)));
     }
 
     // =============================================================================================
@@ -310,6 +313,17 @@ public class Settings extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
+
+    // =============================================================================================
+    // Function:    initQRSize
+    // Description: Initialize the QR Size field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initQRSize() {
+        // MUST CONVERT TO STRING or it crashes with out warning
+        settingsBinding.editQRSize.setText(String.valueOf(Globals.sp.getInt(Constants.Prefs.QR_SIZE, 0)));
     }
 
     // =============================================================================================
