@@ -418,7 +418,8 @@ public class AppLaunch extends AppCompatActivity {
 
             if ((Globals.sp == null) ||
                     (Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1) == -1) ||
-                    (Globals.sp.getInt(Constants.Prefs.DEVICE_ID, -1) == -1)) {
+                    (Globals.sp.getInt(Constants.Prefs.DEVICE_ID, -1) == -1) ||
+                    (Globals.sp.getInt(Constants.Prefs.QR_SIZE, -1) == -1)) {
                 Toast.makeText(AppLaunch.this, R.string.applaunch_not_configured, Toast.LENGTH_SHORT).show();
             } else {
                 // Go to the first page
