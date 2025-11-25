@@ -323,7 +323,7 @@ public class Settings extends AppCompatActivity {
     // =============================================================================================
     private void initQRSize() {
         // MUST CONVERT TO STRING or it crashes with out warning
-        settingsBinding.editQRSize.setText(String.valueOf(Globals.sp.getInt(Constants.Prefs.QR_SIZE, 0)));
+        settingsBinding.editQRSize.setText(String.valueOf(Globals.sp.getInt(Constants.Prefs.QR_SIZE, Constants.QRCode.QR_SIZE_DEFAULT)));
     }
 
     // =============================================================================================
