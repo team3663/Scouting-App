@@ -867,11 +867,11 @@ public class Match extends AppCompatActivity {
         }
 
         // Save off the correct relative values based on the orientation
-        if (currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE_REVERSE)) {
-            starting_X_Relative = matchBinding.imageFieldView.getWidth() - starting_X_Absolute;
+        if (currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) {
+            starting_X_Relative = starting_X_Absolute;
             starting_Y_Relative = matchBinding.imageFieldView.getHeight() - starting_Y_Absolute;
         } else {
-            starting_X_Relative = starting_X_Absolute;
+            starting_X_Relative = matchBinding.imageFieldView.getWidth() - starting_X_Absolute;
             starting_Y_Relative = starting_Y_Absolute;
         }
 
