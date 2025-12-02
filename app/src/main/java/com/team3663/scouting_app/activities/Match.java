@@ -467,16 +467,19 @@ public class Match extends AppCompatActivity {
                     if ((rotation_degrees >= 0) && (rotation_degrees < 180) && !currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) {
                         matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field_image));
                         currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE;
+
+                        // Set the robot starting location based on the new rotation
+                        setRobotStartLocation(matchBinding.imageFieldView.getWidth() - starting_X_Absolute, matchBinding.imageFieldView.getHeight() - starting_Y_Absolute);
                     }
                     // If the device is in the 180 to 359 degree range, make it Landscape
                     // We can get passed a -1 if the device can't tell (it's lying flat) and we want to ignore that
                     else if ((rotation_degrees >= 180) && !currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE_REVERSE)) {
                         matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field_image_flipped));
                         currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE_REVERSE;
-                    }
 
-                    // Set the robot starting location based on the new rotation
-                    setRobotStartLocation(0, 0);
+                        // Set the robot starting location based on the new rotation
+                        setRobotStartLocation(matchBinding.imageFieldView.getWidth() - starting_X_Absolute, matchBinding.imageFieldView.getHeight() - starting_Y_Absolute);
+                    }
                 }
             };
 
