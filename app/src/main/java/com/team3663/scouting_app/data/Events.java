@@ -63,8 +63,12 @@ public class Events {
     }
 
     // Member Function: Add a row of event info into the list giving the data individually
-    public void addEventRow(String in_id, String in_group_id, String in_description, String in_phase, String in_seq_start, String in_FOP, String in_next_set, String in_color_index) {
-        event_list.add(new EventRow(Integer.parseInt(in_id), Integer.parseInt(in_group_id), in_description, in_phase, Boolean.parseBoolean(in_seq_start), Boolean.parseBoolean(in_FOP), in_next_set, in_color_index));
+    public void addEventRow(String in_id, String in_group_id, String in_description, String in_phase, String in_seq_start, String in_FOP, String in_next_set, String in_color_index, String in_TransitionEvent) {
+        int transition_event;
+        if (in_TransitionEvent.isEmpty()) transition_event = Constants.Match.TRANSITION_EVENT_DNE;
+        else transition_event = Integer.parseInt(in_TransitionEvent);
+
+        event_list.add(new EventRow(Integer.parseInt(in_id), Integer.parseInt(in_group_id), in_description, in_phase, Boolean.parseBoolean(in_seq_start), Boolean.parseBoolean(in_FOP), in_next_set, in_color_index, transition_event));
     }
 
     // Member Function: Check if an event group has a specific color to use
@@ -116,6 +120,10 @@ public class Events {
     // Member Function: Return a list of Events (description) that can follow a given EventId (next Event in the sequence)
     public ArrayList<String> getNextEvents(int in_EventId) {
         if (in_EventId == -1) return null;
+
+        // If the Match Phase has changed since we started the event, use the transition event instead (if one exists)
+        if (!event_list.get(in_EventId).match_phase.equals(Globals.CurrentMatchPhase) && (event_list.get(in_EventId).transition_event > Constants.Match.TRANSITION_EVENT_DNE))
+            in_EventId = event_list.get(in_EventId).transition_event;
 
         // Find the event in the list, and return it's list of valid next events
         for (EventRow er : event_list) {
@@ -226,9 +234,10 @@ public class Events {
         final String next_event_set;
         final ArrayList<String> next_events_desc;
         final String color;
+        final int transition_event;
 
         // Constructor
-        public EventRow(int in_id, int in_group_id, String in_description, String in_phase, Boolean in_seq_start, Boolean in_FOP, String in_next_event_set, String in_color_index) {
+        public EventRow(int in_id, int in_group_id, String in_description, String in_phase, Boolean in_seq_start, Boolean in_FOP, String in_next_event_set, String in_color_index, int in_transition_event) {
             id = in_id;
             group_id = in_group_id;
             description = in_description;
@@ -238,6 +247,7 @@ public class Events {
             next_event_set = in_next_event_set;
             next_events_desc = new ArrayList<>();
             color = in_color_index;
+            transition_event = in_transition_event;
         }
     }
 
