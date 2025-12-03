@@ -131,6 +131,9 @@ public class AppLaunch extends AppCompatActivity {
 
         // While loading Matches, we messed with Globals.CurrentMatchType, so reset it
         Globals.CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
+
+        // Pin the app to help prevent it from being closed mid-match
+        startLockTask();
     }
 
     // =============================================================================================
