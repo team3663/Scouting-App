@@ -467,16 +467,19 @@ public class Match extends AppCompatActivity {
                     if ((rotation_degrees >= 0) && (rotation_degrees < 180) && !currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) {
                         matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field_image));
                         currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE;
+
+                        // Set the robot starting location based on the new rotation
+                        setRobotStartLocation(matchBinding.imageFieldView.getWidth() - starting_X_Absolute, matchBinding.imageFieldView.getHeight() - starting_Y_Absolute);
                     }
                     // If the device is in the 180 to 359 degree range, make it Landscape
                     // We can get passed a -1 if the device can't tell (it's lying flat) and we want to ignore that
                     else if ((rotation_degrees >= 180) && !currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE_REVERSE)) {
                         matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field_image_flipped));
                         currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE_REVERSE;
-                    }
 
-                    // Set the robot starting location based on the new rotation
-                    setRobotStartLocation(0, 0);
+                        // Set the robot starting location based on the new rotation
+                        setRobotStartLocation(matchBinding.imageFieldView.getWidth() - starting_X_Absolute, matchBinding.imageFieldView.getHeight() - starting_Y_Absolute);
+                    }
                 }
             };
 
@@ -867,11 +870,11 @@ public class Match extends AppCompatActivity {
         }
 
         // Save off the correct relative values based on the orientation
-        if (currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE_REVERSE)) {
-            starting_X_Relative = matchBinding.imageFieldView.getWidth() - starting_X_Absolute;
+        if (currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) {
+            starting_X_Relative = starting_X_Absolute;
             starting_Y_Relative = matchBinding.imageFieldView.getHeight() - starting_Y_Absolute;
         } else {
-            starting_X_Relative = starting_X_Absolute;
+            starting_X_Relative = matchBinding.imageFieldView.getWidth() - starting_X_Absolute;
             starting_Y_Relative = starting_Y_Absolute;
         }
 
