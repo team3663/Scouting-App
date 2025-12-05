@@ -29,10 +29,10 @@
 
         <TextView
             android:id="@+id/text_Competition"
-            android:layout_width="350dp"
+            android:layout_width="320dp"
             android:layout_height="match_parent"
             android:gravity="end|center"
-            android:paddingEnd="50dp"
+            android:paddingEnd="20dp"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:text="@string/settings_competition"
@@ -65,9 +65,151 @@
                 android:layout_gravity="center"
                 android:src="@drawable/cpr_drop_down_arrow"
                 tools:ignore="ContentDescription" />
-
         </RelativeLayout>
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:orientation="horizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_Color"
+            android:layout_width="320dp"
+            android:layout_height="match_parent"
+            android:gravity="end|center"
+            android:paddingEnd="20dp"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:text="@string/settings_color"
+            tools:ignore="RtlSymmetry" />
+
+        <RelativeLayout
+            android:layout_width="400dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/spinner_Color"
+                android:spinnerMode="dropdown"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:gravity="end|center"
+                android:paddingStart="10dp"
+                tools:ignore="RtlSymmetry" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:paddingEnd="10dp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:src="@drawable/cpr_drop_down_arrow"
+                tools:ignore="ContentDescription" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:orientation="horizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_Orientation"
+            android:layout_width="320dp"
+            android:layout_height="match_parent"
+            android:gravity="end|center"
+            android:paddingEnd="20dp"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:text="@string/settings_orientation"
+            tools:ignore="RtlSymmetry" />
+
+        <RelativeLayout
+            android:layout_width="400dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/spinner_Orientation"
+                android:spinnerMode="dropdown"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:gravity="end|center"
+                android:paddingStart="10dp"
+                tools:ignore="RtlSymmetry" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:paddingEnd="10dp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:src="@drawable/cpr_drop_down_arrow"
+                tools:ignore="ContentDescription" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:orientation="horizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_ScoutingTeam"
+            android:layout_width="320dp"
+            android:layout_height="match_parent"
+            android:gravity="end|center"
+            android:paddingEnd="20dp"
+            android:text="@string/settings_scouting_team"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            tools:ignore="RtlSymmetry" />
+
+        <EditText
+            android:id="@+id/edit_ScoutingTeam"
+            android:layout_width="130dp"
+            android:layout_height="match_parent"
+            android:autofillHints="Enter Scouting team number here"
+            android:gravity="center"
+            android:inputType="number"
+            android:textColor="@color/cpr_bkgnd"
+            android:background="@color/white"
+            android:textColorHint="@color/black"
+            android:textSize="24sp"
+            android:paddingHorizontal="20dp"
+            tools:ignore="LabelFor" />
+
+        <TextView
+            android:id="@+id/text_ScoutingTeamName"
+            android:layout_width="500dp"
+            android:layout_height="match_parent"
+            android:gravity="start|center"
+            android:paddingStart="20dp"
+            android:paddingHorizontal="20dp"
+            android:textColor="@color/light_grey"
+            android:textSize="20sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -82,17 +224,17 @@
 
         <TextView
             android:id="@+id/text_Device"
-            android:layout_width="350dp"
+            android:layout_width="270dp"
             android:layout_height="match_parent"
             android:gravity="end|center"
-            android:paddingEnd="50dp"
+            android:paddingEnd="20dp"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:text="@string/settings_device"
             tools:ignore="RtlSymmetry" />
 
         <RelativeLayout
-            android:layout_width="400dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:orientation="horizontal">
@@ -119,31 +261,19 @@
 
         </RelativeLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:orientation="horizontal" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:orientation="horizontal">
-
         <TextView
             android:id="@+id/text_PrefTeamPos"
-            android:layout_width="350dp"
+            android:layout_width="270dp"
             android:layout_height="match_parent"
             android:gravity="end|center"
-            android:paddingEnd="50dp"
+            android:paddingEnd="20dp"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:text="@string/settings_team_pref"
             tools:ignore="RtlSymmetry" />
 
         <RelativeLayout
-            android:layout_width="400dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:orientation="horizontal">
@@ -183,57 +313,11 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/text_ScoutingTeam"
-            android:layout_width="350dp"
-            android:layout_height="match_parent"
-            android:gravity="end|center"
-            android:paddingEnd="50dp"
-            android:text="@string/settings_scouting_team"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            tools:ignore="RtlSymmetry" />
-
-        <EditText
-            android:id="@+id/edit_ScoutingTeam"
-            android:layout_width="125dp"
-            android:layout_height="match_parent"
-            android:autofillHints="Enter Scouting team number here"
-            android:gravity="center"
-            android:inputType="number"
-            android:textColor="@color/cpr_bkgnd"
-            android:background="@color/white"
-            android:textColorHint="@color/black"
-            android:textSize="24sp"
-            android:paddingHorizontal="20dp"
-            tools:ignore="LabelFor" />
-
-        <TextView
-            android:id="@+id/text_ScoutingTeamName"
-            android:layout_width="500dp"
-            android:layout_height="match_parent"
-            android:gravity="start|center"
-            android:paddingStart="20dp"
-            android:paddingHorizontal="20dp"
-            android:textColor="@color/light_grey"
-            android:textSize="20sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:orientation="horizontal" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:orientation="horizontal">
-
-        <TextView
             android:id="@+id/text_NumMatches"
-            android:layout_width="350dp"
+            android:layout_width="270dp"
             android:layout_height="match_parent"
             android:gravity="end|center"
-            android:paddingEnd="50dp"
+            android:paddingEnd="20dp"
             android:text="@string/settings_num_files"
             android:textColor="@color/white"
             android:textSize="24sp"
@@ -241,7 +325,7 @@
 
         <EditText
             android:id="@+id/edit_NumMatches"
-            android:layout_width="125dp"
+            android:layout_width="180dp"
             android:layout_height="match_parent"
             android:autofillHints="Enter Scouting team number here"
             android:gravity="center"
@@ -254,113 +338,29 @@
             tools:ignore="LabelFor" />
 
         <TextView
-            android:id="@+id/text_NumMatchesPadding"
-            android:layout_width="500dp"
-            android:layout_height="match_parent"
-            android:gravity="start|center"
-            android:textSize="20sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:orientation="horizontal" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/text_Color"
-            android:layout_width="350dp"
+            android:id="@+id/text_QRSize"
+            android:layout_width="270dp"
             android:layout_height="match_parent"
             android:gravity="end|center"
-            android:paddingEnd="50dp"
+            android:paddingEnd="20dp"
+            android:text="@string/settings_qr_size"
             android:textColor="@color/white"
             android:textSize="24sp"
-            android:text="@string/settings_color"
             tools:ignore="RtlSymmetry" />
 
-        <RelativeLayout
-            android:layout_width="400dp"
+        <EditText
+            android:id="@+id/edit_QRSize"
+            android:layout_width="180dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <Spinner
-                android:id="@+id/spinner_Color"
-                android:spinnerMode="dropdown"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:gravity="end|center"
-                android:paddingStart="10dp"
-                tools:ignore="RtlSymmetry" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:paddingEnd="10dp"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:src="@drawable/cpr_drop_down_arrow"
-                tools:ignore="ContentDescription" />
-
-        </RelativeLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:orientation="horizontal" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/text_Orientation"
-            android:layout_width="350dp"
-            android:layout_height="match_parent"
-            android:gravity="end|center"
-            android:paddingEnd="50dp"
-            android:textColor="@color/white"
+            android:autofillHints="Enter size of QR Code here"
+            android:gravity="center"
+            android:inputType="number"
+            android:textColor="@color/cpr_bkgnd"
+            android:background="@color/white"
+            android:textColorHint="@color/black"
             android:textSize="24sp"
-            android:text="@string/settings_orientation"
-            tools:ignore="RtlSymmetry" />
-
-        <RelativeLayout
-            android:layout_width="400dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <Spinner
-                android:id="@+id/spinner_Orientation"
-                android:spinnerMode="dropdown"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:gravity="end|center"
-                android:paddingStart="10dp"
-                tools:ignore="RtlSymmetry" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:paddingEnd="10dp"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:src="@drawable/cpr_drop_down_arrow"
-                tools:ignore="ContentDescription" />
-
-        </RelativeLayout>
-
+            android:paddingHorizontal="20dp"
+            tools:ignore="LabelFor" />
     </LinearLayout>
 
     <LinearLayout
@@ -389,7 +389,7 @@
 
         <TextView
             android:id="@+id/text_ShadowModePadding"
-            android:layout_width="635dp"
+            android:layout_width="715dp"
             android:layout_height="match_parent"
             tools:ignore="RtlSymmetry" />
     </LinearLayout>
