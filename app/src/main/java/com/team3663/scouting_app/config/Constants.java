@@ -86,6 +86,7 @@ public class Constants {
         public static final String PREF_TEAM_POS = "PreferredTeamPosition";
         public static final String STORAGE_URI = "StorageURI";
         public static final String PREF_ORIENTATION = "PreferredFieldOrientation";
+        public static final String QR_SIZE = "PreferredQRSize";
     }
 
     public static class Settings {
@@ -99,7 +100,8 @@ public class Constants {
     }
 
     public static class QRCode{
-        public static final int PREFERRED_QR_DATA_SIZE= 2000;
+        public static final int QR_PREFERRED_SIZE_PERCENTAGE = 75;
+        public static final int QR_SIZE_DEFAULT = 750;
         public static final int QR_LENGTH = 500;
         public static final String EOF = "EOF";
     }

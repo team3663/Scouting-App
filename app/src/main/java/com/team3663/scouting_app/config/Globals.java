@@ -32,6 +32,7 @@ public class Globals {
     public static int CurrentDeviceId;
     public static int CurrentColorId;
     public static int CurrentPrefTeamPos;
+    public static int CurrentQRSize;
     public static int CurrentFieldOrientationPos;
     public static String CurrentMatchPhase = Constants.Phases.NONE;
     public static String CurrentScoutingTeam;
