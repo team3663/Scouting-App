@@ -60,8 +60,8 @@ public class Match extends AppCompatActivity {
     private static int showing_event_detail_group;
 
     // Define a Timer and TimerTasks so you can schedule things
-    private static CPR_Chronometer game_Timer;
-    private static CPR_Chronometer delay_Timer;
+    private CPR_Chronometer game_Timer;
+    private CPR_Chronometer delay_Timer;
     private static Timer flashing_Timer;
     private static TimerTask flashing_timertask;
 

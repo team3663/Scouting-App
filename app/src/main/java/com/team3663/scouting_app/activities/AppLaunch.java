@@ -131,6 +131,9 @@ public class AppLaunch extends AppCompatActivity {
 
         // While loading Matches, we messed with Globals.CurrentMatchType, so reset it
         Globals.CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
+
+        // Pin the app to help prevent it from being closed mid-match
+        startLockTask();
     }
 
     // =============================================================================================
@@ -357,7 +360,7 @@ public class AppLaunch extends AppCompatActivity {
                     } else if (in_fileName.equals(getString(R.string.file_event_groups))) {
                         Globals.EventList.addEventGroup(info[0], info[1]);
                     } else if (in_fileName.equals(getString(R.string.file_events))) {
-                        Globals.EventList.addEventRow(info[0], info[1], info[3], info[2].toUpperCase(), info[4], info[5], info[6], info[8]);
+                        Globals.EventList.addEventRow(info[0], info[1], info[3], info[2].toUpperCase(), info[4], info[5], info[6], info[8], info[9]);
                     } else if (in_fileName.equals(getString(R.string.file_match_types))) {
                         Globals.MatchTypeList.addMatchTypeRow(info[0], info[1]);
                     } else if (in_fileName.equals(getString(R.string.file_matches))) {
