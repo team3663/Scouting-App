@@ -48,15 +48,6 @@ public class Events {
         return false;
     }
 
-    // Member Function: Return the GroupID for a given Group name.  -1 if not found
-    public int getGroupId(String in_group) {
-        for (int i = 1; i <= Globals.MaxEventGroups; i++)
-            if (EventGroup.get(i).name.equals(in_group))
-                return i;
-
-        return -1;
-    }
-
     // Member Function: Return the Group Name for a given Group Id
     public String getGroupName(int in_GroupId) {
         return EventGroup.get(in_GroupId).name;
@@ -117,6 +108,19 @@ public class Events {
         return rc;
     }
 
+    // Member Function: Return a list of Events (ids) for a give phase of the match (only ones that start a sequence)
+    public ArrayList<Integer> getEventIdsForPhase(String in_phase, int in_group_id) {
+        ArrayList<Integer> rc = new ArrayList<>();
+
+        // Return a list depending on the match_phase being asked for and the group id
+        for (EventRow er : event_list) {
+            if ((er.group_id == in_group_id) && (er.match_phase.equals(in_phase)) && (er.is_FOP_Event) && (er.is_seq_start))
+                rc.add((er.id));
+        }
+
+        return rc;
+    }
+
     // Member Function: Return a list of Events (description) that can follow a given EventId (next Event in the sequence)
     public ArrayList<String> getNextEvents(int in_EventId) {
         if (in_EventId == -1) return null;
@@ -133,19 +137,20 @@ public class Events {
         return null;
     }
 
-    // Member Function: Return the Id for a given Event (needed for logging)
-    public int getEventId(String in_EventDescription) {
-        int ret = Constants.Events.ID_NO_EVENT;
+    // Member Function: Return a list of Events (ids) that can follow a given EventId (next Event in the sequence)
+    public ArrayList<Integer> getNextEventIds(int in_EventId) {
+        if (in_EventId == -1) return null;
 
-        // Look through the event rows to find a match
+        // If the Match Phase has changed since we started the event, use the transition event instead (if one exists)
+        if (!event_list.get(in_EventId).match_phase.equals(Globals.CurrentMatchPhase) && (event_list.get(in_EventId).transition_event > Constants.Match.TRANSITION_EVENT_DNE))
+            in_EventId = event_list.get(in_EventId).transition_event;
+
+        // Find the event in the list, and return it's list of valid next events
         for (EventRow er : event_list) {
-            if (er.description.equals(in_EventDescription) && er.match_phase.equals(Globals.CurrentMatchPhase)) {
-                ret = er.id;
-                break;
-            }
+            if (er.id == in_EventId) return er.next_events_ids;
         }
 
-        return ret;
+        return null;
     }
 
     // Member Function:
@@ -166,6 +171,7 @@ public class Events {
                         // If the event we're looking at (i) is in the list of valid next event ids (j) add it to the list
                         if (ner.id == Integer.parseInt(next_set_ids[j])) {
                             er.next_events_desc.add((ner.description));
+                            er.next_events_ids.add(ner.id);
                         }
                     }
                 }
@@ -233,6 +239,7 @@ public class Events {
         final boolean is_seq_start;
         final String next_event_set;
         final ArrayList<String> next_events_desc;
+        final ArrayList<Integer> next_events_ids;
         final String color;
         final int transition_event;
 
@@ -246,6 +253,7 @@ public class Events {
             is_seq_start = in_seq_start;
             next_event_set = in_next_event_set;
             next_events_desc = new ArrayList<>();
+            next_events_ids = new ArrayList<>();
             color = in_color_index;
             transition_event = in_transition_event;
         }
