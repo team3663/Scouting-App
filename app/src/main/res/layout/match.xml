@@ -165,20 +165,8 @@
                 app:srcCompat="@drawable/field_image"
                 tools:ignore="HardcodedText,MissingConstraints" />
 
-            <View
-                android:id="@+id/view_ContextSubMenuView"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                tools:ignore="HardcodedText,MissingConstraints" />
-
             <RelativeLayout
                 android:id="@+id/ContextMenu"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                tools:ignore="MissingConstraints,UselessLeaf" />
-
-            <RelativeLayout
-                android:id="@+id/ContextSubMenu"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 tools:ignore="MissingConstraints,UselessLeaf" />
