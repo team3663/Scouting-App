@@ -41,6 +41,7 @@ public class Constants {
         public static final int TIMER_AUTO_TELEOP_DELAY = 3; // in seconds
         public static final int BUTTON_FLASH_INTERVAL = 2_000; // in milliseconds
         public static final int BUTTON_FLASH_BLINK_INTERVAL = 250; // in milliseconds
+        public static final int BUTTON_FLASH_FADE_IN_TIME = 250; // in milliseconds
         public static final int BUTTON_COLOR_FLASH = Color.RED;
         public static final int BUTTON_COLOR_NORMAL = Color.TRANSPARENT;
         public static final int BUTTON_TEXT_COLOR_DISABLED = Color.LTGRAY;

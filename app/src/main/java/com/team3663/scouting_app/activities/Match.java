@@ -432,7 +432,7 @@ public class Match extends AppCompatActivity {
         };
         TransitionDrawable transitionDrawable = new TransitionDrawable(colorDrawables);
         in_switch.setBackground(transitionDrawable);
-        transitionDrawable.startTransition(500);
+        transitionDrawable.startTransition(Constants.Match.BUTTON_FLASH_FADE_IN_TIME);
     }
 
     // =============================================================================================
