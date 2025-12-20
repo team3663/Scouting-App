@@ -32,14 +32,12 @@ public class Constants {
     }
 
     public static class PreMatch {
-        public static final int NUMBER_OF_MATCH_TYPES = 4;
         public static final String DEFAULT_MATCH_TYPE = "q";
     }
 
     public static class Match {
         public static final int TIMER_AUTO_LENGTH = 15; // in seconds
         public static final int TIMER_TELEOP_LENGTH = 135; // in seconds
-        public static final int TIMER_UPDATE_RATE = 1_000; // in milliseconds
         public static final int TIMER_AUTO_TELEOP_DELAY = 3; // in seconds
         public static final int BUTTON_FLASH_INTERVAL = 2_000; // in milliseconds
         public static final int BUTTON_FLASH_BLINK_INTERVAL = 250; // in milliseconds

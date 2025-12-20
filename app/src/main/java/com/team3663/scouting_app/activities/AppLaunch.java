@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -116,6 +118,9 @@ public class AppLaunch extends AppCompatActivity {
         // Initialize activity components
         initSettings();
         initScouting();
+
+        Animation fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+        appLaunchBinding.textBanner.startAnimation(fadeIn);
 
         // Find out if we have permissions.  Since our app is only requesting one location, if it's not empty, we're good
         List<UriPermission> perm_list = getContentResolver().getPersistedUriPermissions();

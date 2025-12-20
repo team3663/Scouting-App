@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -16,6 +19,7 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.Chronometer;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -409,10 +413,26 @@ public class Match extends AppCompatActivity {
             }
 
             // If it's checked, wait a bit then make it BUTTON_COLOR_FLASH
-            if (matchBinding.switchNotMoving.isChecked()) matchBinding.switchNotMoving.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
-            if (matchBinding.switchDefense.isChecked()) matchBinding.switchDefense.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
-            if (matchBinding.switchDefended.isChecked()) matchBinding.switchDefended.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
+            if (matchBinding.switchNotMoving.isChecked()) setSwitchColor(matchBinding.switchNotMoving);
+            if (matchBinding.switchDefense.isChecked()) setSwitchColor(matchBinding.switchDefense);
+            if (matchBinding.switchDefended.isChecked()) setSwitchColor(matchBinding.switchDefended);
         }
+    }
+
+    // =============================================================================================
+    // Function:    setSwitchColor
+    // Description: Use some animation to slowly fade in the color of the background of a switch
+    // Parameters:  in_switch - The switch to change the color of
+    // Output:      void
+    // =============================================================================================
+    private void setSwitchColor(Switch in_switch) {
+        ColorDrawable[] colorDrawables = {
+                new ColorDrawable(Constants.Match.BUTTON_COLOR_NORMAL),
+                new ColorDrawable(Constants.Match.BUTTON_COLOR_FLASH)
+        };
+        TransitionDrawable transitionDrawable = new TransitionDrawable(colorDrawables);
+        in_switch.setBackground(transitionDrawable);
+        transitionDrawable.startTransition(500);
     }
 
     // =============================================================================================
