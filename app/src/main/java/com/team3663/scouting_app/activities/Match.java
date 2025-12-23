@@ -405,16 +405,19 @@ public class Match extends AppCompatActivity {
             matchBinding.switchDefense.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
             matchBinding.switchDefended.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
 
-            try {
-                Thread.sleep(Constants.Match.BUTTON_FLASH_BLINK_INTERVAL);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            // Only sleep the thread if at least one switch is checked.
+            if (matchBinding.switchNotMoving.isChecked() || matchBinding.switchDefense.isChecked() || matchBinding.switchDefended.isChecked()) {
+                try {
+                    Thread.sleep(Constants.Match.BUTTON_FLASH_BLINK_INTERVAL);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
 
-            // If it's checked, wait a bit then make it BUTTON_COLOR_FLASH
-            if (matchBinding.switchNotMoving.isChecked()) setSwitchColor(matchBinding.switchNotMoving);
-            if (matchBinding.switchDefense.isChecked()) setSwitchColor(matchBinding.switchDefense);
-            if (matchBinding.switchDefended.isChecked()) setSwitchColor(matchBinding.switchDefended);
+                // If it's checked, wait a bit then make it BUTTON_COLOR_FLASH
+                if (matchBinding.switchNotMoving.isChecked()) setSwitchColor(matchBinding.switchNotMoving);
+                if (matchBinding.switchDefense.isChecked()) setSwitchColor(matchBinding.switchDefense);
+                if (matchBinding.switchDefended.isChecked()) setSwitchColor(matchBinding.switchDefended);
+            }
         }
     }
 

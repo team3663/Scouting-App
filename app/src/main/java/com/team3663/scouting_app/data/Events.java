@@ -230,7 +230,7 @@ public class Events {
     // Class:       EventRow
     // Description: Defines a structure/class to hold the information for each Event
     // =============================================================================================
-    private class EventRow {
+    private static class EventRow {
         final int id;
         final int group_id;
         final String description;
@@ -263,7 +263,7 @@ public class Events {
     // Class:       EventGroup
     // Description: Defines a structure/class to hold the information for each Event Group
     // =============================================================================================
-    private class EventGroup {
+    private static class EventGroup {
         String name;
         String color;
 
