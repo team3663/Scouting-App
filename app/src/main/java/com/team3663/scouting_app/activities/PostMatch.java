@@ -183,6 +183,7 @@ public class PostMatch extends AppCompatActivity {
             if (postMatchBinding.checkboxReset.isChecked()) {
                 Globals.EventLogger.close();
                 Achievements.data_FieldReset++;
+                Globals.CurrentTeamOverrideNum = "";
 
                 Intent GoToPreMatch = new Intent(PostMatch.this, PreMatch.class);
                 startActivity(GoToPreMatch);
