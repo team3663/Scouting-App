@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -16,6 +18,7 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.Chronometer;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -62,6 +65,14 @@ public class Match extends AppCompatActivity {
     private CPR_Chronometer delay_Timer;
     private static Timer flashing_Timer;
     private static TimerTask flashing_timertask;
+
+    private static final ColorDrawable[] switch_color_drawable = {
+            new ColorDrawable(Constants.Match.BUTTON_COLOR_NORMAL),
+            new ColorDrawable(Constants.Match.BUTTON_COLOR_FLASH)
+    };
+    private static TransitionDrawable switch_notMoving_transition;
+    private static TransitionDrawable switch_defended_transition;
+    private static TransitionDrawable switch_defense_transition;
 
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ResourceAsColor"})
     @Override
@@ -402,16 +413,43 @@ public class Match extends AppCompatActivity {
             matchBinding.switchDefense.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
             matchBinding.switchDefended.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
 
-            try {
-                Thread.sleep(Constants.Match.BUTTON_FLASH_BLINK_INTERVAL);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            // Only sleep the thread if at least one switch is checked.
+            if (matchBinding.switchNotMoving.isChecked() || matchBinding.switchDefense.isChecked() || matchBinding.switchDefended.isChecked()) {
+                try {
+                    Thread.sleep(Constants.Match.BUTTON_FLASH_BLINK_INTERVAL);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
 
-            // If it's checked, wait a bit then make it BUTTON_COLOR_FLASH
-            if (matchBinding.switchNotMoving.isChecked()) matchBinding.switchNotMoving.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
-            if (matchBinding.switchDefense.isChecked()) matchBinding.switchDefense.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
-            if (matchBinding.switchDefended.isChecked()) matchBinding.switchDefended.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
+                // If it's checked, wait a bit then make it BUTTON_COLOR_FLASH
+                if (matchBinding.switchNotMoving.isChecked()) animateSwitchColor(matchBinding.switchNotMoving);
+                if (matchBinding.switchDefense.isChecked()) animateSwitchColor(matchBinding.switchDefense);
+                if (matchBinding.switchDefended.isChecked()) animateSwitchColor(matchBinding.switchDefended);
+            }
+        }
+    }
+
+    // =============================================================================================
+    // Function:    animateSwitchColor
+    // Description: Use some animation to slowly fade in the color of the background of a switch
+    // Parameters:  in_switch - The switch to change the color of
+    // Output:      void
+    // =============================================================================================
+    private void animateSwitchColor(Switch in_switch) {
+        String switch_text = in_switch.getText().toString();
+
+        // Based on the switch, set the background to the proper transition and start it.
+        // Objects can't share a transition but we don't want to create a new one every time. (memory leak?)
+        // Transition can only run once, it appears, so need to set the background to it each time.
+        if (switch_text.equals(getString(R.string.switch_on_defense))) {
+            in_switch.setBackground(switch_defense_transition);
+            switch_defense_transition.startTransition(Constants.Match.BUTTON_FLASH_FADE_IN_TIME);
+        } else if (switch_text.equals(getString(R.string.switch_is_defended))) {
+            in_switch.setBackground(switch_defended_transition);
+            switch_defended_transition.startTransition(Constants.Match.BUTTON_FLASH_FADE_IN_TIME);
+        } else if (switch_text.equals(getString(R.string.switch_not_moving))) {
+            in_switch.setBackground(switch_notMoving_transition);
+            switch_notMoving_transition.startTransition(Constants.Match.BUTTON_FLASH_FADE_IN_TIME);
         }
     }
 
@@ -676,9 +714,11 @@ public class Match extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initNotMoving() {
+        switch_notMoving_transition = new TransitionDrawable(switch_color_drawable);
+
         // Initialize the Not Moving Switch settings
         matchBinding.switchNotMoving.setTextColor(Constants.Match.BUTTON_TEXT_COLOR_DISABLED);
-        matchBinding.switchNotMoving.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
+        matchBinding.switchNotMoving.setBackground(switch_notMoving_transition);
         matchBinding.switchNotMoving.setVisibility(View.INVISIBLE);
         // Do this so that you can't mess with the switch during the wrong phases
         matchBinding.switchNotMoving.setEnabled(false);
@@ -711,9 +751,11 @@ public class Match extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initDefense() {
+        switch_defense_transition = new TransitionDrawable(switch_color_drawable);
+
         // Initialize the Defense Switch settings
         matchBinding.switchDefense.setTextColor(Constants.Match.BUTTON_TEXT_COLOR_DISABLED);
-        matchBinding.switchDefense.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
+        matchBinding.switchDefense.setBackground(switch_defense_transition);
         matchBinding.switchDefense.setVisibility(View.INVISIBLE);
         // Do this so that you can't mess with the switch during the wrong phases
         matchBinding.switchDefense.setEnabled(false);
@@ -743,9 +785,11 @@ public class Match extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initDefended() {
+        switch_defended_transition = new TransitionDrawable(switch_color_drawable);
+
         // Initialize the Defended Switch settings
         matchBinding.switchDefended.setTextColor(Constants.Match.BUTTON_TEXT_COLOR_DISABLED);
-        matchBinding.switchDefended.setBackgroundColor(Constants.Match.BUTTON_COLOR_NORMAL);
+        matchBinding.switchDefended.setBackground(switch_defended_transition);
         matchBinding.switchDefended.setVisibility(View.INVISIBLE);
         // Do this so that you can't mess with the switch during the wrong phases
         matchBinding.switchDefended.setEnabled(false);

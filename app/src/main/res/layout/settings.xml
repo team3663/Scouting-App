@@ -69,11 +69,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:orientation="horizontal" />
-
-    <LinearLayout
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:orientation="horizontal">
@@ -118,11 +114,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:orientation="horizontal" />
-
-    <LinearLayout
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:orientation="horizontal">
@@ -167,11 +159,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:orientation="horizontal" />
-
-    <LinearLayout
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:orientation="horizontal">
@@ -213,11 +201,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:orientation="horizontal" />
-
-    <LinearLayout
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:orientation="horizontal">
@@ -303,11 +287,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:orientation="horizontal" />
-
-    <LinearLayout
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:orientation="horizontal">
@@ -364,11 +344,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:orientation="horizontal" />
-
-    <LinearLayout
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:orientation="horizontal">

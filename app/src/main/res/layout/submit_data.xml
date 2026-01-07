@@ -23,12 +23,7 @@
         android:text="@string/submit_heading" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:orientation="horizontal">
-        </LinearLayout>
-
-        <LinearLayout
+            android:layout_marginTop="30dp"
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:orientation="horizontal">
@@ -71,39 +66,34 @@
                     tools:ignore="ContentDescription" />
 
             </RelativeLayout>
-            <LinearLayout
+
+            <RelativeLayout
                 android:layout_width="250dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <RelativeLayout
+                <Spinner
+                    android:id="@+id/spinner_MatchType"
                     android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:background="@color/white"
+                    android:gravity="end|center"
+                    android:paddingStart="10dp"
+                    android:spinnerMode="dropdown"
+                    tools:ignore="RtlSymmetry" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <Spinner
-                        android:id="@+id/spinner_MatchType"
-                        android:layout_width="match_parent"
-                        android:layout_height="35dp"
-                        android:background="@color/white"
-                        android:gravity="end|center"
-                        android:paddingStart="10dp"
-                        android:spinnerMode="dropdown"
-                        tools:ignore="RtlSymmetry" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center"
-                        android:paddingStart="5dp"
-                        android:paddingEnd="5dp"
-                        android:src="@drawable/cpr_drop_down_arrow"
-                        tools:ignore="ContentDescription" />
-                </RelativeLayout>
-            </LinearLayout>
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:src="@drawable/cpr_drop_down_arrow"
+                    tools:ignore="ContentDescription" />
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/text_MatchMessage"
@@ -115,12 +105,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:orientation="horizontal">
-        </LinearLayout>
-
-        <LinearLayout
+            android:layout_marginTop="40dp"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:orientation="horizontal">
@@ -147,16 +132,11 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:orientation="horizontal">
-        </LinearLayout>
-
-        <LinearLayout
+            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:orientation="horizontal">
-`
+
             <TextView
                 android:id="@+id/text_BTPadding"
                 android:gravity="center"
