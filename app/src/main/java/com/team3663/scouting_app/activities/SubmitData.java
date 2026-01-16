@@ -67,6 +67,7 @@ public class SubmitData extends AppCompatActivity {
         initBluetooth();
         initQuit();
         initNext();
+        initOverride();
     }
 
     // =============================================================================================
@@ -250,6 +251,16 @@ public class SubmitData extends AppCompatActivity {
         if (media.isPlaying()) media.stop();
         media.reset();
         media.release();
+    }
+
+    // =============================================================================================
+    // Function:    initOverride
+    // Description: Override team number reset for next match
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initOverride() {
+        Globals.CurrentTeamOverrideNum = "";
     }
 
     // =============================================================================================

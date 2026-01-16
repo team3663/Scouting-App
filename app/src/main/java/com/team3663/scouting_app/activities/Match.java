@@ -234,9 +234,6 @@ public class Match extends AppCompatActivity {
         matchBinding.butBack.setClickable(false);
         matchBinding.butBack.setVisibility(View.INVISIBLE);
 
-        // Clear out the team to override (kept it in case they hit the Back button)
-        Globals.CurrentTeamOverrideNum = "";
-
         // Show the switch for "Not Moving" in Auto
         matchBinding.switchNotMoving.setEnabled(true);
         matchBinding.switchNotMoving.setTextColor(Color.WHITE);
