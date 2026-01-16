@@ -431,7 +431,8 @@ public class AppLaunch extends AppCompatActivity {
                 Toast.makeText(AppLaunch.this, R.string.applaunch_not_configured, Toast.LENGTH_SHORT).show();
             } else {
                 // Go to the first page
-                Intent GoToPreMatch = new Intent(AppLaunch.this, PreMatch.class);
+                //Intent GoToPreMatch = new Intent(AppLaunch.this, PreMatch.class);
+                Intent GoToPreMatch = new Intent(AppLaunch.this, PlayGround.class);
                 startActivity(GoToPreMatch);
 
                 finish();

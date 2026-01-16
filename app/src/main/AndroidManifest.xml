@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -15,65 +16,63 @@
         android:theme="@style/Theme.ScoutingApp"
         tools:targetApi="34">
         <activity
+            android:name=".activities.PlayGround"
+            android:exported="false" />
+        <activity
             android:name=".activities.AppLaunch"
-            android:screenOrientation="sensorLandscape"
             android:exported="true"
+            android:screenOrientation="sensorLandscape"
             tools:ignore="DiscouragedApi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activities.Settings"
+            android:exported="true"
+            android:noHistory="true"
             android:parentActivityName=".activities.AppLaunch"
             android:screenOrientation="sensorLandscape"
-            android:exported="true"
-            android:noHistory="true"
-            tools:ignore="DiscouragedApi">
-        </activity>
+            tools:ignore="DiscouragedApi"></activity>
         <activity
             android:name=".activities.PreMatch"
-            android:screenOrientation="sensorLandscape"
             android:exported="true"
             android:noHistory="true"
-            tools:ignore="DiscouragedApi">
-        </activity>
+            android:screenOrientation="sensorLandscape"
+            tools:ignore="DiscouragedApi"></activity>
         <activity
             android:name=".activities.Match"
-            android:screenOrientation="sensorLandscape"
+            android:configChanges="orientation|screenSize"
             android:exported="true"
             android:noHistory="true"
-            android:configChanges="orientation|screenSize"
-            tools:ignore="DiscouragedApi">
-        </activity>
+            android:screenOrientation="sensorLandscape"
+            tools:ignore="DiscouragedApi"></activity>
         <activity
             android:name=".activities.PostMatch"
-            android:screenOrientation="sensorLandscape"
             android:exported="true"
             android:noHistory="true"
-            tools:ignore="DiscouragedApi">
-        </activity>
+            android:screenOrientation="sensorLandscape"
+            tools:ignore="DiscouragedApi"></activity>
         <activity
             android:name=".activities.SubmitData"
-            android:screenOrientation="sensorLandscape"
             android:exported="true"
             android:noHistory="true"
-            tools:ignore="DiscouragedApi">
-        </activity>
+            android:screenOrientation="sensorLandscape"
+            tools:ignore="DiscouragedApi"></activity>
         <activity
             android:name=".activities.QRCode"
-            android:screenOrientation="sensorLandscape"
             android:exported="true"
             android:noHistory="true"
-            tools:ignore="DiscouragedApi">
-        </activity>
+            android:screenOrientation="sensorLandscape"
+            tools:ignore="DiscouragedApi"></activity>
         <activity
             android:name=".activities.Bluetooth"
-            android:screenOrientation="sensorLandscape"
             android:exported="true"
             android:noHistory="true"
-            tools:ignore="DiscouragedApi">
-        </activity>
+            android:screenOrientation="sensorLandscape"
+            tools:ignore="DiscouragedApi"></activity>
     </application>
+
 </manifest>
