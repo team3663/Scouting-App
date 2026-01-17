@@ -28,9 +28,14 @@ public class PlayGround2 extends AppCompatActivity {
     float centerY;
     float touchX;
     float touchY;
-    int angle;
-    double positiveAngle;
+    float angle;
+    float positiveAngle;
+    int direction;
+    int lastSector;
+    float lastPositiveAngle;
+    int tens;
     int sector;
+    int textValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,25 +67,72 @@ public class PlayGround2 extends AppCompatActivity {
                         // Handle the initial press
                         int[] location = new int[2];
                         imageView.getLocationOnScreen(location);
-
                         centerX = (float) playgroundBinding.imageView.getWidth() / 2;
                         centerY = (float) playgroundBinding.imageView.getHeight() / 2;
                         touchX = event.getX();
                         touchY = event.getY();
-                        angle = (int) Math.toDegrees(atan2(touchY - centerY, touchX - centerX));
+                        angle = (float) Math.toDegrees(atan2(touchY - centerY, touchX - centerX));
                         positiveAngle = (angle + 90 + 360) % 360;
                         sector = (int) positiveAngle / 36;
-                        textView.setText(String.valueOf(positiveAngle));
+                        if (lastPositiveAngle > 350 && positiveAngle < 10) {
+                            direction = 1;
+                        }
+                        else if (positiveAngle > lastPositiveAngle) {
+                            direction = 1;
+                        }
+                        else {
+                            direction = -1;
+                        }
+                        if (sector == 0 && direction == 1 && lastSector != 0) {
+                            tens ++;
+                        }
+                        else if (sector == 9 && lastSector != 9 && direction == -1) {
+                            if (tens >= 1) {
+                                tens --;
+                            }
+                            else {
+                                tens = 0;
+                            }
+                        }
+                        textValue = tens * 10 + sector;
+                        textView.setText(String.valueOf(textValue));
+                        lastSector = sector;
+                        lastPositiveAngle = (int) positiveAngle;
                         break;
+
                     case MotionEvent.ACTION_MOVE:
                         // Handle movement
                         touchX = event.getX();
                         touchY = event.getY();
-                        angle = (int) Math.toDegrees(atan2(touchY - centerY, touchX - centerX));
+                        angle = (float) Math.toDegrees(atan2(touchY - centerY, touchX - centerX));
                         positiveAngle = (angle + 90 + 360) % 360;
                         sector = (int) positiveAngle / 36;
-                        textView.setText(String.valueOf(sector));
+                        if (lastPositiveAngle > 350 && positiveAngle < 10) {
+                            direction = 1;
+                        }
+                        else if (positiveAngle > lastPositiveAngle) {
+                            direction = 1;
+                        }
+                        else {
+                            direction = -1;
+                        }
+                        if (sector == 0 && direction == 1 && lastSector != 0) {
+                            tens ++;
+                        }
+                        else if (sector == 9 && lastSector != 9 && direction == -1) {
+                            if (tens >= 1) {
+                                tens --;
+                            }
+                            else {
+                                tens = 0;
+                            }
+                        }
+                        textValue = tens * 10 + sector;
+                        textView.setText(String.valueOf(textValue));
+                        lastSector = sector;
+                        lastPositiveAngle = (int) positiveAngle;
                         break;
+
                     case MotionEvent.ACTION_UP:
                         // Handle release
                         textView.setText("up");
