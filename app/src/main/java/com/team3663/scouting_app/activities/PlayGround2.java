@@ -30,9 +30,7 @@ public class PlayGround2 extends AppCompatActivity {
     float touchY;
     int angle;
     double positiveAngle;
-    int numSectors;
-    int startAngle;
-    int endAngle;
+    int sector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +49,8 @@ public class PlayGround2 extends AppCompatActivity {
         initQuit();
         initNext();
 
-        SeekBar seekbar = findViewById(R.id.seekBar);
-        seekbar.setHapticFeedbackEnabled(true);
         TextView textView = findViewById(R.id.textView);
         ImageView imageView = findViewById(R.id.imageView);
-
-        seekbar.setProgress(8);
-        seekbar.setMax(60);
-        textView.setText(String.valueOf(seekbar.getProgress()));
 
         imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -71,13 +63,13 @@ public class PlayGround2 extends AppCompatActivity {
                         int[] location = new int[2];
                         imageView.getLocationOnScreen(location);
 
-
                         centerX = (float) playgroundBinding.imageView.getWidth() / 2;
                         centerY = (float) playgroundBinding.imageView.getHeight() / 2;
                         touchX = event.getX();
                         touchY = event.getY();
                         angle = (int) Math.toDegrees(atan2(touchY - centerY, touchX - centerX));
                         positiveAngle = (angle + 90 + 360) % 360;
+                        sector = (int) positiveAngle / 36;
                         textView.setText(String.valueOf(positiveAngle));
                         break;
                     case MotionEvent.ACTION_MOVE:
@@ -86,13 +78,8 @@ public class PlayGround2 extends AppCompatActivity {
                         touchY = event.getY();
                         angle = (int) Math.toDegrees(atan2(touchY - centerY, touchX - centerX));
                         positiveAngle = (angle + 90 + 360) % 360;
-                        numSectors = 10;
-                        for (int i = 0; i < 10; i++) {
-                            startAngle = i * 36;
-                            endAngle = (i + 1) * 36;
-                            if (startAngle )
-                        }
-                        textView.setText(String.valueOf(numSectors));
+                        sector = (int) positiveAngle / 36;
+                        textView.setText(String.valueOf(sector));
                         break;
                     case MotionEvent.ACTION_UP:
                         // Handle release
@@ -108,21 +95,14 @@ public class PlayGround2 extends AppCompatActivity {
                 return true;
             }
         });
-        seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
 
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textView.setText(String.valueOf(progress));
+            public void onClick(View v) {
 
             }
         });
+
     }
 
     // =============================================================================================
