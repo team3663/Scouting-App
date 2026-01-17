@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -53,6 +54,7 @@ public class PlayGround2 extends AppCompatActivity {
         SeekBar seekbar = findViewById(R.id.seekBar);
         seekbar.setHapticFeedbackEnabled(true);
         TextView textView = findViewById(R.id.textView);
+        ImageView imageView = findViewById(R.id.imageView);
 
         seekbar.setProgress(8);
         seekbar.setMax(60);

@@ -150,32 +150,30 @@
             android:background="@color/dark_grey"
             android:layout_height="490dp">
 
-            <SeekBar
-                android:id="@+id/seekBar"
-                android:layout_height="450dp"
-                android:layout_width="400dp"
-                android:progress="10"
-                android:min="0"
-                android:rotation="270"
-                android:translationX="-170dp"
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:translationY="320dp"
+                android:background="@color/cpr_green"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                style="@style/Widget.AppCompat.SeekBar.Discrete" />
+            />
 
             <TextView
                 android:id="@+id/textView"
-                android:layout_width="701dp"
+                android:layout_width="635dp"
                 android:layout_height="60dp"
                 android:layout_marginTop="50dp"
                 android:layout_marginEnd="50dp"
                 android:gravity="center_horizontal"
                 android:textSize="32sp"
-                android:translationX="100dp" />
+                android:translationX="165dp" />
 
             <FrameLayout
-                android:layout_width="700dp"
+                android:layout_width="640dp"
                 android:layout_height="350dp"
-                android:translationX="100dp"
+                android:translationX="165dp"
                 android:translationY="130dp">
 
                 <TextView
