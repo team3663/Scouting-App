@@ -1,8 +1,11 @@
 package com.team3663.scouting_app.activities;
 
+import static java.lang.Math.atan2;
+
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
@@ -20,6 +23,15 @@ import com.team3663.scouting_app.databinding.Playground2Binding;
 public class PlayGround2 extends AppCompatActivity {
 
     private Playground2Binding playgroundBinding;
+    float centerX;
+    float centerY;
+    float touchX;
+    float touchY;
+    int angle;
+    double positiveAngle;
+    int numSectors;
+    int startAngle;
+    int endAngle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +58,54 @@ public class PlayGround2 extends AppCompatActivity {
         seekbar.setMax(60);
         textView.setText(String.valueOf(seekbar.getProgress()));
 
+        imageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getActionMasked();
+
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Handle the initial press
+                        int[] location = new int[2];
+                        imageView.getLocationOnScreen(location);
+
+
+                        centerX = (float) playgroundBinding.imageView.getWidth() / 2;
+                        centerY = (float) playgroundBinding.imageView.getHeight() / 2;
+                        touchX = event.getX();
+                        touchY = event.getY();
+                        angle = (int) Math.toDegrees(atan2(touchY - centerY, touchX - centerX));
+                        positiveAngle = (angle + 90 + 360) % 360;
+                        textView.setText(String.valueOf(positiveAngle));
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        // Handle movement
+                        touchX = event.getX();
+                        touchY = event.getY();
+                        angle = (int) Math.toDegrees(atan2(touchY - centerY, touchX - centerX));
+                        positiveAngle = (angle + 90 + 360) % 360;
+                        numSectors = 10;
+                        for (int i = 0; i < 10; i++) {
+                            startAngle = i * 36;
+                            endAngle = (i + 1) * 36;
+                            if (startAngle )
+                        }
+                        textView.setText(String.valueOf(numSectors));
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        // Handle release
+                        textView.setText("up");
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                        // Handle cancellation
+                        textView.setText("cancel");
+                        break;
+                }
+
+                // Return true to indicate that you have handled the event
+                return true;
+            }
+        });
         seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
