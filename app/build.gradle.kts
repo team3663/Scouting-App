@@ -4,7 +4,7 @@ plugins {
 
 var versionMajor = 3
 var versionMinor = 0
-var versionPatch = 0
+var versionPatch = 1
 
 android {
     namespace = "com.team3663.scouting_app"
@@ -50,7 +50,4 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.qr.generator)
     implementation(libs.preference)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
 }
