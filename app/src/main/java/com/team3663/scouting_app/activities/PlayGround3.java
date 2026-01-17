@@ -90,8 +90,23 @@ public class PlayGround3 extends AppCompatActivity {
         initButton(playgroundBinding.but90, 90);
         initButton(playgroundBinding.but80, 80);
         initButton(playgroundBinding.but70, 70);
+        initButton(playgroundBinding.but60, 60);
+        initButton(playgroundBinding.but50, 50);
+        initButton(playgroundBinding.but40, 40);
+        initButton(playgroundBinding.but30, 30);
+        initButton(playgroundBinding.but20, 20);
+        initButton(playgroundBinding.but10, 10);
+        initButton(playgroundBinding.but100, 100);
         initButton(playgroundBinding.but9, 9);
         initButton(playgroundBinding.but8, 8);
+        initButton(playgroundBinding.but7, 7);
+        initButton(playgroundBinding.but6, 6);
+        initButton(playgroundBinding.but5, 5);
+        initButton(playgroundBinding.but4, 4);
+        initButton(playgroundBinding.but3, 3);
+        initButton(playgroundBinding.but2, 2);
+        initButton(playgroundBinding.but1, 1);
+        initButton(playgroundBinding.but0, 0);
     }
 
     // =============================================================================================
@@ -114,7 +129,10 @@ public class PlayGround3 extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void processButton(int in_id) {
-        if (in_id > 9) tens = in_id;
+        if (in_id > 9) {
+            if (in_id > 90) tens = 0;
+            else tens = in_id;
+        }
         else ones = in_id;
 
         playgroundBinding.textView.setText(String.valueOf(tens + ones));
