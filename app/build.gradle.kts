@@ -50,4 +50,6 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.qr.generator)
     implementation(libs.preference)
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
 }

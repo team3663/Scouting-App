@@ -15,17 +15,17 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.team3663.scouting_app.R;
-import com.team3663.scouting_app.databinding.PlaygroundBinding;
+import com.team3663.scouting_app.databinding.Playground3Binding;
 
-public class PlayGround extends AppCompatActivity {
+public class PlayGround3 extends AppCompatActivity {
 
-    private PlaygroundBinding playgroundBinding;
+    private Playground3Binding playgroundBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        playgroundBinding = PlaygroundBinding.inflate(getLayoutInflater());
+        playgroundBinding = Playground3Binding.inflate(getLayoutInflater());
         View page_root_view = playgroundBinding.getRoot();
         setContentView(page_root_view);
 
@@ -77,7 +77,7 @@ public class PlayGround extends AppCompatActivity {
                 // Specifying a listener allows you to take an action before dismissing the dialog.
                 // The dialog is automatically dismissed when a dialog button is clicked.
                 .setPositiveButton(getString(R.string.submit_alert_quit_positive), (dialog, which) -> {
-                    PlayGround.this.finishAffinity();
+                    PlayGround3.this.finishAffinity();
                     System.exit(0);
                 })
 
@@ -96,10 +96,10 @@ public class PlayGround extends AppCompatActivity {
     private void initNext() {
         Button but_Next = playgroundBinding.butNext;
         but_Next.setOnClickListener(view -> {
-                Intent GoToSubmitData = new Intent(PlayGround.this, PlayGround2.class);
-                startActivity(GoToSubmitData);
+            Intent GoToSubmitData = new Intent(PlayGround3.this, PlayGround.class);
+            startActivity(GoToSubmitData);
 
-                finish();
-            });
+            finish();
+        });
     }
 }

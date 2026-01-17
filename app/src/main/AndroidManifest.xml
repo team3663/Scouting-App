@@ -16,8 +16,23 @@
         android:theme="@style/Theme.ScoutingApp"
         tools:targetApi="34">
         <activity
+            android:name=".activities.PlayGround3"
+            android:exported="true"
+            android:noHistory="true"
+            android:screenOrientation="sensorLandscape"
+            tools:ignore="DiscouragedApi" />
+        <activity
+            android:name=".activities.PlayGround2"
+            android:exported="true"
+            android:noHistory="true"
+            android:screenOrientation="sensorLandscape"
+            tools:ignore="DiscouragedApi" />
+        <activity
             android:name=".activities.PlayGround"
-            android:exported="false" />
+            android:exported="true"
+            android:noHistory="true"
+            android:screenOrientation="sensorLandscape"
+            tools:ignore="DiscouragedApi" />
         <activity
             android:name=".activities.AppLaunch"
             android:exported="true"
@@ -35,44 +50,44 @@
             android:noHistory="true"
             android:parentActivityName=".activities.AppLaunch"
             android:screenOrientation="sensorLandscape"
-            tools:ignore="DiscouragedApi"></activity>
+            tools:ignore="DiscouragedApi" />
         <activity
             android:name=".activities.PreMatch"
             android:exported="true"
             android:noHistory="true"
             android:screenOrientation="sensorLandscape"
-            tools:ignore="DiscouragedApi"></activity>
+            tools:ignore="DiscouragedApi" />
         <activity
             android:name=".activities.Match"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:noHistory="true"
             android:screenOrientation="sensorLandscape"
-            tools:ignore="DiscouragedApi"></activity>
+            tools:ignore="DiscouragedApi" />
         <activity
             android:name=".activities.PostMatch"
             android:exported="true"
             android:noHistory="true"
             android:screenOrientation="sensorLandscape"
-            tools:ignore="DiscouragedApi"></activity>
+            tools:ignore="DiscouragedApi" />
         <activity
             android:name=".activities.SubmitData"
             android:exported="true"
             android:noHistory="true"
             android:screenOrientation="sensorLandscape"
-            tools:ignore="DiscouragedApi"></activity>
+            tools:ignore="DiscouragedApi" />
         <activity
             android:name=".activities.QRCode"
             android:exported="true"
             android:noHistory="true"
             android:screenOrientation="sensorLandscape"
-            tools:ignore="DiscouragedApi"></activity>
+            tools:ignore="DiscouragedApi" />
         <activity
             android:name=".activities.Bluetooth"
             android:exported="true"
             android:noHistory="true"
             android:screenOrientation="sensorLandscape"
-            tools:ignore="DiscouragedApi"></activity>
+            tools:ignore="DiscouragedApi" />
     </application>
 
 </manifest>
