@@ -2,6 +2,7 @@ package com.team3663.scouting_app.activities;
 
 import static java.lang.Math.atan2;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ public class PlayGround2 extends AppCompatActivity {
     int sector;
     int textValue;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,27 +76,9 @@ public class PlayGround2 extends AppCompatActivity {
                         angle = (float) Math.toDegrees(atan2(touchY - centerY, touchX - centerX));
                         positiveAngle = (angle + 90 + 360) % 360;
                         sector = (int) positiveAngle / 36;
-                        if (lastPositiveAngle > 350 && positiveAngle < 10) {
-                            direction = 1;
-                        }
-                        else if (positiveAngle > lastPositiveAngle) {
-                            direction = 1;
-                        }
-                        else {
-                            direction = -1;
-                        }
-                        if (sector == 0 && direction == 1 && lastSector != 0) {
-                            tens ++;
-                        }
-                        else if (sector == 9 && lastSector != 9 && direction == -1) {
-                            if (tens >= 1) {
-                                tens --;
-                            }
-                            else {
-                                tens = 0;
-                            }
-                        }
-                        textValue = tens * 10 + sector;
+                        direction = 1;
+                        tens = 0;
+                        textValue = sector;
                         textView.setText(String.valueOf(textValue));
                         lastSector = sector;
                         lastPositiveAngle = (int) positiveAngle;
@@ -107,15 +91,15 @@ public class PlayGround2 extends AppCompatActivity {
                         angle = (float) Math.toDegrees(atan2(touchY - centerY, touchX - centerX));
                         positiveAngle = (angle + 90 + 360) % 360;
                         sector = (int) positiveAngle / 36;
-                        if (lastPositiveAngle > 350 && positiveAngle < 10) {
+                        if (lastPositiveAngle > 350 && positiveAngle < 10)
                             direction = 1;
-                        }
-                        else if (positiveAngle > lastPositiveAngle) {
-                            direction = 1;
-                        }
-                        else {
+                        else if (lastPositiveAngle < 10 && positiveAngle > 350)
                             direction = -1;
-                        }
+                        else if (positiveAngle > lastPositiveAngle)
+                            direction = 1;
+                        else
+                            direction = -1;
+
                         if (sector == 0 && direction == 1 && lastSector != 0) {
                             tens ++;
                         }
@@ -135,11 +119,9 @@ public class PlayGround2 extends AppCompatActivity {
 
                     case MotionEvent.ACTION_UP:
                         // Handle release
-                        textView.setText("up");
                         break;
                     case MotionEvent.ACTION_CANCEL:
                         // Handle cancellation
-                        textView.setText("cancel");
                         break;
                 }
 
@@ -147,14 +129,6 @@ public class PlayGround2 extends AppCompatActivity {
                 return true;
             }
         });
-
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
     }
 
     // =============================================================================================

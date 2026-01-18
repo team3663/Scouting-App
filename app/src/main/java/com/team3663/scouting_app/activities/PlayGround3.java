@@ -116,7 +116,7 @@ public class PlayGround3 extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initButton(Button in_button, int in_id) {
-        in_button.setBackgroundColor(R.color.dark_grey);
+        in_button.setBackgroundColor(getColor(R.color.dark_grey));
 
         in_button.setId(in_id);
         in_button.setOnClickListener(view1 -> processButton(in_button.getId()));
