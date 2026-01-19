@@ -89,7 +89,10 @@ public class PlayGround2 extends AppCompatActivity {
                         touchX = event.getX();
                         touchY = event.getY();
                         angle = (float) Math.toDegrees(atan2(touchY - centerY, touchX - centerX));
-                        positiveAngle = (angle + 90 + 360) % 360;
+                        // angle would have 0deg to the "East" (if using a compass).  We want it "North".
+                        // need to add 90 to do that, adding 360 to make sure it's positive and another 18 so there's buffer around the sector value.
+                        // 90 + 360 + 18 = 468.
+                        positiveAngle = (angle + 468) % 360;
                         sector = (int) positiveAngle / 36;
                         if (lastPositiveAngle > 350 && positiveAngle < 10)
                             direction = 1;

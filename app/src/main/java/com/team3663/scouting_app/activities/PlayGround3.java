@@ -119,7 +119,7 @@ public class PlayGround3 extends AppCompatActivity {
         in_button.setBackgroundColor(getColor(R.color.dark_grey));
 
         in_button.setId(in_id);
-        in_button.setOnClickListener(view1 -> processButton(in_button.getId()));
+        in_button.setOnClickListener(view1 -> processButton(in_button));
     }
 
     // =============================================================================================
@@ -128,13 +128,16 @@ public class PlayGround3 extends AppCompatActivity {
     // Parameters:  void
     // Output:      void
     // =============================================================================================
-    private void processButton(int in_id) {
+    private void processButton(Button in_button) {
+        int in_id = in_button.getId();
+
         if (in_id > 9) {
             if (in_id > 90) tens = 0;
             else tens = in_id;
         }
         else ones = in_id;
 
+        in_button.setBackgroundColor(getColor(R.color.cpr_green));
         playgroundBinding.textView.setText(String.valueOf(tens + ones));
     }
 }
