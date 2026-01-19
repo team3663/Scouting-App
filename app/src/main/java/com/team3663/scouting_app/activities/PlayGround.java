@@ -37,6 +37,7 @@ public class PlayGround extends AppCompatActivity {
 
         initQuit();
         initNext();
+        initTap();
 
         SeekBar seekbar = findViewById(R.id.seekBar);
         seekbar.setHapticFeedbackEnabled(true);
@@ -85,6 +86,19 @@ public class PlayGround extends AppCompatActivity {
                 .setNegativeButton(getString(R.string.submit_alert_cancel), null)
                 .show()
         );
+    }
+
+    // =============================================================================================
+    // Function:    initTap
+    // Description: Initialize the Tap button
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initTap() {
+        Button but_Tap = playgroundBinding.butTap;
+        but_Tap.setOnClickListener(view -> {
+            playgroundBinding.textView.setText(String.valueOf(Integer.valueOf(playgroundBinding.textView.getText().toString())+1));
+        });
     }
 
     // =============================================================================================

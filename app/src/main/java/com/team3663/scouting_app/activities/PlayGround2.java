@@ -55,9 +55,11 @@ public class PlayGround2 extends AppCompatActivity {
 
         initQuit();
         initNext();
+        initTap();
 
         TextView textView = findViewById(R.id.textView);
         ImageView imageView = findViewById(R.id.imageView);
+        textView.setText(String.valueOf(0));
 
         imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -156,6 +158,19 @@ public class PlayGround2 extends AppCompatActivity {
                 .setNegativeButton(getString(R.string.submit_alert_cancel), null)
                 .show()
         );
+    }
+
+    // =============================================================================================
+    // Function:    initTap
+    // Description: Initialize the Tap button
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initTap() {
+        Button but_Tap = playgroundBinding.butTap;
+        but_Tap.setOnClickListener(view -> {
+            playgroundBinding.textView.setText(String.valueOf(Integer.valueOf(playgroundBinding.textView.getText().toString())+1));
+        });
     }
 
     // =============================================================================================

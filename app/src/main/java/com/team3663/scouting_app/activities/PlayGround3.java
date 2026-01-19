@@ -38,6 +38,9 @@ public class PlayGround3 extends AppCompatActivity {
         initQuit();
         initNext();
         initButtons();
+        initTap();
+
+        playgroundBinding.textView.setText(String.valueOf(0));
     }
 
     // =============================================================================================
@@ -77,6 +80,19 @@ public class PlayGround3 extends AppCompatActivity {
             startActivity(GoToSubmitData);
 
             finish();
+        });
+    }
+
+    // =============================================================================================
+    // Function:    initTap
+    // Description: Initialize the Tap button
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initTap() {
+        Button but_Tap = playgroundBinding.butTap;
+        but_Tap.setOnClickListener(view -> {
+            playgroundBinding.textView.setText(String.valueOf(Integer.valueOf(playgroundBinding.textView.getText().toString())+1));
         });
     }
 
