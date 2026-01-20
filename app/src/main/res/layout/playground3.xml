@@ -155,18 +155,19 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_100"
                     android:text="0"
+                    android:textSize="10sp"
                     android:layout_width="65dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="35dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_10"
                     android:text="10"
                     android:layout_width="65dp"
@@ -174,10 +175,11 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp"
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_20"
                     android:text="20"
                     android:layout_width="65dp"
@@ -185,10 +187,11 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp"
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_30"
                     android:text="30"
                     android:layout_width="65dp"
@@ -196,10 +199,11 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp"
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_40"
                     android:text="40"
                     android:layout_width="65dp"
@@ -207,10 +211,11 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp"
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_50"
                     android:text="50"
                     android:layout_width="65dp"
@@ -218,10 +223,11 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp"
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_60"
                     android:text="60"
                     android:layout_width="65dp"
@@ -229,10 +235,11 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp"
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_70"
                     android:text="70"
                     android:layout_width="65dp"
@@ -240,10 +247,11 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp"
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_80"
                     android:text="80"
                     android:layout_width="65dp"
@@ -251,10 +259,11 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp"
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_90"
                     android:text="90"
                     android:layout_width="65dp"
@@ -262,16 +271,17 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
-
+                    android:textSize="10sp"
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="70dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_0"
                     android:text="0"
                     android:layout_width="65dp"
@@ -279,10 +289,11 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="35dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp"
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_1"
                     android:text="1"
                     android:layout_width="65dp"
@@ -290,10 +301,11 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp"
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_2"
                     android:text="2"
                     android:layout_width="65dp"
@@ -301,10 +313,11 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp"
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_3"
                     android:text="3"
                     android:layout_width="65dp"
@@ -312,10 +325,11 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp"
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_4"
                     android:text="4"
                     android:layout_width="65dp"
@@ -323,10 +337,11 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp"
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_5"
                     android:text="5"
                     android:layout_width="65dp"
@@ -334,10 +349,11 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp"
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_6"
                     android:text="6"
                     android:layout_width="65dp"
@@ -345,10 +361,11 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp"
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_7"
                     android:text="7"
                     android:layout_width="65dp"
@@ -356,10 +373,11 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp"
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_8"
                     android:text="8"
                     android:layout_width="65dp"
@@ -367,10 +385,11 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp"
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_9"
                     android:text="9"
                     android:layout_width="65dp"
@@ -378,9 +397,9 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
-                    style="@android:style/Widget.Button"
-                    android:textSize="10sp"/>
-
+                    android:textSize="10sp"
+                    android:backgroundTint="@color/dark_grey"
+                    app:cornerRadius="10dp"/>
             </LinearLayout>
 
             <FrameLayout
@@ -446,39 +465,58 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/but_PassTap"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:text="Pass 1\n(TAP)"
+                    android:textSize="14sp"
+                    android:backgroundTint="@color/light_blue"
+                    app:cornerRadius="24dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_Pass"
                     android:layout_width="100dp"
-                    android:layout_height="120dp"
-                    android:text="Pass"
-                    android:textSize="14sp" />
+                    android:layout_height="100dp"
+                    android:text="Pass Many"
+                    android:textSize="14sp"
+                    android:backgroundTint="@color/light_blue"
+                    app:cornerRadius="24dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"/>
 
-                <Button
-                    android:id="@+id/but_Tap"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/but_ShootTap"
                     android:layout_width="100dp"
-                    android:layout_height="120dp"
-                    android:text="Tap\n+1"
-                    android:textSize="14sp" />
+                    android:layout_height="100dp"
+                    android:text="Shoot 1\nat Hub\n(TAP)"
+                    android:textSize="14sp"
+                    android:backgroundTint="@color/dark_green"
+                    app:cornerRadius="24dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"/>
-                <Button
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/but_Shoot"
                     android:layout_width="100dp"
-                    android:layout_height="120dp"
-                    android:text="Shoot at Hub"
-                    android:textSize="14sp" />
+                    android:layout_height="100dp"
+                    android:text="Shoot Many\nat Hub"
+                    android:textSize="14sp"
+                    android:backgroundTint="@color/dark_green"
+                    app:cornerRadius="24dp"/>
             </LinearLayout>
-
         </LinearLayout>
-
     </LinearLayout>
 
     <Button
