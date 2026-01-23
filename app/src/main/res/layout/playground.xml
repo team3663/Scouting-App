@@ -7,237 +7,305 @@
     android:layout_height="match_parent"
     tools:context=".activities.PlayGround">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="70dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/but_Quit"
+                android:layout_width="160dp"
+                android:layout_height="65dp"
+                android:layout_marginStart="5dp"
+                android:layout_gravity="center_vertical"
+                android:text="Quit"
+                android:backgroundTint="@color/dark_red"
+                android:textSize="18sp"
+                app:cornerRadius="16dp"/>
+
+            <TextView
+                android:id="@+id/textPadding1"
+                android:layout_width="10dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center_vertical"/>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/but_Quit"
-                    android:layout_width="160dp"
-                    android:layout_height="65dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_gravity="center_vertical"
-                    android:text="Quit"
-                    android:backgroundTint="@color/dark_red"
-                    android:textSize="18sp" />
-
-
-                <TextView
-                    android:id="@+id/textPadding1"
-                    android:layout_width="10dp"
-                    android:layout_height="65dp"
-                    android:layout_gravity="center_vertical"/>
+                android:layout_width="265dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="265dp"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:orientation="horizontal">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="35dp"
-                        android:orientation="horizontal">
-
-                        <Button
-                            android:id="@+id/but_Undo"
-                            android:layout_width="85dp"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center_vertical"
-                            android:backgroundTint="@color/dark_red"
-                            android:text="@string/button_undo"
-                            tools:ignore="TouchTargetSizeCheck"
-                            tools:textSize="11sp" />
-
-                        <TextView
-                            android:id="@+id/text_Status"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="start|center"
-                            android:paddingStart="5dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            tools:textSize="24sp"
-                            tools:ignore="RtlSymmetry" />
-                    </LinearLayout>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/but_Undo"
+                        android:layout_width="85dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:backgroundTint="@color/dark_red"
+                        android:text="@string/button_undo"
+                        tools:ignore="TouchTargetSizeCheck"
+                        tools:textSize="11sp"
+                        app:cornerRadius="8dp"/>
 
                     <TextView
-                        android:id="@+id/text_Team"
+                        android:id="@+id/text_Status"
                         android:layout_width="match_parent"
-                        android:layout_height="35dp"
-                        android:paddingStart="5dp"
+                        android:layout_height="match_parent"
                         android:gravity="start|center"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:textSize="12sp"
+                        android:paddingStart="5dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        tools:textSize="24sp"
                         tools:ignore="RtlSymmetry" />
-
                 </LinearLayout>
-                <Switch
-                    android:id="@+id/switchNotMoving"
-                    android:layout_width="150dp"
-                    android:layout_height="55dp"
-                    android:clickable="false"
-                    android:gravity="center"
-                    android:layout_gravity="center_vertical"
-                    tools:textSize="18sp"
-                    android:textColor="@color/white"
-                    android:text="@string/switch_not_moving"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
 
                 <TextView
-                    android:id="@+id/textPadding2"
-                    android:layout_width="15dp"
-                    android:layout_height="65dp"
-                    android:layout_gravity="center_vertical" />
+                    android:id="@+id/text_Team"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:paddingStart="5dp"
+                    android:gravity="start|center"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:textSize="12sp"
+                    tools:ignore="RtlSymmetry" />
 
-                <Switch
-                    android:id="@+id/switchDefended"
-                    android:layout_width="150dp"
-                    android:layout_height="55dp"
-                    android:clickable="false"
-                    android:gravity="center"
-                    android:layout_gravity="center_vertical"
-                    tools:textSize="18sp"
-                    android:textColor="@color/white"
-                    android:text="@string/switch_is_defended"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-                <TextView
-                    android:id="@+id/textPadding3"
-                    android:layout_width="15dp"
-                    android:layout_height="65dp"
-                    android:layout_gravity="center_vertical"/>
-
-                <Switch
-                    android:id="@+id/switchDefense"
-                    android:layout_width="150dp"
-                    android:layout_height="55dp"
-                    android:clickable="false"
-                    android:gravity="center"
-                    android:layout_gravity="center_vertical"
-                    android:textColor="@color/white"
-                    android:text="@string/switch_on_defense"
-                    tools:textSize="18sp"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-                <TextView
-                    android:id="@+id/textPadding4"
-                    android:layout_width="15dp"
-                    android:layout_height="65dp"
-                    android:layout_gravity="center_vertical"/>
-
-                <Chronometer
-                    android:id="@+id/chronometer"
-                    android:layout_width="70dp"
-                    android:layout_height="65dp"
-                    android:gravity="end|center"
-                    android:layout_gravity="center_vertical"
-                    android:textColor="@color/white"
-                    android:textSize="24sp"/>
-
-                <Chronometer
-                    android:id="@+id/chronometerDelay"
-                    android:layout_width="1dp"
-                    android:layout_height="65dp" />
             </LinearLayout>
+            <Switch
+                android:id="@+id/switchNotMoving"
+                android:layout_width="150dp"
+                android:layout_height="55dp"
+                android:clickable="false"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                tools:textSize="18sp"
+                android:textColor="@color/white"
+                android:text="@string/switch_not_moving"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-            <FrameLayout
-                android:layout_width="fill_parent"
-                android:background="@color/dark_grey"
-                android:layout_height="490dp">
+            <TextView
+                android:id="@+id/textPadding2"
+                android:layout_width="15dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center_vertical" />
+
+            <Switch
+                android:id="@+id/switchDefended"
+                android:layout_width="150dp"
+                android:layout_height="55dp"
+                android:clickable="false"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                tools:textSize="18sp"
+                android:textColor="@color/white"
+                android:text="@string/switch_is_defended"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            <TextView
+                android:id="@+id/textPadding3"
+                android:layout_width="15dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center_vertical"/>
+
+            <Switch
+                android:id="@+id/switchDefense"
+                android:layout_width="150dp"
+                android:layout_height="55dp"
+                android:clickable="false"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/white"
+                android:text="@string/switch_on_defense"
+                tools:textSize="18sp"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            <TextView
+                android:id="@+id/textPadding4"
+                android:layout_width="15dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center_vertical"/>
+
+            <Chronometer
+                android:id="@+id/chronometer"
+                android:layout_width="70dp"
+                android:layout_height="65dp"
+                android:gravity="end|center"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/white"
+                android:textSize="24sp"/>
+
+            <Chronometer
+                android:id="@+id/chronometerDelay"
+                android:layout_width="1dp"
+                android:layout_height="65dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="490dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
                 <SeekBar
                     android:id="@+id/seekBar"
-                    android:layout_height="450dp"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:progressTint="@color/cpr_green"
+                    android:thumbTint="@color/cpr_green"
                     android:layout_width="400dp"
-                    android:progress="10"
+                    android:layout_height="422dp"
+                    android:layout_marginTop="68dp"
                     android:min="0"
+                    android:progress="10"
                     android:rotation="270"
-                    android:translationX="-170dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    style="@style/Widget.AppCompat.SeekBar.Discrete" />
+                    android:translationX="-175dp" />
 
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="701dp"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="50dp"
-                    android:layout_marginEnd="50dp"
-                    android:gravity="center_horizontal"
-                    android:textSize="32sp"
-                    android:textColor="@color/white"
-                    android:translationX="100dp" />
+            </LinearLayout>
 
-                    <FrameLayout
-                        android:layout_width="700dp"
-                        android:layout_height="350dp"
-                        android:translationX="100dp"
-                        android:translationY="130dp">
+            <FrameLayout
+                android:layout_width="840dp"
+                android:background="@color/dark_grey"
+                android:layout_height="490dp">
 
-                <TextView
-                    android:id="@+id/textRobot"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:background="@android:color/holo_orange_dark"/>
-
-                <ImageView
-                    android:id="@+id/image_FieldView"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:contentDescription="Shows the field of play"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@drawable/field2026"
-                    tools:ignore="HardcodedText,MissingConstraints" />
-
-                <RelativeLayout
-                    android:id="@+id/ContextMenu"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    tools:ignore="MissingConstraints,UselessLeaf" />
-
-                <RelativeLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/text_Practice"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:gravity="center"
-                        android:textColor="@color/transparent30_grey" />
-                </RelativeLayout>
+                        android:id="@+id/textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:gravity="center_horizontal"
+                        android:textSize="32sp"
+                        android:background="@color/white"
+                        android:textColor="@color/black" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="422dp">
+
+                        <TextView
+                            android:id="@+id/textRobot"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:background="@android:color/holo_orange_dark"/>
+
+                        <ImageView
+                            android:id="@+id/image_FieldView"
+                            android:layout_width="fill_parent"
+                            android:scaleType="fitXY"
+                            android:layout_height="fill_parent"
+                            android:contentDescription="Shows the field of play"
+                            app:srcCompat="@drawable/field2026"
+                            tools:ignore="HardcodedText,MissingConstraints" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/but_AllianceZone"
+                            android:layout_width="236dp"
+                            android:layout_height="fill_parent"
+                            app:cornerRadius="0dp"
+                            android:backgroundTint="@color/transparent" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/but_NeutralZone"
+                            android:layout_marginStart="237dp"
+                            android:layout_width="369dp"
+                            android:layout_height="fill_parent"
+                            app:cornerRadius="0dp"
+                            android:backgroundTint="@color/transparent" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/but_OpponentZone"
+                            android:layout_marginStart="605dp"
+                            android:layout_width="236dp"
+                            android:layout_height="fill_parent"
+                            app:cornerRadius="0dp"
+                            android:backgroundTint="@color/transparent" />
+
+                        <TextView
+                            android:id="@+id/text_Practice"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:gravity="center"
+                            android:textColor="@color/transparent30_grey" />
                     </FrameLayout>
+                </LinearLayout>
             </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/but_PassTap"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:text="Pass 1\n(TAP)"
+                    android:textSize="14sp"
+                    android:backgroundTint="@color/light_blue"
+                    android:layout_marginStart="10dp"
+                    app:cornerRadius="24dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/but_Pass"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:text="Pass Many"
+                    android:textSize="14sp"
+                    android:backgroundTint="@color/light_blue"
+                    android:layout_marginStart="10dp"
+                    app:cornerRadius="24dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/but_ShootTap"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:text="Shoot 1\nat Hub\n(TAP)"
+                    android:textSize="14sp"
+                    android:backgroundTint="@color/dark_green"
+                    android:layout_marginStart="10dp"
+                    app:cornerRadius="24dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/but_Shoot"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:text="Shoot Many\nat Hub"
+                    android:textSize="14sp"
+                    android:backgroundTint="@color/dark_green"
+                    android:layout_marginStart="10dp"
+                    app:cornerRadius="24dp"/>
+            </LinearLayout>
         </LinearLayout>
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/but_Shoot"
-        android:layout_width="180dp"
-        android:layout_height="100dp"
-        android:text="Shoot at Hub"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="50dp"
-        android:layout_marginEnd="10dp" />
-
-    <Button
-        android:id="@+id/but_Tap"
-        android:layout_width="180dp"
-        android:layout_height="100dp"
-        android:text="Tap"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/but_Shoot"
-        android:layout_marginBottom="10dp"
-        android:layout_marginEnd="10dp" />
-
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/but_Next"
         android:layout_width="140dp"
         android:layout_height="65dp"
@@ -247,5 +315,6 @@
         android:text="Next (2)"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        tools:textSize="18sp" />
+        tools:textSize="18sp"
+        app:cornerRadius="16dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -38,9 +38,29 @@ public class PlayGround extends AppCompatActivity {
         initQuit();
         initNext();
         initTap();
+        initSeekBar();
+        initTeleAllianceZone();
+        initTeleNeutralZone();
+        initTeleOpponentZone();
 
+        playgroundBinding.imageFieldView.bringToFront();
+        playgroundBinding.textRobot.bringToFront();
+        playgroundBinding.textPractice.bringToFront();
+        playgroundBinding.butAllianceZone.bringToFront();
+        playgroundBinding.butNeutralZone.bringToFront();
+        playgroundBinding.butOpponentZone.bringToFront();
+        playgroundBinding.imageFieldView.invalidate();
+        playgroundBinding.imageFieldView.requestLayout();
+    }
+
+    // =============================================================================================
+    // Function:    initSeekBar
+    // Description: Initialize the SeekBar
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initSeekBar() {
         SeekBar seekbar = findViewById(R.id.seekBar);
-        seekbar.setHapticFeedbackEnabled(true);
         TextView textView = findViewById(R.id.textView);
 
         seekbar.setProgress(8);
@@ -61,6 +81,54 @@ public class PlayGround extends AppCompatActivity {
                 textView.setText(String.valueOf(progress));
 
             }
+        });
+    }
+
+    // =============================================================================================
+    // Function:    initTeleAllianceZone
+    // Description: Initialize the Teleop Alliance Zone selection
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initTeleAllianceZone() {
+        Button but_Zone = playgroundBinding.butAllianceZone;
+
+        but_Zone.setOnClickListener(view -> {
+            playgroundBinding.butAllianceZone.setBackgroundColor(getColor(R.color.transparent_orange));
+            playgroundBinding.butNeutralZone.setBackgroundColor(getColor(R.color.transparent));
+            playgroundBinding.butOpponentZone.setBackgroundColor(getColor(R.color.transparent));
+        });
+    }
+
+    // =============================================================================================
+    // Function:    initTeleNeutralZone
+    // Description: Initialize the Teleop Neutral Zone selection
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initTeleNeutralZone() {
+        Button but_Zone = playgroundBinding.butNeutralZone;
+
+        but_Zone.setOnClickListener(view -> {
+            playgroundBinding.butAllianceZone.setBackgroundColor(getColor(R.color.transparent));
+            playgroundBinding.butNeutralZone.setBackgroundColor(getColor(R.color.transparent_orange));
+            playgroundBinding.butOpponentZone.setBackgroundColor(getColor(R.color.transparent));
+        });
+    }
+
+    // =============================================================================================
+    // Function:    initTeleOpponentZone
+    // Description: Initialize the Teleop Opponent Zone selection
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initTeleOpponentZone() {
+        Button but_Zone = playgroundBinding.butOpponentZone;
+
+        but_Zone.setOnClickListener(view -> {
+            playgroundBinding.butAllianceZone.setBackgroundColor(getColor(R.color.transparent));
+            playgroundBinding.butNeutralZone.setBackgroundColor(getColor(R.color.transparent));
+            playgroundBinding.butOpponentZone.setBackgroundColor(getColor(R.color.transparent_orange));
         });
     }
 
@@ -95,7 +163,7 @@ public class PlayGround extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initTap() {
-        Button but_Tap = playgroundBinding.butTap;
+        Button but_Tap = playgroundBinding.butShootTap;
         but_Tap.setOnClickListener(view -> {
             playgroundBinding.textView.setText(String.valueOf(Integer.valueOf(playgroundBinding.textView.getText().toString())+1));
         });
