@@ -783,6 +783,12 @@ public class MatchTally extends AppCompatActivity {
             }
         }
 
+        // Ensure we can't place the robot off the field
+        if (starting_X_Absolute < offset) starting_X_Absolute = offset;
+        else if (starting_X_Absolute > matchBinding.FieldTouch.getWidth() - offset) starting_X_Absolute = matchBinding.FieldTouch.getWidth() - offset;
+        if (starting_Y_Absolute < offset) starting_Y_Absolute = offset;
+        else if (starting_Y_Absolute > matchBinding.FieldTouch.getHeight() - offset) starting_Y_Absolute = matchBinding.FieldTouch.getHeight() - offset;
+
         // Make sure we see the location of the robot
         matchBinding.textRobot.setX(starting_X_Absolute - offset);
         matchBinding.textRobot.setY(starting_Y_Absolute - offset);
