@@ -112,7 +112,7 @@ public class QRCode extends AppCompatActivity {
     private void InitNext() {
         qrCodeBinding.butNext.setOnClickListener(view -> {
             // Reset pre-Match settings for next time
-            Globals.isStartingGamePiece = true;
+            Globals.numStartingGamePiece = Constants.PreMatch.STARTING_GAME_PIECES;
             Globals.isPractice = false;
 
             // Increases the team number so that it auto fills for the next match correctly

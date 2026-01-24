@@ -15,6 +15,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.BluetoothBinding;
 
@@ -74,7 +75,7 @@ public class Bluetooth extends AppCompatActivity {
     private void InitNext() {
         bluetoothBinding.butNext.setOnClickListener(view -> {
             // Reset pre-Match settings for next time
-            Globals.isStartingGamePiece = true;
+            Globals.numStartingGamePiece = Constants.PreMatch.STARTING_GAME_PIECES;
             Globals.isPractice = false;
 
             Intent GoToPreMatch = new Intent(Bluetooth.this, PreMatch.class);
