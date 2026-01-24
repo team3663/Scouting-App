@@ -162,7 +162,7 @@
                 android:layout_height="fill_parent"
                 android:scaleType="fitXY"
                 android:contentDescription="Shows the field of play"
-                app:srcCompat="@drawable/field_image"
+                app:srcCompat="@drawable/field2025"
                 tools:ignore="HardcodedText,MissingConstraints" />
 
             <RelativeLayout
