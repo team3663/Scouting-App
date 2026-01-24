@@ -1,23 +1,14 @@
 Id,isActive,Description
-1,TRUE,Robot contacted opponents cage(s)
-2,TRUE,Robot struggled to pick up Algae
-3,TRUE,Robot struggled to pick up Coral
-4,TRUE,Robot spent noticeably longer time at Coral station
-5,TRUE,Robot climbed noticeably faster than others
-6,TRUE,Robot climbed noticeably slower than others
-7,TRUE,Robot caused another robot climb to fail
-8,TRUE,Climb didn't count
-9,TRUE,Evaded defense well
-10,TRUE,Ineffective defense
-11,TRUE,Played really good defense
-12,TRUE,Robot didn't contribute much (no auto - low scoring - no defense)
-13,TRUE,Robot (or part of it) broke
-14,TRUE,Robot was quite tippy
-15,TRUE,Robot tipped over
-16,TRUE,Game piece got stuck in the robot
-17,TRUE,Robot got stuck on a game piece
-18,FALSE,Team was difficult to work with
-19,FALSE,Human player consistently missed algae
-20,FALSE,Human player was extremely slow at feeding coral to robots
-21,FALSE,Human player didn't work well with other teams
-22,FALSE,Team fouled excessively while playing defense
+1,TRUE,Robot climbed noticeably faster than others
+2,TRUE,Robot climbed noticeably slower than others
+3,TRUE,Climb didn't count
+4,TRUE,Evaded defense well
+5,TRUE,Ineffective defense
+6,TRUE,Played really good defense
+7,TRUE,Robot didn't contribute much (no auto - low scoring - no defense)
+8,TRUE,Robot (or part of it) broke
+9,TRUE,Game piece got stuck in the robot
+10,TRUE,Robot got stuck on a game piece
+12,TRUE,Human player scored a lot of fuel
+13,TRUE,Human player missed a lot of fuel
+14,TRUE,Human player was slow at feeding robots
