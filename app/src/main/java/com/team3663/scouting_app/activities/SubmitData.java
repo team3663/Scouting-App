@@ -324,7 +324,7 @@ public class SubmitData extends AppCompatActivity {
     private void initQR() {
         submitDataBinding.butQRCode.setOnClickListener(view -> {
             // Reset pre-Match settings for next time
-            Globals.isStartingGamePiece = true;
+            Globals.numStartingGamePiece = Constants.PreMatch.STARTING_GAME_PIECES;
             Globals.isPractice = false;
             Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
 
@@ -344,7 +344,7 @@ public class SubmitData extends AppCompatActivity {
     private void initBluetooth() {
         submitDataBinding.butSendBT.setOnClickListener(view -> {
             // Reset pre-Match settings for next time
-            Globals.isStartingGamePiece = true;
+            Globals.numStartingGamePiece = Constants.PreMatch.STARTING_GAME_PIECES;
             Globals.isPractice = false;
             Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
 
@@ -389,7 +389,7 @@ public class SubmitData extends AppCompatActivity {
     private void initNext() {
         submitDataBinding.butNext.setOnClickListener(view -> {
             // Reset pre-Match settings for next time
-            Globals.isStartingGamePiece = true;
+            Globals.numStartingGamePiece = Constants.PreMatch.STARTING_GAME_PIECES;
             Globals.isPractice = false;
 
             // Increases the team number so that it auto fills for the next match correctly

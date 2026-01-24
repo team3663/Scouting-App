@@ -192,7 +192,7 @@
 
             <CheckBox
                 android:id="@+id/checkbox_DidPlay"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:button="@null"
@@ -221,26 +221,33 @@
             android:layout_height="35dp"
             android:orientation="horizontal">
 
-            <CheckBox
-                android:id="@+id/checkbox_StartGamePiece"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:button="@null"
-                android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+            <TextView
+                android:id="@+id/text_StartGamePiece"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
                 android:gravity="end|center"
-                android:paddingStart="10dp"
-                android:paddingEnd="0dp"
+                android:paddingStart="0dp"
+                android:paddingEnd="50dp"
                 android:text="@string/pre_start_with_game_piece"
                 android:textColor="@color/white"
                 android:textSize="24sp" />
 
+            <EditText
+                android:id="@+id/edit_numStartingGamePiece"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:gravity="center"
+                android:inputType="number"
+                android:textColor="@color/cpr_bkgnd"
+                android:textSize="24sp" />
+
             <TextView
                 android:id="@+id/text_StartGamePiecePadding"
-                android:layout_width="630dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="end|center"
-                android:paddingEnd="50dp"
+                android:paddingEnd="300dp"
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 tools:ignore="RtlSymmetry" />
