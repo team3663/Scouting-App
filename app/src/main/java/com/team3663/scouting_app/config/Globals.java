@@ -54,7 +54,7 @@ public class Globals {
     public static Uri baseStorageURI = null;
 
     public static boolean isPractice = false;
-    public static boolean isStartingGamePiece = true;
+    public static int numStartingGamePiece;
     public static boolean isShadowMode = false;
 
     public static DocumentFile base_df = null;
