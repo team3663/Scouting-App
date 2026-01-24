@@ -340,7 +340,7 @@ public class PreMatch extends AppCompatActivity {
 
         // If they didn't play skip everything else
         if (preMatchBinding.checkboxDidPlay.isChecked()) {
-            Intent GoToMatch = new Intent(PreMatch.this, Match.class);
+            Intent GoToMatch = new Intent(PreMatch.this, MatchTally.class);
             startActivity(GoToMatch);
         } else {
             Intent GoToSubmitData = new Intent(PreMatch.this, SubmitData.class);
