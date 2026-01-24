@@ -178,7 +178,7 @@
                         android:layout_height="match_parent" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/but_Pickup"
+                        android:id="@+id/but_Climb"
                         android:layout_width="200dp"
                         android:layout_height="80dp"
                         android:text="@string/button_climb"
@@ -192,7 +192,7 @@
                         android:layout_height="match_parent"/>
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/but_Climb"
+                        android:id="@+id/but_Pickup"
                         android:layout_width="200dp"
                         android:layout_height="80dp"
                         android:text="@string/button_pickup"
