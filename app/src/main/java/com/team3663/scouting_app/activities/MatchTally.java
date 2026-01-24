@@ -216,6 +216,10 @@ public class MatchTally extends AppCompatActivity {
         matchBinding.butPickup.setClickable(false);
         matchBinding.butPickup.setVisibility(View.INVISIBLE);
 
+        // Enable the climb button
+        matchBinding.butClimb.setEnabled(true);
+        matchBinding.butClimb.setClickable(true);
+
         // Certain actions can't be set from a non-UI thread (like within a TimerTask that runs on a
         // separate thread). So we need to make a Runner that will execute on the UI thread to set this.
         MatchTally.this.runOnUiThread(() -> {
@@ -558,6 +562,12 @@ public class MatchTally extends AppCompatActivity {
 
         // If clicked, undo the last event selected
         matchBinding.butUndo.setOnClickListener(view -> {
+            // If the most recent event was a climb and we're going to undo it, re-anable the climb button
+            if (matchBinding.textStatus.getText().toString().equalsIgnoreCase("Climb")) {
+                matchBinding.butClimb.setEnabled(true);
+                matchBinding.butClimb.setClickable(true);
+            }
+
             int last_event_id;
             last_event_id = Globals.EventLogger.UndoLastEvent();
 
@@ -964,6 +974,8 @@ public class MatchTally extends AppCompatActivity {
     private void initActionButtons() {
         matchBinding.butClimb.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Climb"), 1);
+            matchBinding.butClimb.setEnabled(false);
+            matchBinding.butClimb.setClickable(false);
         });
 
         matchBinding.butPickup.setOnClickListener(view -> {
