@@ -55,8 +55,9 @@ public class Constants {
         public static int STATUS_TEXT_LONG_SIZE = 14;
         public static int STATUS_TEXT_MED_SIZE = 18;
         public static int STATUS_TEXT_DEFAULT_SIZE = 24;
-        public static float START_LINE_X = 43.20f;
+        public static float START_LINE_X = 24.17f;
         public static final int TRANSITION_EVENT_DNE = -1;
+        public static final int SEEKBAR_MAX = 60;
     }
 
     public static class Data {

@@ -48,6 +48,14 @@
             tools:ignore="DiscouragedApi">
         </activity>
         <activity
+            android:name=".activities.MatchTally"
+            android:screenOrientation="sensorLandscape"
+            android:exported="true"
+            android:noHistory="true"
+            android:configChanges="orientation|screenSize"
+            tools:ignore="DiscouragedApi">
+        </activity>
+        <activity
             android:name=".activities.PostMatch"
             android:screenOrientation="sensorLandscape"
             android:exported="true"
