@@ -138,6 +138,20 @@ public class MatchTally extends AppCompatActivity {
         matchBinding.switchNotMoving.setTextColor(Color.WHITE);
         matchBinding.switchNotMoving.setVisibility(View.VISIBLE);
 
+        // Enable action buttons
+        matchBinding.butClimb.setEnabled(true);
+        matchBinding.butClimb.setClickable(true);
+        matchBinding.butPickup.setEnabled(true);
+        matchBinding.butPickup.setClickable(true);
+        matchBinding.butPass.setEnabled(true);
+        matchBinding.butPass.setClickable(true);
+        matchBinding.butPassTap.setEnabled(true);
+        matchBinding.butPassTap.setClickable(true);
+        matchBinding.butShoot.setEnabled(true);
+        matchBinding.butShoot.setClickable(true);
+        matchBinding.butShootTap.setEnabled(true);
+        matchBinding.butShootTap.setClickable(true);
+
         // Calculate the image dimensions
         Constants.Match.IMAGE_WIDTH = matchBinding.FieldTouch.getWidth();
         Constants.Match.IMAGE_HEIGHT = matchBinding.FieldTouch.getHeight();
@@ -197,6 +211,14 @@ public class MatchTally extends AppCompatActivity {
 
         // Hide the location of the robot
         matchBinding.textRobot.setVisibility(View.INVISIBLE);
+
+        // Hide the Pickup Fuel button
+        matchBinding.butPickup.setClickable(false);
+        matchBinding.butPickup.setVisibility(View.INVISIBLE);
+
+        // Enable the climb button
+        matchBinding.butClimb.setEnabled(true);
+        matchBinding.butClimb.setClickable(true);
 
         // Certain actions can't be set from a non-UI thread (like within a TimerTask that runs on a
         // separate thread). So we need to make a Runner that will execute on the UI thread to set this.
@@ -540,6 +562,12 @@ public class MatchTally extends AppCompatActivity {
 
         // If clicked, undo the last event selected
         matchBinding.butUndo.setOnClickListener(view -> {
+            // If the most recent event was a climb and we're going to undo it, re-anable the climb button
+            if (matchBinding.textStatus.getText().toString().equalsIgnoreCase("Climb")) {
+                matchBinding.butClimb.setEnabled(true);
+                matchBinding.butClimb.setClickable(true);
+            }
+
             int last_event_id;
             last_event_id = Globals.EventLogger.UndoLastEvent();
 
@@ -755,6 +783,12 @@ public class MatchTally extends AppCompatActivity {
             }
         }
 
+        // Ensure we can't place the robot off the field
+        if (starting_X_Absolute < offset) starting_X_Absolute = offset;
+        else if (starting_X_Absolute > matchBinding.FieldTouch.getWidth() - offset) starting_X_Absolute = matchBinding.FieldTouch.getWidth() - offset;
+        if (starting_Y_Absolute < offset) starting_Y_Absolute = offset;
+        else if (starting_Y_Absolute > matchBinding.FieldTouch.getHeight() - offset) starting_Y_Absolute = matchBinding.FieldTouch.getHeight() - offset;
+
         // Make sure we see the location of the robot
         matchBinding.textRobot.setX(starting_X_Absolute - offset);
         matchBinding.textRobot.setY(starting_Y_Absolute - offset);
@@ -790,9 +824,9 @@ public class MatchTally extends AppCompatActivity {
             // we need to flip the Y coordinate.
             if (currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) {
                 current_X_Relative = current_X_Absolute;
-                current_Y_Relative = Constants.Match.IMAGE_HEIGHT - current_Y_Absolute;
+                current_Y_Relative = matchBinding.FieldTouch.getHeight() - current_Y_Absolute;
             } else {
-                current_X_Relative = Constants.Match.IMAGE_WIDTH - current_X_Absolute;
+                current_X_Relative = matchBinding.FieldTouch.getWidth() - current_X_Absolute;
                 current_Y_Relative = current_Y_Absolute;
             }
 
@@ -874,6 +908,15 @@ public class MatchTally extends AppCompatActivity {
             matchBinding.butAllianceZone.setBackgroundColor(getColor(R.color.transparent_orange));
             matchBinding.butNeutralZone.setBackgroundColor(getColor(R.color.transparent));
             matchBinding.butOpponentZone.setBackgroundColor(getColor(R.color.transparent));
+
+            // Allow shooting
+            matchBinding.butShoot.setEnabled(true);
+            matchBinding.butShoot.setClickable(true);
+            matchBinding.butShootTap.setEnabled(true);
+            matchBinding.butShootTap.setClickable(true);
+
+            current_X_Relative = matchBinding.butAllianceZone.getX() + (matchBinding.butAllianceZone.getWidth() / 2f);
+            current_Y_Relative = matchBinding.butAllianceZone.getY() + (matchBinding.butAllianceZone.getHeight() / 2f);
         });
 
         matchBinding.butNeutralZone.setOnClickListener(view -> {
@@ -882,6 +925,15 @@ public class MatchTally extends AppCompatActivity {
             matchBinding.butAllianceZone.setBackgroundColor(getColor(R.color.transparent));
             matchBinding.butNeutralZone.setBackgroundColor(getColor(R.color.transparent_orange));
             matchBinding.butOpponentZone.setBackgroundColor(getColor(R.color.transparent));
+
+            // Disallow shooting
+            matchBinding.butShoot.setEnabled(false);
+            matchBinding.butShoot.setClickable(false);
+            matchBinding.butShootTap.setEnabled(false);
+            matchBinding.butShootTap.setClickable(false);
+
+            current_X_Relative = matchBinding.butNeutralZone.getX() + (matchBinding.butNeutralZone.getWidth() / 2f);
+            current_Y_Relative = matchBinding.butNeutralZone.getY() + (matchBinding.butNeutralZone.getHeight() / 2f);
         });
 
         matchBinding.butOpponentZone.setOnClickListener(view -> {
@@ -890,6 +942,15 @@ public class MatchTally extends AppCompatActivity {
             matchBinding.butAllianceZone.setBackgroundColor(getColor(R.color.transparent));
             matchBinding.butNeutralZone.setBackgroundColor(getColor(R.color.transparent));
             matchBinding.butOpponentZone.setBackgroundColor(getColor(R.color.transparent_orange));
+
+            // Disallow shooting
+            matchBinding.butShoot.setEnabled(false);
+            matchBinding.butShoot.setClickable(false);
+            matchBinding.butShootTap.setEnabled(false);
+            matchBinding.butShootTap.setClickable(false);
+
+            current_X_Relative = matchBinding.butOpponentZone.getX() + (matchBinding.butOpponentZone.getWidth() / 2f);
+            current_Y_Relative = matchBinding.butOpponentZone.getY() + (matchBinding.butOpponentZone.getHeight() / 2f);
         });
 
         matchBinding.butAllianceZone.setOnTouchListener((view, motionEvent) -> {
@@ -917,5 +978,64 @@ public class MatchTally extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initActionButtons() {
+        matchBinding.butClimb.setOnClickListener(view -> {
+            logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Climb"), 1);
+            matchBinding.butClimb.setEnabled(false);
+            matchBinding.butClimb.setClickable(false);
+        });
+
+        matchBinding.butPickup.setOnClickListener(view -> {
+            if (!Globals.CurrentMatchPhase.equals(Constants.Phases.AUTO)) return;
+
+            logEvent(Globals.EventList.getEventId(Constants.Phases.AUTO, "Pickup Fuel"), 1);
+        });
+
+        matchBinding.butPassTap.setOnClickListener(view -> {
+            logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Pass 1 Fuel"), 1);
+        });
+
+        matchBinding.butPass.setOnClickListener(view -> {
+            logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Pass Many Fuel"), matchBinding.seekBar.getProgress());
+        });
+
+        matchBinding.butShootTap.setOnClickListener(view -> {
+            logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Shoot 1 Fuel"), 1);
+        });
+
+        matchBinding.butShoot.setOnClickListener(view -> {
+            logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Shoot Many Fuel"),  matchBinding.seekBar.getProgress());
+        });
+
+        matchBinding.butClimb.setEnabled(false);
+        matchBinding.butClimb.setClickable(false);
+        matchBinding.butPickup.setEnabled(false);
+        matchBinding.butPickup.setClickable(false);
+        matchBinding.butPass.setEnabled(false);
+        matchBinding.butPass.setClickable(false);
+        matchBinding.butPassTap.setEnabled(false);
+        matchBinding.butPassTap.setClickable(false);
+        matchBinding.butShoot.setEnabled(false);
+        matchBinding.butShoot.setClickable(false);
+        matchBinding.butShootTap.setEnabled(false);
+        matchBinding.butShootTap.setClickable(false);
+    }
+
+    // =============================================================================================
+    // Function:    logEvent
+    // Description: Log an event into the logger
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void logEvent(int in_event_id, int in_Count) {
+        // If we get called with no valid event, just return
+        if (in_event_id == Constants.Events.ID_NO_EVENT) return;
+
+        // Set the status text for the UNDO button.
+        setEventStatus(in_event_id);
+
+        // Log the event to the Logger and ensure the UNDO button is enabled
+        Globals.EventLogger.LogEvent(in_event_id, current_X_Relative, current_Y_Relative, game_Timer.getElapsedMilliSeconds(), in_Count);
+        matchBinding.butUndo.setVisibility(View.VISIBLE);
+        matchBinding.butUndo.setEnabled(true);
     }
 }
