@@ -58,6 +58,8 @@ public class MatchTally extends AppCompatActivity {
     private static float tele_button_position_x = 0;
     private static float tele_button_position_y = 0;;
     private static String team_alliance;
+    private static boolean climb_button_pressed = false;
+    private static boolean in_alliance_zone = false;
 
     // Define a Timer and TimerTasks so you can schedule things
     private CPR_Chronometer game_Timer;
@@ -225,6 +227,7 @@ public class MatchTally extends AppCompatActivity {
         // Enable the climb button
         matchBinding.butClimb.setEnabled(true);
         matchBinding.butClimb.setClickable(true);
+        climb_button_pressed = false;
 
         // Certain actions can't be set from a non-UI thread (like within a TimerTask that runs on a
         // separate thread). So we need to make a Runner that will execute on the UI thread to set this.
@@ -574,8 +577,9 @@ public class MatchTally extends AppCompatActivity {
         matchBinding.butUndo.setOnClickListener(view -> {
             // If the most recent event was a climb and we're going to undo it, re-anable the climb button
             if (matchBinding.textStatus.getText().toString().equalsIgnoreCase("Climb")) {
-                matchBinding.butClimb.setEnabled(true);
-                matchBinding.butClimb.setClickable(true);
+                climb_button_pressed = false;
+                if (in_alliance_zone) matchBinding.butClimb.setEnabled(true);
+                if (in_alliance_zone) matchBinding.butClimb.setClickable(true);
             }
 
             int last_event_id;
@@ -807,7 +811,8 @@ public class MatchTally extends AppCompatActivity {
             matchBinding.textRobot.setVisibility(View.VISIBLE);
             matchBinding.butMatchControl.setEnabled(true);
             matchBinding.butMatchControl.setClickable(true);
-            matchBinding.textStatus.setText("");
+            // Reset the status text only if the match hasn't started.
+            if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) matchBinding.textStatus.setText("");
         }
     }
 
@@ -913,23 +918,20 @@ public class MatchTally extends AppCompatActivity {
         matchBinding.butLeftZone.setOnClickListener(view -> {
             // We'll use the button click to determine if we should allow or disallow shooting / climbing but won't process
             // anything else if we're not in Tele mode.
-            if (((currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)) && team_alliance.substring(0,1).equalsIgnoreCase("R")) ||
-                    ((currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) && team_alliance.substring(0,1).equalsIgnoreCase("B"))) {
-                matchBinding.butShoot.setEnabled(true);
-                matchBinding.butShoot.setClickable(true);
-                matchBinding.butShootTap.setEnabled(true);
-                matchBinding.butShootTap.setClickable(true);
-                matchBinding.butClimb.setEnabled(true);
-                matchBinding.butClimb.setClickable(true);
-            } else {
-                matchBinding.butShoot.setEnabled(false);
-                matchBinding.butShoot.setClickable(false);
-                matchBinding.butShootTap.setEnabled(false);
-                matchBinding.butShootTap.setClickable(false);
-                matchBinding.butClimb.setEnabled(false);
-                matchBinding.butClimb.setClickable(false);
-            }
+            in_alliance_zone = ((currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)) && team_alliance.substring(0, 1).equalsIgnoreCase("R")) ||
+                    ((currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) && team_alliance.substring(0, 1).equalsIgnoreCase("B"));
 
+            // If the match hasn't even started yet, just return
+            if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) return;
+
+            matchBinding.butShoot.setEnabled(in_alliance_zone);
+            matchBinding.butShoot.setClickable(in_alliance_zone);
+            matchBinding.butShootTap.setEnabled(in_alliance_zone);
+            matchBinding.butShootTap.setClickable(in_alliance_zone);
+            if (!climb_button_pressed) matchBinding.butClimb.setEnabled(in_alliance_zone);
+            if (!climb_button_pressed) matchBinding.butClimb.setClickable(in_alliance_zone);
+
+            // The rest of the code needs to be in TELEOP phase.  So if it's not, just return.
             if (!Globals.CurrentMatchPhase.equals(Constants.Phases.TELEOP)) return;
 
             matchBinding.butLeftZone.setBackgroundColor(getColor(R.color.transparent_orange));
@@ -941,14 +943,20 @@ public class MatchTally extends AppCompatActivity {
         });
 
         matchBinding.butCenterZone.setOnClickListener(view -> {
-            // Disallow shooting / climbing
-            matchBinding.butShoot.setEnabled(false);
-            matchBinding.butShoot.setClickable(false);
-            matchBinding.butShootTap.setEnabled(false);
-            matchBinding.butShootTap.setClickable(false);
-            matchBinding.butClimb.setEnabled(false);
-            matchBinding.butClimb.setClickable(false);
+            in_alliance_zone = false;
 
+            // If the match hasn't even started yet, just return
+            if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) return;
+
+            // Disallow shooting / climbing
+            matchBinding.butShoot.setEnabled(in_alliance_zone);
+            matchBinding.butShoot.setClickable(in_alliance_zone);
+            matchBinding.butShootTap.setEnabled(in_alliance_zone);
+            matchBinding.butShootTap.setClickable(in_alliance_zone);
+            matchBinding.butClimb.setEnabled(in_alliance_zone);
+            matchBinding.butClimb.setClickable(in_alliance_zone);
+
+            // The rest of the code needs to be in TELEOP phase.  So if it's not, just return.
             if (!Globals.CurrentMatchPhase.equals(Constants.Phases.TELEOP)) return;
 
             matchBinding.butLeftZone.setBackgroundColor(getColor(R.color.transparent));
@@ -962,23 +970,20 @@ public class MatchTally extends AppCompatActivity {
         matchBinding.butRightZone.setOnClickListener(view -> {
             // We'll use the button click to determine if we should allow or disallow shooting / climbing but won't process
             // anything else if we're not in Tele mode.
-            if (((currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)) && team_alliance.substring(0,1).equalsIgnoreCase("R")) ||
-                    ((currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) && team_alliance.substring(0,1).equalsIgnoreCase("B"))) {
-                matchBinding.butShoot.setEnabled(false);
-                matchBinding.butShoot.setClickable(false);
-                matchBinding.butShootTap.setEnabled(false);
-                matchBinding.butShootTap.setClickable(false);
-                matchBinding.butClimb.setEnabled(false);
-                matchBinding.butClimb.setClickable(false);
-            } else {
-                matchBinding.butShoot.setEnabled(true);
-                matchBinding.butShoot.setClickable(true);
-                matchBinding.butShootTap.setEnabled(true);
-                matchBinding.butShootTap.setClickable(true);
-                matchBinding.butClimb.setEnabled(true);
-                matchBinding.butClimb.setClickable(true);
-            }
+            in_alliance_zone = ((!currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)) || !team_alliance.substring(0, 1).equalsIgnoreCase("R")) &&
+                    ((!currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) || !team_alliance.substring(0, 1).equalsIgnoreCase("B"));
 
+            // If the match hasn't even started yet, just return
+            if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) return;
+
+            matchBinding.butShoot.setEnabled(in_alliance_zone);
+            matchBinding.butShoot.setClickable(in_alliance_zone);
+            matchBinding.butShootTap.setEnabled(in_alliance_zone);
+            matchBinding.butShootTap.setClickable(in_alliance_zone);
+            if (!climb_button_pressed) matchBinding.butClimb.setEnabled(in_alliance_zone);
+            if (!climb_button_pressed) matchBinding.butClimb.setClickable(in_alliance_zone);
+
+            // The rest of the code needs to be in TELEOP phase.  So if it's not, just return.
             if (!Globals.CurrentMatchPhase.equals(Constants.Phases.TELEOP)) return;
 
             matchBinding.butLeftZone.setBackgroundColor(getColor(R.color.transparent));
@@ -1018,6 +1023,7 @@ public class MatchTally extends AppCompatActivity {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Climb"), 1);
             matchBinding.butClimb.setEnabled(false);
             matchBinding.butClimb.setClickable(false);
+            climb_button_pressed = true;
         });
 
         matchBinding.butPickup.setOnClickListener(view -> {
