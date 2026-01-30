@@ -60,8 +60,8 @@ public class Constants {
         public static float START_LINE_X = 24.17f;
         public static final int TRANSITION_EVENT_DNE = -1;
         public static final int SEEKBAR_MAX = 60;
-        public static final int HUB_TOP_Y = 130;
-        public static final int HUB_BOTTOM_Y = 210;
+        public static final float HUB_TOP_Y_PERCENT = 129f / 337f;
+        public static final float HUB_BOTTOM_Y_PERCENT = 208f / 337f;
     }
 
     public static class Data {

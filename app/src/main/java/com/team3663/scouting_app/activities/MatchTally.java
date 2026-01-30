@@ -786,7 +786,7 @@ public class MatchTally extends AppCompatActivity {
             }
 
             // Ensure we aren't placing a robot where it can't be located - 2026 Season
-            if ((starting_Y_Absolute > Constants.Match.HUB_TOP_Y) && (starting_Y_Absolute < Constants.Match.HUB_BOTTOM_Y)) {
+            if ((starting_Y_Absolute > (Constants.Match.HUB_TOP_Y_PERCENT * matchBinding.FieldTouch.getHeight())) && (starting_Y_Absolute < (Constants.Match.HUB_BOTTOM_Y_PERCENT * matchBinding.FieldTouch.getHeight()))) {
                 if ((blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) ||
                         (!blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)))
                     starting_X_Absolute = matchBinding.FieldTouch.getWidth() * Constants.Match.START_LINE_X / 100.0f - offset;
