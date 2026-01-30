@@ -225,8 +225,8 @@ public class MatchTally extends AppCompatActivity {
         matchBinding.butPickup.setVisibility(View.INVISIBLE);
 
         // Enable the climb button
-        matchBinding.butClimb.setEnabled(true);
-        matchBinding.butClimb.setClickable(true);
+        if (in_alliance_zone) matchBinding.butClimb.setEnabled(true);
+        if (in_alliance_zone) matchBinding.butClimb.setClickable(true);
         climb_button_pressed = false;
 
         // Certain actions can't be set from a non-UI thread (like within a TimerTask that runs on a
@@ -916,11 +916,6 @@ public class MatchTally extends AppCompatActivity {
     private void initZoneButtons() {
         // Set up an OnClick listener per button
         matchBinding.butLeftZone.setOnClickListener(view -> {
-            // We'll use the button click to determine if we should allow or disallow shooting / climbing but won't process
-            // anything else if we're not in Tele mode.
-            in_alliance_zone = ((currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)) && team_alliance.substring(0, 1).equalsIgnoreCase("R")) ||
-                    ((currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) && team_alliance.substring(0, 1).equalsIgnoreCase("B"));
-
             // If the match hasn't even started yet, just return
             if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) return;
 
@@ -943,10 +938,6 @@ public class MatchTally extends AppCompatActivity {
         });
 
         matchBinding.butCenterZone.setOnClickListener(view -> {
-            // For the Neutral Zone, we need to determine if the edge of the robot was touching the
-            // alliance zone.  This will be done in the OnTouchListener.  The other zones have no
-            // ambiguity so we'll do it in the OnClickListener for those.
-
             // If the match hasn't even started yet, just return
             if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) return;
 
@@ -970,11 +961,6 @@ public class MatchTally extends AppCompatActivity {
         });
 
         matchBinding.butRightZone.setOnClickListener(view -> {
-            // We'll use the button click to determine if we should allow or disallow shooting / climbing but won't process
-            // anything else if we're not in Tele mode.
-            in_alliance_zone = ((!currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)) || !team_alliance.substring(0, 1).equalsIgnoreCase("R")) &&
-                    ((!currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) || !team_alliance.substring(0, 1).equalsIgnoreCase("B"));
-
             // If the match hasn't even started yet, just return
             if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) return;
 
@@ -999,6 +985,11 @@ public class MatchTally extends AppCompatActivity {
         matchBinding.butLeftZone.setOnTouchListener((view, motionEvent) -> {
             // only handle DOWN actions
             if (motionEvent.getAction() != MotionEvent.ACTION_DOWN) return false;
+
+            // We'll use the button click to determine if we should allow or disallow shooting / climbing but won't process
+            // anything else if we're not in Tele mode.
+            in_alliance_zone = ((currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)) && team_alliance.substring(0, 1).equalsIgnoreCase("R")) ||
+                    ((currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) && team_alliance.substring(0, 1).equalsIgnoreCase("B"));
 
             tele_button_position_x = matchBinding.butLeftZone.getX();
             tele_button_position_y = matchBinding.butLeftZone.getY();
@@ -1028,6 +1019,11 @@ public class MatchTally extends AppCompatActivity {
         matchBinding.butRightZone.setOnTouchListener((view, motionEvent) -> {
             // only handle DOWN actions
             if (motionEvent.getAction() != MotionEvent.ACTION_DOWN) return false;
+
+            // We'll use the button click to determine if we should allow or disallow shooting / climbing but won't process
+            // anything else if we're not in Tele mode.
+            in_alliance_zone = ((!currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)) || !team_alliance.substring(0, 1).equalsIgnoreCase("R")) &&
+                    ((!currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) || !team_alliance.substring(0, 1).equalsIgnoreCase("B"));
 
             tele_button_position_x = matchBinding.butRightZone.getX();
             tele_button_position_y = matchBinding.butRightZone.getY();
