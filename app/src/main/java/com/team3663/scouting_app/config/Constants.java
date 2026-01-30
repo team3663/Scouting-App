@@ -9,7 +9,7 @@ import java.util.List;
 public class Constants {
     public static class Logger {
         // Logger Keys - Data File is written in order of the FILE_HEADER array
-        public static final String[] LOGKEY_DATA_FILE_HEADER = new String[]{"Shadow", "Team", "TeamScouting", "Scouter", "DidPlay", "StartGamePiece", "DidLeaveStart", "Comments", "Achievements", "StartOffset", "Start"};
+        public static final String[] LOGKEY_DATA_FILE_HEADER = new String[]{"Shadow", "Team", "TeamScouting", "Scouter", "DidPlay", "StartGamePiece", "DidLeaveStart", "Accuracy", "ClimbLevel", "ClimbPosition", "Comments", "Achievements", "StartOffset", "Start"};
         public static final String LOGKEY_SHADOW_MODE = "Shadow";
         public static final String LOGKEY_ACHIEVEMENT = "Achievements";
         public static final String LOGKEY_MATCH_TYPE = "MatchType";
@@ -19,6 +19,9 @@ public class Constants {
         public static final String LOGKEY_SCOUTER = "Scouter";
         public static final String LOGKEY_DID_LEAVE_START = "DidLeaveStart";
         public static final String LOGKEY_START_WITH_GAME_PIECE = "StartGamePiece";
+        public static final String LOGKEY_ACCURACY = "Accuracy";
+        public static final String LOGKEY_CLIMB_LEVEL = "ClimbLevel";
+        public static final String LOGKEY_CLIMB_POSITION = "ClimbPosition";
         public static final String LOGKEY_COMMENTS = "Comments";
         public static final String LOGKEY_START_TIME_OFFSET = "StartOffset";
         public static final String LOGKEY_START_TIME = "Start";
@@ -60,6 +63,12 @@ public class Constants {
         public static float START_LINE_X = 24.17f;
         public static final int TRANSITION_EVENT_DNE = -1;
         public static final int SEEKBAR_MAX = 60;
+    }
+
+    public static class PostMatch {
+        public static final String ACCURACY = "-1";
+        public static final String CLIMB_LEVEL = "-1";
+        public static final String CLIMB_POSITION = "-1";
     }
 
     public static class Data {

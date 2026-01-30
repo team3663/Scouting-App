@@ -2,12 +2,24 @@
 <resources>
     <string name="post_heading">Post-Match Scouting Information</string>
     <string name="post_left_start_zone">Left the starting zone?</string>
+    <string name="post_accuracy">Accuracy:</string>
     <string name="post_comments">Comments:</string>
+    <string name="post_climb">End Climb Level:</string>
+    <string name="post_climb_position">Climb Position:</string>
+    <string name="post_steal_fuel">Did robot steal fuel?</string>
+    <string name="post_steal_fuel_yes">Yes</string>
+    <string name="post_steal_fuel_no">No</string>
+    <string name="post_defense_affect">Affected by defense?</string>
+    <string name="post_defense_affect_none">None</string>
+    <string name="post_defense_affect_low">Low</string>
+    <string name="post_defense_affect_medium">Medium</string>
+    <string name="post_defense_affect_high">High</string>
     <string name="post_reset">Field Fault - Reset Match</string>
     <string name="post_but_reset">Reset</string>
     <string name="post_but_submit">Submit</string>
     <string name="post_dropdown_items_selected">selected</string>
+    <string name="post_missing_data">Please fill in all fields</string>
     <string name="post_stats">Stats:</string>
-    <string name="post_statsCoral">Coral:</string>
-    <string name="post_statsAlgae">Algae:</string>
+    <string name="post_statsFuel">Fuel:</string>
+
 </resources>

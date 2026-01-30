@@ -3,6 +3,10 @@ package com.team3663.scouting_app.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -20,6 +24,7 @@ import com.team3663.scouting_app.utility.achievements.Achievements;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 
 public class PostMatch extends AppCompatActivity {
     // =============================================================================================
@@ -30,6 +35,12 @@ public class PostMatch extends AppCompatActivity {
     //Creating an array list for the Comments
     ArrayList<Integer> CommentList = new ArrayList<>();
     ArrayList<String> CommentArray = Globals.CommentList.getDescriptionList();
+    ArrayList<String> Accuracy = Globals.AccuracyTypeList.getDescriptionList();
+    ArrayList<String> ClimbLevel = Globals.ClimbLevelList.getDescriptionList();
+    ArrayList<String> ClimbPosition = Globals.ClimbPositionList.getDescriptionList();
+    String accuracyValue = Globals.CurrentAccuracy;
+    String climbLevelValue = Globals.CurrentClimbLevel;
+    String climbPositionValue = Globals.CurrentClimbPosition;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -47,6 +58,9 @@ public class PostMatch extends AppCompatActivity {
         // Initialize activity components
         initDidLeave();
         initComments();
+        initAccuracy();
+        initClimbLevel();
+        initClimbPosition();
         initReset();
         initSubmit();
         initStats();
@@ -134,6 +148,129 @@ public class PostMatch extends AppCompatActivity {
     }
 
     // =============================================================================================
+    // Function:    initAccuracy
+    // Description: Initialize the Accuracy field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initAccuracy() {
+        ArrayAdapter<String> adp_Accuracy = new ArrayAdapter<>(this, R.layout.cpr_spinner, Accuracy);
+        adp_Accuracy.setDropDownViewResource(R.layout.cpr_spinner_item);
+        postMatchBinding.spinnerAccuracy.setAdapter(adp_Accuracy);
+
+        // Set starting selection
+        int start_Pos = 0;
+        for (int i = 0; i < Accuracy.size(); i++) {
+            if (Accuracy.get(i).equals(Globals.AccuracyTypeList.getAccuracyDescription(Globals.CurrentAccuracy))) {
+                start_Pos = i;
+                break;
+            }
+        }
+        postMatchBinding.spinnerAccuracy.setSelection(start_Pos);
+
+        postMatchBinding.spinnerAccuracy.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                        String newAccuracy = Globals.AccuracyTypeList.getAccuracyValue(postMatchBinding.spinnerAccuracy.getSelectedItem().toString());
+
+                        if (!Objects.equals(newAccuracy, Globals.CurrentAccuracy)) {
+                            Globals.CurrentAccuracy = newAccuracy;
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+                        Globals.CurrentAccuracy = "-1";
+                    }
+                });
+    }
+
+    // =============================================================================================
+    // Function:    initClimbLevel
+    // Description: Initialize the Climb Level field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initClimbLevel() {
+        ArrayAdapter<String> adp_ClimbLevel = new ArrayAdapter<>(this, R.layout.cpr_spinner, ClimbLevel);
+        adp_ClimbLevel.setDropDownViewResource(R.layout.cpr_spinner_item);
+        postMatchBinding.spinnerClimbLevel.setAdapter(adp_ClimbLevel);
+
+        // Set starting selection
+        int start_Pos = 0;
+        for (int i = 0; i < ClimbLevel.size(); i++) {
+            if (ClimbLevel.get(i).equals(Globals.ClimbLevelList.getClimbLevelDescription(Globals.CurrentClimbLevel))) {
+                start_Pos = i;
+                break;
+            }
+        }
+        postMatchBinding.spinnerClimbLevel.setSelection(start_Pos);
+
+        postMatchBinding.spinnerClimbLevel.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                        String newClimbLevel = Globals.ClimbLevelList.getClimbLevelValue(postMatchBinding.spinnerClimbLevel.getSelectedItem().toString());
+
+                        if (!Objects.equals(newClimbLevel, Globals.CurrentClimbLevel)) {
+                            Globals.CurrentClimbLevel = newClimbLevel;
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+                        Globals.CurrentClimbLevel = "-1";
+                    }
+                });
+    }
+
+
+    // =============================================================================================
+    // Function:    initClimbPosition
+    // Description: Initialize the  field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initClimbPosition() {
+        ArrayAdapter<String> adp_ClimbPosition = new ArrayAdapter<>(this, R.layout.cpr_spinner, ClimbPosition);
+        adp_ClimbPosition.setDropDownViewResource(R.layout.cpr_spinner_item);
+        postMatchBinding.spinnerClimbPosition.setAdapter(adp_ClimbPosition);
+
+        // Set starting selection
+        int start_Pos = 0;
+        for (int i = 0; i < ClimbPosition.size(); i++) {
+            if (ClimbPosition.get(i).equals(Globals.ClimbPositionList.getClimbPositionDescription(Globals.CurrentClimbPosition))) {
+                start_Pos = i;
+                break;
+            }
+        }
+        postMatchBinding.spinnerClimbPosition.setSelection(start_Pos);
+
+        // Set up a listener to handle any changes to the dropdown
+        postMatchBinding.spinnerClimbPosition.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                        String newClimbPosition = Globals.ClimbPositionList.getClimbPositionValue(postMatchBinding.spinnerClimbPosition.getSelectedItem().toString());
+
+                        if (!Objects.equals(newClimbPosition, Globals.CurrentClimbPosition)) {
+                            Globals.CurrentClimbPosition = newClimbPosition;
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+                        Globals.CurrentClimbPosition = "-1";
+                    }
+            });
+    }
+
+    // =============================================================================================
     // Function:    initDidLeave
     // Description: Initialize the Did Leave field
     // Parameters:  void
@@ -197,6 +334,23 @@ public class PostMatch extends AppCompatActivity {
                 if (comment_sep_ID.length() > 0) comment_sep_ID = new StringBuilder(comment_sep_ID.substring(1));
                 Globals.EventLogger.LogData(Constants.Logger.LOGKEY_COMMENTS, comment_sep_ID.toString());
 
+                if (Constants.PostMatch.ACCURACY.equals(Globals.CurrentAccuracy) ||
+                        Constants.PostMatch.CLIMB_LEVEL.equals(Globals.CurrentClimbLevel) ||
+                        Constants.PostMatch.CLIMB_POSITION.equals(Globals.CurrentClimbPosition)) {
+
+                    Toast.makeText(this, R.string.post_missing_data, Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    // Log all the spinner data
+                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_ACCURACY, String.valueOf(Globals.CurrentAccuracy));
+                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_CLIMB_LEVEL, String.valueOf(Globals.CurrentClimbLevel));
+                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_CLIMB_POSITION, String.valueOf(Globals.CurrentClimbPosition));
+                }
+
+                if () {
+
+                }
+
                 Intent GoToSubmitData = new Intent(PostMatch.this, SubmitData.class);
                 startActivity(GoToSubmitData);
             }
@@ -211,6 +365,7 @@ public class PostMatch extends AppCompatActivity {
                     .startsWith(Constants.Achievements.EVENT_TYPE_FINAL)) Achievements.data_FinalType++;
 
             finish();
+
         });
     }
 
@@ -221,19 +376,9 @@ public class PostMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initStats() {
-        StringBuilder statsCoral = new StringBuilder();
-        StringBuilder statsAlgae = new StringBuilder();
+        String statsFuel = "Fuel: " + Achievements.data_match_FuelShot;
 
-        for (int i = 4; i >0; --i) {
-            statsCoral.append("Placed L").append(i).append(": ").append(Achievements.data_match_CoralLevel[i]).append("\n");
-        }
-        statsCoral.append("Dropped: ").append(Achievements.data_match_CoralDropped);
-
-        statsAlgae.append("Net: ").append(Achievements.data_match_AlgaeInNet).append("\n")
-            .append("Processor: ").append(Achievements.data_match_AlgaeInProcessor);
-
-        postMatchBinding.textStatsCoral.setText(statsCoral.toString());
-        postMatchBinding.textStatsAlgae.setText(statsAlgae.toString());
+        postMatchBinding.textStatsFuel.setText(statsFuel);
         //use achievement data
     }
 }

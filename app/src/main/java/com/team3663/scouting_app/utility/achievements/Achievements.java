@@ -34,6 +34,7 @@ public class Achievements {
     // Scouter data per match
     public static int data_match_OrphanEvents = 0;
     public static int data_match_AlgaeInNet = 0;
+    public static int data_match_FuelShot = 0;
     public static int data_match_AlgaeInProcessor = 0;
     public static int data_match_AlgaePickup = 0;
     public static int[] data_match_CoralLevel = {0, 0, 0, 0, 0};
