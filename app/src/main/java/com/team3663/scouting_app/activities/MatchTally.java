@@ -943,7 +943,9 @@ public class MatchTally extends AppCompatActivity {
         });
 
         matchBinding.butCenterZone.setOnClickListener(view -> {
-            in_alliance_zone = false;
+            // For the Neutral Zone, we need to determine if the edge of the robot was touching the
+            // alliance zone.  This will be done in the OnTouchListener.  The other zones have no
+            // ambiguity so we'll do it in the OnClickListener for those.
 
             // If the match hasn't even started yet, just return
             if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) return;
@@ -995,16 +997,38 @@ public class MatchTally extends AppCompatActivity {
         });
 
         matchBinding.butLeftZone.setOnTouchListener((view, motionEvent) -> {
+            // only handle DOWN actions
+            if (motionEvent.getAction() != MotionEvent.ACTION_DOWN) return false;
+
             tele_button_position_x = matchBinding.butLeftZone.getX();
             tele_button_position_y = matchBinding.butLeftZone.getY();
             matchBinding.FieldTouch.dispatchTouchEvent(motionEvent);
             return false; });
         matchBinding.butCenterZone.setOnTouchListener((view, motionEvent) -> {
+            // only handle DOWN actions
+            if (motionEvent.getAction() != MotionEvent.ACTION_DOWN) return false;
+
+            // if the alliance zone is on the LEFT, check the left edge of the robot
+            in_alliance_zone = false;
+            if (((currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT))
+                    && team_alliance.substring(0, 1).equalsIgnoreCase("R"))
+                    || ((currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT))
+                    && team_alliance.substring(0, 1).equalsIgnoreCase("B"))) {
+                if (motionEvent.getX() <= (matchBinding.textRobot.getWidth() / 2f))
+                    in_alliance_zone = true;
+                // otherwise the alliance zone is on the RIGHT, check the right edge of the robot
+            } else
+                if (motionEvent.getX() >= (matchBinding.butCenterZone.getWidth() - matchBinding.textRobot.getWidth() / 2f))
+                    in_alliance_zone = true;
+
             tele_button_position_x = matchBinding.butCenterZone.getX();
             tele_button_position_y = matchBinding.butCenterZone.getY();
             matchBinding.FieldTouch.dispatchTouchEvent(motionEvent);
             return false; });
         matchBinding.butRightZone.setOnTouchListener((view, motionEvent) -> {
+            // only handle DOWN actions
+            if (motionEvent.getAction() != MotionEvent.ACTION_DOWN) return false;
+
             tele_button_position_x = matchBinding.butRightZone.getX();
             tele_button_position_y = matchBinding.butRightZone.getY();
             matchBinding.FieldTouch.dispatchTouchEvent(motionEvent);
