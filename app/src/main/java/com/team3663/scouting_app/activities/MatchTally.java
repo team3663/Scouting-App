@@ -225,8 +225,8 @@ public class MatchTally extends AppCompatActivity {
         matchBinding.butPickup.setVisibility(View.INVISIBLE);
 
         // Enable the climb button
-        if (in_alliance_zone) matchBinding.butClimb.setEnabled(true);
-        if (in_alliance_zone) matchBinding.butClimb.setClickable(true);
+        matchBinding.butClimb.setEnabled(in_alliance_zone);
+        matchBinding.butClimb.setClickable(in_alliance_zone);
         climb_button_pressed = false;
 
         // Certain actions can't be set from a non-UI thread (like within a TimerTask that runs on a
