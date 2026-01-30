@@ -227,6 +227,10 @@ public class Match extends AppCompatActivity {
             OEL.disable();
         }
 
+        // Calculate the image dimensions
+        Constants.Match.IMAGE_WIDTH = matchBinding.imageFieldView.getWidth();
+        Constants.Match.IMAGE_HEIGHT = matchBinding.imageFieldView.getHeight();
+
         // Hide the starting location of the robot
         matchBinding.textRobot.setVisibility(View.INVISIBLE);
 
@@ -238,10 +242,6 @@ public class Match extends AppCompatActivity {
         matchBinding.switchNotMoving.setEnabled(true);
         matchBinding.switchNotMoving.setTextColor(Color.WHITE);
         matchBinding.switchNotMoving.setVisibility(View.VISIBLE);
-
-        // Calculate the image dimensions
-        Constants.Match.IMAGE_WIDTH = matchBinding.imageFieldView.getWidth();
-        Constants.Match.IMAGE_HEIGHT = matchBinding.imageFieldView.getHeight();
 
         // Set match Phase to be correct and Button text
         Globals.CurrentMatchPhase = Constants.Phases.AUTO;
@@ -835,9 +835,9 @@ public class Match extends AppCompatActivity {
             // we need to flip the Y coordinate.
             if (currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) {
                 current_X_Relative = current_X_Absolute;
-                current_Y_Relative = Constants.Match.IMAGE_HEIGHT - current_Y_Absolute;
+                current_Y_Relative = matchBinding.imageFieldView.getHeight() - current_Y_Absolute;
             } else {
-                current_X_Relative = Constants.Match.IMAGE_WIDTH - current_X_Absolute;
+                current_X_Relative = matchBinding.imageFieldView.getWidth() - current_X_Absolute;
                 current_Y_Relative = current_Y_Absolute;
             }
 
