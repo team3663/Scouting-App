@@ -785,6 +785,15 @@ public class MatchTally extends AppCompatActivity {
                 starting_X_Absolute = Math.min(Math.max(in_X, matchBinding.FieldTouch.getWidth() * (100.0f - Constants.Match.START_LINE_X) / 100.0f - offset), matchBinding.FieldTouch.getWidth() * (100.0f - Constants.Match.START_LINE_X) / 100.0f + offset);
             }
 
+            // Ensure we aren't placing a robot where it can't be located - 2026 Season
+            if ((starting_Y_Absolute > Constants.Match.HUB_TOP_Y) && (starting_Y_Absolute < Constants.Match.HUB_BOTTOM_Y)) {
+                if ((blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) ||
+                        (!blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)))
+                    starting_X_Absolute = matchBinding.FieldTouch.getWidth() * Constants.Match.START_LINE_X / 100.0f - offset;
+                else
+                    starting_X_Absolute = matchBinding.FieldTouch.getWidth() * (100.0f - Constants.Match.START_LINE_X) / 100.0f + offset;
+            }
+
             // Save off the correct relative values based on the orientation
             if (currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)) {
                 starting_X_Relative = starting_X_Absolute;
@@ -984,7 +993,7 @@ public class MatchTally extends AppCompatActivity {
 
         matchBinding.butLeftZone.setOnTouchListener((view, motionEvent) -> {
             // only handle DOWN actions
-            if (motionEvent.getAction() != MotionEvent.ACTION_DOWN) return false;
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) return false;
 
             // We'll use the button click to determine if we should allow or disallow shooting / climbing but won't process
             // anything else if we're not in Tele mode.
@@ -997,7 +1006,7 @@ public class MatchTally extends AppCompatActivity {
             return false; });
         matchBinding.butCenterZone.setOnTouchListener((view, motionEvent) -> {
             // only handle DOWN actions
-            if (motionEvent.getAction() != MotionEvent.ACTION_DOWN) return false;
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) return false;
 
             // if the alliance zone is on the LEFT, check the left edge of the robot
             in_alliance_zone = false;
@@ -1018,7 +1027,7 @@ public class MatchTally extends AppCompatActivity {
             return false; });
         matchBinding.butRightZone.setOnTouchListener((view, motionEvent) -> {
             // only handle DOWN actions
-            if (motionEvent.getAction() != MotionEvent.ACTION_DOWN) return false;
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) return false;
 
             // We'll use the button click to determine if we should allow or disallow shooting / climbing but won't process
             // anything else if we're not in Tele mode.
