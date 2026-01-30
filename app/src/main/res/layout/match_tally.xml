@@ -247,14 +247,14 @@
                             tools:ignore="MissingConstraints,UselessLeaf" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/but_AllianceZone"
+                            android:id="@+id/but_LeftZone"
                             android:layout_width="233dp"
                             android:layout_height="fill_parent"
                             app:cornerRadius="0dp"
                             android:backgroundTint="@color/transparent" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/but_NeutralZone"
+                            android:id="@+id/but_CenterZone"
                             android:layout_marginStart="234dp"
                             android:layout_width="364dp"
                             android:layout_height="fill_parent"
@@ -262,7 +262,7 @@
                             android:backgroundTint="@color/transparent" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/but_OpponentZone"
+                            android:id="@+id/but_RightZone"
                             android:layout_marginStart="597dp"
                             android:layout_width="233dp"
                             android:layout_height="fill_parent"

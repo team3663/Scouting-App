@@ -352,17 +352,6 @@ public class Logger {
         // Undo any achievements from this event being undone.
         String ach_desc = Globals.EventList.getEventDescription(lastEventId);
         Achievements.data_NumEvents--;
-        // To determine if they were not moving, we need to find the next previous item for the "defended" group.  If that item
-        // has some "next events", then it's toggled on and we need to decrement the achievement counter.
-        // Because the scouter can undo a lot of events, we can't rely on the current_event[] to evaluate since this may
-        // be undoing an event well before the current defended event happened.
-        if (Constants.Achievements.EVENT_IDS_SCORING.contains(lastEventId))
-            for (int i = lastIndex - 1; i > 0; i--) {
-                if (Globals.EventList.getEventGroup(match_log_events.get(i).EventId) == Constants.Achievements.DEFENDED_EVENT_GROUP) {
-                    if (!Globals.EventList.getNextEvents(match_log_events.get(i).EventId).isEmpty()) Achievements.data_ScoreWhileDefended--;
-                    break;
-                }
-            }
 
         // Check the match_event_log to see if there's a previous sequence.  If so, use that to set
         // the current event.
