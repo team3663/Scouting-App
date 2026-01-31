@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -380,7 +379,7 @@ public class PostMatch extends AppCompatActivity {
                     return;
                 } else {
                     // Log all the spinner data
-                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_STEALFUEL,String.valueOf(Globals.stealFuelValue));
+                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_STEAL_FUEL,String.valueOf(Globals.stealFuelValue));
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_AFFECTED_BY_DEFENSE, String.valueOf(Globals.affectedByDefenseValue));
                 }
 
