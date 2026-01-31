@@ -386,6 +386,11 @@ public class PreMatch extends AppCompatActivity {
                 return;
             }
 
+            if (!Globals.CurrentTeamOverrideNum.isEmpty() && Globals.CurrentPrefTeamPos == 0) {
+                Toast.makeText(PreMatch.this, R.string.pre_no_preference_and_override_team_num, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (isLogFileExisting()) {
                 new AlertDialog.Builder(view.getContext())
                         .setTitle(getString(R.string.pre_already_scouted_title))
