@@ -191,7 +191,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/but_Back"
         android:layout_width="175dp"
         android:layout_height="55dp"
@@ -204,9 +204,10 @@
         android:backgroundTint="@color/white"
         android:textColor="@color/cpr_bkgnd"
         android:layout_gravity="start"
-        tools:ignore="HardcodedText,MissingConstraints" />
+        tools:ignore="HardcodedText,MissingConstraints"
+        app:cornerRadius="12dp"/>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/but_Next"
         android:layout_width="175dp"
         android:layout_height="55dp"
@@ -218,6 +219,7 @@
         android:textSize="24sp"
         android:backgroundTint="@color/white"
         android:textColor="@color/cpr_bkgnd"
-        tools:ignore="HardcodedText,MissingConstraints" />
+        tools:ignore="HardcodedText,MissingConstraints"
+        app:cornerRadius="12dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
