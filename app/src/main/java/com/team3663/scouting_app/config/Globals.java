@@ -64,6 +64,8 @@ public class Globals {
 
     public static boolean isPractice = false;
     public static int numStartingGamePiece = Constants.PreMatch.STARTING_GAME_PIECES;
+    public static String stealFuelValue = Constants.PostMatch.STEAL_FUEL;
+    public static String affectedByDefenseValue = Constants.PostMatch.AFFECTED_BY_DEFENSE;
     public static boolean isShadowMode = false;
 
     public static DocumentFile base_df = null;

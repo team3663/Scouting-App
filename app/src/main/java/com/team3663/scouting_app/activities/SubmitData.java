@@ -390,6 +390,11 @@ public class SubmitData extends AppCompatActivity {
         submitDataBinding.butNext.setOnClickListener(view -> {
             // Reset pre-Match settings for next time
             Globals.numStartingGamePiece = Constants.PreMatch.STARTING_GAME_PIECES;
+            Globals.CurrentAccuracy = Constants.PostMatch.ACCURACY;
+            Globals.CurrentClimbLevel = Constants.PostMatch.CLIMB_LEVEL;
+            Globals.CurrentClimbPosition = Constants.PostMatch.CLIMB_POSITION;
+            Globals.stealFuelValue = Constants.PostMatch.STEAL_FUEL;
+            Globals.affectedByDefenseValue = Constants.PostMatch.AFFECTED_BY_DEFENSE;
             Globals.isPractice = false;
 
             // Increases the team number so that it auto fills for the next match correctly

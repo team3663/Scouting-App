@@ -22,6 +22,8 @@ public class Constants {
         public static final String LOGKEY_ACCURACY = "Accuracy";
         public static final String LOGKEY_CLIMB_LEVEL = "ClimbLevel";
         public static final String LOGKEY_CLIMB_POSITION = "ClimbPosition";
+        public static final String LOGKEY_STEALFUEL = "StealFuel";
+        public static final String LOGKEY_AFFECTED_BY_DEFENSE = "AffectedByDefense";
         public static final String LOGKEY_COMMENTS = "Comments";
         public static final String LOGKEY_START_TIME_OFFSET = "StartOffset";
         public static final String LOGKEY_START_TIME = "Start";
@@ -69,6 +71,8 @@ public class Constants {
         public static final String ACCURACY = "-1";
         public static final String CLIMB_LEVEL = "-1";
         public static final String CLIMB_POSITION = "-1";
+        public static final String STEAL_FUEL = "-1";
+        public static final String AFFECTED_BY_DEFENSE = "-1";
     }
 
     public static class Data {

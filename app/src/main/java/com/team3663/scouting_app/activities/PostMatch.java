@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -38,9 +40,6 @@ public class PostMatch extends AppCompatActivity {
     ArrayList<String> Accuracy = Globals.AccuracyTypeList.getDescriptionList();
     ArrayList<String> ClimbLevel = Globals.ClimbLevelList.getDescriptionList();
     ArrayList<String> ClimbPosition = Globals.ClimbPositionList.getDescriptionList();
-    String accuracyValue = Globals.CurrentAccuracy;
-    String climbLevelValue = Globals.CurrentClimbLevel;
-    String climbPositionValue = Globals.CurrentClimbPosition;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -61,6 +60,8 @@ public class PostMatch extends AppCompatActivity {
         initAccuracy();
         initClimbLevel();
         initClimbPosition();
+        initStealFuel();
+        initAffectedByDefense();
         initReset();
         initSubmit();
         initStats();
@@ -271,6 +272,50 @@ public class PostMatch extends AppCompatActivity {
     }
 
     // =============================================================================================
+    // Function:    initStealFuel
+    // Description: Initialize the Steal Fuel field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initStealFuel() {
+        RadioGroup stealFuelGroup = findViewById(R.id.radiogroup_StealFuel);
+
+        stealFuelGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == View.NO_ID) {
+                Globals.stealFuelValue = "-1";
+            } else if (checkedId == R.id.radiobutton_StealFuelYes) {
+                Globals.stealFuelValue = "yes";
+            } else if (checkedId == R.id.radiobutton_StealFuelNo) {
+                Globals.stealFuelValue = "no";
+            }
+        });
+    }
+
+    // =============================================================================================
+    // Function:    initAffectedByDefense
+    // Description: Initialize the  field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initAffectedByDefense() {
+        RadioGroup affectByDefenseGroup = findViewById(R.id.radiogroup_AffectedByDefense);
+
+        affectByDefenseGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == View.NO_ID) {
+                Globals.affectedByDefenseValue = "-1";
+            } else if (checkedId == R.id.radiobutton_NoDefense) {
+                Globals.affectedByDefenseValue = "none";
+            } else if (checkedId == R.id.radiobutton_Low) {
+                Globals.affectedByDefenseValue = "low";
+            } else if (checkedId == R.id.radiobutton_Medium) {
+                Globals.affectedByDefenseValue = "medium";
+            } else if (checkedId == R.id.radiobutton_High) {
+                Globals.affectedByDefenseValue = "high";
+            }
+        });
+    }
+
+    // =============================================================================================
     // Function:    initDidLeave
     // Description: Initialize the Did Leave field
     // Parameters:  void
@@ -334,6 +379,7 @@ public class PostMatch extends AppCompatActivity {
                 if (comment_sep_ID.length() > 0) comment_sep_ID = new StringBuilder(comment_sep_ID.substring(1));
                 Globals.EventLogger.LogData(Constants.Logger.LOGKEY_COMMENTS, comment_sep_ID.toString());
 
+                // If any spinner data is left blank
                 if (Constants.PostMatch.ACCURACY.equals(Globals.CurrentAccuracy) ||
                         Constants.PostMatch.CLIMB_LEVEL.equals(Globals.CurrentClimbLevel) ||
                         Constants.PostMatch.CLIMB_POSITION.equals(Globals.CurrentClimbPosition)) {
@@ -347,8 +393,14 @@ public class PostMatch extends AppCompatActivity {
                     Globals.EventLogger.LogData(Constants.Logger.LOGKEY_CLIMB_POSITION, String.valueOf(Globals.CurrentClimbPosition));
                 }
 
-                if () {
-
+                // If any radio button is left blank
+                if (Objects.equals(Globals.stealFuelValue, "-1") || Objects.equals(Globals.affectedByDefenseValue, "-1")) {
+                    Toast.makeText(this, R.string.post_missing_data, Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    // Log all the spinner data
+                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_STEALFUEL,String.valueOf(Globals.stealFuelValue));
+                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_AFFECTED_BY_DEFENSE, String.valueOf(Globals.affectedByDefenseValue));
                 }
 
                 Intent GoToSubmitData = new Intent(PostMatch.this, SubmitData.class);
