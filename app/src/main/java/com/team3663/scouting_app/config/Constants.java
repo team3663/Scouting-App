@@ -9,7 +9,9 @@ import java.util.List;
 public class Constants {
     public static class Logger {
         // Logger Keys - Data File is written in order of the FILE_HEADER array
-        public static final String[] LOGKEY_DATA_FILE_HEADER = new String[]{"Shadow", "Team", "TeamScouting", "Scouter", "DidPlay", "StartGamePiece", "DidLeaveStart", "Accuracy", "ClimbLevel", "ClimbPosition", "Comments", "Achievements", "StartOffset", "Start"};
+        public static final String[] LOGKEY_DATA_FILE_HEADER = new String[]{"CompId", "MatchNum", "MatchType", "Shadow", "Team", "TeamScouting", "Scouter", "DidPlay", "StartGamePiece", "DidLeaveStart", "Accuracy", "ClimbLevel", "ClimbPosition", "Comments", "Achievements", "StartOffset", "Start"};
+        public static final String LOGKEY_COMPETITION_ID = "CompId";
+        public static final String LOGKEY_MATCH_NUMBER = "MatchNum";
         public static final String LOGKEY_SHADOW_MODE = "Shadow";
         public static final String LOGKEY_ACHIEVEMENT = "Achievements";
         public static final String LOGKEY_MATCH_TYPE = "MatchType";

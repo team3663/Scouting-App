@@ -163,13 +163,10 @@ public class Logger {
     private void WriteOutDataFile(OutputStream in_fos) {
         // Start the line (header as well) with the Record Type (1 for the Data line)
         StringBuilder csv_line = new StringBuilder();
-        csv_line.append(",1");
+        csv_line.append("D");
         for (String header : Constants.Logger.LOGKEY_DATA_FILE_HEADER) {
             csv_line.append(",").append(FindValueInPair(header));
         }
-
-        // Trim leading ","
-        if (csv_line.length() > 0) csv_line.delete(0, 1);
 
         try {
             // Write out the data
@@ -197,7 +194,12 @@ public class Logger {
             if (Constants.Match.IMAGE_HEIGHT > 0) normalized_y = (int)(10_000.0 * ler.Y / Constants.Match.IMAGE_HEIGHT);
 
             StringBuilder csv_line = new StringBuilder();
-            csv_line.append(",").append(i)
+            csv_line.append("E")
+                    .append(",").append(Globals.CurrentCompetitionId)
+                    .append(",").append(Globals.CurrentMatchNumber)
+                    .append(",").append(Globals.CurrentTeamToScout)
+                    .append(",").append(Globals.CurrentMatchType)
+                    .append(",").append(i)
                     .append(",").append(ler.EventId)
                     .append(",").append(ler.LogTime)
                     .append(",").append(normalized_x)
@@ -205,7 +207,6 @@ public class Logger {
                     .append(",").append(ler.PrevSeq)
                     .append(",").append(ler.Count);
 
-            // Trim leading ",";
             try {
                 in_fos.write(csv_line.toString().getBytes(StandardCharsets.UTF_8));
                 in_fos.write(Constants.Logger.FILE_LINE_SEPARATOR.getBytes(StandardCharsets.UTF_8));
