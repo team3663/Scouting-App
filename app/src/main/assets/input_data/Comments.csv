@@ -2,7 +2,7 @@ Id,isActive,Description
 1,TRUE,Robot climbed noticeably faster than others
 2,TRUE,Robot climbed noticeably slower than others
 3,TRUE,Climb didn't count
-4,TRUE,Evaded defense well
+4,FALSE,Evaded defense well
 5,TRUE,Ineffective defense
 6,TRUE,Played really good defense
 7,TRUE,Robot didn't contribute much (no auto - low scoring - no defense)
