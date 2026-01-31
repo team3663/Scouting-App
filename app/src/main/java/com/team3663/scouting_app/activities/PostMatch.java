@@ -55,7 +55,6 @@ public class PostMatch extends AppCompatActivity {
         });
 
         // Initialize activity components
-        initDidLeave();
         initComments();
         initAccuracy();
         initClimbLevel();
@@ -175,7 +174,7 @@ public class PostMatch extends AppCompatActivity {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                        String newAccuracy = Globals.AccuracyTypeList.getAccuracyValue(postMatchBinding.spinnerAccuracy.getSelectedItem().toString());
+                        int newAccuracy = Globals.AccuracyTypeList.getAccuracyValue(postMatchBinding.spinnerAccuracy.getSelectedItem().toString());
 
                         if (!Objects.equals(newAccuracy, Globals.CurrentAccuracy)) {
                             Globals.CurrentAccuracy = newAccuracy;
@@ -184,7 +183,7 @@ public class PostMatch extends AppCompatActivity {
 
                     @Override
                     public void onNothingSelected(AdapterView<?> adapterView) {
-                        Globals.CurrentAccuracy = "-1";
+                        Globals.CurrentAccuracy = Constants.PostMatch.ACCURACY_NOT_SELECTED;
                     }
                 });
     }
@@ -316,23 +315,6 @@ public class PostMatch extends AppCompatActivity {
     }
 
     // =============================================================================================
-    // Function:    initDidLeave
-    // Description: Initialize the Did Leave field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initDidLeave() {
-        // Default values
-        postMatchBinding.checkboxDidLeave.setChecked(true);
-
-        // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
-        // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)
-        // So add it in now.
-        String new_text = postMatchBinding.checkboxDidLeave.getText() + Globals.CheckBoxTextPadding;
-        postMatchBinding.checkboxDidLeave.setText(new_text);
-    }
-
-    // =============================================================================================
     // Function:    initReset
     // Description: Initialize the Reset Match field
     // Parameters:  void
@@ -370,7 +352,6 @@ public class PostMatch extends AppCompatActivity {
                 startActivity(GoToPreMatch);
             } else {
                 // Log all of the data from this page
-                Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_LEAVE_START, String.valueOf(postMatchBinding.checkboxDidLeave.isChecked()));
                 StringBuilder comment_sep_ID = new StringBuilder();
                 for (Integer comment_dropID : CommentList) {
                     String comment = CommentArray.get(comment_dropID);
@@ -380,9 +361,9 @@ public class PostMatch extends AppCompatActivity {
                 Globals.EventLogger.LogData(Constants.Logger.LOGKEY_COMMENTS, comment_sep_ID.toString());
 
                 // If any spinner data is left blank
-                if (Constants.PostMatch.ACCURACY.equals(Globals.CurrentAccuracy) ||
-                        Constants.PostMatch.CLIMB_LEVEL.equals(Globals.CurrentClimbLevel) ||
-                        Constants.PostMatch.CLIMB_POSITION.equals(Globals.CurrentClimbPosition)) {
+                if ((Constants.PostMatch.ACCURACY_NOT_SELECTED == Globals.CurrentAccuracy) ||
+                        Constants.PostMatch.CLIMB_LEVEL_NOT_SELECTED.equals(Globals.CurrentClimbLevel) ||
+                        Constants.PostMatch.CLIMB_POSITION_NOT_SELECTED.equals(Globals.CurrentClimbPosition)) {
 
                     Toast.makeText(this, R.string.post_missing_data, Toast.LENGTH_SHORT).show();
                     return;

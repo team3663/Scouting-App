@@ -68,11 +68,11 @@ public class Constants {
     }
 
     public static class PostMatch {
-        public static final String ACCURACY = "-1";
-        public static final String CLIMB_LEVEL = "-1";
-        public static final String CLIMB_POSITION = "-1";
-        public static final String STEAL_FUEL = "-1";
-        public static final String AFFECTED_BY_DEFENSE = "-1";
+        public static final int ACCURACY_NOT_SELECTED = -1;
+        public static final String CLIMB_LEVEL_NOT_SELECTED = "-1";
+        public static final String CLIMB_POSITION_NOT_SELECTED = "-1";
+        public static final String STEAL_FUEL_NOT_SELECTED = "-1";
+        public static final String AFFECTED_BY_DEFENSE_NOT_SELECTED = "-1";
     }
 
     public static class Data {

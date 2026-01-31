@@ -1,5 +1,7 @@
 package com.team3663.scouting_app.data;
 
+import com.team3663.scouting_app.config.Constants;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -16,17 +18,17 @@ public class Accuracy {
         Accuracy_list = new ArrayList<>();
 
         // Add accuracy values into the list
-        addAccuracyRow("-1","<Select One>");
-        addAccuracyRow("12", "0 - 25%");
-        addAccuracyRow("37", "25 - 50%");
-        addAccuracyRow("62", "50 - 75%");
-        addAccuracyRow("82", "75 - 90%");
-        addAccuracyRow("95", "95%");
-        addAccuracyRow("100", "100%");
+        addAccuracyRow(-1,"<Select One>");
+        addAccuracyRow(12, "0 - 25%");
+        addAccuracyRow(37, "25 - 50%");
+        addAccuracyRow(62, "50 - 75%");
+        addAccuracyRow(82, "75 - 90%");
+        addAccuracyRow(95, "95%");
+        addAccuracyRow(100, "100%");
     }
 
     // Add a row
-    public void addAccuracyRow(String in_value, String in_description) {
+    public void addAccuracyRow(int in_value, String in_description) {
         Accuracy_list.add(new AccuracyRow(in_value, in_description));
     }
 
@@ -43,18 +45,18 @@ public class Accuracy {
         return descriptions;
     }
 
-    public String getAccuracyValue(String in_description) {
+    public int getAccuracyValue(String in_description) {
         for (AccuracyRow ar : Accuracy_list) {
             if (Objects.equals(ar.description, in_description)) {
                 return ar.value;
             }
         }
-        return "";
+        return Constants.PostMatch.ACCURACY_NOT_SELECTED;
     }
 
-    public String getAccuracyDescription(String in_value) {
+    public String getAccuracyDescription(int in_value) {
         for (AccuracyRow ar : Accuracy_list) {
-            if (Objects.equals(ar.value, in_value)) {
+            if (ar.value == in_value) {
                 return ar.description;
             }
         }
@@ -71,10 +73,10 @@ public class Accuracy {
     // Description: Defines a structure/class to hold the information for each match type
     // =============================================================================================
     private static class AccuracyRow {
-        private final String value;
+        private final int value;
         private final String description;
 
-        public AccuracyRow(String in_value, String in_description) {
+        public AccuracyRow(int in_value, String in_description) {
             value = in_value;
             description = in_description;
         }
