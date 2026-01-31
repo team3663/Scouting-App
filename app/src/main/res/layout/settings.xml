@@ -372,7 +372,7 @@
 
 </LinearLayout>
 
-<Button
+<com.google.android.material.button.MaterialButton
     android:id="@+id/but_Cancel"
     android:layout_width="175dp"
     android:layout_height="60dp"
@@ -384,9 +384,10 @@
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
     tools:ignore="HardcodedText,MissingConstraints"
-    android:text="Cancel" />
+    android:text="Cancel"
+    app:cornerRadius="16dp"/>
 
-<Button
+<com.google.android.material.button.MaterialButton
     android:id="@+id/but_Save"
     android:layout_width="175dp"
     android:layout_height="60dp"
@@ -398,6 +399,7 @@
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintRight_toRightOf="parent"
     tools:ignore="HardcodedText,MissingConstraints"
-    android:text="Save" />
+    android:text="Save"
+    app:cornerRadius="16dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

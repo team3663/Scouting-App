@@ -370,7 +370,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         tools:ignore="RtlSymmetry" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/but_Next"
         android:layout_width="175dp"
         android:layout_height="60dp"
@@ -382,6 +382,7 @@
         app:backgroundTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        tools:ignore="HardcodedText,MissingConstraints" />
+        tools:ignore="HardcodedText,MissingConstraints"
+        app:cornerRadius="16dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

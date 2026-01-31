@@ -252,7 +252,6 @@
                 android:textSize="24sp"
                 tools:ignore="RtlSymmetry" />
         </LinearLayout>
-
     </LinearLayout>
 
     <TextView
@@ -338,7 +337,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/text_Override" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/but_AddOverrideTeamNum"
         android:layout_width="wrap_content"
         android:layout_height="45dp"
@@ -351,9 +350,10 @@
         android:layout_marginBottom="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/edit_OverrideTeamNum"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText"
+        app:cornerRadius="10dp"/>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/but_Next"
         android:layout_width="175dp"
         android:layout_height="60dp"
@@ -365,5 +365,6 @@
         android:textColor="@color/cpr_bkgnd"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        tools:ignore="HardcodedText,MissingConstraints" />
+        tools:ignore="HardcodedText,MissingConstraints"
+        app:cornerRadius="16dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
