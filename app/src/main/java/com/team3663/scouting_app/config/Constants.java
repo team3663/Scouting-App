@@ -42,8 +42,8 @@ public class Constants {
     }
 
     public static class Match {
-        public static final int TIMER_AUTO_LENGTH = 15; // in seconds
-        public static final int TIMER_TELEOP_LENGTH = 135; // in seconds
+        public static final int TIMER_AUTO_LENGTH = 20; // in seconds
+        public static final int TIMER_TELEOP_LENGTH = 140; // in seconds
         public static final int TIMER_AUTO_TELEOP_DELAY = 3; // in seconds
         public static final int BUTTON_FLASH_INTERVAL = 2_000; // in milliseconds
         public static final int BUTTON_FLASH_BLINK_INTERVAL = 250; // in milliseconds

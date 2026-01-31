@@ -252,7 +252,14 @@ public class PreMatch extends AppCompatActivity {
 
         preMatchBinding.checkboxOverride.setOnClickListener(view -> {
             int state = View.VISIBLE;
-            if (!preMatchBinding.checkboxOverride.isChecked()) state = View.INVISIBLE;                    preMatchBinding.textOverride.setVisibility(state);
+            // if Preferred Ream in Settings is not checked, unable to override team number
+            if (Globals.CurrentPrefTeamPos == 0) {
+                preMatchBinding.checkboxOverride.setChecked(false);
+                Toast.makeText(PreMatch.this, R.string.pre_no_preference_and_override_team_num, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (!preMatchBinding.checkboxOverride.isChecked()) state = View.INVISIBLE;
+            preMatchBinding.textOverride.setVisibility(state);
             preMatchBinding.editOverrideTeamNum.setVisibility(state);
             preMatchBinding.butAddOverrideTeamNum.setVisibility(state);
         });

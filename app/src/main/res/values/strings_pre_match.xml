@@ -12,6 +12,7 @@
     <string name="pre_resubmit">Need to re-submit data? (or Quit?)</string>
     <string name="pre_practice">Training Mode</string>
     <string name="pre_missing_data">Please fill in all fields</string>
+    <string name="pre_no_preference_and_override_team_num">No [Preferred Team] set in Settings. Unable to override a team. Please select a preferred team and try again.</string>
     <string name="pre_dropdown_no_items">None</string>
     <string name="pre_shadow_mode">Shadow Mode</string>
     <string name="pre_already_scouted_title">This match has already been scouted</string>
