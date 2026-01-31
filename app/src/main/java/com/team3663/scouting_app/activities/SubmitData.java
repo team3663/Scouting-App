@@ -148,10 +148,15 @@ public class SubmitData extends AppCompatActivity {
 
         // Parse out the match number from the filename.  If this is a "d" file from the right
         // competition (as defined in Settings) and matching device then add it to the list.
+        // Use a regular expression to ensure the file_part IS numeric.  Otherwise parseInt() will
+        // throw an exception.
         for (String file_name : Globals.FileList.keySet()) {
             if (file_name.endsWith("_" + Globals.TransmitMatchType + ".csv")) {
                 String[] file_parts = file_name.split("_");
-                if ((Integer.parseInt(file_parts[0]) == Globals.CurrentCompetitionId) &&
+                if (file_parts[0].trim().matches("-?\\d+(\\.\\d+)?") &&
+                        file_parts[1].trim().matches("-?\\d+(\\.\\d+)?") &&
+                        file_parts[2].trim().matches("-?\\d+(\\.\\d+)?") &&
+                        (Integer.parseInt(file_parts[0]) == Globals.CurrentCompetitionId) &&
                         (Integer.parseInt(file_parts[2]) == Globals.CurrentDeviceId))
                     ret_int.add(Integer.parseInt(file_parts[1]));
             }
