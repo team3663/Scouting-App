@@ -332,9 +332,12 @@ public class PreMatch extends AppCompatActivity {
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_PLAY, String.valueOf(preMatchBinding.checkboxDidPlay.isChecked()));
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_WITH_GAME_PIECE, String.valueOf(Integer.valueOf(Globals.numStartingGamePiece)));
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_TEAM_SCOUTING, Globals.CurrentScoutingTeam);
-        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_MATCH_TYPE, Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType));
+        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_MATCH_TYPE, Globals.CurrentMatchType);
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_SHADOW_MODE, String.valueOf(Globals.isShadowMode));
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_TIME, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss")));
+        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_LEAVE_START, String.valueOf(false));
+        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_COMPETITION_ID, String.valueOf(Globals.CurrentCompetitionId));
+        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_MATCH_NUMBER, String.valueOf(Globals.CurrentMatchNumber));
 
         Achievements.data_TeamToScout = Globals.CurrentTeamToScout;
 
