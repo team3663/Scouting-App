@@ -15,10 +15,10 @@ public class ClimbLevel {
 
         // Add climb level values into the list
         addClimbLevelRow("-1", "<Select One>");
-        addClimbLevelRow("None", "None");
-        addClimbLevelRow("L1", "L1");
-        addClimbLevelRow("L2", "L2");
         addClimbLevelRow("L3", "L3");
+        addClimbLevelRow("L2", "L2");
+        addClimbLevelRow("L1", "L1");
+        addClimbLevelRow("None", "No Climb");
     }
 
     // Add a row
