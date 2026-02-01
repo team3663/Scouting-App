@@ -9,7 +9,7 @@ import java.util.List;
 public class Constants {
     public static class Logger {
         // Logger Keys - Data File is written in order of the FILE_HEADER array
-        public static final String[] LOGKEY_DATA_FILE_HEADER = new String[]{"CompId", "MatchNum", "MatchType", "Shadow", "Team", "TeamScouting", "Scouter", "DidPlay", "StartGamePiece", "DidLeaveStart", "Accuracy", "ClimbLevel", "ClimbPosition", "Comments", "Achievements", "StartOffset", "Start"};
+        public static final String[] LOGKEY_DATA_FILE_HEADER = new String[]{"CompId", "MatchNum", "MatchType", "Shadow", "Team", "TeamScouting", "Scouter", "DidPlay", "StartGamePiece", "Accuracy", "ClimbLevel", "ClimbPosition", "Comments", "Achievements", "StartOffset", "Start"};
         public static final String LOGKEY_COMPETITION_ID = "CompId";
         public static final String LOGKEY_MATCH_NUMBER = "MatchNum";
         public static final String LOGKEY_SHADOW_MODE = "Shadow";
@@ -19,12 +19,11 @@ public class Constants {
         public static final String LOGKEY_TEAM_SCOUTING = "TeamScouting";
         public static final String LOGKEY_TEAM_TO_SCOUT = "Team";
         public static final String LOGKEY_SCOUTER = "Scouter";
-        public static final String LOGKEY_DID_LEAVE_START = "DidLeaveStart";
         public static final String LOGKEY_START_WITH_GAME_PIECE = "StartGamePiece";
         public static final String LOGKEY_ACCURACY = "Accuracy";
         public static final String LOGKEY_CLIMB_LEVEL = "ClimbLevel";
         public static final String LOGKEY_CLIMB_POSITION = "ClimbPosition";
-        public static final String LOGKEY_STEALFUEL = "StealFuel";
+        public static final String LOGKEY_STEAL_FUEL = "StealFuel";
         public static final String LOGKEY_AFFECTED_BY_DEFENSE = "AffectedByDefense";
         public static final String LOGKEY_COMMENTS = "Comments";
         public static final String LOGKEY_START_TIME_OFFSET = "StartOffset";
@@ -59,12 +58,12 @@ public class Constants {
         public static final String ORIENTATION_RED_ON_LEFT = "R";
         public static int IMAGE_HEIGHT = 0;
         public static int IMAGE_WIDTH = 0;
-        public static int STATUS_TEXT_LONG_LENGTH = 22;
-        public static int STATUS_TEXT_MED_LENGTH = 14;
-        public static int STATUS_TEXT_LONG_SIZE = 14;
-        public static int STATUS_TEXT_MED_SIZE = 18;
-        public static int STATUS_TEXT_DEFAULT_SIZE = 24;
-        public static float START_LINE_X = 24.17f;
+        public static final int STATUS_TEXT_LONG_LENGTH = 22;
+        public static final int STATUS_TEXT_MED_LENGTH = 14;
+        public static final int STATUS_TEXT_LONG_SIZE = 14;
+        public static final int STATUS_TEXT_MED_SIZE = 18;
+        public static final int STATUS_TEXT_DEFAULT_SIZE = 24;
+        public static final float START_LINE_X = 24.17f;
         public static final int TRANSITION_EVENT_DNE = -1;
         public static final int SEEKBAR_MAX = 60;
         public static final float HUB_TOP_Y_PERCENT = 129f / 337f;
@@ -134,8 +133,8 @@ public class Constants {
         public static final String EVENT_TYPE_PRACTICE = "P";
         public static final String EVENT_TYPE_SEMI = "S";
         public static final String EVENT_TYPE_FINAL = "F";
-        public static final ArrayList<Integer> COMPETITION_IDS_WORLDS = new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17));
-        public static final ArrayList<Integer> COMPETITION_IDS_DCMP = new ArrayList<>(List.of(9));
-        public static final ArrayList<Integer> COMPETITION_IDS_EINSTEIN = new ArrayList<>(List.of(17));
+        public static final ArrayList<Integer> COMPETITION_IDS_WORLDS = new ArrayList<>(Arrays.asList(11, 12, 13, 14, 15, 16, 17, 18));
+        public static final ArrayList<Integer> COMPETITION_IDS_DCMP = new ArrayList<>(List.of(10));
+        public static final ArrayList<Integer> COMPETITION_IDS_EINSTEIN = new ArrayList<>(List.of(19));
     }
 }
