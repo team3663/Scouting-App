@@ -78,6 +78,13 @@ public class Bluetooth extends AppCompatActivity {
             Globals.numStartingGamePiece = Constants.PreMatch.STARTING_GAME_PIECES;
             Globals.isPractice = false;
 
+            // Reset post-Match values for next time
+            Globals.CurrentAccuracy = Constants.PostMatch.ACCURACY_NOT_SELECTED;
+            Globals.CurrentClimbLevel = Constants.PostMatch.CLIMB_LEVEL_NOT_SELECTED;
+            Globals.CurrentClimbPosition = Constants.PostMatch.CLIMB_POSITION_NOT_SELECTED;
+            Globals.stealFuelValue = Constants.PostMatch.STEAL_FUEL_NOT_SELECTED;
+            Globals.affectedByDefenseValue = Constants.PostMatch.AFFECTED_BY_DEFENSE_NOT_SELECTED;
+
             Intent GoToPreMatch = new Intent(Bluetooth.this, PreMatch.class);
             startActivity(GoToPreMatch);
 
