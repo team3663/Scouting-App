@@ -1,7 +1,5 @@
 package com.team3663.scouting_app.activities;
 
-import static com.team3663.scouting_app.config.Globals.numStartingGamePiece;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -100,13 +98,14 @@ public class PreMatch extends AppCompatActivity {
             if (!focus) {
                 String MatchNumStr = String.valueOf(preMatchBinding.editMatch.getText());
                 int MatchNum = -1;
+                // if match number is greater than three digits, use only the last three digits otherwise app crashes
                 if (!MatchNumStr.isEmpty() && MatchNumStr.length() > 3) {
                     MatchNumStr = MatchNumStr.substring(MatchNumStr.length() - 3);
                     MatchNum = Integer.parseInt(MatchNumStr);
                     preMatchBinding.editMatch.setText(String.valueOf(MatchNum));
-                } else {
-                    MatchNum = Integer.parseInt(MatchNumStr);
                 }
+
+                MatchNum = Integer.parseInt(MatchNumStr);
 
                 // We need to do SOMETHING if:
                 // 1. they blanked out the match number
@@ -248,6 +247,7 @@ public class PreMatch extends AppCompatActivity {
         }
 
         // when user inputs a number of starting game pieces, update the global to log the correct value
+        // this is called WHILE text is being typed (ie: every keystroke)
         editNumStartingGamePiece.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence num, int start, int count, int after) {}
