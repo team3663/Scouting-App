@@ -126,8 +126,10 @@ public class Events {
         if (in_EventId == -1) return null;
 
         // If the Match Phase has changed since we started the event, use the transition event instead (if one exists)
-        if (!event_list.get(in_EventId).match_phase.equals(Globals.CurrentMatchPhase) && (event_list.get(in_EventId).transition_event > Constants.Match.TRANSITION_EVENT_DNE))
-            in_EventId = event_list.get(in_EventId).transition_event;
+        for (EventRow er : event_list) {
+            if (!er.match_phase.equals(Globals.CurrentMatchPhase) && (er.transition_event > Constants.Match.TRANSITION_EVENT_DNE))
+                in_EventId = er.transition_event;
+        }
 
         // Find the event in the list, and return it's list of valid next events
         for (EventRow er : event_list) {
@@ -217,6 +219,15 @@ public class Events {
         return "";
     }
 
+    // Member Function: Return the event id for this Event description and match phase
+    public int getEventId(String in_phase, String in_description) {
+        for (EventRow er : event_list) {
+            if ((in_phase.equalsIgnoreCase(er.match_phase) && (in_description.equalsIgnoreCase(er.description)))) return er.id;
+        }
+
+        return Constants.Events.ID_NO_EVENT;
+    }
+
     // Member Function: Return the description for this Event
     public int getEventGroup(int in_EventId) {
         for (EventRow er : event_list) {
@@ -230,7 +241,7 @@ public class Events {
     // Class:       EventRow
     // Description: Defines a structure/class to hold the information for each Event
     // =============================================================================================
-    private class EventRow {
+    private static class EventRow {
         final int id;
         final int group_id;
         final String description;
@@ -263,7 +274,7 @@ public class Events {
     // Class:       EventGroup
     // Description: Defines a structure/class to hold the information for each Event Group
     // =============================================================================================
-    private class EventGroup {
+    private static class EventGroup {
         String name;
         String color;
 

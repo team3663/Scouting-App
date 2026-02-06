@@ -9,7 +9,9 @@ import java.util.List;
 public class Constants {
     public static class Logger {
         // Logger Keys - Data File is written in order of the FILE_HEADER array
-        public static final String[] LOGKEY_DATA_FILE_HEADER = new String[]{"Shadow", "Team", "TeamScouting", "Scouter", "DidPlay", "StartGamePiece", "DidLeaveStart", "Comments", "Achievements", "StartOffset", "Start"};
+        public static final String[] LOGKEY_DATA_FILE_HEADER = new String[]{"CompId", "MatchNum", "MatchType", "Shadow", "Team", "TeamScouting", "Scouter", "DidPlay", "StartGamePiece", "Accuracy", "ClimbLevel", "ClimbPosition", "Comments", "Achievements", "StartOffset", "Start"};
+        public static final String LOGKEY_COMPETITION_ID = "CompId";
+        public static final String LOGKEY_MATCH_NUMBER = "MatchNum";
         public static final String LOGKEY_SHADOW_MODE = "Shadow";
         public static final String LOGKEY_ACHIEVEMENT = "Achievements";
         public static final String LOGKEY_MATCH_TYPE = "MatchType";
@@ -17,8 +19,12 @@ public class Constants {
         public static final String LOGKEY_TEAM_SCOUTING = "TeamScouting";
         public static final String LOGKEY_TEAM_TO_SCOUT = "Team";
         public static final String LOGKEY_SCOUTER = "Scouter";
-        public static final String LOGKEY_DID_LEAVE_START = "DidLeaveStart";
         public static final String LOGKEY_START_WITH_GAME_PIECE = "StartGamePiece";
+        public static final String LOGKEY_ACCURACY = "Accuracy";
+        public static final String LOGKEY_CLIMB_LEVEL = "ClimbLevel";
+        public static final String LOGKEY_CLIMB_POSITION = "ClimbPosition";
+        public static final String LOGKEY_STEAL_FUEL = "StealFuel";
+        public static final String LOGKEY_AFFECTED_BY_DEFENSE = "AffectedByDefense";
         public static final String LOGKEY_COMMENTS = "Comments";
         public static final String LOGKEY_START_TIME_OFFSET = "StartOffset";
         public static final String LOGKEY_START_TIME = "Start";
@@ -32,31 +38,44 @@ public class Constants {
     }
 
     public static class PreMatch {
-        public static final int NUMBER_OF_MATCH_TYPES = 4;
         public static final String DEFAULT_MATCH_TYPE = "q";
+        public static final int STARTING_GAME_PIECES = 8;
     }
 
     public static class Match {
-        public static final int TIMER_AUTO_LENGTH = 15; // in seconds
-        public static final int TIMER_TELEOP_LENGTH = 135; // in seconds
-        public static final int TIMER_UPDATE_RATE = 1_000; // in milliseconds
+        public static final int TIMER_AUTO_LENGTH = 20; // in seconds
+        public static final int TIMER_TELEOP_LENGTH = 140; // in seconds
         public static final int TIMER_AUTO_TELEOP_DELAY = 3; // in seconds
         public static final int BUTTON_FLASH_INTERVAL = 2_000; // in milliseconds
         public static final int BUTTON_FLASH_BLINK_INTERVAL = 250; // in milliseconds
+        public static final int BUTTON_FLASH_FADE_IN_TIME = 250; // in milliseconds
         public static final int BUTTON_COLOR_FLASH = Color.RED;
         public static final int BUTTON_COLOR_NORMAL = Color.TRANSPARENT;
         public static final int BUTTON_TEXT_COLOR_DISABLED = Color.LTGRAY;
-        public static final String ORIENTATION_LANDSCAPE = "l";
-        public static final String ORIENTATION_LANDSCAPE_REVERSE = "lr";
+        public static final String ORIENTATION_LANDSCAPE = "l"; // used in old Match code - needs to be converted to MatchTelly approach
+        public static final String ORIENTATION_LANDSCAPE_REVERSE = "lr"; // used in old Match code - needs to be converted to MatchTelly approach
+        public static final String  ORIENTATION_BLUE_ON_LEFT = "B";
+        public static final String ORIENTATION_RED_ON_LEFT = "R";
         public static int IMAGE_HEIGHT = 0;
         public static int IMAGE_WIDTH = 0;
-        public static int STATUS_TEXT_LONG_LENGTH = 22;
-        public static int STATUS_TEXT_MED_LENGTH = 14;
-        public static int STATUS_TEXT_LONG_SIZE = 14;
-        public static int STATUS_TEXT_MED_SIZE = 18;
-        public static int STATUS_TEXT_DEFAULT_SIZE = 24;
-        public static float START_LINE_X = 43.20f;
+        public static final int STATUS_TEXT_LONG_LENGTH = 22;
+        public static final int STATUS_TEXT_MED_LENGTH = 14;
+        public static final int STATUS_TEXT_LONG_SIZE = 14;
+        public static final int STATUS_TEXT_MED_SIZE = 18;
+        public static final int STATUS_TEXT_DEFAULT_SIZE = 24;
+        public static final float START_LINE_X = 24.17f;
         public static final int TRANSITION_EVENT_DNE = -1;
+        public static final int SEEKBAR_MAX = 60;
+        public static final float HUB_TOP_Y_PERCENT = 129f / 337f;
+        public static final float HUB_BOTTOM_Y_PERCENT = 208f / 337f;
+    }
+
+    public static class PostMatch {
+        public static final int ACCURACY_NOT_SELECTED = -1;
+        public static final String CLIMB_LEVEL_NOT_SELECTED = "-1";
+        public static final String CLIMB_POSITION_NOT_SELECTED = "-1";
+        public static final String STEAL_FUEL_NOT_SELECTED = "-1";
+        public static final String AFFECTED_BY_DEFENSE_NOT_SELECTED = "-1";
     }
 
     public static class Data {
@@ -111,21 +130,11 @@ public class Constants {
         public static final int START_DELAY = 500;
         public static final int DISPLAY_TIME = 3_000;
         public static final int IN_BETWEEN_DELAY = 1_000;
-        public static final ArrayList<Integer> EVENT_IDS_PICKUP_ALGAE = new ArrayList<>(Arrays.asList(8, 28));
-        public static final ArrayList<Integer> EVENT_IDS_SCORE_ALGAE_IN_NET = new ArrayList<>(Arrays.asList(10, 30));
-        public static final ArrayList<Integer> EVENT_IDS_SCORE_ALGAE_IN_PROCESSOR = new ArrayList<>(Arrays.asList(12, 32));
-        public static final ArrayList<Integer> EVENT_IDS_PICKUP_CORAL_GROUND = new ArrayList<>(Arrays.asList(2, 21));
-        public static final ArrayList<Integer> EVENT_IDS_PICKUP_CORAL_STATION = new ArrayList<>(Arrays.asList(1, 20));
-        public static final ArrayList<Integer> EVENT_IDS_DROP_CORAL = new ArrayList<>(Arrays.asList(7, 27));
-        public static final ArrayList<Integer> EVENT_IDS_PLACE_CORAL = new ArrayList<>(Arrays.asList(3, 4, 5, 6, 23, 24, 25, 26));
-        public static final ArrayList<Integer> EVENT_IDS_SCORING = new ArrayList<>(Arrays.asList(3, 4, 5, 6, 10, 12, 23, 24, 25, 26, 30, 32));
-        public static final int EVENT_ID_CLIMB_SUCCESS = 41;
-        public static final int DEFENDED_EVENT_GROUP = 4;
         public static final String EVENT_TYPE_PRACTICE = "P";
         public static final String EVENT_TYPE_SEMI = "S";
         public static final String EVENT_TYPE_FINAL = "F";
-        public static final ArrayList<Integer> COMPETITION_IDS_WORLDS = new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17));
-        public static final ArrayList<Integer> COMPETITION_IDS_DCMP = new ArrayList<>(List.of(9));
-        public static final ArrayList<Integer> COMPETITION_IDS_EINSTEIN = new ArrayList<>(List.of(17));
+        public static final ArrayList<Integer> COMPETITION_IDS_WORLDS = new ArrayList<>(Arrays.asList(11, 12, 13, 14, 15, 16, 17, 18));
+        public static final ArrayList<Integer> COMPETITION_IDS_DCMP = new ArrayList<>(List.of(10));
+        public static final ArrayList<Integer> COMPETITION_IDS_EINSTEIN = new ArrayList<>(List.of(19));
     }
 }

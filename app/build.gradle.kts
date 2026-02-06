@@ -1,9 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("base")
 }
 
 var versionMajor = 3
-var versionMinor = 0
+var versionMinor = 1
 var versionPatch = 0
 
 android {
@@ -20,9 +21,7 @@ android {
         targetSdk = 34
         versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
         versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
-
-        setProperty("archivesBaseName", "CPR-Scout-$versionName")
-
+        
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -42,8 +41,11 @@ android {
 
 }
 
-dependencies {
+base {
+    archivesName = "CPR-Scout-${android.defaultConfig.versionName}"
+}
 
+dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

@@ -67,6 +67,7 @@ public class SubmitData extends AppCompatActivity {
         initBluetooth();
         initQuit();
         initNext();
+        initOverride();
     }
 
     // =============================================================================================
@@ -147,10 +148,15 @@ public class SubmitData extends AppCompatActivity {
 
         // Parse out the match number from the filename.  If this is a "d" file from the right
         // competition (as defined in Settings) and matching device then add it to the list.
+        // Use a regular expression to ensure the file_part IS numeric.  Otherwise parseInt() will
+        // throw an exception.
         for (String file_name : Globals.FileList.keySet()) {
             if (file_name.endsWith("_" + Globals.TransmitMatchType + ".csv")) {
                 String[] file_parts = file_name.split("_");
-                if ((Integer.parseInt(file_parts[0]) == Globals.CurrentCompetitionId) &&
+                if (file_parts[0].trim().matches("-?\\d+(\\.\\d+)?") &&
+                        file_parts[1].trim().matches("-?\\d+(\\.\\d+)?") &&
+                        file_parts[2].trim().matches("-?\\d+(\\.\\d+)?") &&
+                        (Integer.parseInt(file_parts[0]) == Globals.CurrentCompetitionId) &&
                         (Integer.parseInt(file_parts[2]) == Globals.CurrentDeviceId))
                     ret_int.add(Integer.parseInt(file_parts[1]));
             }
@@ -253,6 +259,16 @@ public class SubmitData extends AppCompatActivity {
     }
 
     // =============================================================================================
+    // Function:    initOverride
+    // Description: Override team number reset for next match
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initOverride() {
+        Globals.CurrentTeamOverrideNum = "";
+    }
+
+    // =============================================================================================
     // Function:    initAchievements
     // Description: Initialize the Achievements system
     // Parameters:  void
@@ -313,7 +329,7 @@ public class SubmitData extends AppCompatActivity {
     private void initQR() {
         submitDataBinding.butQRCode.setOnClickListener(view -> {
             // Reset pre-Match settings for next time
-            Globals.isStartingGamePiece = true;
+            Globals.numStartingGamePiece = Constants.PreMatch.STARTING_GAME_PIECES;
             Globals.isPractice = false;
             Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
 
@@ -333,7 +349,7 @@ public class SubmitData extends AppCompatActivity {
     private void initBluetooth() {
         submitDataBinding.butSendBT.setOnClickListener(view -> {
             // Reset pre-Match settings for next time
-            Globals.isStartingGamePiece = true;
+            Globals.numStartingGamePiece = Constants.PreMatch.STARTING_GAME_PIECES;
             Globals.isPractice = false;
             Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
 
@@ -378,7 +394,12 @@ public class SubmitData extends AppCompatActivity {
     private void initNext() {
         submitDataBinding.butNext.setOnClickListener(view -> {
             // Reset pre-Match settings for next time
-            Globals.isStartingGamePiece = true;
+            Globals.numStartingGamePiece = Constants.PreMatch.STARTING_GAME_PIECES;
+            Globals.CurrentAccuracy = Constants.PostMatch.ACCURACY_NOT_SELECTED;
+            Globals.CurrentClimbLevel = Constants.PostMatch.CLIMB_LEVEL_NOT_SELECTED;
+            Globals.CurrentClimbPosition = Constants.PostMatch.CLIMB_POSITION_NOT_SELECTED;
+            Globals.stealFuelValue = Constants.PostMatch.STEAL_FUEL_NOT_SELECTED;
+            Globals.affectedByDefenseValue = Constants.PostMatch.AFFECTED_BY_DEFENSE_NOT_SELECTED;
             Globals.isPractice = false;
 
             // Increases the team number so that it auto fills for the next match correctly

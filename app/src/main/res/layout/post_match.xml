@@ -12,7 +12,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="16dp">
 
         <TextView
             android:id="@+id/text_Heading"
@@ -26,46 +28,254 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="15dp"
-            android:orientation="horizontal"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
             android:layout_height="35dp"
+            android:layout_marginTop="15dp"
             android:orientation="horizontal">
-          
-            <CheckBox
-                android:id="@+id/checkbox_DidLeave"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:button="@null"
-                android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
-                android:textColor="@color/white"
-                android:textSize="24sp"
-                android:gravity="end|center"
-                android:paddingStart="0dp"
-                android:paddingEnd="10dp"
-                android:text="@string/post_left_start_zone"
-                tools:ignore="VisualLintButtonSize,VisualLintBounds" />
 
             <TextView
-                android:id="@+id/text_LeaveStartPadding"
-                android:layout_width="570dp"
+                android:id="@+id/text_Accuracy"
+                android:layout_width="400dp"
                 android:layout_height="match_parent"
                 android:gravity="end|center"
-                tools:ignore="VisualLintBounds" />
+                android:paddingEnd="50dp"
+                android:text="@string/post_accuracy"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:visibility="visible"
+                tools:ignore="RtlSymmetry" />
+
+            <RelativeLayout
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/spinner_Accuracy"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:paddingHorizontal="10dp"
+                    android:spinnerMode="dropdown"
+                    android:textColor="@color/cpr_bkgnd"
+                    android:textSize="22sp"
+                    tools:ignore="UseCompatTextViewDrawableXml,VisualLintBounds" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:src="@drawable/cpr_drop_down_arrow"
+                    tools:ignore="ContentDescription" />
+            </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="15dp"
-            android:orientation="horizontal"
-            tools:ignore="UselessLeaf" />
+            android:layout_height="35dp"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_ClimbLevel"
+                android:layout_width="400dp"
+                android:layout_height="match_parent"
+                android:gravity="end|center"
+                android:paddingEnd="50dp"
+                android:text="@string/post_climb"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:visibility="visible"
+                tools:ignore="RtlSymmetry"/>
+
+            <RelativeLayout
+                android:layout_width="170dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/spinner_ClimbLevel"
+                    android:layout_width="170dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:paddingHorizontal="10dp"
+                    android:spinnerMode="dropdown"
+                    android:textColor="@color/cpr_bkgnd"
+                    android:textSize="22sp"
+                    tools:ignore="UseCompatTextViewDrawableXml,VisualLintBounds" />
+                
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:src="@drawable/cpr_drop_down_arrow"
+                    tools:ignore="ContentDescription" />
+            </RelativeLayout>
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_ClimbPosition"
+                android:layout_width="400dp"
+                android:layout_height="match_parent"
+                android:gravity="end|center"
+                android:paddingEnd="50dp"
+                android:text="@string/post_climb_position"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:visibility="visible"
+                tools:ignore="RtlSymmetry"/>
+
+            <RelativeLayout
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/spinner_ClimbPosition"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:paddingHorizontal="10dp"
+                    android:spinnerMode="dropdown"
+                    android:textColor="@color/cpr_bkgnd"
+                    android:textSize="22sp"
+                    tools:ignore="UseCompatTextViewDrawableXml,VisualLintBounds" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:src="@drawable/cpr_drop_down_arrow"
+                    tools:ignore="ContentDescription" />
+            </RelativeLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="35dp"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
+            
+            <TextView
+                android:id="@+id/text_StealFeul"
+                android:layout_width="400dp"
+                android:layout_height="match_parent"
+                android:gravity="end|center"
+                android:paddingEnd="50dp"
+                android:text="@string/post_steal_fuel"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:visibility="visible"
+                tools:ignore="RtlSymmetry"/>
+
+            <RadioGroup
+                android:id="@+id/radiogroup_StealFuel"
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radiobutton_StealFuelYes"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/post_steal_fuel_yes"
+                    android:textColor="@color/white"
+                    android:textSize="24sp" />
+
+                <RadioButton
+                    android:id="@+id/radiobutton_StealFuelNo"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/post_steal_fuel_no"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"/>
+            </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_"
+                android:layout_width="400dp"
+                android:layout_height="match_parent"
+                android:gravity="end|center"
+                android:paddingEnd="50dp"
+                android:text="@string/post_defense_affect"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:visibility="visible"
+                tools:ignore="RtlSymmetry"/>
+
+            <RadioGroup
+                android:id="@+id/radiogroup_AffectedByDefense"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radiobutton_NoDefense"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/post_defense_affect_none"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" />
+
+                <RadioButton
+                    android:id="@+id/radiobutton_Low"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/post_defense_affect_low"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" />
+
+                <RadioButton
+                    android:id="@+id/radiobutton_Medium"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/post_defense_affect_medium"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" />
+
+                <RadioButton
+                    android:id="@+id/radiobutton_High"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/post_defense_affect_high"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="15dp"
             android:orientation="horizontal">
 
             <TextView
@@ -74,10 +284,10 @@
                 android:layout_height="match_parent"
                 android:gravity="end|center"
                 android:paddingEnd="50dp"
+                android:text="@string/post_comments"
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 android:visibility="visible"
-                android:text="@string/post_comments"
                 tools:ignore="RtlSymmetry" />
 
             <RelativeLayout
@@ -90,36 +300,29 @@
                     android:id="@+id/drop_Comments"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textColor="@color/cpr_bkgnd"
                     android:background="@color/white"
-                    android:textSize="22sp"
                     android:paddingHorizontal="10dp"
+                    android:textColor="@color/cpr_bkgnd"
+                    android:textSize="22sp"
                     tools:ignore="UseCompatTextViewDrawableXml,VisualLintBounds" />
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
-                    android:paddingEnd="10dp"
-                    android:paddingStart="10dp"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
                     android:src="@drawable/cpr_drop_down_arrow"
                     tools:ignore="ContentDescription" />
-
             </RelativeLayout>
-
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="15dp"
-            android:orientation="horizontal"
-            tools:ignore="UselessLeaf" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
             android:layout_height="250dp"
+            android:layout_marginTop="15dp"
             android:orientation="horizontal">
 
             <TextView
@@ -128,10 +331,10 @@
                 android:layout_height="35dp"
                 android:gravity="end|center"
                 android:paddingEnd="50dp"
+                android:text="@string/post_stats"
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 android:visibility="visible"
-                android:text="@string/post_stats"
                 tools:ignore="RtlSymmetry" />
 
             <LinearLayout
@@ -140,48 +343,13 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/text_StatsAlgaeLabel"
+                    android:id="@+id/text_StatsFuel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:textSize="20sp"
-                    android:text="@string/post_statsAlgae"
-                    android:textColor="@color/cpr_green" />
-
-                <TextView
-                    android:id="@+id/text_StatsAlgae"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="35dp"
-                    android:layout_marginEnd="15dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/cpr_green" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="200dp"
-                android:layout_height="250dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/text_StatsCoralLabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textSize="20sp"
-                    android:text="@string/post_statsCoral"
-                    android:textColor="@color/cpr_green" />
-
-                <TextView
-                    android:id="@+id/text_StatsCoral"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="35dp"
-                    android:layout_marginEnd="15dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/cpr_green" />
-
+                    android:text="@string/post_statsFuel"
+                    android:textColor="@color/cpr_green"
+                    android:textSize="20sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -202,7 +370,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         tools:ignore="RtlSymmetry" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/but_Next"
         android:layout_width="175dp"
         android:layout_height="60dp"
@@ -214,6 +382,7 @@
         app:backgroundTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        tools:ignore="HardcodedText,MissingConstraints" />
+        tools:ignore="HardcodedText,MissingConstraints"
+        app:cornerRadius="16dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

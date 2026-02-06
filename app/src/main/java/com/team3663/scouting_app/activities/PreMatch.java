@@ -227,17 +227,11 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initStartingGamePiece() {
-        // Since we are putting the checkbox on the RIGHT side of the text, the checkbox doesn't honor padding.
-        // So we need to use 7 spaces, but you can't when using a string resource (it ignores the trailing spaces)
-        // So add it in now.
-        String paddedText = preMatchBinding.checkboxStartGamePiece.getText() + Globals.CheckBoxTextPadding;
-        preMatchBinding.checkboxStartGamePiece.setText(paddedText);
+        // Default starting number of game pieces
+        Globals.numStartingGamePiece = Constants.PreMatch.STARTING_GAME_PIECES;
 
-        // Save off any changes the scouter makes.
-        preMatchBinding.checkboxStartGamePiece.setOnCheckedChangeListener((buttonView, isChecked) -> Globals.isStartingGamePiece = isChecked);
-
-        // Default checkboxes
-        preMatchBinding.checkboxStartGamePiece.setChecked(Globals.isStartingGamePiece);
+        // Create text box to input robot's starting number of game pieces
+        preMatchBinding.editNumStartingGamePiece.setText(String.valueOf(Globals.numStartingGamePiece));
     }
 
     // =============================================================================================
@@ -258,7 +252,14 @@ public class PreMatch extends AppCompatActivity {
 
         preMatchBinding.checkboxOverride.setOnClickListener(view -> {
             int state = View.VISIBLE;
-            if (!preMatchBinding.checkboxOverride.isChecked()) state = View.INVISIBLE;                    preMatchBinding.textOverride.setVisibility(state);
+            // if Preferred Ream in Settings is not checked, unable to override team number
+            if (Globals.CurrentPrefTeamPos == 0) {
+                preMatchBinding.checkboxOverride.setChecked(false);
+                Toast.makeText(PreMatch.this, R.string.pre_no_preference_and_override_team_num, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (!preMatchBinding.checkboxOverride.isChecked()) state = View.INVISIBLE;
+            preMatchBinding.textOverride.setVisibility(state);
             preMatchBinding.editOverrideTeamNum.setVisibility(state);
             preMatchBinding.butAddOverrideTeamNum.setVisibility(state);
         });
@@ -313,6 +314,7 @@ public class PreMatch extends AppCompatActivity {
     private void processNextButton() {
         Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
         Globals.NumberMatchFilesKept = Globals.sp.getInt(Constants.Prefs.NUM_MATCHES, 5);
+        Globals.numStartingGamePiece = Integer.parseInt(preMatchBinding.editNumStartingGamePiece.getText().toString());
         CurrentTeamToScoutPosition = preMatchBinding.spinnerTeamToScout.getSelectedItemPosition();
 
         // Set up the Logger
@@ -328,12 +330,13 @@ public class PreMatch extends AppCompatActivity {
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_TEAM_TO_SCOUT, Globals.CurrentTeamToScout);
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_SCOUTER, preMatchBinding.editScouterName.getText().toString().toUpperCase().replace(" ",""));
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_PLAY, String.valueOf(preMatchBinding.checkboxDidPlay.isChecked()));
-        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_WITH_GAME_PIECE, String.valueOf(Globals.isStartingGamePiece));
+        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_WITH_GAME_PIECE, String.valueOf(Integer.valueOf(Globals.numStartingGamePiece)));
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_TEAM_SCOUTING, Globals.CurrentScoutingTeam);
-        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_MATCH_TYPE, Globals.MatchTypeList.getMatchTypeShortForm(Globals.CurrentMatchType));
+        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_MATCH_TYPE, Globals.CurrentMatchType);
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_SHADOW_MODE, String.valueOf(Globals.isShadowMode));
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_START_TIME, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss")));
-        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_DID_LEAVE_START, String.valueOf(false));
+        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_COMPETITION_ID, String.valueOf(Globals.CurrentCompetitionId));
+        Globals.EventLogger.LogData(Constants.Logger.LOGKEY_MATCH_NUMBER, String.valueOf(Globals.CurrentMatchNumber));
 
         Achievements.data_TeamToScout = Globals.CurrentTeamToScout;
 
@@ -345,7 +348,7 @@ public class PreMatch extends AppCompatActivity {
 
         // If they didn't play skip everything else
         if (preMatchBinding.checkboxDidPlay.isChecked()) {
-            Intent GoToMatch = new Intent(PreMatch.this, Match.class);
+            Intent GoToMatch = new Intent(PreMatch.this, MatchTally.class);
             startActivity(GoToMatch);
         } else {
             Intent GoToSubmitData = new Intent(PreMatch.this, SubmitData.class);

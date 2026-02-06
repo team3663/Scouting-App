@@ -1,7 +1,6 @@
 Id,Name,ColorIndex
-1,Coral,
-2,Algae,
-3,Climb,
-4,Defended,
-5,Defense,
-6,NotMoving,
+1,Fuel
+2,Climb,
+3,Defended,
+4,Defense,
+5,NotMoving,

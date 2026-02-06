@@ -56,7 +56,7 @@ public class Logger {
         filename = Globals.CurrentCompetitionId + "_" + Globals.CurrentMatchNumber + "_" + Globals.CurrentDeviceId + "_" + Globals.CurrentMatchType + ".csv";
 
         // Add an empty logging row so that Seq# is the same as the index
-        match_log_events.add(new LoggerEventRow(-1, 0, 0, 0, ""));
+        match_log_events.add(new LoggerEventRow(-1, 0, 0, 0, "", 0));
     }
 
     // Member Function: Write out all of the match data to disk.
@@ -163,13 +163,10 @@ public class Logger {
     private void WriteOutDataFile(OutputStream in_fos) {
         // Start the line (header as well) with the Record Type (1 for the Data line)
         StringBuilder csv_line = new StringBuilder();
-        csv_line.append(",1");
+        csv_line.append("D");
         for (String header : Constants.Logger.LOGKEY_DATA_FILE_HEADER) {
             csv_line.append(",").append(FindValueInPair(header));
         }
-
-        // Trim leading ","
-        if (csv_line.length() > 0) csv_line.delete(0, 1);
 
         try {
             // Write out the data
@@ -197,12 +194,19 @@ public class Logger {
             if (Constants.Match.IMAGE_HEIGHT > 0) normalized_y = (int)(10_000.0 * ler.Y / Constants.Match.IMAGE_HEIGHT);
 
             StringBuilder csv_line = new StringBuilder();
-            csv_line.append(",").append(i)
+            csv_line.append("E")
+                    .append(",").append(Globals.CurrentCompetitionId)
+                    .append(",").append(Globals.CurrentMatchNumber)
+                    .append(",").append(Globals.CurrentTeamToScout)
+                    .append(",").append(Globals.CurrentMatchType)
+                    .append(",").append(i)
                     .append(",").append(ler.EventId)
                     .append(",").append(ler.LogTime)
                     .append(",").append(normalized_x)
                     .append(",").append(normalized_y)
-                    .append(",").append(ler.PrevSeq);
+                    .append(",").append(ler.PrevSeq)
+                    .append(",").append(ler.Count);
+
             try {
                 in_fos.write(csv_line.toString().getBytes(StandardCharsets.UTF_8));
                 in_fos.write(Constants.Logger.FILE_LINE_SEPARATOR.getBytes(StandardCharsets.UTF_8));
@@ -215,22 +219,17 @@ public class Logger {
 
     // Member Function: Log a time-based event
     public void LogEvent(int in_EventId, float in_X, float in_Y, long in_time) {
+        LogEvent(in_EventId, in_X, in_Y, in_time, 1);
+    }
+
+        // Member Function: Log a time-based event
+    public void LogEvent(int in_EventId, float in_X, float in_Y, long in_time, int in_Count) {
         // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;
 
         // Update Achievement data
         String ach_desc = Globals.EventList.getEventDescription(in_EventId);
         Achievements.data_NumEvents++;
-
-        if (Constants.Achievements.EVENT_IDS_PICKUP_ALGAE.contains(in_EventId)) Achievements.data_match_AlgaePickup++; // 2025
-        if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_NET.contains(in_EventId)) Achievements.data_match_AlgaeInNet++; // 2025
-        if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_PROCESSOR.contains(in_EventId)) Achievements.data_match_AlgaeInProcessor++; // 2025
-        if (Constants.Achievements.EVENT_IDS_PICKUP_CORAL_GROUND.contains(in_EventId)) Achievements.data_match_CoralPickupGround++; // 2025
-        if (Constants.Achievements.EVENT_IDS_PICKUP_CORAL_STATION.contains(in_EventId)) Achievements.data_match_CoralPickupStation++; // 2025
-        if (Constants.Achievements.EVENT_IDS_DROP_CORAL.contains(in_EventId)) Achievements.data_match_CoralDropped++; // 2025
-        if (Constants.Achievements.EVENT_IDS_PLACE_CORAL.contains(in_EventId)) Achievements.data_match_CoralLevel[Integer.parseInt(ach_desc.substring(ach_desc.length() - 1))]++; // 2025
-        if ((Constants.Achievements.EVENT_IDS_SCORING.contains(in_EventId)) && Globals.isDefended) Achievements.data_ScoreWhileDefended++; // 2025
-        if (Constants.Achievements.EVENT_ID_CLIMB_SUCCESS == in_EventId) Achievements.data_match_ClimbSuccess++;
 
         // Determine the EventGroup Id this event belongs to
         int GroupId = Globals.EventList.getEventGroup(in_EventId);
@@ -259,7 +258,7 @@ public class Logger {
                 log_time = 0;
         }
 
-        match_log_events.add(new LoggerEventRow(in_EventId, log_time, log_x, log_y, prev));
+        match_log_events.add(new LoggerEventRow(in_EventId, log_time, log_x, log_y, prev, in_Count));
 
         // Save off this event as the "current" event for its group.
         current_event[GroupId] = in_EventId;
@@ -354,25 +353,6 @@ public class Logger {
         // Undo any achievements from this event being undone.
         String ach_desc = Globals.EventList.getEventDescription(lastEventId);
         Achievements.data_NumEvents--;
-        if (Constants.Achievements.EVENT_IDS_PICKUP_ALGAE.contains(lastEventId)) Achievements.data_match_AlgaePickup--; // 2025
-        if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_NET.contains(lastEventId)) Achievements.data_match_AlgaeInNet--; // 2025
-        if (Constants.Achievements.EVENT_IDS_SCORE_ALGAE_IN_PROCESSOR.contains(lastEventId)) Achievements.data_match_AlgaeInProcessor--; // 2025
-        if (Constants.Achievements.EVENT_IDS_PICKUP_CORAL_GROUND.contains(lastEventId)) Achievements.data_match_CoralPickupGround--; // 2025
-        if (Constants.Achievements.EVENT_IDS_PICKUP_CORAL_STATION.contains(lastEventId)) Achievements.data_match_CoralPickupStation--; // 2025
-        if (Constants.Achievements.EVENT_IDS_DROP_CORAL.contains(lastEventId)) Achievements.data_match_CoralDropped--; // 2025
-        if (Constants.Achievements.EVENT_IDS_PLACE_CORAL.contains(lastEventId)) Achievements.data_match_CoralLevel[Integer.parseInt(ach_desc.substring(ach_desc.length() - 1))]--; // 2025
-        if (Constants.Achievements.EVENT_ID_CLIMB_SUCCESS == lastEventId) Achievements.data_match_ClimbSuccess--;
-        // To determine if they were not moving, we need to find the next previous item for the "defended" group.  If that item
-        // has some "next events", then it's toggled on and we need to decrement the achievement counter.
-        // Because the scouter can undo a lot of events, we can't rely on the current_event[] to evaluate since this may
-        // be undoing an event well before the current defended event happened.
-        if (Constants.Achievements.EVENT_IDS_SCORING.contains(lastEventId))
-            for (int i = lastIndex - 1; i > 0; i--) {
-                if (Globals.EventList.getEventGroup(match_log_events.get(i).EventId) == Constants.Achievements.DEFENDED_EVENT_GROUP) {
-                    if (!Globals.EventList.getNextEvents(match_log_events.get(i).EventId).isEmpty()) Achievements.data_ScoreWhileDefended--;
-                    break;
-                }
-            }
 
         // Check the match_event_log to see if there's a previous sequence.  If so, use that to set
         // the current event.
@@ -432,13 +412,15 @@ public class Logger {
         int X;
         int Y;
         String PrevSeq;
+        int Count;
 
         // Constructor: create a new LogEventRow
-        public LoggerEventRow(int in_EventId, int in_Time, int in_X, int in_Y, String in_PrevSeq) {
+        public LoggerEventRow(int in_EventId, int in_Time, int in_X, int in_Y, String in_PrevSeq, int in_Count) {
             EventId = in_EventId;
             X = in_X;
             Y = in_Y;
             PrevSeq = in_PrevSeq;
+            Count = in_Count;
 
             // Ensure we are always generating a positive (or zero) increment to the logged time to prevent negative sequence cycle times
             // This can mostly happen only between AUTO and TELEOP in the 3 second gap, but good to have here to ensure the integrity of the data
@@ -446,5 +428,6 @@ public class Logger {
             if ((Globals.EventLogger != null) && (!Globals.EventLogger.match_log_events.isEmpty())) prev_time = Globals.EventLogger.match_log_events.get(Globals.EventLogger.match_log_events.size() - 1).LogTime;
             LogTime = Math.max(in_Time, prev_time);
         }
+
     }
 }

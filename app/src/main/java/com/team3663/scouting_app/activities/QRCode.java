@@ -112,8 +112,15 @@ public class QRCode extends AppCompatActivity {
     private void InitNext() {
         qrCodeBinding.butNext.setOnClickListener(view -> {
             // Reset pre-Match settings for next time
-            Globals.isStartingGamePiece = true;
+            Globals.numStartingGamePiece = Constants.PreMatch.STARTING_GAME_PIECES;
             Globals.isPractice = false;
+
+            // Reset post-Match values for next time
+            Globals.CurrentAccuracy = Constants.PostMatch.ACCURACY_NOT_SELECTED;
+            Globals.CurrentClimbLevel = Constants.PostMatch.CLIMB_LEVEL_NOT_SELECTED;
+            Globals.CurrentClimbPosition = Constants.PostMatch.CLIMB_POSITION_NOT_SELECTED;
+            Globals.stealFuelValue = Constants.PostMatch.STEAL_FUEL_NOT_SELECTED;
+            Globals.affectedByDefenseValue = Constants.PostMatch.AFFECTED_BY_DEFENSE_NOT_SELECTED;
 
             // Increases the team number so that it auto fills for the next match correctly
             Globals.CurrentMatchNumber++;
@@ -272,7 +279,7 @@ public class QRCode extends AppCompatActivity {
 
             while (begin < size) {
                 if (size - begin <= Globals.CurrentQRSize) end = size;
-                else end = begin + (int)(Globals.CurrentQRSize * Constants.QRCode.QR_PREFERRED_SIZE_PERCENTAGE / 100);
+                else end = begin + (Globals.CurrentQRSize * Constants.QRCode.QR_PREFERRED_SIZE_PERCENTAGE / 100);
 
                 file_page.add(in_data.substring(begin, end));
                 begin = end;

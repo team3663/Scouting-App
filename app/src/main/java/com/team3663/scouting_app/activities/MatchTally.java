@@ -11,17 +11,15 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
-import android.view.ContextMenu;
-import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.OrientationEventListener;
-import android.view.SubMenu;
 import android.view.View;
 import android.widget.Chronometer;
-import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -31,24 +29,23 @@ import androidx.core.view.WindowInsetsCompat;
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
-import com.team3663.scouting_app.databinding.MatchBinding;
+import com.team3663.scouting_app.databinding.MatchTallyBinding;
 import com.team3663.scouting_app.utility.CPR_Chronometer;
 import com.team3663.scouting_app.utility.Logger;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Match extends AppCompatActivity {
+public class MatchTally extends AppCompatActivity {
     // =============================================================================================
     // Global variables
     // =============================================================================================
-    private MatchBinding matchBinding;
+    private MatchTallyBinding matchBinding;
     private static OrientationEventListener OEL = null; // needed to detect the screen being flipped around
-    private static String currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE;
+    private static String currentAllianceOnLeft = Constants.Match.ORIENTATION_RED_ON_LEFT;
     private static float current_X_Relative = 0;
     private static float current_Y_Relative = 0;
     private static float current_X_Absolute = 0;
@@ -58,7 +55,11 @@ public class Match extends AppCompatActivity {
     private static float starting_X_Absolute = 0;
     private static float starting_Y_Absolute = 0;
     private static long start_time_not_moving;
-    private static long currentTouchTime = 0;
+    private static float tele_button_position_x = 0;
+    private static float tele_button_position_y = 0;;
+    private static String team_alliance;
+    private static boolean climb_button_pressed = false;
+    private static boolean in_alliance_zone = false;
 
     // Define a Timer and TimerTasks so you can schedule things
     private CPR_Chronometer game_Timer;
@@ -79,10 +80,10 @@ public class Match extends AppCompatActivity {
     protected void onCreate(Bundle in_savedInstanceState) {
         super.onCreate(in_savedInstanceState);
         EdgeToEdge.enable(this);
-        matchBinding = MatchBinding.inflate(getLayoutInflater());
+        matchBinding = MatchTallyBinding.inflate(getLayoutInflater());
         View page_root_view = matchBinding.getRoot();
         setContentView(page_root_view);
-        ViewCompat.setOnApplyWindowInsetsListener(matchBinding.match, (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(matchBinding.matchTally, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -101,108 +102,11 @@ public class Match extends AppCompatActivity {
         initDefended();
         initTime();
         initBackButton();
-        initContextMenu();
         initRobotStartLocation();
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu in_menu, View in_v, ContextMenu.ContextMenuInfo in_menuInfo) {
-        super.onCreateContextMenu(in_menu, in_v, in_menuInfo);
-
-        // Check to make sure the game is going
-        if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) return;
-
-        // Save off the time we initially touched the screen
-        currentTouchTime = game_Timer.getElapsedMilliSeconds();
-
-        // Build the context menu correctly depending on whether we need groups(sub-menus)
-        if (Globals.MaxEventGroups > 1) {
-            // Add a submenu item per group
-            // Then find the "next set of events" for that group and add them to the submenu
-            for (int i = 1; i <= Globals.MaxEventGroups; ++i) {
-                if (Globals.EventList.hasEventsForGroup(i, Globals.CurrentMatchPhase)) {
-                    // Params: groupID, eventID, ordering, eventDescription
-                    // eventID must be ID_NO_EVENT so we don't log it when clicked (to open the submenu)
-                    SubMenu subMenu = in_menu.addSubMenu(i, Constants.Events.ID_NO_EVENT, i-1, Globals.EventList.getGroupName(i));
-
-                    // If this menuItem has a color to use, then use it
-                    if (Globals.ColorList.isColorValid(Globals.CurrentColorId - 1)) {
-                        SpannableString ss = new SpannableString(in_menu.getItem(i-1).getTitle());
-                        ss.setSpan(new AbsoluteSizeSpan(24), 0, ss.length(), 0);
-                        if (Globals.EventList.hasGroupColor(i))
-                            ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColor(Globals.CurrentColorId - 1, Globals.EventList.getGroupColor(i))), 0, ss.length(), 0);
-                        in_menu.getItem(i-1).setTitle(ss);
-                    }
-
-                    // Get the next set of events (ids and descriptions)
-                    ArrayList<String> submenu_desc = Globals.EventList.getNextEvents(Logger.current_event[i]);
-                    ArrayList<Integer> submenu_ids = Globals.EventList.getNextEventIds(Logger.current_event[i]);
-
-                    // If there are no next events, get a list of events for the right game phase
-                    if ((submenu_desc == null) || submenu_desc.isEmpty()) {
-                        submenu_desc = Globals.EventList.getEventsForPhase(Globals.CurrentMatchPhase, i);
-                        submenu_ids = Globals.EventList.getEventIdsForPhase(Globals.CurrentMatchPhase, i);
-                    }
-
-                    // Add the next events to the submenu
-                    for (int j = 0; j < submenu_desc.size(); ++j) {
-                        // Params: groupID, eventID, ordering, eventDescription
-                        subMenu.add(i, submenu_ids.get(j), j, submenu_desc.get(j));
-
-                        // If this menuItem has a color to use, then use it
-                        if (Globals.ColorList.isColorValid(Globals.CurrentColorId - 1)) {
-                            SpannableString ss = new SpannableString(subMenu.getItem(j).getTitle());
-                            ss.setSpan(new AbsoluteSizeSpan(24), 0, ss.length(), 0);
-                            if (Globals.EventList.hasEventColor(submenu_ids.get(j)))
-                                ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColor(Globals.CurrentColorId - 1, Globals.EventList.getEventColor(submenu_ids.get(j)))), 0, ss.length(), 0);
-                            subMenu.getItem(j).setTitle(ss);
-                        }
-                    }
-
-                    // Clear the submenu header - needs to be done AFTER adding the submenu items
-                    subMenu.clearHeader();
-                }
-            }
-
-        }
-        else {
-            // Get the next set of events (ids and descriptions)
-            ArrayList<String> menu_desc = Globals.EventList.getEventsForPhase(Globals.CurrentMatchPhase, 1);
-            ArrayList<Integer> menu_ids = Globals.EventList.getEventIdsForPhase(Globals.CurrentMatchPhase, 1);
-
-            // Add the next events to the submenu
-            for (int i = 0; i < menu_desc.size(); ++i) {
-                // Params: groupID, eventID, ordering, eventDescription
-                in_menu.add(i+1, menu_ids.get(i), i, menu_desc.get(i));
-
-                // If this menuItem has a color to use, then use it
-                if (Globals.ColorList.isColorValid(Globals.CurrentColorId - 1) &&
-                        Globals.EventList.hasEventColor(menu_ids.get(i))) {
-                    SpannableString ss = new SpannableString(in_menu.getItem(i).getTitle());
-                    ss.setSpan(new AbsoluteSizeSpan(24), 0, ss.length(), 0);
-                    ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColor(Globals.CurrentColorId - 1, Globals.EventList.getEventColor(menu_ids.get(i)))), 0, ss.length(), 0);
-                    in_menu.getItem(i).setTitle(ss);
-                }
-            }
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    @Override
-    public boolean onContextItemSelected(@NonNull MenuItem in_item) {
-        // Take action when a detail item is chosen
-        int event_id = in_item.getItemId();
-
-        // If we get called with no valid event, just return
-        if (event_id == Constants.Events.ID_NO_EVENT) return true;
-
-        setEventStatus(event_id);
-
-        Globals.EventLogger.LogEvent(event_id, current_X_Relative, current_Y_Relative, currentTouchTime);
-        matchBinding.butUndo.setVisibility(View.VISIBLE);
-        matchBinding.butUndo.setEnabled(true);
-
-        return true;
+        initZoneButtons();
+        initActionButtons();
+        initZOrder();
+        initSeekBar();
     }
 
     // =============================================================================================
@@ -227,13 +131,6 @@ public class Match extends AppCompatActivity {
             OEL.disable();
         }
 
-        // Calculate the image dimensions
-        Constants.Match.IMAGE_WIDTH = matchBinding.imageFieldView.getWidth();
-        Constants.Match.IMAGE_HEIGHT = matchBinding.imageFieldView.getHeight();
-
-        // Hide the starting location of the robot
-        matchBinding.textRobot.setVisibility(View.INVISIBLE);
-
         // Hide Back Button (too late to go back now!)
         matchBinding.butBack.setClickable(false);
         matchBinding.butBack.setVisibility(View.INVISIBLE);
@@ -242,6 +139,24 @@ public class Match extends AppCompatActivity {
         matchBinding.switchNotMoving.setEnabled(true);
         matchBinding.switchNotMoving.setTextColor(Color.WHITE);
         matchBinding.switchNotMoving.setVisibility(View.VISIBLE);
+
+        // Enable action buttons
+        matchBinding.butClimb.setEnabled(true);
+        matchBinding.butClimb.setClickable(true);
+        matchBinding.butPickup.setEnabled(true);
+        matchBinding.butPickup.setClickable(true);
+        matchBinding.butPass.setEnabled(true);
+        matchBinding.butPass.setClickable(true);
+        matchBinding.butPassTap.setEnabled(true);
+        matchBinding.butPassTap.setClickable(true);
+        matchBinding.butShoot.setEnabled(true);
+        matchBinding.butShoot.setClickable(true);
+        matchBinding.butShootTap.setEnabled(true);
+        matchBinding.butShootTap.setClickable(true);
+
+        // Calculate the image dimensions
+        Constants.Match.IMAGE_WIDTH = matchBinding.FieldTouch.getWidth();
+        Constants.Match.IMAGE_HEIGHT = matchBinding.FieldTouch.getHeight();
 
         // Set match Phase to be correct and Button text
         Globals.CurrentMatchPhase = Constants.Phases.AUTO;
@@ -252,7 +167,7 @@ public class Match extends AppCompatActivity {
         // Create the Timers and timer tasks
         game_Timer.start();
         flashing_Timer = new Timer();
-        flashing_timertask = new FlashingTimerTask();
+        flashing_timertask = new MatchTally.FlashingTimerTask();
 
         // Set timer tasks
         game_Timer.setOnChronometerTickListener(chronometer -> game_Timer_tick());
@@ -296,9 +211,27 @@ public class Match extends AppCompatActivity {
         // Set match Phase to be correct and Button text
         Globals.CurrentMatchPhase = Constants.Phases.TELEOP;
 
+        // Hide the location of the robot
+        matchBinding.textRobot.setVisibility(View.INVISIBLE);
+        // Highlight the right zone instead
+        if (current_X_Absolute < matchBinding.butCenterZone.getX())
+            matchBinding.butLeftZone.callOnClick();
+        else if (current_X_Absolute < matchBinding.butRightZone.getX())
+            matchBinding.butCenterZone.callOnClick();
+        else matchBinding.butRightZone.callOnClick();
+
+        // Hide the Pickup Fuel button
+        matchBinding.butPickup.setClickable(false);
+        matchBinding.butPickup.setVisibility(View.INVISIBLE);
+
+        // Enable the climb button
+        matchBinding.butClimb.setEnabled(in_alliance_zone);
+        matchBinding.butClimb.setClickable(in_alliance_zone);
+        climb_button_pressed = false;
+
         // Certain actions can't be set from a non-UI thread (like within a TimerTask that runs on a
         // separate thread). So we need to make a Runner that will execute on the UI thread to set this.
-        Match.this.runOnUiThread(() -> {
+        MatchTally.this.runOnUiThread(() -> {
             matchBinding.switchDefense.setEnabled(true);
             matchBinding.switchDefense.setTextColor(Color.WHITE);
             matchBinding.switchDefense.setVisibility(View.VISIBLE);
@@ -322,7 +255,7 @@ public class Match extends AppCompatActivity {
     public void endTeleop() {
         // Certain actions can't be set from a non-UI thread (like within a TimerTask that runs on a
         // separate thread). So we need to make a Runner that will execute on the UI thread to set this.
-        Match.this.runOnUiThread(() -> {
+        MatchTally.this.runOnUiThread(() -> {
             matchBinding.butMatchControl.setText(getString(R.string.button_match_next));
             matchBinding.butMatchControl.setTextColor(getColor(R.color.cpr_bkgnd));
             matchBinding.butMatchControl.setBackgroundColor(getColor(R.color.white));
@@ -343,7 +276,7 @@ public class Match extends AppCompatActivity {
     public void endMatchCheck() {
         // See if there's an orphaned event.  If so, double check we REALLY want to end the match
         if (Globals.EventLogger.isLastEventAnOrphan()) {
-            new AlertDialog.Builder(Match.this)
+            new AlertDialog.Builder(MatchTally.this)
                     .setTitle(getString(R.string.match_alert_orphanedEvent_title))
                     .setMessage(getString(R.string.match_alert_orphanedEvent_message))
 
@@ -390,7 +323,7 @@ public class Match extends AppCompatActivity {
         matchBinding.switchDefended.setChecked(false);
 
         // Go to the next page
-        Intent GoToPostMatch = new Intent(Match.this, PostMatch.class);
+        Intent GoToPostMatch = new Intent(MatchTally.this, PostMatch.class);
         startActivity(GoToPostMatch);
 
         finish();
@@ -465,27 +398,28 @@ public class Match extends AppCompatActivity {
         // KEY: actually calling setRotation works, but severely messes up the context menu.  SO, we'll
         // hack it by just loading a "flipped" image to display.
         if (Globals.CurrentFieldOrientationPos == 0) {  // Automatic
-            currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE;
+            currentAllianceOnLeft = Constants.Match.ORIENTATION_RED_ON_LEFT;
+
             OEL = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
                 @SuppressLint("UseCompatLoadingForDrawables")
                 @Override
                 public void onOrientationChanged(int rotation_degrees) {
                     // If the device is in the 0 to 180 degree range, make it Landscape
-                    if ((rotation_degrees >= 0) && (rotation_degrees < 180) && !currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) {
+                    if ((rotation_degrees >= 0) && (rotation_degrees < 180) && !currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)) {
                         matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field2026));
-                        currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE;
+                        currentAllianceOnLeft = Constants.Match.ORIENTATION_RED_ON_LEFT;
 
-                        // Set the robot starting location based on the new rotation
-                        setRobotStartLocation(matchBinding.imageFieldView.getWidth() - starting_X_Absolute, matchBinding.imageFieldView.getHeight() - starting_Y_Absolute);
+                        // Set the robot location based on the new rotation
+                        setRobotLocation(matchBinding.FieldTouch.getWidth() - starting_X_Absolute, matchBinding.FieldTouch.getHeight() - starting_Y_Absolute);
                     }
                     // If the device is in the 180 to 359 degree range, make it Landscape
                     // We can get passed a -1 if the device can't tell (it's lying flat) and we want to ignore that
-                    else if ((rotation_degrees >= 180) && !currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE_REVERSE)) {
+                    else if ((rotation_degrees >= 180) && !currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) {
                         matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field2026_flipped));
-                        currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE_REVERSE;
+                        currentAllianceOnLeft = Constants.Match.ORIENTATION_BLUE_ON_LEFT;
 
-                        // Set the robot starting location based on the new rotation
-                        setRobotStartLocation(matchBinding.imageFieldView.getWidth() - starting_X_Absolute, matchBinding.imageFieldView.getHeight() - starting_Y_Absolute);
+                        // Set the robot location based on the new rotation
+                        setRobotLocation(matchBinding.FieldTouch.getWidth() - starting_X_Absolute, matchBinding.FieldTouch.getHeight() - starting_Y_Absolute);
                     }
                 }
             };
@@ -495,11 +429,11 @@ public class Match extends AppCompatActivity {
                 OEL.enable();
             }
         } else if (Globals.CurrentFieldOrientationPos == 1) {   // Blue On Left
-            currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE;
-            matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field2026));
-        } else {    // Red On Left
             matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field2026_flipped));
-            currentOrientation = Constants.Match.ORIENTATION_LANDSCAPE_REVERSE;
+            currentAllianceOnLeft = Constants.Match.ORIENTATION_BLUE_ON_LEFT;
+        } else {    // Red On Left
+            matchBinding.imageFieldView.setImageDrawable(getDrawable(R.drawable.field2026));
+            currentAllianceOnLeft = Constants.Match.ORIENTATION_RED_ON_LEFT;
         }
     }
 
@@ -550,6 +484,9 @@ public class Match extends AppCompatActivity {
         String new_team = Globals.CurrentTeamToScout + " - " + Globals.TeamList.getOrDefault(Globals.CurrentTeamToScout, "");
         matchBinding.textTeam.setText(new_team);
         matchBinding.textTeam.setTextColor(Color.WHITE);
+
+        team_alliance = Globals.MatchList.getAllianceForTeam(Globals.CurrentTeamToScout);
+        if (team_alliance.isEmpty()) team_alliance = Constants.Settings.PREF_TEAM_POS[Globals.CurrentPrefTeamPos];
     }
 
     // =============================================================================================
@@ -619,7 +556,7 @@ public class Match extends AppCompatActivity {
             }
 
             // Go to the previous page
-            Intent GoToPreviousPage = new Intent(Match.this, PreMatch.class);
+            Intent GoToPreviousPage = new Intent(MatchTally.this, PreMatch.class);
             startActivity(GoToPreviousPage);
 
             finish();
@@ -638,6 +575,13 @@ public class Match extends AppCompatActivity {
 
         // If clicked, undo the last event selected
         matchBinding.butUndo.setOnClickListener(view -> {
+            // If the most recent event was a climb and we're going to undo it, re-anable the climb button
+            if (matchBinding.textStatus.getText().toString().equalsIgnoreCase("Climb")) {
+                climb_button_pressed = false;
+                if (in_alliance_zone) matchBinding.butClimb.setEnabled(true);
+                if (in_alliance_zone) matchBinding.butClimb.setClickable(true);
+            }
+
             int last_event_id;
             last_event_id = Globals.EventLogger.UndoLastEvent();
 
@@ -645,7 +589,7 @@ public class Match extends AppCompatActivity {
             if ((last_event_id == -1) || (Logger.current_event[Globals.EventList.getEventGroup(last_event_id)] == Constants.Events.ID_AUTO_START_GAME_PIECE)) {
                 // Certain actions can't be set from a non-UI thread
                 // So we need to make a Runner that will execute on the UI thread to set this.
-                Match.this.runOnUiThread(() -> {
+                MatchTally.this.runOnUiThread(() -> {
                     matchBinding.butUndo.setVisibility(View.INVISIBLE);
                     matchBinding.butUndo.setEnabled(false);
                     matchBinding.textStatus.setText("");
@@ -811,88 +755,62 @@ public class Match extends AppCompatActivity {
     }
 
     // =============================================================================================
-    // Function:    initContextMenu
-    // Description: Initialize the Field of Play image
+    // Function:    setRobotLocation
+    // Description: Set the Robot location whether at the start or throughout the match
     // Parameters:  void
     // Output:      void
     // =============================================================================================
     @SuppressLint("ClickableViewAccessibility")
-    private void initContextMenu() {
-        // Define a context menu
-        RelativeLayout ContextMenu = matchBinding.ContextMenu;
-
-        // This is required it will not run without it
-        registerForContextMenu(matchBinding.imageFieldView);
-
-        // So that it activates on a normal click instead of a long click
-        ContextMenu.setOnTouchListener((view, motionEvent) -> {
-            // Save where we touched the field image regardless of its orientation
-            current_X_Absolute = motionEvent.getX();
-            current_Y_Absolute = motionEvent.getY();
-
-            // Save where we touched the field image relative to the fields orientation
-            // Since the App has (0,0) in the top left, but our reporting will have (0,0) in the bottom left,
-            // we need to flip the Y coordinate.
-            if (currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) {
-                current_X_Relative = current_X_Absolute;
-                current_Y_Relative = matchBinding.imageFieldView.getHeight() - current_Y_Absolute;
-            } else {
-                current_X_Relative = matchBinding.imageFieldView.getWidth() - current_X_Absolute;
-                current_Y_Relative = current_Y_Absolute;
-            }
-
-            if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE))
-                setRobotStartLocation(current_X_Absolute, current_Y_Absolute);
-            else
-                matchBinding.imageFieldView.showContextMenu(current_X_Absolute, current_Y_Absolute);
-
-            return false;
-        });
-    }
-
-    // =============================================================================================
-    // Function:    setRobotStartLocation
-    // Description: Initialize the Robot starting location
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    @SuppressLint("ClickableViewAccessibility")
-    private void setRobotStartLocation(float in_X, float in_Y) {
+    private void setRobotLocation(float in_X, float in_Y) {
         float offset = (float) (matchBinding.textRobot.getWidth() / 2);
-        String alliance = Globals.MatchList.getAllianceForTeam(Globals.CurrentTeamToScout);
 
         // If we don't know the alliance (didn't have match schedule?) then default to the PREFERRED position
-        if (alliance.isEmpty()) alliance = Constants.Settings.PREF_TEAM_POS[Globals.CurrentPrefTeamPos];
-        boolean blue_alliance = alliance.substring(0,1).equalsIgnoreCase("B");
+        boolean blue_alliance = team_alliance.substring(0,1).equalsIgnoreCase("B");
 
         if (in_X > 0) {
             starting_X_Absolute = in_X;
             starting_Y_Absolute = in_Y;
-        } else if ((blue_alliance && currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) ||
-                (!blue_alliance && currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE_REVERSE))) {
-            starting_X_Absolute = matchBinding.imageFieldView.getWidth() - starting_X_Absolute;
-            starting_Y_Absolute = matchBinding.imageFieldView.getHeight() - starting_Y_Absolute;
+        } else if ((blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)) ||
+                (!blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT))) {
+            starting_X_Absolute = matchBinding.FieldTouch.getWidth() - starting_X_Absolute;
+            starting_Y_Absolute = matchBinding.FieldTouch.getHeight() - starting_Y_Absolute;
         }
 
-        // Snap the robot to the correct starting line
-        if ((blue_alliance && currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) ||
-            (!blue_alliance && currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE_REVERSE))) {
-            starting_X_Absolute = Math.min(Math.max(in_X, matchBinding.imageFieldView.getWidth() * Constants.Match.START_LINE_X / 100.0f - offset), matchBinding.imageFieldView.getWidth() * Constants.Match.START_LINE_X / 100.0f + offset);
-        }
-        else {
-            starting_X_Absolute = Math.min(Math.max(in_X, matchBinding.imageFieldView.getWidth() * (100.0f - Constants.Match.START_LINE_X) / 100.0f - offset), matchBinding.imageFieldView.getWidth() * (100.0f - Constants.Match.START_LINE_X) / 100.0f + offset);
+        // Snap the robot to the correct starting line if we haven't started the match
+        if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) {
+            if ((blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) ||
+                    (!blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT))) {
+                starting_X_Absolute = Math.min(Math.max(in_X, matchBinding.FieldTouch.getWidth() * Constants.Match.START_LINE_X / 100.0f - offset), matchBinding.FieldTouch.getWidth() * Constants.Match.START_LINE_X / 100.0f + offset);
+            } else {
+                starting_X_Absolute = Math.min(Math.max(in_X, matchBinding.FieldTouch.getWidth() * (100.0f - Constants.Match.START_LINE_X) / 100.0f - offset), matchBinding.FieldTouch.getWidth() * (100.0f - Constants.Match.START_LINE_X) / 100.0f + offset);
+            }
+
+            // Ensure we aren't placing a robot where it can't be located - 2026 Season
+            if ((starting_Y_Absolute > (Constants.Match.HUB_TOP_Y_PERCENT * matchBinding.FieldTouch.getHeight())) && (starting_Y_Absolute < (Constants.Match.HUB_BOTTOM_Y_PERCENT * matchBinding.FieldTouch.getHeight()))) {
+                if ((blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) ||
+                        (!blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)))
+                    starting_X_Absolute = matchBinding.FieldTouch.getWidth() * Constants.Match.START_LINE_X / 100.0f - offset;
+                else
+                    starting_X_Absolute = matchBinding.FieldTouch.getWidth() * (100.0f - Constants.Match.START_LINE_X) / 100.0f + offset;
+            }
+
+            // Save off the correct relative values based on the orientation
+            if (currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)) {
+                starting_X_Relative = starting_X_Absolute;
+                starting_Y_Relative = matchBinding.FieldTouch.getHeight() - starting_Y_Absolute;
+            } else {
+                starting_X_Relative = matchBinding.FieldTouch.getWidth() - starting_X_Absolute;
+                starting_Y_Relative = starting_Y_Absolute;
+            }
         }
 
-        // Save off the correct relative values based on the orientation
-        if (currentOrientation.equals(Constants.Match.ORIENTATION_LANDSCAPE)) {
-            starting_X_Relative = starting_X_Absolute;
-            starting_Y_Relative = matchBinding.imageFieldView.getHeight() - starting_Y_Absolute;
-        } else {
-            starting_X_Relative = matchBinding.imageFieldView.getWidth() - starting_X_Absolute;
-            starting_Y_Relative = starting_Y_Absolute;
-        }
+        // Ensure we can't place the robot off the field
+        if (starting_X_Absolute < offset) starting_X_Absolute = offset;
+        else if (starting_X_Absolute > matchBinding.FieldTouch.getWidth() - offset) starting_X_Absolute = matchBinding.FieldTouch.getWidth() - offset;
+        if (starting_Y_Absolute < offset) starting_Y_Absolute = offset;
+        else if (starting_Y_Absolute > matchBinding.FieldTouch.getHeight() - offset) starting_Y_Absolute = matchBinding.FieldTouch.getHeight() - offset;
 
-        // Make sure we see the starting location of the robot
+        // Make sure we see the location of the robot
         matchBinding.textRobot.setX(starting_X_Absolute - offset);
         matchBinding.textRobot.setY(starting_Y_Absolute - offset);
 
@@ -902,7 +820,8 @@ public class Match extends AppCompatActivity {
             matchBinding.textRobot.setVisibility(View.VISIBLE);
             matchBinding.butMatchControl.setEnabled(true);
             matchBinding.butMatchControl.setClickable(true);
-            matchBinding.textStatus.setText("");
+            // Reset the status text only if the match hasn't started.
+            if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) matchBinding.textStatus.setText("");
         }
     }
 
@@ -914,9 +833,280 @@ public class Match extends AppCompatActivity {
     // =============================================================================================
     @SuppressLint("ClickableViewAccessibility")
     private void initRobotStartLocation() {
-        // Hide the starting location of the robot
-        matchBinding.textRobot.setVisibility(View.INVISIBLE);
+        matchBinding.FieldTouch.setOnTouchListener((view, motionEvent) -> {
+            if (Globals.CurrentMatchPhase.equals(Constants.Phases.TELEOP)) return false;
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) return true;
 
+            // Save where we touched the field image regardless of its orientation
+            current_X_Absolute = motionEvent.getX() + tele_button_position_x;
+            current_Y_Absolute = motionEvent.getY() + tele_button_position_y;
+
+            // Save where we touched the field image relative to the fields orientation
+            // Since the App has (0,0) in the top left, but our reporting will have (0,0) in the bottom left,
+            // we need to flip the Y coordinate.
+            if (currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)) {
+                current_X_Relative = current_X_Absolute;
+                current_Y_Relative = matchBinding.FieldTouch.getHeight() - current_Y_Absolute;
+            } else {
+                current_X_Relative = matchBinding.FieldTouch.getWidth() - current_X_Absolute;
+                current_Y_Relative = current_Y_Absolute;
+            }
+
+            setRobotLocation(current_X_Absolute, current_Y_Absolute);
+
+            return true;
+        });
+
+        matchBinding.textRobot.setVisibility(View.INVISIBLE);
         matchBinding.textStatus.setText(R.string.match_select_start_location);
+    }
+
+    // =============================================================================================
+    // Function:    initZOrder
+    // Description: Initialize the Z-Order of the views in the Activity
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initZOrder() {
+        matchBinding.FieldTouch.bringToFront();
+        matchBinding.textRobot.bringToFront();
+        matchBinding.textPractice.bringToFront();
+        matchBinding.butLeftZone.bringToFront();
+        matchBinding.butCenterZone.bringToFront();
+        matchBinding.butRightZone.bringToFront();
+        matchBinding.FieldTouch.invalidate();
+        matchBinding.FieldTouch.requestLayout();
+    }
+
+    // =============================================================================================
+    // Function:    initSeekBar
+    // Description: Initialize the SeekBar
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initSeekBar() {
+        SeekBar seekbar = findViewById(R.id.seekBar);
+        TextView seekbarProgress = findViewById(R.id.text_SeekBarProgress);
+
+        seekbar.setProgress(Globals.numStartingGamePiece);
+        seekbar.setMax(Constants.Match.SEEKBAR_MAX);
+        seekbarProgress.setText(String.valueOf(seekbar.getProgress()));
+
+        matchBinding.butPass.setText(getString(R.string.button_pass).replace("!#!", String.valueOf(Globals.numStartingGamePiece)));
+        matchBinding.butShoot.setText(getString(R.string.button_shoot).replace("!#!", String.valueOf(Globals.numStartingGamePiece)));
+
+        seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                String progress_str = String.valueOf(progress);
+
+                seekbarProgress.setText(progress_str);
+                matchBinding.butPass.setText(getString(R.string.button_pass).replace("!#!", progress_str));
+                matchBinding.butShoot.setText(getString(R.string.button_shoot).replace("!#!", progress_str));
+            }
+        });
+    }
+
+    // =============================================================================================
+    // Function:    initZoneButtons
+    // Description: Initialize the Buttons that highlight zones on the field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    @SuppressLint("ClickableViewAccessibility")
+    private void initZoneButtons() {
+        // Set up an OnClick listener per button
+        matchBinding.butLeftZone.setOnClickListener(view -> {
+            // If the match hasn't even started yet, just return
+            if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) return;
+
+            matchBinding.butShoot.setEnabled(in_alliance_zone);
+            matchBinding.butShoot.setClickable(in_alliance_zone);
+            matchBinding.butShootTap.setEnabled(in_alliance_zone);
+            matchBinding.butShootTap.setClickable(in_alliance_zone);
+            if (!climb_button_pressed) matchBinding.butClimb.setEnabled(in_alliance_zone);
+            if (!climb_button_pressed) matchBinding.butClimb.setClickable(in_alliance_zone);
+
+            // The rest of the code needs to be in TELEOP phase.  So if it's not, just return.
+            if (!Globals.CurrentMatchPhase.equals(Constants.Phases.TELEOP)) return;
+
+            matchBinding.butLeftZone.setBackgroundColor(getColor(R.color.transparent_orange));
+            matchBinding.butCenterZone.setBackgroundColor(getColor(R.color.transparent));
+            matchBinding.butRightZone.setBackgroundColor(getColor(R.color.transparent));
+
+            current_X_Relative = matchBinding.butLeftZone.getX() + (matchBinding.butLeftZone.getWidth() / 2f);
+            current_Y_Relative = matchBinding.butLeftZone.getY() + (matchBinding.butLeftZone.getHeight() / 2f);
+        });
+
+        matchBinding.butCenterZone.setOnClickListener(view -> {
+            // If the match hasn't even started yet, just return
+            if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) return;
+
+            // Disallow shooting / climbing
+            matchBinding.butShoot.setEnabled(in_alliance_zone);
+            matchBinding.butShoot.setClickable(in_alliance_zone);
+            matchBinding.butShootTap.setEnabled(in_alliance_zone);
+            matchBinding.butShootTap.setClickable(in_alliance_zone);
+            matchBinding.butClimb.setEnabled(in_alliance_zone);
+            matchBinding.butClimb.setClickable(in_alliance_zone);
+
+            // The rest of the code needs to be in TELEOP phase.  So if it's not, just return.
+            if (!Globals.CurrentMatchPhase.equals(Constants.Phases.TELEOP)) return;
+
+            matchBinding.butLeftZone.setBackgroundColor(getColor(R.color.transparent));
+            matchBinding.butCenterZone.setBackgroundColor(getColor(R.color.transparent_orange));
+            matchBinding.butRightZone.setBackgroundColor(getColor(R.color.transparent));
+
+            current_X_Relative = matchBinding.butCenterZone.getX() + (matchBinding.butCenterZone.getWidth() / 2f);
+            current_Y_Relative = matchBinding.butCenterZone.getY() + (matchBinding.butCenterZone.getHeight() / 2f);
+        });
+
+        matchBinding.butRightZone.setOnClickListener(view -> {
+            // If the match hasn't even started yet, just return
+            if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) return;
+
+            matchBinding.butShoot.setEnabled(in_alliance_zone);
+            matchBinding.butShoot.setClickable(in_alliance_zone);
+            matchBinding.butShootTap.setEnabled(in_alliance_zone);
+            matchBinding.butShootTap.setClickable(in_alliance_zone);
+            if (!climb_button_pressed) matchBinding.butClimb.setEnabled(in_alliance_zone);
+            if (!climb_button_pressed) matchBinding.butClimb.setClickable(in_alliance_zone);
+
+            // The rest of the code needs to be in TELEOP phase.  So if it's not, just return.
+            if (!Globals.CurrentMatchPhase.equals(Constants.Phases.TELEOP)) return;
+
+            matchBinding.butLeftZone.setBackgroundColor(getColor(R.color.transparent));
+            matchBinding.butCenterZone.setBackgroundColor(getColor(R.color.transparent));
+            matchBinding.butRightZone.setBackgroundColor(getColor(R.color.transparent_orange));
+
+            current_X_Relative = matchBinding.butRightZone.getX() + (matchBinding.butRightZone.getWidth() / 2f);
+            current_Y_Relative = matchBinding.butRightZone.getY() + (matchBinding.butRightZone.getHeight() / 2f);
+        });
+
+        matchBinding.butLeftZone.setOnTouchListener((view, motionEvent) -> {
+            // only handle DOWN actions
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) return false;
+
+            // We'll use the button click to determine if we should allow or disallow shooting / climbing but won't process
+            // anything else if we're not in Tele mode.
+            in_alliance_zone = ((currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)) && team_alliance.substring(0, 1).equalsIgnoreCase("R")) ||
+                    ((currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) && team_alliance.substring(0, 1).equalsIgnoreCase("B"));
+
+            tele_button_position_x = matchBinding.butLeftZone.getX();
+            tele_button_position_y = matchBinding.butLeftZone.getY();
+            matchBinding.FieldTouch.dispatchTouchEvent(motionEvent);
+            return false; });
+        matchBinding.butCenterZone.setOnTouchListener((view, motionEvent) -> {
+            // only handle DOWN actions
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) return false;
+
+            // if the alliance zone is on the LEFT, check the left edge of the robot
+            in_alliance_zone = false;
+            if (((currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT))
+                    && team_alliance.substring(0, 1).equalsIgnoreCase("R"))
+                    || ((currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT))
+                    && team_alliance.substring(0, 1).equalsIgnoreCase("B"))) {
+                if (motionEvent.getX() <= (matchBinding.textRobot.getWidth() / 2f))
+                    in_alliance_zone = true;
+                // otherwise the alliance zone is on the RIGHT, check the right edge of the robot
+            } else
+                if (motionEvent.getX() >= (matchBinding.butCenterZone.getWidth() - matchBinding.textRobot.getWidth() / 2f))
+                    in_alliance_zone = true;
+
+            tele_button_position_x = matchBinding.butCenterZone.getX();
+            tele_button_position_y = matchBinding.butCenterZone.getY();
+            matchBinding.FieldTouch.dispatchTouchEvent(motionEvent);
+            return false; });
+        matchBinding.butRightZone.setOnTouchListener((view, motionEvent) -> {
+            // only handle DOWN actions
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) return false;
+
+            // We'll use the button click to determine if we should allow or disallow shooting / climbing but won't process
+            // anything else if we're not in Tele mode.
+            in_alliance_zone = ((!currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)) || !team_alliance.substring(0, 1).equalsIgnoreCase("R")) &&
+                    ((!currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) || !team_alliance.substring(0, 1).equalsIgnoreCase("B"));
+
+            tele_button_position_x = matchBinding.butRightZone.getX();
+            tele_button_position_y = matchBinding.butRightZone.getY();
+            matchBinding.FieldTouch.dispatchTouchEvent(motionEvent);
+            return false; });
+    }
+
+
+    // =============================================================================================
+    // Function:    initActionButtons
+    // Description: Initialize the Buttons that highlight zones on the field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initActionButtons() {
+        matchBinding.butClimb.setOnClickListener(view -> {
+            logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Climb"), 1);
+            matchBinding.butClimb.setEnabled(false);
+            matchBinding.butClimb.setClickable(false);
+            climb_button_pressed = true;
+        });
+
+        matchBinding.butPickup.setOnClickListener(view -> {
+            if (!Globals.CurrentMatchPhase.equals(Constants.Phases.AUTO)) return;
+
+            logEvent(Globals.EventList.getEventId(Constants.Phases.AUTO, "Pickup Fuel"), 1);
+        });
+
+        matchBinding.butPassTap.setOnClickListener(view -> {
+            logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Pass 1 Fuel"), 1);
+        });
+
+        matchBinding.butPass.setOnClickListener(view -> {
+            logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Pass Many Fuel"), matchBinding.seekBar.getProgress());
+        });
+
+        matchBinding.butShootTap.setOnClickListener(view -> {
+            logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Shoot 1 Fuel"), 1);
+        });
+
+        matchBinding.butShoot.setOnClickListener(view -> {
+            logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Shoot Many Fuel"),  matchBinding.seekBar.getProgress());
+        });
+
+        matchBinding.butClimb.setEnabled(false);
+        matchBinding.butClimb.setClickable(false);
+        matchBinding.butPickup.setEnabled(false);
+        matchBinding.butPickup.setClickable(false);
+        matchBinding.butPass.setEnabled(false);
+        matchBinding.butPass.setClickable(false);
+        matchBinding.butPassTap.setEnabled(false);
+        matchBinding.butPassTap.setClickable(false);
+        matchBinding.butShoot.setEnabled(false);
+        matchBinding.butShoot.setClickable(false);
+        matchBinding.butShootTap.setEnabled(false);
+        matchBinding.butShootTap.setClickable(false);
+    }
+
+    // =============================================================================================
+    // Function:    logEvent
+    // Description: Log an event into the logger
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void logEvent(int in_event_id, int in_Count) {
+        // If we get called with no valid event, just return
+        if (in_event_id == Constants.Events.ID_NO_EVENT) return;
+
+        // Set the status text for the UNDO button.
+        setEventStatus(in_event_id);
+
+        // Log the event to the Logger and ensure the UNDO button is enabled
+        Globals.EventLogger.LogEvent(in_event_id, current_X_Relative, current_Y_Relative, game_Timer.getElapsedMilliSeconds(), in_Count);
+        matchBinding.butUndo.setVisibility(View.VISIBLE);
+        matchBinding.butUndo.setEnabled(true);
     }
 }

@@ -21,7 +21,7 @@
             android:textSize="50sp"
             tools:ignore="TextSizeCheck" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnOn"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
@@ -33,9 +33,10 @@
             android:text="Turn On Bluetooth"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:cornerRadius="12dp"/>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnOff"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
@@ -48,9 +49,10 @@
             android:text="Turn Off Bluetooth"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:cornerRadius="12dp"/>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnScan"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
@@ -62,9 +64,10 @@
             app:layout_constraintEnd_toEndOf="@+id/btnOn"
             app:layout_constraintHorizontal_bias="0.22"
             app:layout_constraintStart_toStartOf="@+id/btnOn"
-            app:layout_constraintTop_toBottomOf="@+id/btnOn" />
+            app:layout_constraintTop_toBottomOf="@+id/btnOn"
+            app:cornerRadius="12dp"/>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPair"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,9 +77,10 @@
             android:text="GET PAIRED DEVICE"
             app:layout_constraintEnd_toEndOf="@+id/btnOff"
             app:layout_constraintStart_toStartOf="@+id/btnOff"
-            app:layout_constraintTop_toBottomOf="@+id/btnOff" />
+            app:layout_constraintTop_toBottomOf="@+id/btnOff"
+            app:cornerRadius="12dp"/>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/but_Next"
             android:layout_width="175dp"
             android:layout_height="60dp"
@@ -86,7 +90,8 @@
             android:text="@string/qr_but_next"
             android:textColor="@color/cpr_bkgnd"
             android:textSize="24sp"
-            tools:ignore="HardcodedText,MissingConstraints" />
+            tools:ignore="HardcodedText,MissingConstraints"
+            app:cornerRadius="16dp"/>
 
         <ListView
             android:id="@+id/listdeviceFound"
