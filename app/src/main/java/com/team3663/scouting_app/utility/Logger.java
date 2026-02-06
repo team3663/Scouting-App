@@ -196,9 +196,9 @@ public class Logger {
             StringBuilder csv_line = new StringBuilder();
             csv_line.append("E")
                     .append(",").append(Globals.CurrentCompetitionId)
+                    .append(",").append(Globals.CurrentMatchType)
                     .append(",").append(Globals.CurrentMatchNumber)
                     .append(",").append(Globals.CurrentTeamToScout)
-                    .append(",").append(Globals.CurrentMatchType)
                     .append(",").append(i)
                     .append(",").append(ler.EventId)
                     .append(",").append(ler.LogTime)
