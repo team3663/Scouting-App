@@ -5,9 +5,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ArrayAdapter;
 
@@ -94,7 +98,14 @@ public class PreMatch extends AppCompatActivity {
             if (!focus) {
                 String MatchNumStr = String.valueOf(preMatchBinding.editMatch.getText());
                 int MatchNum = -1;
-                if (!MatchNumStr.isEmpty()) MatchNum = Integer.parseInt(MatchNumStr);
+                // if match number is greater than three digits, use only the last three digits otherwise app crashes
+                if (!MatchNumStr.isEmpty() && MatchNumStr.length() > 3) {
+                    MatchNumStr = MatchNumStr.substring(MatchNumStr.length() - 3);
+                    MatchNum = Integer.parseInt(MatchNumStr);
+                    preMatchBinding.editMatch.setText(String.valueOf(MatchNum));
+                }
+
+                MatchNum = Integer.parseInt(MatchNumStr);
 
                 // We need to do SOMETHING if:
                 // 1. they blanked out the match number
@@ -227,11 +238,35 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initStartingGamePiece() {
-        // Default starting number of game pieces
-        Globals.numStartingGamePiece = Constants.PreMatch.STARTING_GAME_PIECES;
+        EditText editNumStartingGamePiece = findViewById(R.id.edit_numStartingGamePiece);
+        // when back button is pressed from match, only reset the numStartingGamePiece if global hasn't been changed. otherwise keep the same
+        if (Globals.numStartingGamePiece == Constants.PreMatch.STARTING_GAME_PIECES) {
+            editNumStartingGamePiece.setText(String.valueOf(Constants.PreMatch.STARTING_GAME_PIECES));
+        } else {
+            editNumStartingGamePiece.setText(String.valueOf(Globals.numStartingGamePiece));
+        }
 
-        // Create text box to input robot's starting number of game pieces
-        preMatchBinding.editNumStartingGamePiece.setText(String.valueOf(Globals.numStartingGamePiece));
+        // when user inputs a number of starting game pieces, update the global to log the correct value
+        // this is called WHILE text is being typed (ie: every keystroke)
+        editNumStartingGamePiece.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence num, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence gamePieceValue, int start, int before, int count) {
+                if (gamePieceValue.length() == 0) return;
+                int currentNumStartingGamePiece = Integer.parseInt(gamePieceValue.toString());
+
+                Globals.numStartingGamePiece = Integer.parseInt(String.valueOf(editNumStartingGamePiece.getText()));
+                if (currentNumStartingGamePiece >= 0 && currentNumStartingGamePiece <= 8 && gamePieceValue.length() <=1) {
+                    Globals.numStartingGamePiece = currentNumStartingGamePiece;
+                } else {
+                    // if input is invalid, reset to global
+                    editNumStartingGamePiece.setText(String.valueOf(Constants.PreMatch.STARTING_GAME_PIECES));
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable num) {}
+        });
     }
 
     // =============================================================================================
@@ -314,7 +349,6 @@ public class PreMatch extends AppCompatActivity {
     private void processNextButton() {
         Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
         Globals.NumberMatchFilesKept = Globals.sp.getInt(Constants.Prefs.NUM_MATCHES, 5);
-        Globals.numStartingGamePiece = Integer.parseInt(preMatchBinding.editNumStartingGamePiece.getText().toString());
         CurrentTeamToScoutPosition = preMatchBinding.spinnerTeamToScout.getSelectedItemPosition();
 
         // Set up the Logger
@@ -389,7 +423,7 @@ public class PreMatch extends AppCompatActivity {
             }
 
             if (String.valueOf(preMatchBinding.editMatch.getText()).isEmpty() || preMatchBinding.spinnerTeamToScout.getSelectedItem().toString().equals(getString(R.string.pre_dropdown_no_items))
-                    || preMatchBinding.spinnerTeamToScout.getSelectedItem().toString().isEmpty() || String.valueOf(preMatchBinding.editScouterName.getText()).isEmpty()) {
+                    || preMatchBinding.spinnerTeamToScout.getSelectedItem().toString().isEmpty() || String.valueOf(preMatchBinding.editScouterName.getText()).isEmpty() || String.valueOf(preMatchBinding.editNumStartingGamePiece.getText()).isEmpty()) {
                 Toast.makeText(PreMatch.this, R.string.pre_missing_data, Toast.LENGTH_SHORT).show();
                 return;
             }
