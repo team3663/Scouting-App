@@ -416,7 +416,7 @@ public class PostMatch extends AppCompatActivity {
     // =============================================================================================
     private void initStats() {
         String statsFuelShot = "Fuel Shot: " + Achievements.data_match_FuelShot;
-        String statsFuelPassed = "Fuel Passes: " + Achievements.data_match_FuelPassed;
+        String statsFuelPassed = "Fuel Passed: " + Achievements.data_match_FuelPassed;
 
         postMatchBinding.textStatsFuelShot.setText(statsFuelShot);
         postMatchBinding.textStatsFuelPassed.setText(statsFuelPassed);
