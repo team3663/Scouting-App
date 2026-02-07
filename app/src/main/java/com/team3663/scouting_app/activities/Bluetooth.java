@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -100,7 +101,7 @@ public class Bluetooth extends AppCompatActivity {
                     }
                 }
         );
-l
+
         // Check permissions
         checkPermissions();
 
@@ -181,10 +182,12 @@ private void scanForDevices() {
 }
 
 private void selectFile() {
-    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-    intent.setType("*/*");
-    intent.addCategory(Intent.CATEGORY_OPENABLE);
-    filePickerLauncher.launch(intent);
+    selectedFileUri = Uri.fromFile(new File("/sdcard/Documents/CPR-Scouting/Output/5_1_7_q.csv"));
+    return;
+//    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//    intent.setType("*/*");
+//    intent.addCategory(Intent.CATEGORY_OPENABLE);
+//    filePickerLauncher.launch(intent);
 }
 
 private String getFileName(Uri uri) {
