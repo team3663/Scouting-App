@@ -1060,18 +1060,22 @@ public class MatchTally extends AppCompatActivity {
 
         matchBinding.butPassTap.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Pass 1 Fuel"), 1);
+            Achievements.data_match_FuelPassed += 1;
         });
 
         matchBinding.butPass.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Pass Many Fuel"), matchBinding.seekBar.getProgress());
+            Achievements.data_match_FuelPassed += matchBinding.seekBar.getProgress();
         });
 
         matchBinding.butShootTap.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Shoot 1 Fuel"), 1);
+            Achievements.data_match_FuelShot += 1;
         });
 
         matchBinding.butShoot.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Shoot Many Fuel"),  matchBinding.seekBar.getProgress());
+            Achievements.data_match_FuelShot += matchBinding.seekBar.getProgress();
         });
 
         matchBinding.butClimb.setEnabled(false);

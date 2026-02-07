@@ -20,6 +20,7 @@
     <string name="post_dropdown_items_selected">selected</string>
     <string name="post_missing_data">Please fill in all fields</string>
     <string name="post_stats">Stats:</string>
-    <string name="post_statsFuel">Fuel:</string>
+    <string name="post_statsFuelShot">Fuel Shot:</string>
+    <string name="post_statsFuelPassed">Fuel Passed: </string>
 
 </resources>
