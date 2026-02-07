@@ -182,7 +182,7 @@ private void scanForDevices() {
 }
 
 private void selectFile() {
-    selectedFileUri = Uri.fromFile(new File("/sdcard/Documents/CPR-Scouting/Output/5_1_7_q.csv"));
+    selectedFileUri = Globals.output_df.findFile("5_1_7_q.csv").getUri();
     return;
 //    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 //    intent.setType("*/*");
@@ -243,6 +243,7 @@ private void sendFile(BluetoothDevice device) {
             runOnUiThread(() -> statusTextView.setText("Connected! Sending file..."));
 
             OutputStream outputStream = socket.getOutputStream();
+            socket.getConnectionType();
             InputStream inputStream = getContentResolver().openInputStream(selectedFileUri);
 
             byte[] buffer = new byte[1024];
