@@ -149,6 +149,7 @@ public class MatchTally extends AppCompatActivity {
         matchBinding.butShoot.setClickable(true);
         matchBinding.butShootTap.setEnabled(true);
         matchBinding.butShootTap.setClickable(true);
+        matchBinding.seekBar.setEnabled(true);
 
         // Calculate the image dimensions
         Constants.Match.IMAGE_WIDTH = matchBinding.FieldTouch.getWidth();
@@ -181,6 +182,14 @@ public class MatchTally extends AppCompatActivity {
     public void startTeleopDelay() {
         // Set match Phase to be correct
         Globals.CurrentMatchPhase = Constants.Phases.TELEOP;
+
+        // Disable Zone Buttons during delay
+        matchBinding.butLeftZone.setEnabled(false);
+        matchBinding.butLeftZone.setClickable(false);
+        matchBinding.butCenterZone.setEnabled(false);
+        matchBinding.butCenterZone.setClickable(false);
+        matchBinding.butRightZone.setEnabled(false);
+        matchBinding.butRightZone.setClickable(false);
 
         game_Timer.pause();
         delay_Timer.start();
@@ -224,6 +233,14 @@ public class MatchTally extends AppCompatActivity {
         matchBinding.butClimb.setEnabled(in_alliance_zone);
         matchBinding.butClimb.setClickable(in_alliance_zone);
         climb_button_pressed = false;
+
+        // Enable Zone Buttons
+        matchBinding.butLeftZone.setEnabled(true);
+        matchBinding.butLeftZone.setClickable(true);
+        matchBinding.butCenterZone.setEnabled(true);
+        matchBinding.butCenterZone.setClickable(true);
+        matchBinding.butRightZone.setEnabled(true);
+        matchBinding.butRightZone.setClickable(true);
 
         // Certain actions can't be set from a non-UI thread (like within a TimerTask that runs on a
         // separate thread). So we need to make a Runner that will execute on the UI thread to set this.
@@ -910,6 +927,10 @@ public class MatchTally extends AppCompatActivity {
                 matchBinding.butShoot.setText(getString(R.string.button_shoot).replace("!#!", progress_str));
             }
         });
+
+        // At the start of the match, we'll disabled the seekBar so it can't be changed.
+        // When the match starts, we'll enable it again.
+        seekbar.setEnabled(false);
     }
 
     // =============================================================================================
