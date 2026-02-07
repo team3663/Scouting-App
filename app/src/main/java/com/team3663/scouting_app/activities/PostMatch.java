@@ -194,40 +194,45 @@ public class PostMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initClimbLevel() {
-        ArrayAdapter<String> adp_ClimbLevel = new ArrayAdapter<>(this, R.layout.cpr_spinner, ClimbLevel);
-        adp_ClimbLevel.setDropDownViewResource(R.layout.cpr_spinner_item);
-        postMatchBinding.spinnerClimbLevel.setAdapter(adp_ClimbLevel);
+        if (Globals.EventLogger.findEvent(Constants.Events.ID_TELE_CLIMB)) {
+            ArrayAdapter<String> adp_ClimbLevel = new ArrayAdapter<>(this, R.layout.cpr_spinner, ClimbLevel);
+            adp_ClimbLevel.setDropDownViewResource(R.layout.cpr_spinner_item);
+            postMatchBinding.spinnerClimbLevel.setAdapter(adp_ClimbLevel);
 
-        // Set starting selection
-        int start_Pos = 0;
-        for (int i = 0; i < ClimbLevel.size(); i++) {
-            if (ClimbLevel.get(i).equals(Globals.ClimbLevelList.getClimbLevelDescription(Globals.CurrentClimbLevel))) {
-                start_Pos = i;
-                break;
+            // Set starting selection
+            int start_Pos = 0;
+            for (int i = 0; i < ClimbLevel.size(); i++) {
+                if (ClimbLevel.get(i).equals(Globals.ClimbLevelList.getClimbLevelDescription(Globals.CurrentClimbLevel))) {
+                    start_Pos = i;
+                    break;
+                }
             }
-        }
-        postMatchBinding.spinnerClimbLevel.setSelection(start_Pos);
+            postMatchBinding.spinnerClimbLevel.setSelection(start_Pos);
 
-        postMatchBinding.spinnerClimbLevel.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener() {
+            postMatchBinding.spinnerClimbLevel.setOnItemSelectedListener(
+                    new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            String newClimbLevel = Globals.ClimbLevelList.getClimbLevelValue(postMatchBinding.spinnerClimbLevel.getSelectedItem().toString());
 
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                        String newClimbLevel = Globals.ClimbLevelList.getClimbLevelValue(postMatchBinding.spinnerClimbLevel.getSelectedItem().toString());
-
-                        if (!Objects.equals(newClimbLevel, Globals.CurrentClimbLevel)) {
-                            Globals.CurrentClimbLevel = newClimbLevel;
+                            if (!Objects.equals(newClimbLevel, Globals.CurrentClimbLevel)) {
+                                Globals.CurrentClimbLevel = newClimbLevel;
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-                        Globals.CurrentClimbLevel = "-1";
-                    }
-                });
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            Globals.CurrentClimbLevel = "-1";
+                        }
+                    });
+        } else {
+            Globals.CurrentClimbLevel = "None";
+            ArrayAdapter<String> adp_ClimbLevel = new ArrayAdapter<>(this, R.layout.cpr_spinner_empty, Constants.PostMatch.NO_CLIMB);
+            postMatchBinding.spinnerClimbLevel.setAdapter(adp_ClimbLevel);
+            postMatchBinding.spinnerClimbLevel.setBackgroundColor(getColor(R.color.light_grey));
+            postMatchBinding.spinnerClimbLevel.setEnabled(false);
+        }
     }
-
 
     // =============================================================================================
     // Function:    initClimbPosition
@@ -236,37 +241,45 @@ public class PostMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initClimbPosition() {
-        ArrayAdapter<String> adp_ClimbPosition = new ArrayAdapter<>(this, R.layout.cpr_spinner, ClimbPosition);
-        adp_ClimbPosition.setDropDownViewResource(R.layout.cpr_spinner_item);
-        postMatchBinding.spinnerClimbPosition.setAdapter(adp_ClimbPosition);
+        if (Globals.EventLogger.findEvent(Constants.Events.ID_TELE_CLIMB)) {
+            ArrayAdapter<String> adp_ClimbPosition = new ArrayAdapter<>(this, R.layout.cpr_spinner, ClimbPosition);
+            adp_ClimbPosition.setDropDownViewResource(R.layout.cpr_spinner_item);
+            postMatchBinding.spinnerClimbPosition.setAdapter(adp_ClimbPosition);
 
-        // Set starting selection
-        int start_Pos = 0;
-        for (int i = 0; i < ClimbPosition.size(); i++) {
-            if (ClimbPosition.get(i).equals(Globals.ClimbPositionList.getClimbPositionDescription(Globals.CurrentClimbPosition))) {
-                start_Pos = i;
-                break;
+            // Set starting selection
+            int start_Pos = 0;
+            for (int i = 0; i < ClimbPosition.size(); i++) {
+                if (ClimbPosition.get(i).equals(Globals.ClimbPositionList.getClimbPositionDescription(Globals.CurrentClimbPosition))) {
+                    start_Pos = i;
+                    break;
+                }
             }
-        }
-        postMatchBinding.spinnerClimbPosition.setSelection(start_Pos);
+            postMatchBinding.spinnerClimbPosition.setSelection(start_Pos);
 
-        // Set up a listener to handle any changes to the dropdown
-        postMatchBinding.spinnerClimbPosition.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            // Set up a listener to handle any changes to the dropdown
+            postMatchBinding.spinnerClimbPosition.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                        String newClimbPosition = Globals.ClimbPositionList.getClimbPositionValue(postMatchBinding.spinnerClimbPosition.getSelectedItem().toString());
+                    String newClimbPosition = Globals.ClimbPositionList.getClimbPositionValue(postMatchBinding.spinnerClimbPosition.getSelectedItem().toString());
 
-                        if (!Objects.equals(newClimbPosition, Globals.CurrentClimbPosition)) {
-                            Globals.CurrentClimbPosition = newClimbPosition;
-                        }
+                    if (!Objects.equals(newClimbPosition, Globals.CurrentClimbPosition)) {
+                        Globals.CurrentClimbPosition = newClimbPosition;
                     }
+                }
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-                        Globals.CurrentClimbPosition = "-1";
-                    }
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                    Globals.CurrentClimbPosition = "-1";
+                }
             });
+        } else {
+            Globals.CurrentClimbPosition = "None";
+            ArrayAdapter<String> adp_ClimbPosition = new ArrayAdapter<>(this, R.layout.cpr_spinner_empty, Constants.PostMatch.NO_CLIMB);
+            postMatchBinding.spinnerClimbPosition.setAdapter(adp_ClimbPosition);
+            postMatchBinding.spinnerClimbPosition.setBackgroundColor(getColor(R.color.light_grey));
+            postMatchBinding.spinnerClimbPosition.setEnabled(false);
+        }
     }
 
     // =============================================================================================

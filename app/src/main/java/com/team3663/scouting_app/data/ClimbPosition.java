@@ -22,7 +22,6 @@ public class ClimbPosition {
         addClimbPositionRow("Front Upright", "Front Upright");
         addClimbPositionRow("Front Middle", "Front Middle");
         addClimbPositionRow("Back", "Back");
-        addClimbPositionRow("None", "No Climb");
     }
 
     // Add a row
