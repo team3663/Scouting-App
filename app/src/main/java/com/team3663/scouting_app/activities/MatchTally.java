@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.hardware.SensorManager;
@@ -1065,12 +1067,31 @@ public class MatchTally extends AppCompatActivity {
     // Parameters:  void
     // Output:      void
     // =============================================================================================
+    @SuppressLint("ClickableViewAccessibility")
     private void initActionButtons() {
+        matchBinding.butClimb.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                view.setBackgroundColor(getColor(R.color.dark_grey));
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                view.setBackgroundColor(getColor(R.color.dark_green));
+
+            return false;
+        });
+
         matchBinding.butClimb.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Climb"), 1);
             matchBinding.butClimb.setEnabled(false);
             matchBinding.butClimb.setClickable(false);
             climb_button_pressed = true;
+        });
+
+        matchBinding.butPickup.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                view.setBackgroundColor(getColor(R.color.dark_grey));
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                view.setBackgroundColor(getColor(R.color.dark_yellow));
+
+            return false;
         });
 
         matchBinding.butPickup.setOnClickListener(view -> {
@@ -1079,16 +1100,52 @@ public class MatchTally extends AppCompatActivity {
             logEvent(Globals.EventList.getEventId(Constants.Phases.AUTO, "Pickup Fuel"), 1);
         });
 
+        matchBinding.butPassTap.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                view.setBackgroundColor(getColor(R.color.dark_grey));
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                view.setBackgroundColor(getColor(R.color.light_blue));
+
+            return false;
+        });
+
         matchBinding.butPassTap.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Pass 1 Fuel"), 1);
+        });
+
+        matchBinding.butPass.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                view.setBackgroundColor(getColor(R.color.dark_grey));
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                view.setBackgroundColor(getColor(R.color.light_blue));
+
+            return false;
         });
 
         matchBinding.butPass.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Pass Many Fuel"), matchBinding.seekBar.getProgress());
         });
 
+        matchBinding.butShootTap.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                view.setBackgroundColor(getColor(R.color.dark_grey));
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                view.setBackgroundColor(getColor(R.color.dark_green));
+
+            return false;
+        });
+
         matchBinding.butShootTap.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Shoot 1 Fuel"), 1);
+        });
+
+        matchBinding.butShoot.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                view.setBackgroundColor(getColor(R.color.dark_grey));
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                view.setBackgroundColor(getColor(R.color.dark_green));
+
+            return false;
         });
 
         matchBinding.butShoot.setOnClickListener(view -> {
