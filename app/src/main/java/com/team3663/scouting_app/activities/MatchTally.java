@@ -766,10 +766,6 @@ public class MatchTally extends AppCompatActivity {
         if (in_X > 0) {
             Screen_X = in_X;
             Screen_Y = in_Y;
-        } else if ((blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)) ||
-                (!blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT))) {
-            Screen_X = matchBinding.FieldTouch.getWidth() - Screen_X;
-            Screen_Y = matchBinding.FieldTouch.getHeight() - Screen_Y;
         }
 
         // Snap the robot to the correct starting line if we haven't started the match
@@ -791,7 +787,8 @@ public class MatchTally extends AppCompatActivity {
             }
 
             // Save off the correct relative values based on the orientation
-            if (currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT)) {
+            if (blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT) ||
+                    !blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) {
                 BlueView_X = matchBinding.FieldTouch.getWidth() - Screen_X;
                 BlueView_Y = Screen_Y;
             } else {
@@ -843,7 +840,8 @@ public class MatchTally extends AppCompatActivity {
             // Save where we touched the field image relative to the fields orientation
             // Since the App has (0,0) in the top left, but our reporting will have (0,0) in the bottom left,
             // we need to flip the Y coordinate.
-            if (blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT) || !blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) {
+            if (blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT) ||
+                    !blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) {
                 BlueView_X = matchBinding.FieldTouch.getWidth() - Screen_X;
                 BlueView_Y = Screen_Y;
             } else {
