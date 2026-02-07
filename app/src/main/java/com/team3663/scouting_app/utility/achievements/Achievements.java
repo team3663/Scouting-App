@@ -35,6 +35,7 @@ public class Achievements {
     public static int data_match_OrphanEvents = 0;
     public static int data_match_AlgaeInNet = 0;
     public static int data_match_FuelShot = 0;
+    public static int data_match_FuelPassed = 0;
     public static int data_match_AlgaeInProcessor = 0;
     public static int data_match_AlgaePickup = 0;
     public static int[] data_match_CoralLevel = {0, 0, 0, 0, 0};
@@ -222,6 +223,8 @@ public class Achievements {
         data_match_AlgaeInNet = 0;
         data_match_AlgaeInProcessor = 0;
         data_match_AlgaePickup = 0;
+        data_match_FuelShot = 0;
+        data_match_FuelPassed = 0;
         Arrays.fill(data_match_CoralLevel, 0);
         data_match_CoralPickupGround = 0;
         data_match_CoralPickupStation = 0;

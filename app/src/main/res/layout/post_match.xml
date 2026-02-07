@@ -343,11 +343,20 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/text_StatsFuel"
+                    android:id="@+id/text_StatsFuelShot"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="@string/post_statsFuel"
+                    android:text="@string/post_statsFuelShot"
+                    android:textColor="@color/cpr_green"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/text_StatsFuelPassed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/post_statsFuelPassed"
                     android:textColor="@color/cpr_green"
                     android:textSize="20sp" />
             </LinearLayout>
