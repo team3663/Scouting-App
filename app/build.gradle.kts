@@ -4,7 +4,7 @@ plugins {
 }
 
 var versionMajor = 3
-var versionMinor = 1
+var versionMinor = 2
 var versionPatch = 0
 
 android {
