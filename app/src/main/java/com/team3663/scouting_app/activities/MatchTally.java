@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.hardware.SensorManager;
@@ -149,6 +151,7 @@ public class MatchTally extends AppCompatActivity {
         matchBinding.butShoot.setClickable(true);
         matchBinding.butShootTap.setEnabled(true);
         matchBinding.butShootTap.setClickable(true);
+        matchBinding.seekBar.setEnabled(true);
 
         // Calculate the image dimensions
         Constants.Match.IMAGE_WIDTH = matchBinding.FieldTouch.getWidth();
@@ -181,6 +184,14 @@ public class MatchTally extends AppCompatActivity {
     public void startTeleopDelay() {
         // Set match Phase to be correct
         Globals.CurrentMatchPhase = Constants.Phases.TELEOP;
+
+        // Disable Zone Buttons during delay
+        matchBinding.butLeftZone.setEnabled(false);
+        matchBinding.butLeftZone.setClickable(false);
+        matchBinding.butCenterZone.setEnabled(false);
+        matchBinding.butCenterZone.setClickable(false);
+        matchBinding.butRightZone.setEnabled(false);
+        matchBinding.butRightZone.setClickable(false);
 
         game_Timer.pause();
         delay_Timer.start();
@@ -224,6 +235,14 @@ public class MatchTally extends AppCompatActivity {
         matchBinding.butClimb.setEnabled(in_alliance_zone);
         matchBinding.butClimb.setClickable(in_alliance_zone);
         climb_button_pressed = false;
+
+        // Enable Zone Buttons
+        matchBinding.butLeftZone.setEnabled(true);
+        matchBinding.butLeftZone.setClickable(true);
+        matchBinding.butCenterZone.setEnabled(true);
+        matchBinding.butCenterZone.setClickable(true);
+        matchBinding.butRightZone.setEnabled(true);
+        matchBinding.butRightZone.setClickable(true);
 
         // Certain actions can't be set from a non-UI thread (like within a TimerTask that runs on a
         // separate thread). So we need to make a Runner that will execute on the UI thread to set this.
@@ -910,6 +929,10 @@ public class MatchTally extends AppCompatActivity {
                 matchBinding.butShoot.setText(getString(R.string.button_shoot).replace("!#!", progress_str));
             }
         });
+
+        // At the start of the match, we'll disabled the seekBar so it can't be changed.
+        // When the match starts, we'll enable it again.
+        seekbar.setEnabled(false);
     }
 
     // =============================================================================================
@@ -1044,12 +1067,31 @@ public class MatchTally extends AppCompatActivity {
     // Parameters:  void
     // Output:      void
     // =============================================================================================
+    @SuppressLint("ClickableViewAccessibility")
     private void initActionButtons() {
+        matchBinding.butClimb.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                view.setBackgroundColor(getColor(R.color.dark_grey));
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                view.setBackgroundColor(getColor(R.color.dark_green));
+
+            return false;
+        });
+
         matchBinding.butClimb.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Climb"), 1);
             matchBinding.butClimb.setEnabled(false);
             matchBinding.butClimb.setClickable(false);
             climb_button_pressed = true;
+        });
+
+        matchBinding.butPickup.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                view.setBackgroundColor(getColor(R.color.dark_grey));
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                view.setBackgroundColor(getColor(R.color.dark_yellow));
+
+            return false;
         });
 
         matchBinding.butPickup.setOnClickListener(view -> {
@@ -1058,9 +1100,27 @@ public class MatchTally extends AppCompatActivity {
             logEvent(Globals.EventList.getEventId(Constants.Phases.AUTO, "Pickup Fuel"), 1);
         });
 
+        matchBinding.butPassTap.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                view.setBackgroundColor(getColor(R.color.dark_grey));
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                view.setBackgroundColor(getColor(R.color.light_blue));
+
+            return false;
+        });
+
         matchBinding.butPassTap.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Pass 1 Fuel"), 1);
             Achievements.data_match_FuelPassed += 1;
+        });
+
+        matchBinding.butPass.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                view.setBackgroundColor(getColor(R.color.dark_grey));
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                view.setBackgroundColor(getColor(R.color.light_blue));
+
+            return false;
         });
 
         matchBinding.butPass.setOnClickListener(view -> {
@@ -1068,9 +1128,27 @@ public class MatchTally extends AppCompatActivity {
             Achievements.data_match_FuelPassed += matchBinding.seekBar.getProgress();
         });
 
+        matchBinding.butShootTap.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                view.setBackgroundColor(getColor(R.color.dark_grey));
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                view.setBackgroundColor(getColor(R.color.dark_green));
+
+            return false;
+        });
+
         matchBinding.butShootTap.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Shoot 1 Fuel"), 1);
             Achievements.data_match_FuelShot += 1;
+        });
+
+        matchBinding.butShoot.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                view.setBackgroundColor(getColor(R.color.dark_grey));
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                view.setBackgroundColor(getColor(R.color.dark_green));
+
+            return false;
         });
 
         matchBinding.butShoot.setOnClickListener(view -> {

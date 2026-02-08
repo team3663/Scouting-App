@@ -18,7 +18,6 @@ public class ClimbLevel {
         addClimbLevelRow("L3", "L3");
         addClimbLevelRow("L2", "L2");
         addClimbLevelRow("L1", "L1");
-        addClimbLevelRow("None", "No Climb");
     }
 
     // Add a row
