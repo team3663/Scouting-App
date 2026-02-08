@@ -236,7 +236,7 @@ public class PostMatch extends AppCompatActivity {
 
     // =============================================================================================
     // Function:    initClimbPosition
-    // Description: Initialize the  field
+    // Description: Initialize the Climb Position field
     // Parameters:  void
     // Output:      void
     // =============================================================================================
