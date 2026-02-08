@@ -402,6 +402,14 @@ public class Logger {
         return rc;
     }
 
+    // Member Function: Search through the output directory for an event Id.
+    public boolean findEvent(int in_eventId) {
+        for (int i = match_log_events.size() - 1; i >=0; --i) {
+            if (match_log_events.get(i).EventId == in_eventId) return true;
+        }
+        return false;
+    }
+
     // =============================================================================================
     // Class:       LoggerEventRow
     // Description: Contains all data for a single log event
