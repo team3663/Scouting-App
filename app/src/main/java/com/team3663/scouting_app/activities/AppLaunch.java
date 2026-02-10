@@ -119,6 +119,12 @@ public class AppLaunch extends AppCompatActivity {
         initSettings();
         initScouting();
 
+        // Set the constant values - 2026 Season
+        Constants.Events.IDS_TO_COLLAPSE.add(3);
+        Constants.Events.IDS_TO_COLLAPSE.add(5);
+        Constants.Events.IDS_TO_COLLAPSE.add(21);
+        Constants.Events.IDS_TO_COLLAPSE.add(23);
+
         Animation fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         appLaunchBinding.textBanner.startAnimation(fadeIn);
 
