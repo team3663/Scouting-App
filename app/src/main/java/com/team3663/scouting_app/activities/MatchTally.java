@@ -788,6 +788,14 @@ public class MatchTally extends AppCompatActivity {
     private void setRobotLocation(float in_X, float in_Y) {
         float offset = (float) (matchBinding.textRobot.getWidth() / 2);
 
+        // Force all action buttons to be un-pressed
+        handleActionButtonTouch(ID_BUT_CLIMB, MotionEvent.ACTION_UP);
+        handleActionButtonTouch(ID_BUT_PICKUP, MotionEvent.ACTION_UP);
+        handleActionButtonTouch(ID_BUT_PASS, MotionEvent.ACTION_UP);
+        handleActionButtonTouch(ID_BUT_PASS_TAP, MotionEvent.ACTION_UP);
+        handleActionButtonTouch(ID_BUT_SHOOT, MotionEvent.ACTION_UP);
+        handleActionButtonTouch(ID_BUT_SHOOT_TAP, MotionEvent.ACTION_UP);
+
         // If we don't know the alliance (didn't have match schedule?) then default to the PREFERRED position
         boolean blue_alliance = team_alliance.substring(0,1).equalsIgnoreCase("B");
 
