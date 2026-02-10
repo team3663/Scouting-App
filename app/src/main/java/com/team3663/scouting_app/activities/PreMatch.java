@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
@@ -97,15 +96,14 @@ public class PreMatch extends AppCompatActivity {
         preMatchBinding.editMatch.setOnFocusChangeListener((view, focus) -> {
             if (!focus) {
                 String MatchNumStr = String.valueOf(preMatchBinding.editMatch.getText());
-                int MatchNum = -1;
+                int MatchNum;
                 // if match number is greater than three digits, use only the last three digits otherwise app crashes
                 if (!MatchNumStr.isEmpty() && MatchNumStr.length() > 3) {
                     MatchNumStr = MatchNumStr.substring(MatchNumStr.length() - 3);
                     MatchNum = Integer.parseInt(MatchNumStr);
                     preMatchBinding.editMatch.setText(String.valueOf(MatchNum));
-                }
-
-                MatchNum = Integer.parseInt(MatchNumStr);
+                } else
+                    MatchNum = Integer.parseInt(MatchNumStr);
 
                 // We need to do SOMETHING if:
                 // 1. they blanked out the match number

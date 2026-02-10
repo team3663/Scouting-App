@@ -81,7 +81,6 @@ public class CPR_VerticalSeekBar extends View {
 
         int textColor = Color.BLACK;
         float textSize = dpToPx(14);
-        float textMargin = dpToPx(12);
 
         // If there's a set of attributes passed in, override the defaults to what the user wanted.
         if (attrs != null) {
@@ -98,7 +97,6 @@ public class CPR_VerticalSeekBar extends View {
             textEnabled = ta.getBoolean(R.styleable.CPR_VerticalSeekBar_vsb_textEnabled, textEnabled);
             textColor = ta.getColor(R.styleable.CPR_VerticalSeekBar_vsb_textColor, textColor);
             textSize = ta.getDimension(R.styleable.CPR_VerticalSeekBar_vsb_textSize, textSize);
-            textMargin = ta.getDimension(R.styleable.CPR_VerticalSeekBar_vsb_textMargin, textMargin);
             textSuffix = ta.getString(R.styleable.CPR_VerticalSeekBar_vsb_textSuffix);
 
             if (textSuffix == null) textSuffix = "";

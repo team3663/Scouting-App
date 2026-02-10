@@ -15,7 +15,6 @@ import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.widget.Chronometer;
-import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -53,7 +52,7 @@ public class MatchTally extends AppCompatActivity {
     private static float Screen_Y = 0;
     private static long start_time_not_moving;
     private static float tele_button_position_x = 0;
-    private static float tele_button_position_y = 0;;
+    private static float tele_button_position_y = 0;
     private static String team_alliance;
     private static boolean climb_button_pressed = false;
     private static boolean in_alliance_zone = false;
@@ -589,7 +588,7 @@ public class MatchTally extends AppCompatActivity {
 
         // If clicked, undo the last event selected
         matchBinding.butUndo.setOnClickListener(view -> {
-            // If the most recent event was a climb and we're going to undo it, re-anable the climb button
+            // If the most recent event was a climb and we're going to undo it, re-enable the climb button
             if (matchBinding.textStatus.getText().toString().equalsIgnoreCase("Climb")) {
                 climb_button_pressed = false;
                 if (in_alliance_zone) matchBinding.butClimb.setEnabled(true);

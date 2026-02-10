@@ -10,7 +10,6 @@
         <attr name="vsb_max" format="integer"/>
 
         <attr name="vsb_textSize" format="dimension"/>
-        <attr name="vsb_textMargin" format="dimension"/>
 
         <attr name="vsb_thumb" format="reference"/>
         <attr name="vsb_thumbWidth" format="dimension"/>
