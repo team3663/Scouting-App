@@ -31,6 +31,7 @@ import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.MatchTallyBinding;
 import com.team3663.scouting_app.utility.CPR_Chronometer;
+import com.team3663.scouting_app.utility.CPR_VerticalSeekBar;
 import com.team3663.scouting_app.utility.Logger;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
@@ -595,8 +596,7 @@ public class MatchTally extends AppCompatActivity {
                 if (in_alliance_zone) matchBinding.butClimb.setClickable(true);
             }
 
-            int last_event_id;
-            last_event_id = Globals.EventLogger.UndoLastEvent();
+            int last_event_id =Globals.EventLogger.UndoLastEvent();
 
             // If there are no events left to undo, hide the button
             if ((last_event_id == -1) || (Logger.current_event[Globals.EventList.getEventGroup(last_event_id)] == Constants.Events.ID_AUTO_START_GAME_PIECE)) {
@@ -899,7 +899,7 @@ public class MatchTally extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initSeekBar() {
-        SeekBar seekbar = findViewById(R.id.seekBar);
+        CPR_VerticalSeekBar seekbar = findViewById(R.id.seekBar);
         TextView seekbarProgress = findViewById(R.id.text_SeekBarProgress);
 
         seekbar.setProgress(Globals.numStartingGamePiece);
@@ -909,17 +909,17 @@ public class MatchTally extends AppCompatActivity {
         matchBinding.butPass.setText(getString(R.string.button_pass).replace("!#!", String.valueOf(Globals.numStartingGamePiece)));
         matchBinding.butShoot.setText(getString(R.string.button_shoot).replace("!#!", String.valueOf(Globals.numStartingGamePiece)));
 
-        seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        seekbar.setOnSeekBarChangeListener(new CPR_VerticalSeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+            public void onStartTrackingTouch(CPR_VerticalSeekBar seekBar) {
             }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
+            public void onStopTrackingTouch(CPR_VerticalSeekBar seekBar) {
             }
 
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            public void onProgressChanged(CPR_VerticalSeekBar seekBar, int progress, boolean fromUser) {
                 String progress_str = String.valueOf(progress);
 
                 seekbarProgress.setText(progress_str);

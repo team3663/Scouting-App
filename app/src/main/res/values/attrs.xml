@@ -5,7 +5,7 @@
         <attr name="vsb_progressColor" format="color"/>
         <attr name="vsb_textColor" format="color"/>
 
-        <attr name="vsb_barWidth" format="reference"/>
+        <attr name="vsb_barWidth" format="dimension"/>
         <attr name="vsb_progress" format="integer"/>
         <attr name="vsb_max" format="integer"/>
 
