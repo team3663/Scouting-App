@@ -237,6 +237,15 @@ public class Events {
         return -1;
     }
 
+    // Member Function: Return the phase for this Event
+    public String getPhaseForEvent(int in_EventId) {
+        for (EventRow er : event_list) {
+            if (er.id == in_EventId) return er.match_phase;
+        }
+
+        return "";
+    }
+
     // =============================================================================================
     // Class:       EventRow
     // Description: Defines a structure/class to hold the information for each Event

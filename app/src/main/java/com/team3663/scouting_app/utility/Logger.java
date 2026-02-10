@@ -201,7 +201,9 @@ public class Logger {
             if (Constants.Match.IMAGE_HEIGHT > 0) normalized_y = (int)(10_000.0 * ler.Y / Constants.Match.IMAGE_HEIGHT);
 
             // Peak ahead and if the next event is the same (and in the same "zone") combine the two events into one.
-            if ((i < match_log_events.size() - 1) && Constants.Events.IDS_TO_COLLAPSE.contains(ler.EventId)) {
+            // Don't do this for AUTO phase since we want the fidelity.
+            if ((i < match_log_events.size() - 1) && Constants.Events.IDS_TO_COLLAPSE.contains(ler.EventId) &&
+                    !Globals.EventList.getPhaseForEvent(ler.EventId).equals(Constants.Phases.AUTO)) {
                 LoggerEventRow next_ler = match_log_events.get(i + 1);
 
                 if (ler.EventId == next_ler.EventId) {
