@@ -57,6 +57,14 @@ public class MatchTally extends AppCompatActivity {
     private static boolean climb_button_pressed = false;
     private static boolean in_alliance_zone = false;
 
+    // Define the view id's for elements we need to reference
+    private static int ID_BUT_CLIMB;
+    private static int ID_BUT_SHOOT_TAP;
+    private static int ID_BUT_SHOOT;
+    private static int ID_BUT_PASS_TAP;
+    private static int ID_BUT_PASS;
+    private static int ID_BUT_PICKUP;
+
     // Define a Timer and TimerTasks so you can schedule things
     private CPR_Chronometer game_Timer;
     private CPR_Chronometer delay_Timer;
@@ -88,6 +96,7 @@ public class MatchTally extends AppCompatActivity {
         Globals.CurrentMatchPhase = Constants.Phases.NONE;
 
         // Initialize activity components
+        initViewIDs();
         initRotation();
         initStartButton();
         initTeam();
@@ -776,6 +785,14 @@ public class MatchTally extends AppCompatActivity {
     private void setRobotLocation(float in_X, float in_Y) {
         float offset = (float) (matchBinding.textRobot.getWidth() / 2);
 
+        // Force all action buttons to be un-pressed
+        handleActionButtonTouch(ID_BUT_CLIMB, MotionEvent.ACTION_UP);
+        handleActionButtonTouch(ID_BUT_PICKUP, MotionEvent.ACTION_UP);
+        handleActionButtonTouch(ID_BUT_PASS, MotionEvent.ACTION_UP);
+        handleActionButtonTouch(ID_BUT_PASS_TAP, MotionEvent.ACTION_UP);
+        handleActionButtonTouch(ID_BUT_SHOOT, MotionEvent.ACTION_UP);
+        handleActionButtonTouch(ID_BUT_SHOOT_TAP, MotionEvent.ACTION_UP);
+
         // If we don't know the alliance (didn't have match schedule?) then default to the PREFERRED position
         boolean blue_alliance = team_alliance.substring(0,1).equalsIgnoreCase("B");
 
@@ -892,6 +909,22 @@ public class MatchTally extends AppCompatActivity {
     }
 
     // =============================================================================================
+    // Function:    initViewIDs
+    // Description: Initialize the IDs for the views we need to keep track of
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initViewIDs() {
+        ID_BUT_CLIMB = matchBinding.butClimb.getId();
+        ID_BUT_PICKUP = matchBinding.butPickup.getId();
+        ID_BUT_PASS = matchBinding.butPass.getId();
+        ID_BUT_PASS_TAP = matchBinding.butPassTap.getId();
+        ID_BUT_SHOOT = matchBinding.butShoot.getId();
+        ID_BUT_SHOOT_TAP = matchBinding.butShootTap.getId();
+    }
+
+
+    // =============================================================================================
     // Function:    initSeekBar
     // Description: Initialize the SeekBar
     // Parameters:  void
@@ -952,6 +985,14 @@ public class MatchTally extends AppCompatActivity {
             if (!climb_button_pressed) matchBinding.butClimb.setEnabled(in_alliance_zone);
             if (!climb_button_pressed) matchBinding.butClimb.setClickable(in_alliance_zone);
 
+            // Force all action buttons to be un-pressed
+            handleActionButtonTouch(ID_BUT_CLIMB, MotionEvent.ACTION_UP);
+            handleActionButtonTouch(ID_BUT_PICKUP, MotionEvent.ACTION_UP);
+            handleActionButtonTouch(ID_BUT_PASS, MotionEvent.ACTION_UP);
+            handleActionButtonTouch(ID_BUT_PASS_TAP, MotionEvent.ACTION_UP);
+            handleActionButtonTouch(ID_BUT_SHOOT, MotionEvent.ACTION_UP);
+            handleActionButtonTouch(ID_BUT_SHOOT_TAP, MotionEvent.ACTION_UP);
+
             // The rest of the code needs to be in TELEOP phase.  So if it's not, just return.
             if (!Globals.CurrentMatchPhase.equals(Constants.Phases.TELEOP)) return;
 
@@ -975,6 +1016,14 @@ public class MatchTally extends AppCompatActivity {
             matchBinding.butClimb.setEnabled(in_alliance_zone);
             matchBinding.butClimb.setClickable(in_alliance_zone);
 
+            // Force all action buttons to be un-pressed
+            handleActionButtonTouch(ID_BUT_CLIMB, MotionEvent.ACTION_UP);
+            handleActionButtonTouch(ID_BUT_PICKUP, MotionEvent.ACTION_UP);
+            handleActionButtonTouch(ID_BUT_PASS, MotionEvent.ACTION_UP);
+            handleActionButtonTouch(ID_BUT_PASS_TAP, MotionEvent.ACTION_UP);
+            handleActionButtonTouch(ID_BUT_SHOOT, MotionEvent.ACTION_UP);
+            handleActionButtonTouch(ID_BUT_SHOOT_TAP, MotionEvent.ACTION_UP);
+
             // The rest of the code needs to be in TELEOP phase.  So if it's not, just return.
             if (!Globals.CurrentMatchPhase.equals(Constants.Phases.TELEOP)) return;
 
@@ -996,6 +1045,14 @@ public class MatchTally extends AppCompatActivity {
             matchBinding.butShootTap.setClickable(in_alliance_zone);
             if (!climb_button_pressed) matchBinding.butClimb.setEnabled(in_alliance_zone);
             if (!climb_button_pressed) matchBinding.butClimb.setClickable(in_alliance_zone);
+
+            // Force all action buttons to be un-pressed
+            handleActionButtonTouch(ID_BUT_CLIMB, MotionEvent.ACTION_UP);
+            handleActionButtonTouch(ID_BUT_PICKUP, MotionEvent.ACTION_UP);
+            handleActionButtonTouch(ID_BUT_PASS, MotionEvent.ACTION_UP);
+            handleActionButtonTouch(ID_BUT_PASS_TAP, MotionEvent.ACTION_UP);
+            handleActionButtonTouch(ID_BUT_SHOOT, MotionEvent.ACTION_UP);
+            handleActionButtonTouch(ID_BUT_SHOOT_TAP, MotionEvent.ACTION_UP);
 
             // The rest of the code needs to be in TELEOP phase.  So if it's not, just return.
             if (!Globals.CurrentMatchPhase.equals(Constants.Phases.TELEOP)) return;
@@ -1067,11 +1124,7 @@ public class MatchTally extends AppCompatActivity {
     @SuppressLint("ClickableViewAccessibility")
     private void initActionButtons() {
         matchBinding.butClimb.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
-                view.setBackgroundColor(getColor(R.color.dark_grey));
-            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
-                view.setBackgroundColor(getColor(R.color.dark_green));
-
+            handleActionButtonTouch(view.getId(), motionEvent.getAction());
             return false;
         });
 
@@ -1083,11 +1136,7 @@ public class MatchTally extends AppCompatActivity {
         });
 
         matchBinding.butPickup.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
-                view.setBackgroundColor(getColor(R.color.dark_grey));
-            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
-                view.setBackgroundColor(getColor(R.color.dark_yellow));
-
+            handleActionButtonTouch(view.getId(), motionEvent.getAction());
             return false;
         });
 
@@ -1098,11 +1147,7 @@ public class MatchTally extends AppCompatActivity {
         });
 
         matchBinding.butPassTap.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
-                view.setBackgroundColor(getColor(R.color.dark_grey));
-            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
-                view.setBackgroundColor(getColor(R.color.light_blue));
-
+            handleActionButtonTouch(view.getId(), motionEvent.getAction());
             return false;
         });
 
@@ -1112,11 +1157,7 @@ public class MatchTally extends AppCompatActivity {
         });
 
         matchBinding.butPass.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
-                view.setBackgroundColor(getColor(R.color.dark_grey));
-            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
-                view.setBackgroundColor(getColor(R.color.light_blue));
-
+            handleActionButtonTouch(view.getId(), motionEvent.getAction());
             return false;
         });
 
@@ -1126,11 +1167,7 @@ public class MatchTally extends AppCompatActivity {
         });
 
         matchBinding.butShootTap.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
-                view.setBackgroundColor(getColor(R.color.dark_grey));
-            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
-                view.setBackgroundColor(getColor(R.color.dark_green));
-
+            handleActionButtonTouch(view.getId(), motionEvent.getAction());
             return false;
         });
 
@@ -1140,11 +1177,7 @@ public class MatchTally extends AppCompatActivity {
         });
 
         matchBinding.butShoot.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
-                view.setBackgroundColor(getColor(R.color.dark_grey));
-            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
-                view.setBackgroundColor(getColor(R.color.dark_green));
-
+            handleActionButtonTouch(view.getId(), motionEvent.getAction());
             return false;
         });
 
@@ -1168,9 +1201,45 @@ public class MatchTally extends AppCompatActivity {
     }
 
     // =============================================================================================
+    // Function:    handleActionButtonTouch
+    // Description: Handle the action button(s) being touched.  We need this not only to clean up
+    //              code, but will need to call this explicitly when a Zone button is pressed to
+    //              force the action button "unpressed".  Since it will be disabled, the onTouch
+    //              listener for the action button won't be called.
+    // Parameters:  in_viewID
+    //                  The view ID representing the action button
+    //              in_motionEvent
+    //                  The motion event that was triggered
+    // Output:      void
+    // =============================================================================================
+    private void handleActionButtonTouch(int in_viewID, int in_motionEvent) {
+        View in_view = findViewById(in_viewID);
+
+        int color_down = getColor(R.color.dark_grey);
+        int color_up;
+
+        if (in_viewID == ID_BUT_PICKUP) {
+            color_up = getColor(R.color.dark_yellow);
+        } else if ((in_viewID == ID_BUT_PASS) || (in_viewID == ID_BUT_PASS_TAP)) {
+            color_up = getColor(R.color.light_blue);
+        } else if ((in_viewID == ID_BUT_SHOOT) || (in_viewID == ID_BUT_SHOOT_TAP) || in_viewID == ID_BUT_CLIMB) {
+            color_up = getColor(R.color.dark_green);
+        } else return;
+
+        if (in_motionEvent == MotionEvent.ACTION_DOWN)
+            in_view.setBackgroundColor(color_down);
+        else if (in_motionEvent == MotionEvent.ACTION_UP)
+            in_view.setBackgroundColor(color_up);
+    }
+
+    // =============================================================================================
     // Function:    logEvent
     // Description: Log an event into the logger
-    // Parameters:  void
+    // Parameters:  in_event_id
+    //                  The ID value for the event we want to display
+    //              in_Count
+    //                  The number of times this event has occurred with one entry
+    //                  eg: Shot 32 balls "at once".
     // Output:      void
     // =============================================================================================
     private void logEvent(int in_event_id, int in_Count) {
