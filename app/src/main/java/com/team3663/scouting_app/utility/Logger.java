@@ -228,7 +228,6 @@ public class Logger {
         if (Globals.isPractice) return;
 
         // Update Achievement data
-        String ach_desc = Globals.EventList.getEventDescription(in_EventId);
         Achievements.data_NumEvents++;
 
         // Determine the EventGroup Id this event belongs to
@@ -351,7 +350,6 @@ public class Logger {
         }
 
         // Undo any achievements from this event being undone.
-        String ach_desc = Globals.EventList.getEventDescription(lastEventId);
         Achievements.data_NumEvents--;
 
         // Check the match_event_log to see if there's a previous sequence.  If so, use that to set
