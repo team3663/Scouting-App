@@ -330,7 +330,9 @@ public class AppLaunch extends AppCompatActivity {
         usePublic = CopyPrivateToPublicFile(in_fileName, in_msgError);
 
         // Update the loading status
-        appLaunchBinding.textStatusFile.setText(in_msgLoading);
+        AppLaunch.this.runOnUiThread(() -> {
+            appLaunchBinding.textStatusFile.setText(in_msgLoading);
+        });
 
         try {
             // Open up the correct input stream
@@ -348,9 +350,15 @@ public class AppLaunch extends AppCompatActivity {
                 is = getAssets().open(Constants.Data.PRIVATE_BASE_DIR + "/" + in_fileName);
             }
 
-            appLaunchBinding.progressBarFile.setProgress(0);
-            appLaunchBinding.textPercentFile.setText(getString(R.string.applaunch_percent, 0));
-            appLaunchBinding.progressBarFile.setMax((int)fileSize);
+            // Sleep a tiny bit to help the UI not glitch (otherwise this block of code doesn't
+            // do what it's trying to do (things don't become visible, etc).
+            long finalFileSize = fileSize; // compiler complained if this wasn't done this way.
+
+            AppLaunch.this.runOnUiThread(() -> {
+                appLaunchBinding.progressBarFile.setProgress(0);
+                appLaunchBinding.textPercentFile.setText(getString(R.string.applaunch_percent, 0));
+                appLaunchBinding.progressBarFile.setMax((int) finalFileSize);
+            });
 
             // Read in the data
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -367,8 +375,14 @@ public class AppLaunch extends AppCompatActivity {
                     int newPercent = (int)(100 * bytesRead / fileSize);
                     if (newPercent > percentComplete) {
                         percentComplete = newPercent;
-                        appLaunchBinding.progressBarFile.setProgress((int) bytesRead);
-                        appLaunchBinding.textPercentFile.setText(getString(R.string.applaunch_percent, percentComplete));
+
+                        long finalBytesRead = bytesRead; // compiler complained if this wasn't done this way.
+                        int finalPercentComplete = percentComplete; // compiler complained if this wasn't done this way.
+
+                        AppLaunch.this.runOnUiThread(() -> {
+                            appLaunchBinding.progressBarFile.setProgress((int) finalBytesRead);
+                            appLaunchBinding.textPercentFile.setText(getString(R.string.applaunch_percent, finalPercentComplete));
+                        });
                     }
                 }
 
@@ -437,8 +451,10 @@ public class AppLaunch extends AppCompatActivity {
         }
 
         // increment the overall progress
-        appLaunchBinding.progressBarOverall.setProgress(appLaunchBinding.progressBarOverall.getProgress() + 1);
-        appLaunchBinding.textPercentOverall.setText(getString(R.string.applaunch_percent, 100 * appLaunchBinding.progressBarOverall.getProgress() / appLaunchBinding.progressBarOverall.getMax()));
+        AppLaunch.this.runOnUiThread(() -> {
+            appLaunchBinding.progressBarOverall.setProgress(appLaunchBinding.progressBarOverall.getProgress() + 1);
+            appLaunchBinding.textPercentOverall.setText(getString(R.string.applaunch_percent, 100 * appLaunchBinding.progressBarOverall.getProgress() / appLaunchBinding.progressBarOverall.getMax()));
+        });
     }
 
     // =============================================================================================
