@@ -208,22 +208,25 @@
                     android:layout_weight="1"
                     android:orientation="horizontal">
 
-                    <SeekBar
+                    <com.team3663.scouting_app.utility.CPR_VerticalSeekBar
                         android:id="@+id/seekBar"
-                        style="@style/Widget.AppCompat.SeekBar.Discrete"
-                        android:progressTint="@color/cpr_green"
-                        android:thumbTint="@color/cpr_green"
-                        android:layout_width="400dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="match_parent"
-                        android:min="0"
-                        android:rotation="270"
-                        android:translationX="-175dp" />
+                        app:vsb_progressColor="@color/dark_green"
+                        app:vsb_progressFromBottom="true"
+                        app:vsb_thumb="@drawable/vsb_thumb"
+                        app:vsb_textEnabled="true"
+                        app:vsb_textSize="16sp"
+                        app:vsb_textColor="@color/dark_grey"
+                        app:vsb_barBackgroundColor="@color/dark_grey"
+                        app:vsb_barWidth="13dp"
+                        />
 
                     <FrameLayout
                         android:layout_width="830dp"
                         android:background="@color/dark_grey"
-                        android:layout_height="match_parent"
-                        android:translationX="-340dp">
+                        android:layout_height="match_parent">
 
                         <TextView
                                 android:id="@+id/textRobot"
