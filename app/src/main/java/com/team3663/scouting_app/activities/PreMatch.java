@@ -426,6 +426,16 @@ public class PreMatch extends AppCompatActivity {
                 return;
             }
 
+            if (!preMatchBinding.editScouterName.getText().toString().matches("^[a-zA-Z0-9_ .]+$")) {
+                Toast.makeText(PreMatch.this, R.string.pre_name_invalid, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (preMatchBinding.editScouterName.getText().toString().length() > Constants.PreMatch.MAX_SCOUTER_LENGTH) {
+                Toast.makeText(PreMatch.this, getString(R.string.pre_name_too_long).replace("!#!", String.valueOf(Constants.PreMatch.MAX_SCOUTER_LENGTH)), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (isLogFileExisting()) {
                 new AlertDialog.Builder(view.getContext())
                         .setTitle(getString(R.string.pre_already_scouted_title))

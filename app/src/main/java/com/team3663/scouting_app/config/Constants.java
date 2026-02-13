@@ -42,6 +42,7 @@ public class Constants {
     public static class PreMatch {
         public static final String DEFAULT_MATCH_TYPE = "q";
         public static final int STARTING_GAME_PIECES = 8;
+        public static final int MAX_SCOUTER_LENGTH = 20;
     }
 
     public static class Match {

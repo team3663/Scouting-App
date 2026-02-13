@@ -19,4 +19,6 @@
     <string name="pre_already_scouted_message">Do you want to continue and overwrite the previous scouting data or go back and change the match?</string>
     <string name="pre_already_scouted_button_positive">Continue</string>
     <string name="pre_already_scouted_button_negative">Cancel</string>
+    <string name="pre_name_invalid">Scouter name can only contain letters, numbers, spaces, periods and underscores</string>
+    <string name="pre_name_too_long">Scouter name must be no more than !#! characters</string>
 </resources>
