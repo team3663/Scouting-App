@@ -32,6 +32,7 @@ import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.AppLaunchBinding;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -60,7 +61,7 @@ public class AppLaunch extends AppCompatActivity {
                             Globals.MatchList.clear();
                             LoadDataFile(getString(R.string.file_matches), getString(R.string.applaunch_loading_matches), getString(R.string.applaunch_file_error_matches));
                             Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                            appLaunchBinding.textStatus.setText("");
+                            appLaunchBinding.textStatusFile.setText("");
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }
@@ -192,6 +193,10 @@ public class AppLaunch extends AppCompatActivity {
                 Globals.MatchList.clear();
                 Globals.TeamList.clear();
 
+                appLaunchBinding.progressBarOverall.setMax(9);
+                appLaunchBinding.progressBarOverall.setProgress(0);
+                appLaunchBinding.textStatusOverall.setText(getString(R.string.applaunch_loading));
+
                 // Load the data with a BRIEF delay between.  :)
                 try {
                     LoadDataFile(getString(R.string.file_colors), getString(R.string.applaunch_loading_colors), getString(R.string.applaunch_file_error_colors));
@@ -220,7 +225,10 @@ public class AppLaunch extends AppCompatActivity {
                 }
 
                 // Erase the status text
-                appLaunchBinding.textStatus.setText("");
+                appLaunchBinding.textStatusFile.setText("");
+                appLaunchBinding.textStatusOverall.setText("");
+                appLaunchBinding.textPercentFile.setText("");
+                appLaunchBinding.textPercentOverall.setText("");
 
                 // Enable the start scouting button and settings button
                 appLaunchBinding.butStartScouting.setClickable(true);
@@ -230,6 +238,8 @@ public class AppLaunch extends AppCompatActivity {
                 // that runs on a separate thread.  So we need to make a Runner that will execute on the UI thread
                 // to set these.
                 AppLaunch.this.runOnUiThread(() -> {
+                    appLaunchBinding.progressBarOverall.setVisibility(View.INVISIBLE);
+                    appLaunchBinding.progressBarFile.setVisibility(View.INVISIBLE);
                     appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
                     appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
                     appLaunchBinding.butStartScouting.setClickable(true);
@@ -300,13 +310,16 @@ public class AppLaunch extends AppCompatActivity {
     public void LoadDataFile(String in_fileName, String in_msgLoading, String in_msgError) {
         boolean usePublic;
         String line;
+        long fileSize = 0;
+        long bytesRead = 0;
+        int percentComplete = 0;
 
         // Ensure the public file exists, and if not, copy the private one there.
         // Return back if we should use the private or public file.
         usePublic = CopyPrivateToPublicFile(in_fileName, in_msgError);
 
         // Update the loading status
-        appLaunchBinding.textStatus.setText(in_msgLoading);
+        appLaunchBinding.textStatusFile.setText(in_msgLoading);
 
         try {
             // Open up the correct input stream
@@ -315,18 +328,37 @@ public class AppLaunch extends AppCompatActivity {
             // If we can use the Public file, open the file, then the stream.  for the Private file, we can open the stream directly.
             if (usePublic) {
                 DocumentFile df = Globals.input_df.findFile(in_fileName);
+
                 assert df != null;
+                assert df.getUri().getPath() != null;
+                fileSize = new File(Environment.getExternalStorageDirectory().getPath() + "/Documents/" + Constants.Data.PUBLIC_BASE_DIR + "/" + Constants.Data.PUBLIC_INPUT_DIR + "/" + in_fileName).length();
                 is = getContentResolver().openInputStream(df.getUri());
             } else {
                 is = getAssets().open(Constants.Data.PRIVATE_BASE_DIR + "/" + in_fileName);
             }
 
+            appLaunchBinding.progressBarFile.setProgress(0);
+            appLaunchBinding.progressBarFile.setMax((int)fileSize);
+
             // Read in the data
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             br.readLine();
             while ((line = br.readLine()) != null) {
-                // Split out the csv line.
+                // Split out the csv line and calculate the number of bytes read so far.
                 String[] info;
+                bytesRead += line.length() + 2;
+                if (bytesRead > fileSize) bytesRead = fileSize;
+
+                // Update file progress (if we know the size) and only update the progressBar if the %age increased.
+                // Otherwise, the Teams file has so many updates to the progress bar / text view, it can hang the UI.
+                if (fileSize > 0) {
+                    int newPercent = (int)(100 * bytesRead / fileSize);
+                    if (newPercent > percentComplete) {
+                        percentComplete = newPercent;
+                        appLaunchBinding.progressBarFile.setProgress((int) bytesRead);
+                        appLaunchBinding.textPercentFile.setText(getString(R.string.applaunch_percent, percentComplete));
+                    }
+                }
 
                 if (line.contains("\"")) {
                     boolean inQuotes = false;
@@ -391,6 +423,10 @@ public class AppLaunch extends AppCompatActivity {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        // increment the overall progress
+        appLaunchBinding.progressBarOverall.setProgress(appLaunchBinding.progressBarOverall.getProgress() + 1);
+        appLaunchBinding.textPercentOverall.setText(getString(R.string.applaunch_percent, 100 * appLaunchBinding.progressBarOverall.getProgress() / appLaunchBinding.progressBarOverall.getMax()));
     }
 
     // =============================================================================================

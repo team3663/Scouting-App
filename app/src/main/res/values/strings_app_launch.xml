@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="applaunch_loading_teams">Loading Team Data…</string>
-    <string name="applaunch_loading_match_types">Loading Match Types Data…</string>
-    <string name="applaunch_loading_matches">Loading Match Data…</string>
-    <string name="applaunch_loading_event_groups">Loading Event Group Data…</string>
-    <string name="applaunch_loading_events">Loading Event Data…</string>
-    <string name="applaunch_loading_competitions">Loading Competition Data…</string>
-    <string name="applaunch_loading_devices">Loading Device Data…</string>
-    <string name="applaunch_loading_comments">Loading Comment Data…</string>
-    <string name="applaunch_loading_colors">Loading Color Data…</string>
+    <string name="applaunch_loading">Loading…</string>
+    <string name="applaunch_loading_teams">Team Data</string>
+    <string name="applaunch_loading_match_types">Match Types Data</string>
+    <string name="applaunch_loading_matches">Match Data</string>
+    <string name="applaunch_loading_event_groups">Event Group Data</string>
+    <string name="applaunch_loading_events">Event Data</string>
+    <string name="applaunch_loading_competitions">Competition Data</string>
+    <string name="applaunch_loading_devices">Device Data</string>
+    <string name="applaunch_loading_comments">Comment Data</string>
+    <string name="applaunch_loading_colors">Color Data</string>
+    <string name="applaunch_percent">%1$d %%</string>
 
     <string name="applaunch_file_error_teams">Error loading teams from data file!</string>
     <string name="applaunch_file_error_match_types">Error loading match types from data file!</string>
