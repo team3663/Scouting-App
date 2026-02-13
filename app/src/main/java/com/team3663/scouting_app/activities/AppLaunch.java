@@ -143,9 +143,6 @@ public class AppLaunch extends AppCompatActivity {
 
         // While loading Matches, we messed with Globals.CurrentMatchType, so reset it
         Globals.CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
-
-        // Pin the app to help prevent it from being closed mid-match
-        startLockTask();
     }
 
     // =============================================================================================
@@ -196,6 +193,7 @@ public class AppLaunch extends AppCompatActivity {
                 appLaunchBinding.progressBarOverall.setMax(9);
                 appLaunchBinding.progressBarOverall.setProgress(0);
                 appLaunchBinding.textStatusOverall.setText(getString(R.string.applaunch_loading));
+                appLaunchBinding.textPercentOverall.setText(getString(R.string.applaunch_percent, 0));
 
                 // Load the data with a BRIEF delay between.  :)
                 try {
@@ -224,31 +222,44 @@ public class AppLaunch extends AppCompatActivity {
                     throw new RuntimeException(e);
                 }
 
-                // Erase the status text
-                appLaunchBinding.textStatusFile.setText("");
-                appLaunchBinding.textStatusOverall.setText("");
-                appLaunchBinding.textPercentFile.setText("");
-                appLaunchBinding.textPercentOverall.setText("");
-
-                // Enable the start scouting button and settings button
-                appLaunchBinding.butStartScouting.setClickable(true);
-                appLaunchBinding.imgButSettings.setClickable(true);
-
                 // Setting the Visibility attribute can't be set from a non-UI thread (like withing a TimerTask
                 // that runs on a separate thread.  So we need to make a Runner that will execute on the UI thread
                 // to set these.
                 AppLaunch.this.runOnUiThread(() -> {
+                    // Sleep a tiny bit to help the UI not glitch (otherwise this block of code doesn't
+                    // do what it's trying to do (things don't become visible, etc).
+                    try {
+                        Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
+                    }
+                    catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
                     appLaunchBinding.progressBarOverall.setVisibility(View.INVISIBLE);
                     appLaunchBinding.progressBarFile.setVisibility(View.INVISIBLE);
+                    appLaunchBinding.textStatusOverall.setVisibility(View.INVISIBLE);
+                    appLaunchBinding.textPercentOverall.setVisibility(View.INVISIBLE);
+                    appLaunchBinding.textStatusFile.setVisibility(View.INVISIBLE);
+                    appLaunchBinding.textPercentFile.setVisibility(View.INVISIBLE);
                     appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
                     appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
                     appLaunchBinding.butStartScouting.setClickable(true);
                     appLaunchBinding.imgButSettings.setClickable(true);
                     appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
                     appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
+
+                    // Erase the status text
+                    appLaunchBinding.textStatusFile.setText("");
+                    appLaunchBinding.textStatusOverall.setText("");
+                    appLaunchBinding.textPercentFile.setText("");
+                    appLaunchBinding.textPercentOverall.setText("");
+
+                    // Enable the start scouting button and settings button
+                    appLaunchBinding.butStartScouting.setClickable(true);
+                    appLaunchBinding.imgButSettings.setClickable(true);
                 });
             }
-        }, 10);
+        }, Constants.AppLaunch.SPLASH_SCREEN_DELAY);
     }
 
     // =============================================================================================
@@ -338,6 +349,7 @@ public class AppLaunch extends AppCompatActivity {
             }
 
             appLaunchBinding.progressBarFile.setProgress(0);
+            appLaunchBinding.textPercentFile.setText(getString(R.string.applaunch_percent, 0));
             appLaunchBinding.progressBarFile.setMax((int)fileSize);
 
             // Read in the data
@@ -472,6 +484,9 @@ public class AppLaunch extends AppCompatActivity {
                     (Globals.sp.getInt(Constants.Prefs.QR_SIZE, -1) == -1)) {
                 Toast.makeText(AppLaunch.this, R.string.applaunch_not_configured, Toast.LENGTH_SHORT).show();
             } else {
+                // Pin the app to help prevent it from being closed mid-match
+                startLockTask();
+
                 // Go to the first page
                 Intent GoToPreMatch = new Intent(AppLaunch.this, PreMatch.class);
                 startActivity(GoToPreMatch);
