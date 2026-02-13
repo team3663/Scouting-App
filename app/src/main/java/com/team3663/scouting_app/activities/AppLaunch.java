@@ -330,9 +330,7 @@ public class AppLaunch extends AppCompatActivity {
         usePublic = CopyPrivateToPublicFile(in_fileName, in_msgError);
 
         // Update the loading status
-        AppLaunch.this.runOnUiThread(() -> {
-            appLaunchBinding.textStatusFile.setText(in_msgLoading);
-        });
+        AppLaunch.this.runOnUiThread(() -> appLaunchBinding.textStatusFile.setText(in_msgLoading));
 
         try {
             // Open up the correct input stream
