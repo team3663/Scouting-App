@@ -7,6 +7,7 @@ import android.widget.Toast;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.team3663.scouting_app.R;
+import com.team3663.scouting_app.activities.MatchTally;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.utility.achievements.Achievements;
@@ -181,9 +182,15 @@ public class Logger {
 
     // Member Function: Write out the "E" file
     private void WriteOutEventFile(OutputStream in_fos) {
+        int count = 0;
+        boolean repeatedRow = false;
+
         // Form the output line that goes in the csv file.
         for (int i = 1; i < match_log_events.size(); ++i) {
             LoggerEventRow ler = match_log_events.get(i);
+
+            if (!repeatedRow) count = ler.Count;
+            repeatedRow = false;
 
             // Normalize the X, Y coordinates to be a %age of the image size
             // Multiply the %age by 10,000 to get a whole number representing 2 digits of precision (ie: 0.3956 turns into 3956)
@@ -193,26 +200,46 @@ public class Logger {
             if (Constants.Match.IMAGE_WIDTH > 0) normalized_x = (int)(10_000.0 * ler.X / Constants.Match.IMAGE_WIDTH);
             if (Constants.Match.IMAGE_HEIGHT > 0) normalized_y = (int)(10_000.0 * ler.Y / Constants.Match.IMAGE_HEIGHT);
 
-            StringBuilder csv_line = new StringBuilder();
-            csv_line.append("E")
-                    .append(",").append(Globals.CurrentCompetitionId)
-                    .append(",").append(Globals.CurrentMatchType)
-                    .append(",").append(Globals.CurrentMatchNumber)
-                    .append(",").append(Globals.CurrentTeamToScout)
-                    .append(",").append(i)
-                    .append(",").append(ler.EventId)
-                    .append(",").append(ler.LogTime)
-                    .append(",").append(normalized_x)
-                    .append(",").append(normalized_y)
-                    .append(",").append(ler.PrevSeq)
-                    .append(",").append(ler.Count);
+            // Peak ahead and if the next event is the same (and in the same "zone") combine the two events into one.
+            // Don't do this for AUTO phase since we want the fidelity.
+            if ((i < match_log_events.size() - 1) && Constants.Events.IDS_TO_COLLAPSE.contains(ler.EventId) &&
+                    !Globals.EventList.getPhaseForEvent(ler.EventId).equals(Constants.Phases.AUTO)) {
+                LoggerEventRow next_ler = match_log_events.get(i + 1);
 
-            try {
-                in_fos.write(csv_line.toString().getBytes(StandardCharsets.UTF_8));
-                in_fos.write(Constants.Logger.FILE_LINE_SEPARATOR.getBytes(StandardCharsets.UTF_8));
-            } catch (IOException e) {
-                Toast.makeText(appContext, "Failed to write out event data: " + csv_line + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
-                throw new RuntimeException(e);
+                if (ler.EventId == next_ler.EventId) {
+                    if ((ler.X < MatchTally.NeutralZone_StartX) && (next_ler.X < MatchTally.NeutralZone_StartX))
+                        repeatedRow = true;
+                    else if ((ler.X < MatchTally.RightZone_StartX) && (next_ler.X < MatchTally.RightZone_StartX))
+                        repeatedRow = true;
+                    else if ((ler.X >= MatchTally.RightZone_StartX) && (next_ler.X >= MatchTally.RightZone_StartX))
+                        repeatedRow = true;
+                }
+            }
+
+            if (repeatedRow) {
+                count++;
+            } else {
+                StringBuilder csv_line = new StringBuilder();
+                csv_line.append("E")
+                        .append(",").append(Globals.CurrentCompetitionId)
+                        .append(",").append(Globals.CurrentMatchType)
+                        .append(",").append(Globals.CurrentMatchNumber)
+                        .append(",").append(Globals.CurrentTeamToScout)
+                        .append(",").append(i)
+                        .append(",").append(ler.EventId)
+                        .append(",").append(ler.LogTime)
+                        .append(",").append(normalized_x)
+                        .append(",").append(normalized_y)
+                        .append(",").append(ler.PrevSeq)
+                        .append(",").append(count);
+
+                try {
+                    in_fos.write(csv_line.toString().getBytes(StandardCharsets.UTF_8));
+                    in_fos.write(Constants.Logger.FILE_LINE_SEPARATOR.getBytes(StandardCharsets.UTF_8));
+                } catch (IOException e) {
+                    Toast.makeText(appContext, "Failed to write out event data: " + csv_line + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
+                    throw new RuntimeException(e);
+                }
             }
         }
     }

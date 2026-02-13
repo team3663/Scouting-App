@@ -57,6 +57,9 @@ public class MatchTally extends AppCompatActivity {
     private static boolean climb_button_pressed = false;
     private static boolean in_alliance_zone = false;
 
+    public static float NeutralZone_StartX = -1;
+    public static float RightZone_StartX = -1;
+
     // Define the view id's for elements we need to reference
     private static int ID_BUT_CLIMB;
     private static int ID_BUT_SHOOT_TAP;
@@ -72,8 +75,8 @@ public class MatchTally extends AppCompatActivity {
     private static TimerTask flashing_timertask;
 
     private static final ColorDrawable[] switch_color_drawable = {
-            new ColorDrawable(Constants.Match.BUTTON_COLOR_NORMAL),
-            new ColorDrawable(Constants.Match.BUTTON_COLOR_FLASH)
+        new ColorDrawable(Constants.Match.BUTTON_COLOR_NORMAL),
+        new ColorDrawable(Constants.Match.BUTTON_COLOR_FLASH)
     };
     private static TransitionDrawable switch_notMoving_transition;
     private static TransitionDrawable switch_defended_transition;
@@ -163,6 +166,8 @@ public class MatchTally extends AppCompatActivity {
         // Calculate the image dimensions
         Constants.Match.IMAGE_WIDTH = matchBinding.FieldTouch.getWidth();
         Constants.Match.IMAGE_HEIGHT = matchBinding.FieldTouch.getHeight();
+        NeutralZone_StartX = matchBinding.butCenterZone.getX();
+        RightZone_StartX = matchBinding.butRightZone.getX();
 
         // Set match Phase to be correct and Button text
         Globals.CurrentMatchPhase = Constants.Phases.AUTO;
