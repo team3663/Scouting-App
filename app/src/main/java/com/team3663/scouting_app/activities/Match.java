@@ -351,8 +351,6 @@ public class Match extends AppCompatActivity {
                     // The dialog is automatically dismissed when a dialog button is clicked.
                     .setPositiveButton(getString(R.string.match_alert_orphanedEvent_positive), (dialog, which) -> {
                         dialog.dismiss();
-                        Achievements.data_OrphanEvents++;
-                        Achievements.data_match_OrphanEvents++;
                         endMatch();
                     })
 

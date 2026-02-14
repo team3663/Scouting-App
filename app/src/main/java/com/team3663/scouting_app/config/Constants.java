@@ -11,7 +11,7 @@ import java.util.Set;
 public class Constants {
     public static class Logger {
         // Logger Keys - Data File is written in order of the FILE_HEADER array
-        public static final String[] LOGKEY_DATA_FILE_HEADER = new String[]{"CompId", "MatchType", "MatchNum", "Team", "Shadow", "TeamScouting", "Scouter", "DidPlay", "StartGamePiece", "Accuracy", "ClimbLevel", "ClimbPosition", "Comments", "Achievements", "StartOffset", "Start"};
+        public static final String[] LOGKEY_DATA_FILE_HEADER = new String[]{"CompId", "MatchType", "MatchNum", "Team", "Shadow", "TeamScouting", "Scouter", "DidPlay", "StartGamePiece", "Accuracy", "ClimbLevel", "ClimbPosition", "Comments", "Achievements", "StartOffset", "Start", "StealFuel"};
         public static final String LOGKEY_COMPETITION_ID = "CompId";
         public static final String LOGKEY_MATCH_NUMBER = "MatchNum";
         public static final String LOGKEY_SHADOW_MODE = "Shadow";
@@ -33,6 +33,13 @@ public class Constants {
         public static final String FILE_LINE_SEPARATOR = "\r\n";
     }
 
+    public static class Field {
+        public static final double STRUCTURE_WIDTH_PERCENTAGE = 6.6;
+        public static final double DEPOT_BOTTOM_PERCENTAGE = 63.1;
+        public static final double DEPOT_TOP_PERCENTAGE = 82.14;
+        public static final double OUTPOST_TOP_PERCENTAGE = 16.67;
+    }
+
     public static class Phases {
         public static final String AUTO = "AUTO";
         public static final String TELEOP = "TELEOP";
@@ -41,6 +48,7 @@ public class Constants {
 
     public static class PreMatch {
         public static final String DEFAULT_MATCH_TYPE = "q";
+        public static final int MAX_DIGIT_TEAM_NUM = 5;
         public static final int STARTING_GAME_PIECES = 8;
         public static final int MAX_SCOUTER_LENGTH = 20;
     }
