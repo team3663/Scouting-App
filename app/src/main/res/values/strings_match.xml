@@ -8,9 +8,9 @@
     <string name="button_climb">Climb</string>
     <string name="button_pickup">Pickup\nFuel</string>
     <string name="button_pass1">Pass\n1 (TAP)</string>
-    <string name="button_pass">Pass\n!#!</string>
+    <string name="button_pass">Pass\n%1$d</string>
     <string name="button_shoot1">Shoot\n1 (TAP)</string>
-    <string name="button_shoot">Shoot\n!#!</string>
+    <string name="button_shoot">Shoot\n%1$d</string>
 
     <string name="switch_on_defense">On\nDefense</string>
     <string name="switch_is_defended">Is\nDefended</string>

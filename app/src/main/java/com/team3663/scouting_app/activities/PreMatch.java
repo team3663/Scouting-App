@@ -432,7 +432,7 @@ public class PreMatch extends AppCompatActivity {
             }
 
             if (preMatchBinding.editScouterName.getText().toString().length() > Constants.PreMatch.MAX_SCOUTER_LENGTH) {
-                Toast.makeText(PreMatch.this, getString(R.string.pre_name_too_long).replace("!#!", String.valueOf(Constants.PreMatch.MAX_SCOUTER_LENGTH)), Toast.LENGTH_SHORT).show();
+                Toast.makeText(PreMatch.this, getString(R.string.pre_name_too_long, Constants.PreMatch.MAX_SCOUTER_LENGTH), Toast.LENGTH_SHORT).show();
                 return;
             }
 
