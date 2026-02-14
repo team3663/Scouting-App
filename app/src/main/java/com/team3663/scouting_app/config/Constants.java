@@ -4,7 +4,9 @@ import android.graphics.Color;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Constants {
     public static class Logger {
@@ -40,6 +42,7 @@ public class Constants {
     public static class PreMatch {
         public static final String DEFAULT_MATCH_TYPE = "q";
         public static final int STARTING_GAME_PIECES = 8;
+        public static final int MAX_SCOUTER_LENGTH = 20;
     }
 
     public static class Match {
@@ -96,6 +99,7 @@ public class Constants {
         public static final int ID_AUTO_START_GAME_PIECE = 0;
         public static final int ID_AUTO_CLIMB = 6;
         public static final int ID_TELE_CLIMB = 40;
+        public static final Set<Integer> IDS_TO_COLLAPSE = new HashSet<>();
         public static final int ID_NO_EVENT = 999;   // use to check if the eventID you're looking for doesn't exist
     }
 
@@ -119,7 +123,7 @@ public class Constants {
     }
 
     public static class AppLaunch {
-        public static final long SPLASH_SCREEN_DELAY = 10;
+        public static final long SPLASH_SCREEN_DELAY = 20;
     }
 
     public static class QRCode{

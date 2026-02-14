@@ -4,8 +4,8 @@ plugins {
 }
 
 var versionMajor = 3
-var versionMinor = 1
-var versionPatch = 0
+var versionMinor = 3
+var versionPatch = 1
 
 android {
     namespace = "com.team3663.scouting_app"

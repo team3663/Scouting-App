@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
@@ -97,15 +96,14 @@ public class PreMatch extends AppCompatActivity {
         preMatchBinding.editMatch.setOnFocusChangeListener((view, focus) -> {
             if (!focus) {
                 String MatchNumStr = String.valueOf(preMatchBinding.editMatch.getText());
-                int MatchNum = -1;
+                int MatchNum;
                 // if match number is greater than three digits, use only the last three digits otherwise app crashes
                 if (!MatchNumStr.isEmpty() && MatchNumStr.length() > 3) {
                     MatchNumStr = MatchNumStr.substring(MatchNumStr.length() - 3);
                     MatchNum = Integer.parseInt(MatchNumStr);
                     preMatchBinding.editMatch.setText(String.valueOf(MatchNum));
-                }
-
-                MatchNum = Integer.parseInt(MatchNumStr);
+                } else
+                    MatchNum = Integer.parseInt(MatchNumStr);
 
                 // We need to do SOMETHING if:
                 // 1. they blanked out the match number
@@ -425,6 +423,16 @@ public class PreMatch extends AppCompatActivity {
             if (String.valueOf(preMatchBinding.editMatch.getText()).isEmpty() || preMatchBinding.spinnerTeamToScout.getSelectedItem().toString().equals(getString(R.string.pre_dropdown_no_items))
                     || preMatchBinding.spinnerTeamToScout.getSelectedItem().toString().isEmpty() || String.valueOf(preMatchBinding.editScouterName.getText()).isEmpty() || String.valueOf(preMatchBinding.editNumStartingGamePiece.getText()).isEmpty()) {
                 Toast.makeText(PreMatch.this, R.string.pre_missing_data, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (!preMatchBinding.editScouterName.getText().toString().matches("^[a-zA-Z0-9_ .]+$")) {
+                Toast.makeText(PreMatch.this, R.string.pre_name_invalid, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (preMatchBinding.editScouterName.getText().toString().length() > Constants.PreMatch.MAX_SCOUTER_LENGTH) {
+                Toast.makeText(PreMatch.this, getString(R.string.pre_name_too_long).replace("!#!", String.valueOf(Constants.PreMatch.MAX_SCOUTER_LENGTH)), Toast.LENGTH_SHORT).show();
                 return;
             }
 
