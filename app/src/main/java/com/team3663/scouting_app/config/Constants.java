@@ -123,7 +123,7 @@ public class Constants {
     }
 
     public static class AppLaunch {
-        public static final long SPLASH_SCREEN_DELAY = 10;
+        public static final long SPLASH_SCREEN_DELAY = 20;
     }
 
     public static class QRCode{

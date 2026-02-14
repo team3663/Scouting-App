@@ -33,7 +33,7 @@
         tools:ignore="MissingConstraints,VisualLintBounds" />
 
     <LinearLayout
-        android:layout_width="760dp"
+        android:layout_width="750dp"
         android:layout_height="80dp"
         android:orientation="vertical"
         android:layout_marginStart="10dp"
@@ -57,11 +57,13 @@
 
             <TextView
                 android:id="@+id/text_PercentOverall"
-                android:layout_width="50dp"
+                android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:textColor="@color/white"
                 android:textSize="18sp"
-                android:gravity="center_vertical"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:gravity="end|center"
                 tools:ignore="MissingConstraints,VisualLintBounds" />
 
             <ProgressBar
@@ -88,16 +90,17 @@
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:gravity="center_vertical"
-                android:text="Competition Data"
                 tools:ignore="MissingConstraints,VisualLintBounds" />
 
             <TextView
                 android:id="@+id/text_PercentFile"
-                android:layout_width="50dp"
+                android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:textColor="@color/white"
                 android:textSize="18sp"
-                android:gravity="center_vertical"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:gravity="end|center"
                 tools:ignore="MissingConstraints,VisualLintBounds" />
 
             <ProgressBar

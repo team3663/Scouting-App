@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 30200,
-      "versionName": "3.2.0",
-      "outputFile": "CPR-Scout-3.2.0-release.apk"
+      "versionCode": 30301,
+      "versionName": "3.3.1",
+      "outputFile": "CPR-Scout-3.3.1-release.apk"
     }
   ],
   "elementType": "File",
@@ -22,14 +22,14 @@
       "minApi": 28,
       "maxApi": 30,
       "baselineProfiles": [
-        "baselineProfiles/1/CPR-Scout-3.2.0-release.dm"
+        "baselineProfiles/1/CPR-Scout-3.3.1-release.dm"
       ]
     },
     {
       "minApi": 31,
       "maxApi": 2147483647,
       "baselineProfiles": [
-        "baselineProfiles/0/CPR-Scout-3.2.0-release.dm"
+        "baselineProfiles/0/CPR-Scout-3.3.1-release.dm"
       ]
     }
   ],

@@ -392,6 +392,7 @@ public class MatchTally extends AppCompatActivity {
     // Parameters:  in_switch - The switch to change the color of
     // Output:      void
     // =============================================================================================
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private void animateSwitchColor(Switch in_switch) {
         String switch_text = in_switch.getText().toString();
 
@@ -492,9 +493,8 @@ public class MatchTally extends AppCompatActivity {
         // If this is a practice, put a message in the Status and set the image to Practice mode
         if (Globals.isPractice) {
             matchBinding.textStatus.setTextColor(Color.YELLOW);
-            matchBinding.textStatus.setText(getString(R.string.match_status_practice));
             matchBinding.textPractice.setText(getString(R.string.match_practice_watermark));
-            matchBinding.textPractice.setTextSize(210);
+            matchBinding.textPractice.setTextSize(180);
         } else {
             matchBinding.textStatus.setTextColor(Color.LTGRAY);
             matchBinding.textPractice.setText("");
