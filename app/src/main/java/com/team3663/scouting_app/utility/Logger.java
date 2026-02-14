@@ -10,6 +10,7 @@ import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.activities.MatchTally;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
+import com.team3663.scouting_app.databinding.MatchTallyBinding;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
 import java.io.IOException;
@@ -376,8 +377,59 @@ public class Logger {
             return -1;
         }
 
+        // Get the X and Y values of last logged event
+        float EventX = match_log_events.get(lastIndex).X;
+        float EventY = match_log_events.get(lastIndex).Y;
+
         // Undo any achievements from this event being undone.
         Achievements.data_NumEvents--;
+
+        // If the most recent event was a climb
+        if (lastEventId == 6) Achievements.data_match_ClimbSuccessAuto = "";
+
+        // If the most recent event was a pickup fuel
+        if (lastEventId == 1) {
+            // if last event was pick up fuel from the neutral zone
+            if (EventX > MatchTally.NeutralZone_StartX && EventX < MatchTally.RightZone_StartX)
+                Achievements.data_match_FuelPickUpNeutral--;
+            // if last event was pickup fuel from the depot
+            if (EventX <= Constants.Match.IMAGE_WIDTH* (Constants.Field.STRUCTURE_WIDTH_PERCENTAGE / 100)
+                    && EventY >= Constants.Match.IMAGE_HEIGHT * (Constants.Field.DEPOT_BOTTOM_PERCENTAGE / 100)
+                    && EventY <= Constants.Match.IMAGE_HEIGHT * (Constants.Field.DEPOT_TOP_PERCENTAGE / 100)) {
+                Achievements.data_match_FuelPickUpDepot--;
+            }
+            // if last event was pickup fuel from the outpost
+            if (EventX <= Constants.Match.IMAGE_WIDTH * (Constants.Field.STRUCTURE_WIDTH_PERCENTAGE / 100)
+                    && EventY <= Constants.Match.IMAGE_HEIGHT * (Constants.Field.OUTPOST_TOP_PERCENTAGE / 100)) {
+                Achievements.data_match_FuelPickUpOutpost--;
+            }
+        }
+
+        // If the most recent event was a pass 1 fuel
+        if (lastEventId == 23 || lastEventId == 5) {
+            // if last event was a pass from alliance zone
+            if (MatchTally.in_alliance_zone) Achievements.data_match_FuelPassAlliance -= 1;
+                // if last event was a pass from neutral zone
+            else if (EventX > MatchTally.NeutralZone_StartX && EventX < MatchTally.RightZone_StartX) Achievements.data_match_FuelPassNeutral -= 1;
+                // if last event was pass from opponent zone
+            else Achievements.data_match_FuelPassOpponent -= 1;
+        }
+
+//        // If the most recent event was a pass many fuel
+        if (lastEventId == 22 || lastEventId == 4) {
+            // if last event was pass from alliance zone
+            if (MatchTally.in_alliance_zone) Achievements.data_match_FuelPassAlliance -= match_log_events.get(lastIndex).Count;
+                // if last event was pass from neutral zone
+            else if (EventX > MatchTally.NeutralZone_StartX && EventX < MatchTally.RightZone_StartX) Achievements.data_match_FuelPassNeutral -= match_log_events.get(lastIndex).Count;
+                // if last event was from opponent zone
+            else Achievements.data_match_FuelPassOpponent -= match_log_events.get(lastIndex).Count;
+        }
+
+        // If the most recent event was a shoot 1 fuel
+        if (lastEventId == 21 || lastEventId == 3) Achievements.data_match_FuelShoot -= 1;
+
+        // If the most recent event was a shoot many fuel
+        if (lastEventId == 20 || lastEventId == 2) Achievements.data_match_FuelShoot -= match_log_events.get(lastIndex).Count;
 
         // Check the match_event_log to see if there's a previous sequence.  If so, use that to set
         // the current event.

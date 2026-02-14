@@ -55,7 +55,7 @@ public class MatchTally extends AppCompatActivity {
     private static float tele_button_position_y = 0;
     private static String team_alliance;
     private static boolean climb_button_pressed = false;
-    private static boolean in_alliance_zone = false;
+    public static boolean in_alliance_zone = false;
 
     public static float NeutralZone_StartX = -1;
     public static float RightZone_StartX = -1;
@@ -311,8 +311,6 @@ public class MatchTally extends AppCompatActivity {
                     // The dialog is automatically dismissed when a dialog button is clicked.
                     .setPositiveButton(getString(R.string.match_alert_orphanedEvent_positive), (dialog, which) -> {
                         dialog.dismiss();
-                        Achievements.data_OrphanEvents++;
-                        Achievements.data_match_OrphanEvents++;
                         endMatch();
                     })
 
@@ -609,7 +607,7 @@ public class MatchTally extends AppCompatActivity {
                 if (in_alliance_zone) matchBinding.butClimb.setClickable(true);
             }
 
-            int last_event_id =Globals.EventLogger.UndoLastEvent();
+            int last_event_id = Globals.EventLogger.UndoLastEvent();
 
             // If there are no events left to undo, hide the button
             if ((last_event_id == -1) || (Logger.current_event[Globals.EventList.getEventGroup(last_event_id)] == Constants.Events.ID_AUTO_START_GAME_PIECE)) {
@@ -1003,7 +1001,13 @@ public class MatchTally extends AppCompatActivity {
             matchBinding.butCenterZone.setBackgroundColor(getColor(R.color.transparent));
             matchBinding.butRightZone.setBackgroundColor(getColor(R.color.transparent));
 
-            BlueView_X = matchBinding.butLeftZone.getX() + (matchBinding.butLeftZone.getWidth() / 2f);
+            boolean blue_alliance = team_alliance.substring(0,1).equalsIgnoreCase("B");
+
+            if (blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT) ||
+                    !blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) {
+                BlueView_X = matchBinding.FieldTouch.getWidth() - (matchBinding.butLeftZone.getX() + (matchBinding.butLeftZone.getWidth() / 2f));
+            } else BlueView_X = matchBinding.butLeftZone.getX() + matchBinding.butLeftZone.getWidth() / 2f;
+
             BlueView_Y = matchBinding.butLeftZone.getY() + (matchBinding.butLeftZone.getHeight() / 2f);
         });
 
@@ -1064,7 +1068,13 @@ public class MatchTally extends AppCompatActivity {
             matchBinding.butCenterZone.setBackgroundColor(getColor(R.color.transparent));
             matchBinding.butRightZone.setBackgroundColor(getColor(R.color.transparent_orange));
 
-            BlueView_X = matchBinding.butRightZone.getX() + (matchBinding.butRightZone.getWidth() / 2f);
+            boolean blue_alliance = team_alliance.substring(0,1).equalsIgnoreCase("B");
+
+            if (blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT) ||
+                    !blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) {
+                BlueView_X = matchBinding.FieldTouch.getWidth() - (matchBinding.butRightZone.getX() + (matchBinding.butRightZone.getWidth() / 2f));
+            } else BlueView_X = matchBinding.butRightZone.getX() + matchBinding.butRightZone.getWidth() / 2f;
+
             BlueView_Y = matchBinding.butRightZone.getY() + (matchBinding.butRightZone.getHeight() / 2f);
         });
 
@@ -1136,6 +1146,7 @@ public class MatchTally extends AppCompatActivity {
             matchBinding.butClimb.setEnabled(false);
             matchBinding.butClimb.setClickable(false);
             climb_button_pressed = true;
+            if (Globals.CurrentMatchPhase.equals((Constants.Phases.AUTO))) Achievements.data_match_ClimbSuccessAuto = "L1";
         });
 
         matchBinding.butPickup.setOnTouchListener((view, motionEvent) -> {
@@ -1147,6 +1158,20 @@ public class MatchTally extends AppCompatActivity {
             if (!Globals.CurrentMatchPhase.equals(Constants.Phases.AUTO)) return;
 
             logEvent(Globals.EventList.getEventId(Constants.Phases.AUTO, "Pickup Fuel"), 1);
+            // if pickup fuel is at the depot
+            if (BlueView_X <= matchBinding.FieldTouch.getWidth() * (Constants.Field.STRUCTURE_WIDTH_PERCENTAGE / 100)
+                    && BlueView_Y >= matchBinding.FieldTouch.getHeight() * (Constants.Field.DEPOT_BOTTOM_PERCENTAGE / 100)
+                    && BlueView_Y <= matchBinding.FieldTouch.getHeight() * (Constants.Field.DEPOT_TOP_PERCENTAGE / 100)) {
+                Achievements.data_match_FuelPickUpDepot++;
+            }
+            // if pickup fuel is at the outpost
+            if (BlueView_X <= matchBinding.FieldTouch.getWidth() * (Constants.Field.STRUCTURE_WIDTH_PERCENTAGE / 100)
+                    && BlueView_Y <= matchBinding.FieldTouch.getHeight() * (Constants.Field.OUTPOST_TOP_PERCENTAGE / 100)) {
+                Achievements.data_match_FuelPickUpOutpost++;
+            }
+
+            // if pickup fuel is at the neutral zone
+            if (BlueView_X > matchBinding.butCenterZone.getX() && BlueView_X < matchBinding.butRightZone.getX()) Achievements.data_match_FuelPickUpNeutral++;
         });
 
         matchBinding.butPassTap.setOnTouchListener((view, motionEvent) -> {
@@ -1156,7 +1181,12 @@ public class MatchTally extends AppCompatActivity {
 
         matchBinding.butPassTap.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Pass 1 Fuel"), 1);
-            Achievements.data_match_FuelPassed += 1;
+            // if pass is from alliance zone
+            if (in_alliance_zone) Achievements.data_match_FuelPassAlliance += 1;
+            // if pass is from neutral zone
+            else if (BlueView_X < matchBinding.butRightZone.getX()) Achievements.data_match_FuelPassNeutral += 1;
+            // if pass is from opponent zone
+            else Achievements.data_match_FuelPassOpponent += 1;
         });
 
         matchBinding.butPass.setOnTouchListener((view, motionEvent) -> {
@@ -1166,7 +1196,12 @@ public class MatchTally extends AppCompatActivity {
 
         matchBinding.butPass.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Pass Many Fuel"), matchBinding.seekBar.getProgress());
-            Achievements.data_match_FuelPassed += matchBinding.seekBar.getProgress();
+            // if pass is from alliance zone
+            if (in_alliance_zone) Achievements.data_match_FuelPassAlliance += matchBinding.seekBar.getProgress();
+            // if pass is from neutral zone
+            else if (BlueView_X < matchBinding.butRightZone.getX()) Achievements.data_match_FuelPassNeutral += matchBinding.seekBar.getProgress();
+            // if pass is from opponent zone
+            else Achievements.data_match_FuelPassOpponent += matchBinding.seekBar.getProgress();
         });
 
         matchBinding.butShootTap.setOnTouchListener((view, motionEvent) -> {
@@ -1176,7 +1211,7 @@ public class MatchTally extends AppCompatActivity {
 
         matchBinding.butShootTap.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Shoot 1 Fuel"), 1);
-            Achievements.data_match_FuelShot += 1;
+            Achievements.data_match_FuelShoot += 1;
         });
 
         matchBinding.butShoot.setOnTouchListener((view, motionEvent) -> {
@@ -1186,7 +1221,7 @@ public class MatchTally extends AppCompatActivity {
 
         matchBinding.butShoot.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Shoot Many Fuel"),  matchBinding.seekBar.getProgress());
-            Achievements.data_match_FuelShot += matchBinding.seekBar.getProgress();
+            Achievements.data_match_FuelShoot += matchBinding.seekBar.getProgress();
         });
 
         matchBinding.butClimb.setEnabled(false);
