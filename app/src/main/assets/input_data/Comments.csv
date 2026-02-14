@@ -3,12 +3,13 @@ Id,isActive,Description
 2,TRUE,Robot climbed noticeably slower than others
 3,TRUE,Climb didn't count
 4,FALSE,Evaded defense well
-5,TRUE,Ineffective defense
+5,TRUE,Played ineffective defense
 6,TRUE,Played really good defense
 7,TRUE,Robot didn't contribute much (no auto - low scoring - no defense)
 8,TRUE,Robot (or part of it) broke
 9,TRUE,Game piece got stuck in the robot
 10,TRUE,Robot got stuck on a game piece
+11,TRUE,Robot got stuck on the bump
 12,TRUE,Human player scored a lot of fuel
 13,TRUE,Human player missed a lot of fuel
-14,TRUE,Human player was slow at feeding robots
+14,TRUE,Human player was ineffective (feeding / shooting)

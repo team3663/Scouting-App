@@ -319,7 +319,7 @@ public class PostMatch extends AppCompatActivity {
             if (checkedId == View.NO_ID) {
                 Globals.affectedByDefenseValue = "-1";
             } else if (checkedId == R.id.radiobutton_NoDefense) {
-                Globals.affectedByDefenseValue = "none";
+                Globals.affectedByDefenseValue = "N/A";
             } else if (checkedId == R.id.radiobutton_Low) {
                 Globals.affectedByDefenseValue = "low";
             } else if (checkedId == R.id.radiobutton_Medium) {
