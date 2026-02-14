@@ -56,8 +56,6 @@ public class MatchTally extends AppCompatActivity {
     private static String team_alliance;
     private static boolean climb_button_pressed = false;
     public static boolean in_alliance_zone = false;
-    private static boolean in_opponent_zone = false;
-    private static boolean in_neutral_zone = false;
 
     public static float NeutralZone_StartX = -1;
     public static float RightZone_StartX = -1;
