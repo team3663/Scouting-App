@@ -38,7 +38,6 @@ public class Constants {
         public static final double DEPOT_BOTTOM_PERCENTAGE = 63.1;
         public static final double DEPOT_TOP_PERCENTAGE = 82.14;
         public static final double OUTPOST_TOP_PERCENTAGE = 16.67;
-        public static final int OUTPOST_BOTTOM_PERCENTAGE = 0;
     }
 
     public static class Phases {
@@ -49,7 +48,7 @@ public class Constants {
 
     public static class PreMatch {
         public static final String DEFAULT_MATCH_TYPE = "q";
-        public static final int MAX_DIGIT_TEAM_NUM = 10;
+        public static final int MAX_DIGIT_TEAM_NUM = 5;
         public static final int STARTING_GAME_PIECES = 8;
         public static final int MAX_SCOUTER_LENGTH = 20;
     }

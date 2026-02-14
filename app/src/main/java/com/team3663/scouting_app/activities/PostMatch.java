@@ -178,10 +178,8 @@ public class PostMatch extends AppCompatActivity {
                         if (!Objects.equals(newAccuracy, Globals.CurrentAccuracy)) {
                             Globals.CurrentAccuracy = newAccuracy;
                         }
-
                         // update data used for achievements to record accurate number of fuels shot
                         Achievements.data_match_FuelShootWithAccuracy = (int)(Achievements.data_match_FuelShoot * (Globals.CurrentAccuracy / 100f));
-
                     }
 
                     @Override
@@ -219,13 +217,11 @@ public class PostMatch extends AppCompatActivity {
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                             String newClimbLevel = Globals.ClimbLevelList.getClimbLevelValue(postMatchBinding.spinnerClimbLevel.getSelectedItem().toString());
 
-                            if (!Objects.equals(newClimbLevel, Globals.CurrentClimbLevel)) {
+                            if (!newClimbLevel.equals(Globals.CurrentClimbLevel)) {
                                 Globals.CurrentClimbLevel = newClimbLevel;
                             }
 
-                            if (Objects.equals(Globals.CurrentClimbLevel, "L3")) {
-                                Achievements.data_match_ClimbSuccessTeleL3++;
-                            }
+                            Achievements.data_match_ClimbSuccessTele = Globals.CurrentClimbLevel;
                         }
 
                         @Override

@@ -34,14 +34,14 @@ public class Achievements {
     public static int data_match_FuelShootWithAccuracy;
     public static int data_match_FuelPassTotal = 0;
     public static int data_match_Toggle_NotMoving = 0;
-    public static int data_match_ClimbSuccessAuto = 0;
-    public static int data_match_ClimbSuccessTele = 0;
+    public static String data_match_ClimbSuccessAuto = "";
+    public static String data_match_ClimbSuccessTele = "";
     public static int data_match_FuelPassAlliance = 0;
     public static int data_match_FuelPassNeutral = 0;
     public static int data_match_FuelPassOpponent = 0;
     public static int data_match_FuelPickUpOutpost = 0;
     public static int data_match_FuelPickUpDepot = 0;
-    public static int data_match_ClimbSuccessTeleL3 = 0;
+    public static int data_match_FuelPickUpNeutral = 0;
 
     // Constructor: Define all of the achievements and the rule(s) they are based on
     public Achievements() {
@@ -103,8 +103,8 @@ public class Achievements {
         ach14.addRule(new RuleShootFuel("none", 1));
         ach14.addRule(new RulePickUpFuel("outpost", 1));
         ach14.addRule(new RulePickUpFuel("depot", 1));
-        ach14.addRule(new RuleClimbed("auto", 1));
-        ach14.addRule(new RuleClimbed("tele", 1));
+        ach14.addRule(new RuleClimbed("auto", "L1"));
+        ach14.addRule(new RuleClimbed("tele", ""));
         ach14.addRule(new RuleDefense(1));
         achievement_list.add(ach14);
 
@@ -130,19 +130,19 @@ public class Achievements {
         // #22 - In only counts once -> gSheet Only
 
         Achievement ach23 = new Achievement(23, "All Around Passer", "Passed 250 fuel in a match", 10);
-        ach23.addRule(new RulePassFuel("everywhere", 250));
+        ach23.addRule(new RulePassFuel("all", 250));
         ach23.addRule(new RulePassFuel("neutral", 1));
         ach23.addRule(new RulePassFuel("opponent", 1));
         achievement_list.add(ach23);
 
         Achievement ach24 = new Achievement(24, "The Floor is Lava", "Climbed in both auto and tele", 5);
-        ach24.addRule(new RuleClimbed("auto", 1));
-        ach24.addRule(new RuleClimbed("tele", 1));
+        ach24.addRule(new RuleClimbed("auto", "L1"));
+        ach24.addRule(new RuleClimbed("tele", "L3"));
         achievement_list.add(ach24);
 
         Achievement ach25 = new Achievement(25, "Up, Up, and Away!", "Maxed out climbs in a match", 10);
-        ach25.addRule(new RuleClimbed("auto", 1));
-        ach25.addRule(new RuleClimbed("teleL3", 1));
+        ach25.addRule(new RuleClimbed("auto", "L1"));
+        ach25.addRule(new RuleClimbed("tele", "L3"));
         achievement_list.add(ach25);
 
         Achievement ach26 = new Achievement(26, "Fuel Efficiency", "Accurately shot 300 fuel", 10);
@@ -194,9 +194,8 @@ public class Achievements {
         data_match_FuelPassAlliance = 0;
         data_match_FuelPassNeutral = 0;
         data_match_FuelPassOpponent = 0;
-        data_match_ClimbSuccessAuto = 0;
-        data_match_ClimbSuccessTele = 0;
-        data_match_ClimbSuccessTeleL3 = 0;
+        data_match_ClimbSuccessAuto = "";
+        data_match_ClimbSuccessTele = "";
     }
 
     // =============================================================================================

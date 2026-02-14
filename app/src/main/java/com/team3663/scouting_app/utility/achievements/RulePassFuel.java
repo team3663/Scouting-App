@@ -11,12 +11,12 @@ public class RulePassFuel implements AchievementRule {
 
     @Override
     public boolean evaluate(){
-        switch (location) {
-            case "neutral":
+        switch (location.toUpperCase()) {
+            case "NEUTRAL":
                 return (Achievements.data_match_FuelPassNeutral >= threshold);
-            case "opponent":
+            case "OPPONENT":
                 return (Achievements.data_match_FuelPassOpponent >= threshold);
-            case "everywhere":
+            case "ALL":
                 return (Achievements.data_match_FuelPassTotal >= threshold);
         }
 

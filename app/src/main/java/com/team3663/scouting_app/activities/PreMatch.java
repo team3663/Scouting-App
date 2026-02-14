@@ -302,7 +302,7 @@ public class PreMatch extends AppCompatActivity {
             String newOverride = preMatchBinding.editOverrideTeamNum.getText().toString();
 
             if (newOverride.length() > Constants.PreMatch.MAX_DIGIT_TEAM_NUM) {
-                newOverride = newOverride.substring(newOverride.length() - 5);
+                newOverride = newOverride.substring(newOverride.length() - Constants.PreMatch.MAX_DIGIT_TEAM_NUM);
                 preMatchBinding.editOverrideTeamNum.setText(newOverride);
             }
 

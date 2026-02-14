@@ -11,11 +11,13 @@ public class RulePickUpFuel implements AchievementRule {
 
     @Override
     public boolean evaluate(){
-        switch (location) {
-            case "outpost":
+        switch (location.toUpperCase()) {
+            case "OUTPOST":
                 return (Achievements.data_match_FuelPickUpOutpost >= threshold);
-            case "depot":
+            case "DEPOT":
                 return (Achievements.data_match_FuelPickUpDepot >= threshold);
+            case "NEUTRAL":
+                return (Achievements.data_match_FuelPickUpNeutral >= threshold);
         }
 
         return false;

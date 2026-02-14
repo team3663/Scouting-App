@@ -1,23 +1,25 @@
 package com.team3663.scouting_app.utility.achievements;
 
-public class RuleClimbed implements AchievementRule {
-    private final int threshold;
-    private final String location;
+import java.util.Objects;
 
-    public RuleClimbed(String in_Location, int in_Threshold) {
-        location = in_Location;
-        threshold = in_Threshold;
+public class RuleClimbed implements AchievementRule {
+    private final String matchphase;
+    private final String level;
+
+    public RuleClimbed(String in_MatchPhase, String in_Level) {
+        matchphase = in_MatchPhase;
+        level = in_Level;
     }
 
     @Override
     public boolean evaluate() {
-        switch (location) {
-            case "auto":
-                return (Achievements.data_match_ClimbSuccessAuto >= threshold);
-            case "tele":
-                return (Achievements.data_match_ClimbSuccessTele >= threshold);
-            case "teleL3":
-                return (Achievements.data_match_ClimbSuccessTeleL3 >= threshold);
+        switch (matchphase.toUpperCase()) {
+            case "AUTO":
+                return (Achievements.data_match_ClimbSuccessAuto.equals(level));
+            case "TELE":
+                return (!Achievements.data_match_ClimbSuccessTele.isEmpty());
+            case "TELE_L3":
+                return (Achievements.data_match_ClimbSuccessTele.equals("L3"));
         }
 
         return false;

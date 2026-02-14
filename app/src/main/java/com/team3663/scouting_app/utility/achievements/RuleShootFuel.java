@@ -11,10 +11,10 @@ public class RuleShootFuel implements AchievementRule {
 
     @Override
     public boolean evaluate() {
-        switch (accuracy) {
-            case "none":
+        switch (accuracy.toUpperCase()) {
+            case "NONE":
                 return (Achievements.data_match_FuelShoot >= threshold);
-            case "accuracy":
+            case "ACCURACY":
                 return (Achievements.data_match_FuelShootWithAccuracy >= threshold);
         }
 
