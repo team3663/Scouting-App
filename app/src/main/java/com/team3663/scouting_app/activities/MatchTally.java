@@ -943,8 +943,8 @@ public class MatchTally extends AppCompatActivity {
         seekbar.setMax(Constants.Match.SEEKBAR_MAX);
         seekbarProgress.setText(String.valueOf(seekbar.getProgress()));
 
-        matchBinding.butPass.setText(getString(R.string.button_pass).replace("!#!", String.valueOf(Globals.numStartingGamePiece)));
-        matchBinding.butShoot.setText(getString(R.string.button_shoot).replace("!#!", String.valueOf(Globals.numStartingGamePiece)));
+        matchBinding.butPass.setText(getString(R.string.button_pass, Globals.numStartingGamePiece));
+        matchBinding.butShoot.setText(getString(R.string.button_shoot, Globals.numStartingGamePiece));
 
         seekbar.setOnSeekBarChangeListener(new CPR_VerticalSeekBar.OnSeekBarChangeListener() {
             @Override
@@ -957,11 +957,9 @@ public class MatchTally extends AppCompatActivity {
 
             @Override
             public void onProgressChanged(CPR_VerticalSeekBar seekBar, int progress, boolean fromUser) {
-                String progress_str = String.valueOf(progress);
-
-                seekbarProgress.setText(progress_str);
-                matchBinding.butPass.setText(getString(R.string.button_pass).replace("!#!", progress_str));
-                matchBinding.butShoot.setText(getString(R.string.button_shoot).replace("!#!", progress_str));
+                seekbarProgress.setText(String.valueOf(progress));
+                matchBinding.butPass.setText(getString(R.string.button_pass, progress));
+                matchBinding.butShoot.setText(getString(R.string.button_shoot, progress));
             }
         });
 
