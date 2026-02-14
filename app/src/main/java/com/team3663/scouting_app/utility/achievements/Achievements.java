@@ -4,7 +4,6 @@ import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 // =================================================================================================
@@ -20,7 +19,6 @@ public class Achievements {
     public static long data_StartTime = 0;
     public static int data_NumEvents = 0;
     public static int data_IdleTime = 0;
-    public static int data_OrphanEvents = 0;
     public static int data_PracticeType = 0;
     public static int data_SemiFinalType = 0;
     public static int data_FinalType = 0;
@@ -32,18 +30,18 @@ public class Achievements {
     public static HashMap<Integer, Integer> data_NumMatchesByCompetition = new HashMap<>();
 
     // Scouter data per match
-    public static int data_match_OrphanEvents = 0;
-    public static int data_match_AlgaeInNet = 0;
-    public static int data_match_FuelShot = 0;
-    public static int data_match_FuelPassed = 0;
-    public static int data_match_AlgaeInProcessor = 0;
-    public static int data_match_AlgaePickup = 0;
-    public static int[] data_match_CoralLevel = {0, 0, 0, 0, 0};
-    public static int data_match_CoralPickupGround = 0;
-    public static int data_match_CoralPickupStation = 0;
-    public static int data_match_CoralDropped = 0;
+    public static int data_match_FuelShoot = 0;
+    public static int data_match_FuelShootWithAccuracy;
+    public static int data_match_FuelPassTotal = 0;
     public static int data_match_Toggle_NotMoving = 0;
-    public static int data_match_ClimbSuccess = 0;
+    public static int data_match_ClimbSuccessAuto = 0;
+    public static int data_match_ClimbSuccessTele = 0;
+    public static int data_match_FuelPassAlliance = 0;
+    public static int data_match_FuelPassNeutral = 0;
+    public static int data_match_FuelPassOpponent = 0;
+    public static int data_match_FuelPickUpOutpost = 0;
+    public static int data_match_FuelPickUpDepot = 0;
+    public static int data_match_ClimbSuccessTeleL3 = 0;
 
     // Constructor: Define all of the achievements and the rule(s) they are based on
     public Achievements() {
@@ -63,121 +61,93 @@ public class Achievements {
         ach4.addRule(new RuleNumMatches(15));
         achievement_list.add(ach4);
 
-        Achievement ach5 = new Achievement(5, "Calloused fingers", "Entered 300 events", 75);
-        ach5.addRule(new RuleNumEvents(300));
+        Achievement ach5 = new Achievement(5, "Practice makes perfect", "You scouted a practice match", 5);
+        ach5.addRule(new RuleMatchType("p", 1));
         achievement_list.add(ach5);
 
-        Achievement ach6 = new Achievement(6, "Orphan Annie", "You left an event incomplete (orphan)", 5);
-        ach6.addRule(new RuleOrphanEvents(1, true));
+        Achievement ach6 = new Achievement(6, "Semi-good scouting", "You scouted a semi-final match", 5);
+        ach6.addRule(new RuleMatchType("s", 1));
         achievement_list.add(ach6);
 
-        Achievement ach7 = new Achievement(7, "Orphanage", "You left 10 events incomplete (orphan)", 10);
-        ach7.addRule(new RuleOrphanEvents(10, false));
+        Achievement ach7 = new Achievement(7, "Finalist", "You scouted a finals match", 5);
+        ach7.addRule(new RuleMatchType("f", 1));
         achievement_list.add(ach7);
 
-        Achievement ach8 = new Achievement(8, "Practice makes perfect", "You scouted a practice match", 5);
-        ach8.addRule(new RuleMatchType("p", 1));
+        Achievement ach8 = new Achievement(8, "Buddies with the enemy", "Played defense 5 times", 10);
+        ach8.addRule(new RuleToggles("defense", false, 5));
         achievement_list.add(ach8);
 
-        Achievement ach9 = new Achievement(9, "Semi-good scouting", "You scouted a semi-final match", 5);
-        ach9.addRule(new RuleMatchType("s", 1));
+        Achievement ach9 = new Achievement(9, "Not on my watch", "Scored while being defended", 50);
+        ach9.addRule(new RuleScoreDefended(1));
         achievement_list.add(ach9);
 
-        Achievement ach10 = new Achievement(10, "Finalist", "You scouted a finals match", 5);
-        ach10.addRule(new RuleMatchType("f", 1));
+        Achievement ach10 = new Achievement(10, "Mater! I need a lift", "Broken down more than once", 5);
+        ach10.addRule(new RuleToggles("not moving", false, 2));
         achievement_list.add(ach10);
 
-        Achievement ach11 = new Achievement(11, "Algae Hat Trick", "3 Algae scored in the net", 15);
-        ach11.addRule(new RuleScoreAlgae("net", 3));
+        Achievement ach11 = new Achievement(11, "It's not my fault", "Experienced a field reset", 5);
+        ach11.addRule(new RuleFieldReset(1));
         achievement_list.add(ach11);
 
-        Achievement ach12 = new Achievement(12, "Hand in hand", "Processed 2 Algae", 10);
-        ach12.addRule(new RuleScoreAlgae("processor", 2));
+        Achievement ach12 = new Achievement(12, "Maybe it IS my fault", "Experienced 2 field resets", 10);
+        ach12.addRule(new RuleFieldReset(2));
         achievement_list.add(ach12);
 
-        Achievement ach13 = new Achievement(13, "Hit all the elevator buttons", "Scored Coral on all Reef levels", 40);
-        ach13.addRule(new RuleScoreCoral(1, 1));
-        ach13.addRule(new RuleScoreCoral(2, 1));
-        ach13.addRule(new RuleScoreCoral(3, 1));
-        ach13.addRule(new RuleScoreCoral(4, 1));
+        Achievement ach13 = new Achievement(13, "This seat is mine now", "Scouted for 60 minutes non-stop", 30);
+        ach13.addRule(new RuleTimeScouting(3_600_000)); // 60 minutes
         achievement_list.add(ach13);
 
-        Achievement ach14 = new Achievement(14, "Janitorial duties", "Cleaned 5 Coral from the ground", 5);
-        ach14.addRule(new RuleCoralPickup("ground", 5));
+        Achievement ach14 = new Achievement(14, "Swiss Army Bot", "This bot did everything", 75);
+        ach14.addRule(new RulePassFuel("neutral", 1));
+        ach14.addRule(new RulePassFuel("opponent", 1));
+        ach14.addRule(new RuleShootFuel("none", 1));
+        ach14.addRule(new RulePickUpFuel("outpost", 1));
+        ach14.addRule(new RulePickUpFuel("depot", 1));
+        ach14.addRule(new RuleClimbed("auto", 1));
+        ach14.addRule(new RuleClimbed("tele", 1));
+        ach14.addRule(new RuleDefense(1));
         achievement_list.add(ach14);
 
-        Achievement ach15 = new Achievement(15, "Crossed the line", "Went on the defensive", 5);
-        ach15.addRule(new RuleToggles("defense", true, 1));
+        Achievement ach15 = new Achievement(15, "World Renowned Scouter", "Scouted at Worlds", 10);
+        ach15.addRule(new RuleCompetition(Constants.Achievements.COMPETITION_IDS_WORLDS, 1));
         achievement_list.add(ach15);
 
-        Achievement ach16 = new Achievement(16, "Buddies with the enemy", "Played defense 5 times", 10);
-        ach16.addRule(new RuleToggles("defense", false, 5));
+        Achievement ach16 = new Achievement(16, "Did you get my good side?", "Video scouted a match", 10);
+        ach16.addRule(new RuleAttendedCompetition(false, 1));
         achievement_list.add(ach16);
 
-        Achievement ach17 = new Achievement(17, "Not on my watch", "Scored while being defended", 50);
-        ach17.addRule(new RuleScoreDefended(1));
+        Achievement ach17 = new Achievement(17, "Nobel Peace Prize winner", "Scouted an Einstein match", 200);
+        ach17.addRule(new RuleCompetition(Constants.Achievements.COMPETITION_IDS_EINSTEIN, 1));
         achievement_list.add(ach17);
 
-        Achievement ach18 = new Achievement(18, "Mater! I need a lift", "Broken down more than once", 5);
-        ach18.addRule(new RuleToggles("not moving", false, 2));
+        Achievement ach18 = new Achievement(18, "Driving Cars Makes Patience", "Scouted at DCMP", 10);
+        ach18.addRule(new RuleCompetition(Constants.Achievements.COMPETITION_IDS_DCMP, 1));
         achievement_list.add(ach18);
 
-        Achievement ach19 = new Achievement(19, "It's not my fault", "Experienced a field reset", 5);
-        ach19.addRule(new RuleFieldReset(1));
-        achievement_list.add(ach19);
+        // #19 - Count Dracula -> gSheet Only
+        // #20 - Count-a-holic -> gSheet Only
+        // #21 - Count Master -> gSheet Only
+        // #22 - In only counts once -> gSheet Only
 
-        Achievement ach20 = new Achievement(20, "Maybe it IS my fault", "Experienced 2 field resets", 10);
-        ach20.addRule(new RuleFieldReset(2));
-        achievement_list.add(ach20);
-
-        Achievement ach21 = new Achievement(21, "Top of the class", "Scored 6 Coral on top 2 levels each", 60);
-        ach21.addRule(new RuleScoreCoral(3, 6));
-        ach21.addRule(new RuleScoreCoral(4, 6));
-        achievement_list.add(ach21);
-
-
-        Achievement ach22 = new Achievement(22, "This seat is mine now", "Scouted for 60 minutes non-stop", 30);
-        ach22.addRule(new RuleTimeScouting(3_600_000)); // 30 minutes
-        achievement_list.add(ach22);
-
-        Achievement ach23 = new Achievement(23, "Swiss Army Bot", "This bot did everything", 75);
-        ach23.addRule(new RuleCoralPickup("ground", 1));
-        ach23.addRule(new RuleCoralPickup("station", 1));
-        ach23.addRule(new RuleAlgaePickup(1));
-        ach23.addRule(new RuleScoreCoral(1, 1));
-        ach23.addRule(new RuleScoreCoral(2, 1));
-        ach23.addRule(new RuleScoreCoral(3, 1));
-        ach23.addRule(new RuleScoreCoral(4, 1));
-        ach23.addRule(new RuleScoreAlgae("processor", 1));
-        ach23.addRule(new RuleScoreAlgae("net", 1));
-        ach23.addRule(new RuleClimbed(1));
+        Achievement ach23 = new Achievement(23, "All Around Passer", "Passed 250 fuel in a match", 10);
+        ach23.addRule(new RulePassFuel("everywhere", 250));
+        ach23.addRule(new RulePassFuel("neutral", 1));
+        ach23.addRule(new RulePassFuel("opponent", 1));
         achievement_list.add(ach23);
 
-        Achievement ach24 = new Achievement(24, "World Renowned Scouter", "Scouted at Worlds", 10);
-        ach24.addRule(new RuleCompetition(Constants.Achievements.COMPETITION_IDS_WORLDS, 1));
+        Achievement ach24 = new Achievement(24, "The Floor is Lava", "Climbed in both auto and tele", 5);
+        ach24.addRule(new RuleClimbed("auto", 1));
+        ach24.addRule(new RuleClimbed("tele", 1));
         achievement_list.add(ach24);
 
-        Achievement ach25 = new Achievement(25, "Did you get my good side?", "Video scouted a match", 10);
-        ach25.addRule(new RuleAttendedCompetition(false, 1));
+        Achievement ach25 = new Achievement(25, "Up, Up, and Away!", "Maxed out climbs in a match", 10);
+        ach25.addRule(new RuleClimbed("auto", 1));
+        ach25.addRule(new RuleClimbed("teleL3", 1));
         achievement_list.add(ach25);
 
-        Achievement ach26 = new Achievement(26, "Nobel Peace Prize winner", "Scouted an Einstein match", 200);
-        ach26.addRule(new RuleCompetition(Constants.Achievements.COMPETITION_IDS_EINSTEIN, 1));
+        Achievement ach26 = new Achievement(26, "Fuel Efficiency", "Accurately shot 300 fuel", 10);
+        ach26.addRule(new RuleShootFuel("accuracy", 300));
         achievement_list.add(ach26);
-
-        Achievement ach27 = new Achievement(27, "Butter Fingers", "Dropped 5 Coral in a match", 10);
-        ach27.addRule(new RuleCoralDrop(5));
-        achievement_list.add(ach27);
-
-        // #28 - Achievement Hunter -> Tableau Only
-        // #29 - In for a penny - in for a pound -> Tableau Only
-        // #30 - In only counts once -> Tableau Only
-        // #31 - Globe Trotters -> Tableau Only
-        // #32 - Making this a career -> Tableau Only
-
-        Achievement ach33 = new Achievement(33, "Driving Cars Makes Patience", "Scouted at DCMP", 10);
-        ach33.addRule(new RuleCompetition(Constants.Achievements.COMPETITION_IDS_DCMP, 1));
-        achievement_list.add(ach33);
     }
 
     // Member Function: pop (to the screen) any achievements "met" but not already "popped"
@@ -202,7 +172,6 @@ public class Achievements {
         data_StartTime = 0;
         data_NumEvents = 0;
         data_IdleTime = 0;
-        data_OrphanEvents = 0;
         data_PracticeType = 0;
         data_SemiFinalType = 0;
         data_FinalType = 0;
@@ -219,17 +188,15 @@ public class Achievements {
     // Member Function: Clear all data on achievements (ie: new scouter)
     public void clearMatchData() {
         data_match_Toggle_NotMoving = 0;
-        data_match_OrphanEvents = 0;
-        data_match_AlgaeInNet = 0;
-        data_match_AlgaeInProcessor = 0;
-        data_match_AlgaePickup = 0;
-        data_match_FuelShot = 0;
-        data_match_FuelPassed = 0;
-        Arrays.fill(data_match_CoralLevel, 0);
-        data_match_CoralPickupGround = 0;
-        data_match_CoralPickupStation = 0;
-        data_match_CoralDropped = 0;
-        data_match_ClimbSuccess = 0;
+        data_match_FuelShoot = 0;
+        data_match_FuelShootWithAccuracy = 0;
+        data_match_FuelPassTotal = 0;
+        data_match_FuelPassAlliance = 0;
+        data_match_FuelPassNeutral = 0;
+        data_match_FuelPassOpponent = 0;
+        data_match_ClimbSuccessAuto = 0;
+        data_match_ClimbSuccessTele = 0;
+        data_match_ClimbSuccessTeleL3 = 0;
     }
 
     // =============================================================================================
