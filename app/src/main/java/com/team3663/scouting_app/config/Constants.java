@@ -11,7 +11,7 @@ import java.util.Set;
 public class Constants {
     public static class Logger {
         // Logger Keys - Data File is written in order of the FILE_HEADER array
-        public static final String[] LOGKEY_DATA_FILE_HEADER = new String[]{"CompId", "MatchType", "MatchNum", "Team", "Shadow", "TeamScouting", "Scouter", "DidPlay", "StartGamePiece", "Accuracy", "ClimbLevel", "ClimbPosition", "Comments", "Achievements", "StartOffset", "Start"};
+        public static final String[] LOGKEY_DATA_FILE_HEADER = new String[]{"CompId", "MatchType", "MatchNum", "Team", "Shadow", "TeamScouting", "Scouter", "DidPlay", "StartGamePiece", "Accuracy", "ClimbLevel", "ClimbPosition", "Comments", "Achievements", "StartOffset", "Start", "StealFuel"};
         public static final String LOGKEY_COMPETITION_ID = "CompId";
         public static final String LOGKEY_MATCH_NUMBER = "MatchNum";
         public static final String LOGKEY_SHADOW_MODE = "Shadow";
