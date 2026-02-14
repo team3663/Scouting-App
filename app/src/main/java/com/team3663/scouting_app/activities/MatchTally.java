@@ -36,6 +36,7 @@ import com.team3663.scouting_app.utility.achievements.Achievements;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,6 +57,8 @@ public class MatchTally extends AppCompatActivity {
     private static String team_alliance;
     private static boolean climb_button_pressed = false;
     private static boolean in_alliance_zone = false;
+    private static boolean in_opponent_zone = false;
+    private static boolean in_neutral_zone = false;
 
     public static float NeutralZone_StartX = -1;
     public static float RightZone_StartX = -1;
@@ -311,8 +314,6 @@ public class MatchTally extends AppCompatActivity {
                     // The dialog is automatically dismissed when a dialog button is clicked.
                     .setPositiveButton(getString(R.string.match_alert_orphanedEvent_positive), (dialog, which) -> {
                         dialog.dismiss();
-                        Achievements.data_OrphanEvents++;
-                        Achievements.data_match_OrphanEvents++;
                         endMatch();
                     })
 
@@ -1136,6 +1137,8 @@ public class MatchTally extends AppCompatActivity {
             matchBinding.butClimb.setEnabled(false);
             matchBinding.butClimb.setClickable(false);
             climb_button_pressed = true;
+            if (Objects.equals(Globals.CurrentMatchPhase, "AUTO")) Achievements.data_match_ClimbSuccessAuto++;
+            if (Objects.equals(Globals.CurrentMatchPhase, "TELEOP")) Achievements.data_match_ClimbSuccessTele++;
         });
 
         matchBinding.butPickup.setOnTouchListener((view, motionEvent) -> {
@@ -1147,6 +1150,18 @@ public class MatchTally extends AppCompatActivity {
             if (!Globals.CurrentMatchPhase.equals(Constants.Phases.AUTO)) return;
 
             logEvent(Globals.EventList.getEventId(Constants.Phases.AUTO, "Pickup Fuel"), 1);
+            // if pickup fuel is at the depot
+            if (BlueView_X <= matchBinding.FieldTouch.getWidth() * (Constants.Field.STRUCTURE_WIDTH_PERCENTAGE / 100)
+                    && BlueView_Y >= matchBinding.FieldTouch.getHeight() * (Constants.Field.DEPOT_BOTTOM_PERCENTAGE / 100)
+                    && BlueView_Y <= matchBinding.FieldTouch.getHeight() * (Constants.Field.DEPOT_TOP_PERCENTAGE / 100)) {
+                Achievements.data_match_FuelPickUpDepot++;
+            }
+            // if pickup fuel is at the outpost
+            if (BlueView_X <= matchBinding.FieldTouch.getWidth() * (Constants.Field.STRUCTURE_WIDTH_PERCENTAGE / 100)
+                    && BlueView_Y >= Constants.Field.OUTPOST_BOTTOM_PERCENTAGE
+                    && BlueView_Y <= matchBinding.FieldTouch.getHeight() * (Constants.Field.OUTPOST_TOP_PERCENTAGE / 100)) {
+                Achievements.data_match_FuelPickUpOutpost++;
+            }
         });
 
         matchBinding.butPassTap.setOnTouchListener((view, motionEvent) -> {
@@ -1156,7 +1171,12 @@ public class MatchTally extends AppCompatActivity {
 
         matchBinding.butPassTap.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Pass 1 Fuel"), 1);
-            Achievements.data_match_FuelPassed += 1;
+            // if pass is from alliance zone
+            if (in_alliance_zone) Achievements.data_match_FuelPassAlliance += 1;
+            // if pass is from neutral zone
+            if (BlueView_X > matchBinding.butCenterZone.getX() && BlueView_X < matchBinding.butRightZone.getX()) Achievements.data_match_FuelPassNeutral += 1;
+            // if pass is from opponent zone
+            if (BlueView_X > matchBinding.butRightZone.getX()) Achievements.data_match_FuelPassOpponent += 1;
         });
 
         matchBinding.butPass.setOnTouchListener((view, motionEvent) -> {
@@ -1166,7 +1186,12 @@ public class MatchTally extends AppCompatActivity {
 
         matchBinding.butPass.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Pass Many Fuel"), matchBinding.seekBar.getProgress());
-            Achievements.data_match_FuelPassed += matchBinding.seekBar.getProgress();
+            // if pass is from alliance zone
+            if (in_alliance_zone) Achievements.data_match_FuelPassAlliance += matchBinding.seekBar.getProgress();
+            // if pass is from neutral zone
+            if (BlueView_X > matchBinding.butCenterZone.getX() && BlueView_X < matchBinding.butRightZone.getX()) Achievements.data_match_FuelPassNeutral += matchBinding.seekBar.getProgress();
+            // if pass is from opponent zone
+            if (BlueView_X > matchBinding.butRightZone.getX()) Achievements.data_match_FuelPassOpponent += matchBinding.seekBar.getProgress();
         });
 
         matchBinding.butShootTap.setOnTouchListener((view, motionEvent) -> {
@@ -1176,7 +1201,7 @@ public class MatchTally extends AppCompatActivity {
 
         matchBinding.butShootTap.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Shoot 1 Fuel"), 1);
-            Achievements.data_match_FuelShot += 1;
+            Achievements.data_match_FuelShoot += 1;
         });
 
         matchBinding.butShoot.setOnTouchListener((view, motionEvent) -> {
@@ -1186,7 +1211,7 @@ public class MatchTally extends AppCompatActivity {
 
         matchBinding.butShoot.setOnClickListener(view -> {
             logEvent(Globals.EventList.getEventId(Globals.CurrentMatchPhase, "Shoot Many Fuel"),  matchBinding.seekBar.getProgress());
-            Achievements.data_match_FuelShot += matchBinding.seekBar.getProgress();
+            Achievements.data_match_FuelShoot += matchBinding.seekBar.getProgress();
         });
 
         matchBinding.butClimb.setEnabled(false);

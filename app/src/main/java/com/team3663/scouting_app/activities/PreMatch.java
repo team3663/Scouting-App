@@ -285,7 +285,7 @@ public class PreMatch extends AppCompatActivity {
 
         preMatchBinding.checkboxOverride.setOnClickListener(view -> {
             int state = View.VISIBLE;
-            // if Preferred Ream in Settings is not checked, unable to override team number
+            // if Preferred Team in Settings is not checked, unable to override team number
             if (Globals.CurrentPrefTeamPos == 0) {
                 preMatchBinding.checkboxOverride.setChecked(false);
                 Toast.makeText(PreMatch.this, R.string.pre_no_preference_and_override_team_num, Toast.LENGTH_SHORT).show();
@@ -299,10 +299,14 @@ public class PreMatch extends AppCompatActivity {
 
         preMatchBinding.butAddOverrideTeamNum.setOnClickListener(view -> {
             // Set the global override number
-            String new_override = preMatchBinding.editOverrideTeamNum.getText().toString();
+            String newOverride = preMatchBinding.editOverrideTeamNum.getText().toString();
 
-            if (!new_override.isEmpty())
-                Globals.CurrentTeamOverrideNum = new_override;
+            if (newOverride.length() > Constants.PreMatch.MAX_DIGIT_TEAM_NUM) {
+                newOverride = newOverride.substring(newOverride.length() - 5);
+                preMatchBinding.editOverrideTeamNum.setText(newOverride);
+            }
+
+            if (!newOverride.isEmpty()) Globals.CurrentTeamOverrideNum = newOverride;
 
             // Load the team data again
             loadTeamToScout();

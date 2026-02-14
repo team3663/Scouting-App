@@ -178,6 +178,10 @@ public class PostMatch extends AppCompatActivity {
                         if (!Objects.equals(newAccuracy, Globals.CurrentAccuracy)) {
                             Globals.CurrentAccuracy = newAccuracy;
                         }
+
+                        // update data used for achievements to record accurate number of fuels shot
+                        Achievements.data_match_FuelShootWithAccuracy = (int)(Achievements.data_match_FuelShoot * (Globals.CurrentAccuracy / 100f));
+
                     }
 
                     @Override
@@ -217,6 +221,10 @@ public class PostMatch extends AppCompatActivity {
 
                             if (!Objects.equals(newClimbLevel, Globals.CurrentClimbLevel)) {
                                 Globals.CurrentClimbLevel = newClimbLevel;
+                            }
+
+                            if (Objects.equals(Globals.CurrentClimbLevel, "L3")) {
+                                Achievements.data_match_ClimbSuccessTeleL3++;
                             }
                         }
 
@@ -370,7 +378,7 @@ public class PostMatch extends AppCompatActivity {
                 Intent GoToPreMatch = new Intent(PostMatch.this, PreMatch.class);
                 startActivity(GoToPreMatch);
             } else {
-                // Log all of the data from this page
+               // Log all of the data from this page
                 StringBuilder comment_sep_ID = new StringBuilder();
                 for (Integer comment_dropID : CommentList) {
                     String comment = CommentArray.get(comment_dropID);
@@ -428,8 +436,11 @@ public class PostMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initStats() {
-        String statsFuelShot = "Fuel Shot: " + Achievements.data_match_FuelShot;
-        String statsFuelPassed = "Fuel Passed: " + Achievements.data_match_FuelPassed;
+        // make the total fuel pass displayed in Stats the total of fuel passed from all zones
+        Achievements.data_match_FuelPassTotal = Achievements.data_match_FuelPassAlliance + Achievements.data_match_FuelPassNeutral + Achievements.data_match_FuelPassOpponent;
+
+        String statsFuelShot = "Fuel Shot: " + Achievements.data_match_FuelShoot;
+        String statsFuelPassed = "Fuel Passed: " + Achievements.data_match_FuelPassTotal;
 
         postMatchBinding.textStatsFuelShot.setText(statsFuelShot);
         postMatchBinding.textStatsFuelPassed.setText(statsFuelPassed);
