@@ -1003,7 +1003,13 @@ public class MatchTally extends AppCompatActivity {
             matchBinding.butCenterZone.setBackgroundColor(getColor(R.color.transparent));
             matchBinding.butRightZone.setBackgroundColor(getColor(R.color.transparent));
 
-            BlueView_X = matchBinding.butLeftZone.getX() + (matchBinding.butLeftZone.getWidth() / 2f);
+            boolean blue_alliance = team_alliance.substring(0,1).equalsIgnoreCase("B");
+
+            if (blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT) ||
+                    !blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) {
+                BlueView_X = matchBinding.FieldTouch.getWidth() - (matchBinding.butLeftZone.getX() + (matchBinding.butLeftZone.getWidth() / 2f));
+            } else BlueView_X = matchBinding.butLeftZone.getX() + matchBinding.butLeftZone.getWidth() / 2f;
+
             BlueView_Y = matchBinding.butLeftZone.getY() + (matchBinding.butLeftZone.getHeight() / 2f);
         });
 
@@ -1064,7 +1070,13 @@ public class MatchTally extends AppCompatActivity {
             matchBinding.butCenterZone.setBackgroundColor(getColor(R.color.transparent));
             matchBinding.butRightZone.setBackgroundColor(getColor(R.color.transparent_orange));
 
-            BlueView_X = matchBinding.butRightZone.getX() + (matchBinding.butRightZone.getWidth() / 2f);
+            boolean blue_alliance = team_alliance.substring(0,1).equalsIgnoreCase("B");
+
+            if (blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_RED_ON_LEFT) ||
+                    !blue_alliance && currentAllianceOnLeft.equals(Constants.Match.ORIENTATION_BLUE_ON_LEFT)) {
+                BlueView_X = matchBinding.FieldTouch.getWidth() - (matchBinding.butRightZone.getX() + (matchBinding.butRightZone.getWidth() / 2f));
+            } else BlueView_X = matchBinding.butRightZone.getX() + matchBinding.butRightZone.getWidth() / 2f;
+
             BlueView_Y = matchBinding.butRightZone.getY() + (matchBinding.butRightZone.getHeight() / 2f);
         });
 
@@ -1174,7 +1186,7 @@ public class MatchTally extends AppCompatActivity {
             // if pass is from alliance zone
             if (in_alliance_zone) Achievements.data_match_FuelPassAlliance += 1;
             // if pass is from neutral zone
-            else if (BlueView_X > matchBinding.butCenterZone.getX() && BlueView_X < matchBinding.butRightZone.getX()) Achievements.data_match_FuelPassNeutral += 1;
+            else if (BlueView_X < matchBinding.butRightZone.getX()) Achievements.data_match_FuelPassNeutral += 1;
             // if pass is from opponent zone
             else Achievements.data_match_FuelPassOpponent += 1;
         });
@@ -1189,7 +1201,7 @@ public class MatchTally extends AppCompatActivity {
             // if pass is from alliance zone
             if (in_alliance_zone) Achievements.data_match_FuelPassAlliance += matchBinding.seekBar.getProgress();
             // if pass is from neutral zone
-            else if (BlueView_X > matchBinding.butCenterZone.getX() && BlueView_X < matchBinding.butRightZone.getX()) Achievements.data_match_FuelPassNeutral += matchBinding.seekBar.getProgress();
+            else if (BlueView_X < matchBinding.butRightZone.getX()) Achievements.data_match_FuelPassNeutral += matchBinding.seekBar.getProgress();
             // if pass is from opponent zone
             else Achievements.data_match_FuelPassOpponent += matchBinding.seekBar.getProgress();
         });
