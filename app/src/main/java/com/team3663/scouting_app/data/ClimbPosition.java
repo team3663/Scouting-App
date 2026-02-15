@@ -17,10 +17,11 @@ public class ClimbPosition {
 
         // Add climb position values into the list
         addClimbPositionRow("-1","<Select One>");
-        addClimbPositionRow("Left Side", "Left Side");
-        addClimbPositionRow("Right Side", "Right Side");
-        addClimbPositionRow("Front Upright", "Front Upright");
-        addClimbPositionRow("Front Middle", "Front Middle");
+        addClimbPositionRow("Left End", "Left End");
+        addClimbPositionRow("Left Upright", "Left Upright");
+        addClimbPositionRow("Center", "Center");
+        addClimbPositionRow("Right End", "Right End");
+        addClimbPositionRow("Right Upright", "Right Upright");
         addClimbPositionRow("Back", "Back");
     }
 

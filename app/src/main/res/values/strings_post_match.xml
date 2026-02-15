@@ -10,7 +10,7 @@
     <string name="post_steal_fuel_yes">Yes</string>
     <string name="post_steal_fuel_no">No</string>
     <string name="post_defense_affect">Affected by defense?</string>
-    <string name="post_defense_affect_none">None</string>
+    <string name="post_defense_affect_none">N/A</string>
     <string name="post_defense_affect_low">Low</string>
     <string name="post_defense_affect_medium">Medium</string>
     <string name="post_defense_affect_high">High</string>
