@@ -1,7 +1,5 @@
 package com.team3663.scouting_app.utility.achievements;
 
-import java.util.Objects;
-
 public class RuleClimbed implements AchievementRule {
     private final String matchphase;
     private final String level;

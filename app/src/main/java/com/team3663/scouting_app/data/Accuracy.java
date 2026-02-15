@@ -20,11 +20,12 @@ public class Accuracy {
         // Add accuracy values into the list
         addAccuracyRow(-1,"<Select One>");
         addAccuracyRow(100, "100%");
-        addAccuracyRow(95, "95%");
-        addAccuracyRow(82, "75 - 90%");
-        addAccuracyRow(62, "50 - 75%");
-        addAccuracyRow(37, "25 - 50%");
-        addAccuracyRow(12, "0 - 25%");
+        addAccuracyRow(90, "90%");
+        addAccuracyRow(75, "75%");
+        addAccuracyRow(50, "50%");
+        addAccuracyRow(25, "25%");
+        addAccuracyRow(10, "10%");
+        addAccuracyRow(0, "0%");
     }
 
     // Add a row
