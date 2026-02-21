@@ -189,6 +189,9 @@ public class Logger {
         // Form the output line that goes in the csv file.
         for (int i = 1; i < match_log_events.size(); ++i) {
             LoggerEventRow ler = match_log_events.get(i);
+            LoggerEventRow next_ler = ler;
+
+            if (i < match_log_events.size() - 1) next_ler = match_log_events.get(i + 1);
 
             if (!repeatedRow) count = ler.Count;
             repeatedRow = false;
@@ -203,22 +206,22 @@ public class Logger {
 
             // Peak ahead and if the next event is the same (and in the same "zone") combine the two events into one.
             // Don't do this for AUTO phase since we want the fidelity.
-            if ((i < match_log_events.size() - 1) && Constants.Events.IDS_TO_COLLAPSE.contains(ler.EventId) &&
-                    !Globals.EventList.getPhaseForEvent(ler.EventId).equals(Constants.Phases.AUTO)) {
-                LoggerEventRow next_ler = match_log_events.get(i + 1);
-
-                if (ler.EventId == next_ler.EventId) {
+            if ((i < match_log_events.size() - 1) && (ler.EventId == next_ler.EventId)) {
+                if (!Globals.EventList.getPhaseForEvent(ler.EventId).equals(Constants.Phases.AUTO))
+                {
                     if ((ler.X < MatchTally.NeutralZone_StartX) && (next_ler.X < MatchTally.NeutralZone_StartX))
                         repeatedRow = true;
-                    else if ((ler.X < MatchTally.RightZone_StartX) && (next_ler.X < MatchTally.RightZone_StartX))
+                    else if ((ler.X < MatchTally.RightZone_StartX) && (next_ler.X < MatchTally.RightZone_StartX) && (ler.X >= MatchTally.NeutralZone_StartX) && (next_ler.X >= MatchTally.NeutralZone_StartX))
                         repeatedRow = true;
                     else if ((ler.X >= MatchTally.RightZone_StartX) && (next_ler.X >= MatchTally.RightZone_StartX))
                         repeatedRow = true;
+                } else if (Globals.EventList.getPhaseForEvent(ler.EventId).equals(Constants.Phases.AUTO)) {
+                    if (ler.X == next_ler.X && ler.Y == next_ler.Y) repeatedRow = true;
                 }
             }
 
             if (repeatedRow) {
-                count++;
+                count += next_ler.Count;
             } else {
                 StringBuilder csv_line = new StringBuilder();
                 csv_line.append("E")
