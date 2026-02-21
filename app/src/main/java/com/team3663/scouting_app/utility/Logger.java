@@ -10,7 +10,6 @@ import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.activities.MatchTally;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
-import com.team3663.scouting_app.databinding.MatchTallyBinding;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
 import java.io.IOException;
@@ -186,6 +185,8 @@ public class Logger {
         int count = 0;
         boolean repeatedRow = false;
         int rowsCollapsed = 0;
+        String shift;
+        String shift_next;
 
         // Form the output line that goes in the csv file.
         for (int i = 1; i < match_log_events.size(); ++i) {
@@ -193,6 +194,24 @@ public class Logger {
             LoggerEventRow next_ler = ler;
 
             if (i < match_log_events.size() - 1) next_ler = match_log_events.get(i + 1);
+
+            // Determine the shift that the event happened in.
+            if (ler.LogTime <= 200) shift = "AUTO";
+            else if (ler.LogTime <= 300) shift = "TRANSITION";
+            else if (ler.LogTime <= 550) shift = "SHIFT1";
+            else if (ler.LogTime <= 800) shift = "SHIFT2";
+            else if (ler.LogTime <= 1050) shift = "SHIFT3";
+            else if (ler.LogTime <= 1300) shift = "SHIFT4";
+            else shift = "ENDGAME";
+
+            // Determine the shift that the next event happened in.
+            if (next_ler.LogTime <= 200) shift_next = "AUTO";
+            else if (next_ler.LogTime <= 300) shift_next = "TRANSITION";
+            else if (next_ler.LogTime <= 550) shift_next = "SHIFT1";
+            else if (next_ler.LogTime <= 800) shift_next = "SHIFT2";
+            else if (next_ler.LogTime <= 1050) shift_next = "SHIFT3";
+            else if (next_ler.LogTime <= 1300) shift_next = "SHIFT4";
+            else shift_next = "ENDGAME";
 
             if (!repeatedRow) count = ler.Count;
             repeatedRow = false;
@@ -205,9 +224,8 @@ public class Logger {
             if (Constants.Match.IMAGE_WIDTH > 0) normalized_x = (int)(10_000.0 * ler.X / Constants.Match.IMAGE_WIDTH);
             if (Constants.Match.IMAGE_HEIGHT > 0) normalized_y = (int)(10_000.0 * ler.Y / Constants.Match.IMAGE_HEIGHT);
 
-            // Peak ahead and if the next event is the same (and in the same "zone") combine the two events into one.
-            // Don't do this for AUTO phase since we want the fidelity.
-            if ((i < match_log_events.size() - 1) && (ler.EventId == next_ler.EventId)) {
+            // Peak ahead and if the next event is the same (and in the same "zone" and in the same "shift") combine the two events into one.
+            if ((i < match_log_events.size() - 1) && (ler.EventId == next_ler.EventId) && (shift.equals(shift_next))) {
                 if (!Globals.EventList.getPhaseForEvent(ler.EventId).equals(Constants.Phases.AUTO))
                 {
                     if ((ler.X < MatchTally.NeutralZone_StartX) && (next_ler.X < MatchTally.NeutralZone_StartX))
