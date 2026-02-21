@@ -185,6 +185,7 @@ public class Logger {
     private void WriteOutEventFile(OutputStream in_fos) {
         int count = 0;
         boolean repeatedRow = false;
+        int rowsCollapsed = 0;
 
         // Form the output line that goes in the csv file.
         for (int i = 1; i < match_log_events.size(); ++i) {
@@ -222,6 +223,7 @@ public class Logger {
 
             if (repeatedRow) {
                 count += next_ler.Count;
+                rowsCollapsed++;
             } else {
                 StringBuilder csv_line = new StringBuilder();
                 csv_line.append("E")
@@ -229,7 +231,7 @@ public class Logger {
                         .append(",").append(Globals.CurrentMatchType)
                         .append(",").append(Globals.CurrentMatchNumber)
                         .append(",").append(Globals.CurrentTeamToScout)
-                        .append(",").append(i)
+                        .append(",").append(i - rowsCollapsed)
                         .append(",").append(ler.EventId)
                         .append(",").append(ler.LogTime)
                         .append(",").append(normalized_x)
@@ -243,6 +245,16 @@ public class Logger {
                 } catch (IOException e) {
                     Toast.makeText(appContext, "Failed to write out event data: " + csv_line + " (ERROR: " + e.getMessage() + ")", Toast.LENGTH_LONG).show();
                     throw new RuntimeException(e);
+                }
+
+                // If we collapsed any rows, see if any future records point to this row, and if so, subtract the count
+                if (rowsCollapsed > 0) {
+                    for (int j = i + 1; j < match_log_events.size(); ++j) {
+                        if (match_log_events.get(j).PrevSeq.equals(String.valueOf(i))) {
+                            match_log_events.get(j).PrevSeq = String.valueOf(i - rowsCollapsed);
+                            break;
+                        }
+                    }
                 }
             }
         }
