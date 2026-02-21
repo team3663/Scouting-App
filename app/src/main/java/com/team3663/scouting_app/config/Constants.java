@@ -107,7 +107,6 @@ public class Constants {
         public static final int ID_AUTO_START_GAME_PIECE = 0;
         public static final int ID_AUTO_CLIMB = 6;
         public static final int ID_TELE_CLIMB = 40;
-        public static final Set<Integer> IDS_TO_COLLAPSE = new HashSet<>();
         public static final int ID_NO_EVENT = 999;   // use to check if the eventID you're looking for doesn't exist
     }
 
