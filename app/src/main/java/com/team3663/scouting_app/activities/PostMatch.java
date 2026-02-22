@@ -196,7 +196,7 @@ public class PostMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initClimbLevel() {
-        if (Globals.EventLogger.findEvent(Constants.Events.ID_TELE_CLIMB)) {
+        if (Globals.EventLogger.findEvent(Constants.Events.ID_TELE_CLIMB) || Globals.isPractice) {
             ArrayAdapter<String> adp_ClimbLevel = new ArrayAdapter<>(this, R.layout.cpr_spinner, ClimbLevel);
             adp_ClimbLevel.setDropDownViewResource(R.layout.cpr_spinner_item);
             postMatchBinding.spinnerClimbLevel.setAdapter(adp_ClimbLevel);
@@ -245,7 +245,7 @@ public class PostMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initClimbPosition() {
-        if (Globals.EventLogger.findEvent(Constants.Events.ID_TELE_CLIMB)) {
+        if (Globals.EventLogger.findEvent(Constants.Events.ID_TELE_CLIMB) || Globals.isPractice) {
             ArrayAdapter<String> adp_ClimbPosition = new ArrayAdapter<>(this, R.layout.cpr_spinner, ClimbPosition);
             adp_ClimbPosition.setDropDownViewResource(R.layout.cpr_spinner_item);
             postMatchBinding.spinnerClimbPosition.setAdapter(adp_ClimbPosition);
