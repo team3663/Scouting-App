@@ -45,11 +45,11 @@ public class Achievements {
 
     // Constructor: Define all of the achievements and the rule(s) they are based on
     public Achievements() {
-        Achievement ach1 = new Achievement(1, "Getting the hang of it", "Scouted 2 matches in a row", 10);
+        Achievement ach1 = new Achievement(1, "Getting the hang of it", "Scouted 2 matches in a row", 5);
         ach1.addRule(new RuleNumMatches(2));
         achievement_list.add(ach1);
 
-        Achievement ach2 = new Achievement(2, "Know thyself", "You just scouted team " + Globals.CurrentScoutingTeam, 15);
+        Achievement ach2 = new Achievement(2, "Know thyself", "You just scouted team " + Globals.CurrentScoutingTeam, 5);
         ach2.addRule(new RuleTeamScouted(Globals.CurrentScoutingTeam));
         achievement_list.add(ach2);
 
@@ -73,11 +73,11 @@ public class Achievements {
         ach7.addRule(new RuleMatchType("f", 1));
         achievement_list.add(ach7);
 
-        Achievement ach8 = new Achievement(8, "Buddies with the enemy", "Played defense 5 times", 10);
+        Achievement ach8 = new Achievement(8, "Buddies with the enemy", "Played defense 5 times", 5);
         ach8.addRule(new RuleToggles("defense", false, 5));
         achievement_list.add(ach8);
 
-        Achievement ach9 = new Achievement(9, "Not on my watch", "Scored while being defended", 50);
+        Achievement ach9 = new Achievement(9, "Not on my watch", "Scored while being defended", 15);
         ach9.addRule(new RuleScoreDefended(1));
         achievement_list.add(ach9);
 
@@ -97,7 +97,7 @@ public class Achievements {
         ach13.addRule(new RuleTimeScouting(3_600_000)); // 60 minutes
         achievement_list.add(ach13);
 
-        Achievement ach14 = new Achievement(14, "Swiss Army Bot", "This bot did everything", 75);
+        Achievement ach14 = new Achievement(14, "Swiss Army Bot", "This bot did everything", 50);
         ach14.addRule(new RulePassFuel("neutral", 1));
         ach14.addRule(new RulePassFuel("opponent", 1));
         ach14.addRule(new RuleShootFuel("none", 1));
@@ -124,12 +124,12 @@ public class Achievements {
         ach18.addRule(new RuleCompetition(Constants.Achievements.COMPETITION_IDS_DCMP, 1));
         achievement_list.add(ach18);
 
-        // #19 - Count Dracula -> gSheet Only
-        // #20 - Count-a-holic -> gSheet Only
-        // #21 - Count Master -> gSheet Only
-        // #22 - In only counts once -> gSheet Only
+        // #19 - Count Dracula (10gs) -> gSheet Only
+        // #20 - Count-a-holic (25gs) -> gSheet Only
+        // #21 - Count Master (50gs) -> gSheet Only
+        // #22 - In only counts once (5gs) -> gSheet Only
 
-        Achievement ach23 = new Achievement(23, "All Around Passer", "Passed 250 fuel in a match", 10);
+        Achievement ach23 = new Achievement(23, "All Around Passer", "Passed 250 fuel in a match", 15);
         ach23.addRule(new RulePassFuel("all", 250));
         ach23.addRule(new RulePassFuel("neutral", 1));
         ach23.addRule(new RulePassFuel("opponent", 1));
@@ -140,15 +140,21 @@ public class Achievements {
         ach24.addRule(new RuleClimbed("tele", "L3"));
         achievement_list.add(ach24);
 
-        Achievement ach25 = new Achievement(25, "Up, Up, and Away!", "Maxed out climbs in a match", 10);
+        Achievement ach25 = new Achievement(25, "Up, Up, and Away!", "Climbed in both Auto and Teleop", 10);
         ach25.addRule(new RuleClimbed("auto", "L1"));
         ach25.addRule(new RuleClimbed("tele", "L3"));
         achievement_list.add(ach25);
 
-        Achievement ach26 = new Achievement(26, "Fuel Efficiency", "Accurately shot 300 fuel", 10);
+        Achievement ach26 = new Achievement(26, "Fuel Efficiency", "Accurately shot 300 fuel", 25);
         ach26.addRule(new RuleShootFuel("accuracy", 300));
         achievement_list.add(ach26);
     }
+
+    // #27 - I might be addicted (100gs) -> gSheet Only
+    // #28 - Professional Scouter (150gs) -> gSheet Only
+    // #29 - Achievement Hunter (50gs) -> gSheet Only
+    // #30 - In for a penny - in for a pound (20gs) > gSheet Only
+    // #31 - Devotee (25gs) -> gSheet Only
 
     // Member Function: pop (to the screen) any achievements "met" but not already "popped"
     public static ArrayList<PoppedAchievement> popAchievements() {
