@@ -256,6 +256,9 @@ public class MatchTally extends AppCompatActivity {
         matchBinding.butRightZone.setEnabled(true);
         matchBinding.butRightZone.setClickable(true);
 
+        // Default Slider to 10 for ease of couting
+        matchBinding.seekBar.setProgress(10);
+
         // Certain actions can't be set from a non-UI thread (like within a TimerTask that runs on a
         // separate thread). So we need to make a Runner that will execute on the UI thread to set this.
         MatchTally.this.runOnUiThread(() -> {
