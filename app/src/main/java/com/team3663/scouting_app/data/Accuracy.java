@@ -21,7 +21,9 @@ public class Accuracy {
         addAccuracyRow(-1,"<Select One>");
         addAccuracyRow(100, "100%");
         addAccuracyRow(90, "90%");
-        addAccuracyRow(75, "75%");
+        addAccuracyRow(80, "80%");
+        addAccuracyRow(70, "70%");
+        addAccuracyRow(60, "60%");
         addAccuracyRow(50, "50%");
         addAccuracyRow(25, "25%");
         addAccuracyRow(10, "10%");
