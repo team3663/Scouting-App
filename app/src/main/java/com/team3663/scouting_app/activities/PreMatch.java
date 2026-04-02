@@ -303,20 +303,22 @@ public class PreMatch extends AppCompatActivity {
             final TextView textTeamName = popupView.findViewById(R.id.textTeamName);
             RadioGroup radioGroupAlliance = popupView.findViewById(R.id.radiogroup_Alliance);
 
-            // Set an onKeyListener so we can display the team name as they type (assuming we find one)
+            // Set an TextChangeListener so we can display the team name as they type (assuming we find one)
             // Doing it "as they type" since they likely won't change focus on this field unless they need to
             // override the alliance - show best to "show as we go".
-            editTeamNumber.setOnKeyListener((view_popup, keyCode, event) -> {
-                if (event.getAction() == KeyEvent.ACTION_UP) {
-                    textTeamName.setText(Globals.TeamList.getOrDefault(editTeamNumber.getText().toString().trim(), ""));
+            editTeamNumber.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 }
-                else {
-                    // Handle backspace properly since it's NOT called on ACTION_UP and therefore the text isn't updated yet
-                    if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL) {
-                        textTeamName.setText(Globals.TeamList.getOrDefault(editTeamNumber.getText().toString().trim().substring(0,editTeamNumber.getText().toString().length() -1), ""));
-                    }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
                 }
-                return false;
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    textTeamName.setText(Globals.TeamList.getOrDefault(s.toString().trim(), ""));
+                }
             });
 
             // Default the radio button for alliance to match the preferred position (if we have one)
