@@ -45,7 +45,8 @@ public class Globals {
     public static int CurrentFieldOrientationPos;
     public static String CurrentMatchPhase = Constants.Phases.NONE;
     public static String CurrentScoutingTeam;
-    public static String CurrentTeamOverrideNum;
+    public static String CurrentOverrideTeamNum;
+    public static String CurrentOverrideAlliance;
     public static String CurrentTeamToScout;
     public static String CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
 

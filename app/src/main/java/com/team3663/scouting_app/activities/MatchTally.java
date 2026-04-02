@@ -513,8 +513,14 @@ public class MatchTally extends AppCompatActivity {
         matchBinding.textTeam.setText(new_team);
         matchBinding.textTeam.setTextColor(Color.WHITE);
 
-        team_alliance = Globals.MatchList.getAllianceForTeam(Globals.CurrentTeamToScout);
-        if (team_alliance.isEmpty()) team_alliance = Constants.Settings.PREF_TEAM_POS[Globals.CurrentPrefTeamPos];
+        if (!Globals.CurrentOverrideAlliance.isEmpty())
+            team_alliance = Globals.CurrentOverrideAlliance;
+        else
+            team_alliance = Globals.MatchList.getAllianceForTeam(Globals.CurrentTeamToScout);
+
+        if (team_alliance.isEmpty())
+            if (Constants.Settings.PREF_TEAM_POS[Globals.CurrentPrefTeamPos].contains("Red")) team_alliance = "Red";
+            else if (Constants.Settings.PREF_TEAM_POS[Globals.CurrentPrefTeamPos].contains("Blue")) team_alliance = "Blue";
     }
 
     // =============================================================================================

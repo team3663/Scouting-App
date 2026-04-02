@@ -484,7 +484,7 @@ public class AppLaunch extends AppCompatActivity {
             }
 
             // Default Globals
-            Globals.CurrentTeamOverrideNum = "";
+            Globals.CurrentOverrideTeamNum = "";
 
             if ((Globals.sp == null) ||
                     (Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1) == -1) ||
