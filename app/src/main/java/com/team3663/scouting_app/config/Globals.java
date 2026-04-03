@@ -50,7 +50,7 @@ public class Globals {
     public static String CurrentTeamToScout;
     public static String CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
 
-    public static String CheckBoxTextPadding = "       ";
+    public static String CheckBoxTextPadding = "  ";
 
     public static Logger EventLogger = null;
     public static Achievements myAchievements;

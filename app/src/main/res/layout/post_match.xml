@@ -37,7 +37,7 @@
                 android:layout_width="400dp"
                 android:layout_height="match_parent"
                 android:gravity="end|center"
-                android:paddingEnd="50dp"
+                android:paddingEnd="20dp"
                 android:text="@string/post_accuracy"
                 android:textColor="@color/white"
                 android:textSize="24sp"
@@ -45,7 +45,7 @@
                 tools:ignore="RtlSymmetry" />
 
             <RelativeLayout
-                android:layout_width="300dp"
+                android:layout_width="200dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:orientation="horizontal">
@@ -85,7 +85,7 @@
                 android:layout_width="400dp"
                 android:layout_height="match_parent"
                 android:gravity="end|center"
-                android:paddingEnd="50dp"
+                android:paddingEnd="20dp"
                 android:text="@string/post_climb"
                 android:textColor="@color/white"
                 android:textSize="24sp"
@@ -93,14 +93,14 @@
                 tools:ignore="RtlSymmetry"/>
 
             <RelativeLayout
-                android:layout_width="170dp"
+                android:layout_width="200dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/spinner_ClimbLevel"
-                    android:layout_width="170dp"
+                    android:layout_width="200dp"
                     android:layout_height="match_parent"
                     android:background="@color/white"
                     android:paddingHorizontal="10dp"
@@ -133,7 +133,7 @@
                 android:layout_width="400dp"
                 android:layout_height="match_parent"
                 android:gravity="end|center"
-                android:paddingEnd="50dp"
+                android:paddingEnd="20dp"
                 android:text="@string/post_climb_position"
                 android:textColor="@color/white"
                 android:textSize="24sp"
@@ -141,7 +141,7 @@
                 tools:ignore="RtlSymmetry"/>
 
             <RelativeLayout
-                android:layout_width="300dp"
+                android:layout_width="200dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:orientation="horizontal">
@@ -181,7 +181,7 @@
                 android:layout_width="400dp"
                 android:layout_height="match_parent"
                 android:gravity="end|center"
-                android:paddingEnd="50dp"
+                android:paddingEnd="20dp"
                 android:text="@string/post_steal_fuel"
                 android:textColor="@color/white"
                 android:textSize="24sp"
@@ -224,7 +224,7 @@
                 android:layout_width="400dp"
                 android:layout_height="match_parent"
                 android:gravity="end|center"
-                android:paddingEnd="50dp"
+                android:paddingEnd="20dp"
                 android:text="@string/post_defense_affect"
                 android:textColor="@color/white"
                 android:textSize="24sp"
@@ -283,7 +283,7 @@
                 android:layout_width="400dp"
                 android:layout_height="match_parent"
                 android:gravity="end|center"
-                android:paddingEnd="50dp"
+                android:paddingEnd="20dp"
                 android:text="@string/post_comments"
                 android:textColor="@color/white"
                 android:textSize="24sp"
@@ -291,7 +291,7 @@
                 tools:ignore="RtlSymmetry" />
 
             <RelativeLayout
-                android:layout_width="300dp"
+                android:layout_width="200dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:orientation="horizontal">
@@ -330,7 +330,7 @@
                 android:layout_width="400dp"
                 android:layout_height="35dp"
                 android:gravity="end|center"
-                android:paddingEnd="50dp"
+                android:paddingEnd="20dp"
                 android:text="@string/post_stats"
                 android:textColor="@color/white"
                 android:textSize="24sp"
