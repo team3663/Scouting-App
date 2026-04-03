@@ -19,7 +19,7 @@
             android:id="@+id/textTeamNumber"
             android:gravity="end|center"
             android:paddingEnd="10dp"
-            android:layout_width="170dp"
+            android:layout_width="150dp"
             android:layout_height="50dp"
             android:text="Team Number:"
             android:textColor="@color/black"
@@ -28,7 +28,7 @@
 
         <EditText
             android:id="@+id/editTeamNumber"
-            android:layout_width="100dp"
+            android:layout_width="80dp"
             android:layout_height="40dp"
             android:background="@color/light_grey"
             android:paddingStart="5dp"
@@ -38,10 +38,10 @@
     <TextView
         android:id="@+id/textTeamName"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:textSize="20sp"
+        android:layout_height="23dp"
+        android:textSize="16sp"
         android:gravity="center_vertical"
-        android:layout_marginStart="170dp"/>
+        android:layout_marginStart="150dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,7 +50,7 @@
 
         <TextView
             android:id="@+id/textAlliance"
-            android:layout_width="170dp"
+            android:layout_width="150dp"
             android:layout_height="50dp"
             android:paddingEnd="10dp"
             android:gravity="end|center"

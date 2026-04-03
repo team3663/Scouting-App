@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="pre_heading">Pre-Match Scouting Information</string>
+    <string name="pre_match_comp">Competition:</string>
     <string name="pre_match_num">Match number:</string>
     <string name="pre_team_num">Team number to scout:</string>
     <string name="pre_scouter">Scouter name:</string>

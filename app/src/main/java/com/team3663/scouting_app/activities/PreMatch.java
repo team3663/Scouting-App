@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -70,6 +71,7 @@ public class PreMatch extends AppCompatActivity {
         Globals.CurrentQRSize = Globals.sp.getInt(Constants.Prefs.QR_SIZE, 0);
 
         // Initialize activity components
+        initCompetition();
         initMatchNumber();
         initMatchType();
         initTeamNumber();
@@ -82,6 +84,16 @@ public class PreMatch extends AppCompatActivity {
         initNext();
         initAchievements();
         initShadowMode();
+    }
+
+    // =============================================================================================
+    // Function:    initCompetition
+    // Description: Initialize the Competition field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initCompetition() {
+        preMatchBinding.textCompetition.setText(Globals.CompetitionList.getCompetitionDescription(Globals.CurrentCompetitionId));
     }
 
     // =============================================================================================
@@ -369,6 +381,14 @@ public class PreMatch extends AppCompatActivity {
             // Show the dialog
             AlertDialog dialog = builder.create();
             dialog.show();
+
+            // Set dialog width to 90% of screen width
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setLayout(
+                        450, // width
+                        ViewGroup.LayoutParams.WRAP_CONTENT // height
+                );
+            }
         });
     }
 
