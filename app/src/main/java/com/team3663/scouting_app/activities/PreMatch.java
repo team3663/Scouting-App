@@ -382,7 +382,7 @@ public class PreMatch extends AppCompatActivity {
             AlertDialog dialog = builder.create();
             dialog.show();
 
-            // Set dialog width to 90% of screen width
+            // Set dialog width to match pop-up form
             if (dialog.getWindow() != null) {
                 dialog.getWindow().setLayout(
                         450, // width
