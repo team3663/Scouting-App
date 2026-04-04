@@ -7,10 +7,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ArrayAdapter;
 
@@ -66,6 +71,7 @@ public class PreMatch extends AppCompatActivity {
         Globals.CurrentQRSize = Globals.sp.getInt(Constants.Prefs.QR_SIZE, 0);
 
         // Initialize activity components
+        initCompetition();
         initMatchNumber();
         initMatchType();
         initTeamNumber();
@@ -78,6 +84,16 @@ public class PreMatch extends AppCompatActivity {
         initNext();
         initAchievements();
         initShadowMode();
+    }
+
+    // =============================================================================================
+    // Function:    initCompetition
+    // Description: Initialize the Competition field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initCompetition() {
+        preMatchBinding.textCompetition.setText(Globals.CompetitionList.getCompetitionDescription(Globals.CurrentCompetitionId));
     }
 
     // =============================================================================================
@@ -111,15 +127,19 @@ public class PreMatch extends AppCompatActivity {
                 // 3. we didn't have a match number before.
                 if (MatchNumStr.isEmpty()) {
                     // Disable the override
-                    preMatchBinding.checkboxOverride.setEnabled(false);
+                    preMatchBinding.butOverride.setEnabled(false);
+                    preMatchBinding.butOverride.setVisibility(View.INVISIBLE);
+                    preMatchBinding.textOverride.setVisibility(View.INVISIBLE);
                     Globals.CurrentMatchNumber = 0;
-                    Globals.CurrentTeamOverrideNum = "";
+                    Globals.CurrentOverrideTeamNum = "";
                     CurrentTeamToScoutPosition = -1;
                 } else if (MatchNum != Globals.CurrentMatchNumber) {
                     // Enable the override
-                    preMatchBinding.checkboxOverride.setEnabled(true);
+                    preMatchBinding.butOverride.setEnabled(true);
+                    preMatchBinding.butOverride.setVisibility(View.VISIBLE);
+                    preMatchBinding.textOverride.setVisibility(View.VISIBLE);
                     Globals.CurrentMatchNumber = MatchNum;
-                    Globals.CurrentTeamOverrideNum = "";
+                    Globals.CurrentOverrideTeamNum = "";
                 }
 
                 loadTeamToScout();
@@ -159,7 +179,8 @@ public class PreMatch extends AppCompatActivity {
 
                 if (!Objects.equals(newMatchType, Globals.CurrentMatchType)) {
                     Globals.CurrentMatchType = newMatchType;
-                    Globals.CurrentTeamOverrideNum = "";
+                    Globals.CurrentOverrideTeamNum = "";
+                    Globals.CurrentOverrideAlliance = "";
                     Globals.CurrentMatchNumber = 0;
                     Globals.CurrentTeamToScout = "";
                     preMatchBinding.editMatch.setText("");
@@ -274,47 +295,100 @@ public class PreMatch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initOverride() {
+        Globals.CurrentOverrideAlliance = "";
+
         // Default the override button to disabled
         // If we have a match number, enable the override
-        preMatchBinding.checkboxOverride.setEnabled(Globals.CurrentMatchNumber > 0);
+        preMatchBinding.butOverride.setEnabled(Globals.CurrentMatchNumber > 0);
 
-        // Hide override components initially
-        preMatchBinding.textOverride.setVisibility(View.INVISIBLE);
-        preMatchBinding.editOverrideTeamNum.setVisibility(View.INVISIBLE);
-        preMatchBinding.butAddOverrideTeamNum.setVisibility(View.INVISIBLE);
+        // Hide override components initially if there's no match number
+        preMatchBinding.textOverride.setVisibility(Globals.CurrentMatchNumber > 0 ? View.VISIBLE : View.INVISIBLE);
+        preMatchBinding.butOverride.setVisibility(Globals.CurrentMatchNumber > 0 ? View.VISIBLE : View.INVISIBLE);
 
-        preMatchBinding.checkboxOverride.setOnClickListener(view -> {
-            int state = View.VISIBLE;
-            // if Preferred Team in Settings is not checked, unable to override team number
-            if (Globals.CurrentPrefTeamPos == 0) {
-                preMatchBinding.checkboxOverride.setChecked(false);
-                Toast.makeText(PreMatch.this, R.string.pre_no_preference_and_override_team_num, Toast.LENGTH_SHORT).show();
-                return;
+        preMatchBinding.butOverride.setOnClickListener(view -> {
+            // Inflate the custom layout
+            LayoutInflater inflater = getLayoutInflater();
+            View popupView = inflater.inflate(R.layout.pop_up_override, null);
+
+            final EditText editTeamNumber = popupView.findViewById(R.id.editTeamNumber);
+            final TextView textTeamName = popupView.findViewById(R.id.textTeamName);
+            RadioGroup radioGroupAlliance = popupView.findViewById(R.id.radiogroup_Alliance);
+
+            // Set an TextChangeListener so we can display the team name as they type (assuming we find one)
+            // Doing it "as they type" since they likely won't change focus on this field unless they need to
+            // override the alliance - show best to "show as we go".
+            editTeamNumber.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    textTeamName.setText(Globals.TeamList.getOrDefault(s.toString().trim(), ""));
+                }
+            });
+
+            // Default the radio button for alliance to match the preferred position (if we have one)
+            if (Constants.Settings.PREF_TEAM_POS[Globals.CurrentPrefTeamPos].contains("Red")) {
+                RadioButton rb = popupView.findViewById(R.id.radiobutton_Red);
+                rb.setChecked(true);
             }
-            if (!preMatchBinding.checkboxOverride.isChecked()) state = View.INVISIBLE;
-            preMatchBinding.textOverride.setVisibility(state);
-            preMatchBinding.editOverrideTeamNum.setVisibility(state);
-            preMatchBinding.butAddOverrideTeamNum.setVisibility(state);
-        });
-
-        preMatchBinding.butAddOverrideTeamNum.setOnClickListener(view -> {
-            // Set the global override number
-            String newOverride = preMatchBinding.editOverrideTeamNum.getText().toString();
-
-            if (newOverride.length() > Constants.PreMatch.MAX_DIGIT_TEAM_NUM) {
-                newOverride = newOverride.substring(newOverride.length() - Constants.PreMatch.MAX_DIGIT_TEAM_NUM);
-                preMatchBinding.editOverrideTeamNum.setText(newOverride);
+            else if (Constants.Settings.PREF_TEAM_POS[Globals.CurrentPrefTeamPos].contains("Blue")) {
+                RadioButton rb = popupView.findViewById(R.id.radiobutton_Blue);
+                rb.setChecked(true);
             }
 
-            if (!newOverride.isEmpty()) Globals.CurrentTeamOverrideNum = newOverride;
+            // Build the AlertDialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setView(popupView)
+                    .setTitle("Enter Override Information")
+                    .setCancelable(false) // Prevent closing by tapping outside
+                    .setPositiveButton("Add", (dialog, which) -> {
+                        String editTeamNumberStr = editTeamNumber.getText().toString().trim();
+                        Globals.CurrentOverrideTeamNum = editTeamNumberStr;
 
-            // Load the team data again
-            loadTeamToScout();
+                        // Set the override alliance if one was selected
+                        // Otherwise abort the override since we don't know what alliance to assign
+                        if (radioGroupAlliance.getCheckedRadioButtonId() == R.id.radiobutton_Red)
+                            Globals.CurrentOverrideAlliance = "Red";
+                        else if (radioGroupAlliance.getCheckedRadioButtonId() == R.id.radiobutton_Blue)
+                            Globals.CurrentOverrideAlliance = "Blue";
+                        else {
+                            Globals.CurrentOverrideTeamNum = "";
+                            Globals.CurrentOverrideAlliance = "";
+                            Toast.makeText(PreMatch.this, R.string.pre_no_alliance_selected, Toast.LENGTH_SHORT).show();
+                        }
 
-            preMatchBinding.checkboxOverride.setChecked(false);
-            preMatchBinding.textOverride.setVisibility(View.INVISIBLE);
-            preMatchBinding.editOverrideTeamNum.setVisibility(View.INVISIBLE);
-            preMatchBinding.butAddOverrideTeamNum.setVisibility(View.INVISIBLE);
+                        // If we have an alliance known, set the override team number (trimmed to max digits)
+                        if (!Globals.CurrentOverrideAlliance.isEmpty()) {
+                            if (editTeamNumberStr.length() > Constants.PreMatch.MAX_DIGIT_TEAM_NUM) {
+                                editTeamNumberStr = editTeamNumberStr.substring(editTeamNumberStr.length() - Constants.PreMatch.MAX_DIGIT_TEAM_NUM);
+                            }
+
+                            if (!editTeamNumberStr.isEmpty())
+                                Globals.CurrentOverrideTeamNum = editTeamNumberStr;
+
+                            // Load the team data again
+                            loadTeamToScout();
+                        }
+                    })
+                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+            // Show the dialog
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+            // Set dialog width to match pop-up form
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setLayout(
+                        450, // width
+                        ViewGroup.LayoutParams.WRAP_CONTENT // height
+                );
+            }
         });
     }
 
@@ -481,11 +555,11 @@ public class PreMatch extends AppCompatActivity {
         }
 
         // If there's an override set, add it to the spinner
-        if (!Globals.CurrentTeamOverrideNum.isEmpty()) {
+        if (!Globals.CurrentOverrideTeamNum.isEmpty()) {
             if (teamsInMatch.size() == 1)
-                teamsInMatch.set(0, Globals.CurrentTeamOverrideNum);
+                teamsInMatch.set(0, Globals.CurrentOverrideTeamNum);
             else
-                teamsInMatch.add(Globals.CurrentTeamOverrideNum);
+                teamsInMatch.add(Globals.CurrentOverrideTeamNum);
         }
 
         // Create and apply the adapter to the spinner.
@@ -497,7 +571,7 @@ public class PreMatch extends AppCompatActivity {
         // If there's an override, we want that one and it'll be the last in the list
         // If there's a preferred position, choose it
         // Lastly, if there is no previously chosen one, set it to the first one
-        if (!Globals.CurrentTeamOverrideNum.isEmpty()) {
+        if (!Globals.CurrentOverrideTeamNum.isEmpty()) {
             CurrentTeamToScoutPosition = teamsInMatch.size() - 1;
         } else if (Globals.CurrentPrefTeamPos > 0) {
             String prefTeam = Globals.MatchList.getTeamInPosition(Constants.Settings.PREF_TEAM_POS[Globals.CurrentPrefTeamPos]);

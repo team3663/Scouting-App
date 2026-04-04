@@ -230,6 +230,14 @@ public class MatchTally extends AppCompatActivity {
         // Set match Phase to be correct and Button text
         Globals.CurrentMatchPhase = Constants.Phases.TELEOP;
 
+        // Enable Zone Buttons
+        matchBinding.butLeftZone.setEnabled(true);
+        matchBinding.butLeftZone.setClickable(true);
+        matchBinding.butCenterZone.setEnabled(true);
+        matchBinding.butCenterZone.setClickable(true);
+        matchBinding.butRightZone.setEnabled(true);
+        matchBinding.butRightZone.setClickable(true);
+
         // Hide the location of the robot
         matchBinding.textRobot.setVisibility(View.INVISIBLE);
         // Highlight the right zone instead
@@ -247,14 +255,6 @@ public class MatchTally extends AppCompatActivity {
         matchBinding.butClimb.setEnabled(in_alliance_zone);
         matchBinding.butClimb.setClickable(in_alliance_zone);
         climb_button_pressed = false;
-
-        // Enable Zone Buttons
-        matchBinding.butLeftZone.setEnabled(true);
-        matchBinding.butLeftZone.setClickable(true);
-        matchBinding.butCenterZone.setEnabled(true);
-        matchBinding.butCenterZone.setClickable(true);
-        matchBinding.butRightZone.setEnabled(true);
-        matchBinding.butRightZone.setClickable(true);
 
         // Default Slider to 10 for ease of couting
         matchBinding.seekBar.setProgress(10);
@@ -513,8 +513,14 @@ public class MatchTally extends AppCompatActivity {
         matchBinding.textTeam.setText(new_team);
         matchBinding.textTeam.setTextColor(Color.WHITE);
 
-        team_alliance = Globals.MatchList.getAllianceForTeam(Globals.CurrentTeamToScout);
-        if (team_alliance.isEmpty()) team_alliance = Constants.Settings.PREF_TEAM_POS[Globals.CurrentPrefTeamPos];
+        if (!Globals.CurrentOverrideAlliance.isEmpty())
+            team_alliance = Globals.CurrentOverrideAlliance;
+        else
+            team_alliance = Globals.MatchList.getAllianceForTeam(Globals.CurrentTeamToScout);
+
+        if (team_alliance.isEmpty())
+            if (Constants.Settings.PREF_TEAM_POS[Globals.CurrentPrefTeamPos].contains("Red")) team_alliance = "Red";
+            else if (Constants.Settings.PREF_TEAM_POS[Globals.CurrentPrefTeamPos].contains("Blue")) team_alliance = "Blue";
     }
 
     // =============================================================================================
@@ -889,6 +895,11 @@ public class MatchTally extends AppCompatActivity {
             }
 
             setRobotLocation(Screen_X, Screen_Y);
+            
+            // regardless of where we click, if we haven't started the match, we FORCE the robot to be on
+            // the starting line, which IS in the alliance zone.  Need this in case the robot never moves (scouter
+            // never clicks anywhere) and we go into teleop - for the action buttons to be set correctly.
+            if (Globals.CurrentMatchPhase.equals(Constants.Phases.NONE)) in_alliance_zone = true;
 
             return true;
         });

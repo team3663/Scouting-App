@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="pre_heading">Pre-Match Scouting Information</string>
+    <string name="pre_match_comp">Competition:</string>
     <string name="pre_match_num">Match number:</string>
     <string name="pre_team_num">Team number to scout:</string>
     <string name="pre_scouter">Scouter name:</string>
     <string name="pre_did_play">Did they play?</string>
     <string name="pre_start_with_game_piece">Number of game pieces:</string>
     <string name="pre_start_pos">Starting position:</string>
-    <string name="pre_override">Override Team Number</string>
+    <string name="pre_override">Team Number</string>
     <string name="pre_new_team_num">Team number:</string>
     <string name="pre_resubmit">Need to re-submit data? (or Quit?)</string>
     <string name="pre_practice">Training Mode</string>
@@ -21,4 +22,5 @@
     <string name="pre_already_scouted_button_negative">Cancel</string>
     <string name="pre_name_invalid">Scouter name can only contain letters, numbers, spaces, periods and underscores</string>
     <string name="pre_name_too_long">Scouter name must be no more than %1$d characters</string>
+    <string name="pre_no_alliance_selected">No alliance was selected.  Override canceled.</string>
 </resources>

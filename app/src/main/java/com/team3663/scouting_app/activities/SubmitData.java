@@ -265,7 +265,7 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initOverride() {
-        Globals.CurrentTeamOverrideNum = "";
+        Globals.CurrentOverrideTeamNum = "";
     }
 
     // =============================================================================================

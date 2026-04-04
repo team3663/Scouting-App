@@ -30,11 +30,39 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/lbl_Competition"
+                android:layout_width="350dp"
+                android:layout_height="match_parent"
+                android:gravity="end|center"
+                android:paddingEnd="20dp"
+                android:text="@string/pre_match_comp"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                android:id="@+id/text_Competition"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="20dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                tools:ignore="LabelFor" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:orientation="horizontal">
+
+            <TextView
                 android:id="@+id/text_Match"
                 android:layout_width="350dp"
                 android:layout_height="match_parent"
                 android:gravity="end|center"
-                android:paddingEnd="50dp"
+                android:paddingEnd="20dp"
                 android:text="@string/pre_match_num"
                 android:textColor="@color/white"
                 android:textSize="24sp"
@@ -81,15 +109,15 @@
             </RelativeLayout>
 
             <CheckBox
-                    android:id="@+id/checkbox_Practice"
-                    android:layout_marginStart="125dp"
-                    android:layout_width="160dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center|end"
-                    android:paddingEnd="20dp"
-                    android:text="@string/pre_practice"
-                    android:textColor="@color/dark_green"
-                    android:textSize="16sp" />
+                android:id="@+id/checkbox_Practice"
+                android:layout_marginStart="125dp"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:gravity="center|end"
+                android:paddingEnd="20dp"
+                android:text="@string/pre_practice"
+                android:textColor="@color/dark_green"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -103,7 +131,7 @@
                 android:layout_width="350dp"
                 android:layout_height="match_parent"
                 android:gravity="end|center"
-                android:paddingEnd="50dp"
+                android:paddingEnd="20dp"
                 android:text="@string/pre_team_num"
                 android:textColor="@color/white"
                 android:textSize="24sp"
@@ -159,7 +187,7 @@
                 android:layout_width="350dp"
                 android:layout_height="match_parent"
                 android:gravity="end|center"
-                android:paddingEnd="50dp"
+                android:paddingEnd="20dp"
                 android:text="@string/pre_scouter"
                 android:textColor="@color/white"
                 android:textSize="24sp"
@@ -227,7 +255,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="end|center"
                 android:paddingStart="0dp"
-                android:paddingEnd="50dp"
+                android:paddingEnd="20dp"
                 android:text="@string/pre_start_with_game_piece"
                 android:textColor="@color/white"
                 android:textSize="24sp" />
@@ -278,20 +306,35 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <CheckBox
-        android:id="@+id/checkbox_Override"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/dark_green"
-        android:gravity="bottom"
-        android:paddingStart="10dp"
-        android:paddingBottom="5dp"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/but_Override"
+        android:layout_width="115dp"
+        android:layout_height="40dp"
+        android:text="Override"
+        android:gravity="center"
+        android:textSize="16sp"
         android:layout_marginBottom="20dp"
         android:layout_marginStart="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/cpr_green"
+        tools:ignore="HardcodedText,MissingConstraints"
+        app:cornerRadius="16dp"/>
+
+    <TextView
+        android:id="@+id/text_Override"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:textColor="@color/white"
+        android:gravity="center_vertical"
+        android:paddingBottom="5dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="5dp"
         android:textSize="16sp"
         android:text="@string/pre_override"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/but_Override"
         tools:ignore="RtlSymmetry" />
 
     <CheckBox
@@ -303,55 +346,11 @@
         android:paddingStart="10dp"
         android:paddingBottom="5dp"
         android:layout_marginStart="20dp"
+        android:layout_marginBottom="20dp"
         android:textSize="16sp"
         android:text="@string/pre_resubmit"
-        app:layout_constraintBottom_toTopOf="@id/checkbox_Override"
+        app:layout_constraintBottom_toTopOf="@id/but_Override"
         app:layout_constraintLeft_toLeftOf="parent" />
-
-    <TextView
-        android:id="@+id/text_Override"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:gravity="end|bottom"
-        android:textSize="20sp"
-        android:paddingBottom="5dp"
-        android:text="@string/pre_new_team_num"
-        android:textColor="@color/white"
-        android:layout_marginStart="50dp"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/checkbox_Override" />
-
-    <EditText
-        android:id="@+id/edit_OverrideTeamNum"
-        android:layout_width="80dp"
-        android:layout_height="35dp"
-        android:layout_weight="1"
-        android:textColor="@color/black"
-        android:background="@color/white"
-        android:layout_marginStart="20dp"
-        android:inputType="number"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/text_Override" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/but_AddOverrideTeamNum"
-        android:layout_width="wrap_content"
-        android:layout_height="45dp"
-        android:text="Add"
-        android:textColor="@color/cpr_bkgnd"
-        android:backgroundTint="@color/cpr_green"
-        android:textSize="20sp"
-        android:gravity="bottom"
-        android:layout_marginStart="30dp"
-        android:layout_marginBottom="15dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/edit_OverrideTeamNum"
-        tools:ignore="HardcodedText"
-        app:cornerRadius="10dp"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/but_Next"

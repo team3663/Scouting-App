@@ -33,7 +33,7 @@
                 android:layout_width="425dp"
                 android:layout_height="match_parent"
                 android:gravity="end|center"
-                android:paddingEnd="50dp"
+                android:paddingEnd="20dp"
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 android:text="@string/pre_match_num"

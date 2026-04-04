@@ -37,7 +37,7 @@ public class Globals {
     public static Colors ColorList = new Colors();
 
     public static int CurrentCompetitionId;
-    public static int CurrentMatchNumber;
+    public static int CurrentMatchNumber = 0;
     public static int CurrentDeviceId;
     public static int CurrentColorId;
     public static int CurrentPrefTeamPos;
@@ -45,11 +45,12 @@ public class Globals {
     public static int CurrentFieldOrientationPos;
     public static String CurrentMatchPhase = Constants.Phases.NONE;
     public static String CurrentScoutingTeam;
-    public static String CurrentTeamOverrideNum;
+    public static String CurrentOverrideTeamNum;
+    public static String CurrentOverrideAlliance;
     public static String CurrentTeamToScout;
     public static String CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
 
-    public static String CheckBoxTextPadding = "       ";
+    public static String CheckBoxTextPadding = "  ";
 
     public static Logger EventLogger = null;
     public static Achievements myAchievements;

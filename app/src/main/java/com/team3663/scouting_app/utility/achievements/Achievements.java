@@ -135,14 +135,14 @@ public class Achievements {
         ach23.addRule(new RulePassFuel("opponent", 1));
         achievement_list.add(ach23);
 
-        Achievement ach24 = new Achievement(24, "The Floor is Lava", "Climbed in both auto and tele", 5);
+        Achievement ach24 = new Achievement(24, "The Floor is Lava", "Climbed in both auto and tele", 10);
         ach24.addRule(new RuleClimbed("auto", "L1"));
-        ach24.addRule(new RuleClimbed("tele", "L3"));
+        ach24.addRule(new RuleClimbed("tele", "L"));
         achievement_list.add(ach24);
 
-        Achievement ach25 = new Achievement(25, "Up, Up, and Away!", "Climbed in both Auto and Teleop", 10);
+        Achievement ach25 = new Achievement(25, "Up, Up, and Away!", "Maxed out climbs in a match", 10);
         ach25.addRule(new RuleClimbed("auto", "L1"));
-        ach25.addRule(new RuleClimbed("tele", "L3"));
+        ach25.addRule(new RuleClimbed("tele_l3", "L3"));
         achievement_list.add(ach25);
 
         Achievement ach26 = new Achievement(26, "Fuel Efficiency", "Accurately shot 300 fuel", 25);
