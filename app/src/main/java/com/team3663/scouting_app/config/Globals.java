@@ -37,7 +37,7 @@ public class Globals {
     public static Colors ColorList = new Colors();
 
     public static int CurrentCompetitionId;
-    public static int CurrentMatchNumber;
+    public static int CurrentMatchNumber = 0;
     public static int CurrentDeviceId;
     public static int CurrentColorId;
     public static int CurrentPrefTeamPos;

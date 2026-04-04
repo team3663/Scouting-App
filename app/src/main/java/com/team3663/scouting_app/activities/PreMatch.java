@@ -301,9 +301,9 @@ public class PreMatch extends AppCompatActivity {
         // If we have a match number, enable the override
         preMatchBinding.butOverride.setEnabled(Globals.CurrentMatchNumber > 0);
 
-        // Hide override components initially
-        preMatchBinding.textOverride.setVisibility(View.INVISIBLE);
-        preMatchBinding.butOverride.setVisibility(View.INVISIBLE);
+        // Hide override components initially if there's no match number
+        preMatchBinding.textOverride.setVisibility(Globals.CurrentMatchNumber > 0 ? View.VISIBLE : View.INVISIBLE);
+        preMatchBinding.butOverride.setVisibility(Globals.CurrentMatchNumber > 0 ? View.VISIBLE : View.INVISIBLE);
 
         preMatchBinding.butOverride.setOnClickListener(view -> {
             // Inflate the custom layout
