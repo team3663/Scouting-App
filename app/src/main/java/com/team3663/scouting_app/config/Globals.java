@@ -27,18 +27,15 @@ public class Globals {
     @SuppressLint("StaticFieldLeak") public static EventsFile EventList;
 
     public static Accuracy AccuracyTypeList = new Accuracy();
-    public static int CurrentAccuracy = Constants.PostMatch.ACCURACY_NOT_SELECTED;
     public static ClimbLevel ClimbLevelList = new ClimbLevel();
-    public static String CurrentClimbLevel = Constants.PostMatch.CLIMB_LEVEL_NOT_SELECTED;
     public static ClimbPosition ClimbPositionList = new ClimbPosition();
-    public static String CurrentClimbPosition = Constants.PostMatch.CLIMB_POSITION_NOT_SELECTED;
 
+    public static int CurrentAccuracy = Constants.PostMatch.ACCURACY_NOT_SELECTED;
     public static int CurrentCompetitionId = 0;
     public static int CurrentMatchNumber = 0;
     public static int CurrentDeviceId;
     public static int CurrentColorId;
     public static int CurrentPrefTeamPos;
-    public static int CurrentQRSize;
     public static int CurrentFieldOrientationPos;
     public static String CurrentMatchPhase = Constants.Phases.NONE;
     public static String CurrentScoutingTeam;
@@ -46,25 +43,28 @@ public class Globals {
     public static String CurrentOverrideAlliance;
     public static String CurrentTeamToScout;
     public static String CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
+    public static String CurrentClimbLevel = Constants.PostMatch.CLIMB_LEVEL_NOT_SELECTED;
+    public static String CurrentClimbPosition = Constants.PostMatch.CLIMB_POSITION_NOT_SELECTED;
 
     public static String CheckBoxTextPadding = "  ";
 
     public static Logger EventLogger = null;
     public static Achievements myAchievements;
+
     public static boolean isDefended = false;
+    public static boolean isPractice = false;
+    public static boolean isShadowMode = false;
 
     public static int NumberMatchFilesKept;
     public static int MaxEventGroups = 0;
+    public static int numStartingGamePiece = Constants.PreMatch.STARTING_GAME_PIECES;
+
+    public static String stealFuelValue = Constants.PostMatch.STEAL_FUEL_NOT_SELECTED;
+    public static String affectedByDefenseValue = Constants.PostMatch.AFFECTED_BY_DEFENSE_NOT_SELECTED;
 
     public static SharedPreferences sp;
     public static SharedPreferences.Editor spe;
     public static Uri baseStorageURI = null;
-
-    public static boolean isPractice = false;
-    public static int numStartingGamePiece = Constants.PreMatch.STARTING_GAME_PIECES;
-    public static String stealFuelValue = Constants.PostMatch.STEAL_FUEL_NOT_SELECTED;
-    public static String affectedByDefenseValue = Constants.PostMatch.AFFECTED_BY_DEFENSE_NOT_SELECTED;
-    public static boolean isShadowMode = false;
 
     public static DocumentFile base_df = null;
     public static DocumentFile input_df = null;

@@ -101,8 +101,8 @@ public class Settings extends AppCompatActivity {
         Globals.CurrentPrefTeamPos = settingsBinding.spinnerPrefTeamPos.getSelectedItemPosition();
         Globals.spe.putInt(Constants.Prefs.PREF_TEAM_POS, Globals.CurrentPrefTeamPos);
 
-        Globals.CurrentQRSize  = Integer.parseInt(settingsBinding.editQRSize.getText().toString());
-        Globals.spe.putInt(Constants.Prefs.QR_SIZE, Globals.CurrentQRSize);
+        int CurrentQRSize  = Integer.parseInt(settingsBinding.editQRSize.getText().toString());
+        Globals.spe.putInt(Constants.Prefs.QR_SIZE, CurrentQRSize);
 
         Globals.CurrentFieldOrientationPos = settingsBinding.spinnerOrientation.getSelectedItemPosition();
         Globals.spe.putInt(Constants.Prefs.PREF_ORIENTATION, Globals.CurrentFieldOrientationPos);
