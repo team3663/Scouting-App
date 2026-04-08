@@ -29,9 +29,19 @@
             android:layout_height="35dp"
             android:orientation="horizontal">
 
+            <ImageButton
+                android:id="@+id/imgBut_Competition"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="140dp"
+                android:background="@color/cpr_bkgnd"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/settings_icon"
+                tools:ignore="ContentDescription,SpeakableTextPresentCheck,ImageContrastCheck" />
+
             <TextView
                 android:id="@+id/lbl_Competition"
-                android:layout_width="350dp"
+                android:layout_width="175dp"
                 android:layout_height="match_parent"
                 android:gravity="end|center"
                 android:paddingEnd="20dp"

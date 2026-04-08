@@ -1,18 +1,29 @@
-package com.team3663.scouting_app.data;
+package com.team3663.scouting_app.utility.dataFile;
+
+import android.content.Context;
+
+import com.team3663.scouting_app.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-// =============================================================================================
-// Class:       Devices
-// Description: Defines a structure/class to hold the information for all Devices
-// =============================================================================================
-public class Devices {
+public class DevicesFile extends _DataFile {
     private final ArrayList<DeviceRow> device_list;
 
-    // Constructor
-    public Devices() {
+    public DevicesFile(Context in_context) {
+        super(in_context, in_context.getString(R.string.file_devices), in_context.getString(R.string.applaunch_loading_devices), in_context.getString(R.string.applaunch_file_error_devices));
+
         device_list = new ArrayList<>();
+    }
+
+    @Override
+    protected void processLine(String[] in_line, String in_orig_line) {
+        addDeviceRow(in_line[0], in_line[1], in_line[5]);
+    }
+
+    @Override
+    public void clearList() {
+        device_list.clear();
     }
 
     // Member Function: Add a row of device info into the list giving the data in a csv format
@@ -98,16 +109,11 @@ public class Devices {
         return ret;
     }
 
-    // Member Function: Empties out the list
-    public void clear() {
-        device_list.clear();
-    }
-
     // =============================================================================================
     // Class:       DeviceRow
     // Description: Defines a structure/class to hold the information for each Device.
     // =============================================================================================
-    private static class DeviceRow {
+    protected static class DeviceRow {
         private final int id;
         private final String team_number;
         private final String description;

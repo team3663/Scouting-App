@@ -1,5 +1,6 @@
 package com.team3663.scouting_app.config;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
@@ -8,33 +9,29 @@ import androidx.documentfile.provider.DocumentFile;
 import com.team3663.scouting_app.data.Accuracy;
 import com.team3663.scouting_app.data.ClimbLevel;
 import com.team3663.scouting_app.data.ClimbPosition;
-import com.team3663.scouting_app.data.MatchTypes;
 import com.team3663.scouting_app.utility.Logger;
-import com.team3663.scouting_app.data.Colors;
-import com.team3663.scouting_app.data.Comments;
-import com.team3663.scouting_app.data.Competitions;
-import com.team3663.scouting_app.data.Devices;
-import com.team3663.scouting_app.data.Events;
-import com.team3663.scouting_app.data.Matches;
 import com.team3663.scouting_app.utility.achievements.Achievements;
+import com.team3663.scouting_app.utility.dataFile.*;
 
 import java.util.HashMap;
 
 public class Globals {
-    public static HashMap<String, String> TeamList = new HashMap<>();
-    public static Competitions CompetitionList = new Competitions();
-    public static MatchTypes MatchTypeList = new MatchTypes();
-    public static Matches MatchList = new Matches();
+    @SuppressLint("StaticFieldLeak") public static TeamsFile TeamList;
+    @SuppressLint("StaticFieldLeak") public static CompetitionsFile CompetitionList;
+    @SuppressLint("StaticFieldLeak") public static ColorsFile ColorList;
+    @SuppressLint("StaticFieldLeak") public static CommentsFile CommentList;
+    @SuppressLint("StaticFieldLeak") public static DevicesFile DeviceList;
+    @SuppressLint("StaticFieldLeak") public static MatchTypesFile MatchTypeList;
+    @SuppressLint("StaticFieldLeak") public static MatchesFile MatchList;
+    @SuppressLint("StaticFieldLeak") public static EventGroupsFile EventGroupList;
+    @SuppressLint("StaticFieldLeak") public static EventsFile EventList;
+
     public static Accuracy AccuracyTypeList = new Accuracy();
     public static int CurrentAccuracy = Constants.PostMatch.ACCURACY_NOT_SELECTED;
     public static ClimbLevel ClimbLevelList = new ClimbLevel();
     public static String CurrentClimbLevel = Constants.PostMatch.CLIMB_LEVEL_NOT_SELECTED;
     public static ClimbPosition ClimbPositionList = new ClimbPosition();
     public static String CurrentClimbPosition = Constants.PostMatch.CLIMB_POSITION_NOT_SELECTED;
-    public static Devices DeviceList = new Devices();
-    public static Events EventList = new Events();
-    public static Comments CommentList = new Comments();
-    public static Colors ColorList = new Colors();
 
     public static int CurrentCompetitionId;
     public static int CurrentMatchNumber = 0;

@@ -1,41 +1,30 @@
-package com.team3663.scouting_app.data;
+package com.team3663.scouting_app.utility.dataFile;
 
+import android.content.Context;
+
+import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 
 import java.util.ArrayList;
 
-// =============================================================================================
-// Class:       Events
-// Description: Defines a structure/class to hold the information for all Event Info
-// =============================================================================================
-public class Events {
+public class EventsFile extends _DataFile {
     private final ArrayList<EventRow> event_list;
-    private static  ArrayList<EventGroup> EventGroup;
 
-    // Constructor
-    public Events() {
+    public EventsFile(Context in_context) {
+        super(in_context, in_context.getString(R.string.file_events), in_context.getString(R.string.applaunch_loading_events), in_context.getString(R.string.applaunch_file_error_events));
+
         event_list = new ArrayList<>();
-        EventGroup = new ArrayList<>();
-
-        // EventGroup will use a 1-based group_id, so add a dummy record for index 0.
-        EventGroup.add(new EventGroup("", ""));
-
-        Globals.MaxEventGroups = 0;
     }
 
-    // Member Function: Add an EventGroup to the list
-    public void addEventGroup(String in_id, String in_name) {
-        int group_id = Integer.parseInt(in_id);
+    @Override
+    protected void processLine(String[] in_line, String in_orig_line) {
+        addEventRow(in_line[0], in_line[1], in_line[3], in_line[2].toUpperCase(), in_line[4], in_line[5], in_line[6], in_line[8], in_line[9]);
+    }
 
-        // Ensure we're adding the group id (in_id) as the same index.  This shouldn't happen but in case there's a gap in group numbers.
-        // 1. Ensure the array is at least as big as the group_id needs
-        // 2. Just set the value at the right index to the name.
-        for (int i = EventGroup.size(); i <= group_id; ++i)
-            EventGroup.add(new EventGroup("", ""));
-
-        EventGroup.get(group_id).name = in_name;
-        Globals.MaxEventGroups = Math.max(Globals.MaxEventGroups, Integer.parseInt(in_id));
+    @Override
+    public void clearList() {
+        event_list.clear();
     }
 
     // Member Function: Check if an EventGroup has Events for this Match Phase
@@ -48,11 +37,6 @@ public class Events {
         return false;
     }
 
-    // Member Function: Return the Group Name for a given Group Id
-    public String getGroupName(int in_GroupId) {
-        return EventGroup.get(in_GroupId).name;
-    }
-
     // Member Function: Add a row of event info into the list giving the data individually
     public void addEventRow(String in_id, String in_group_id, String in_description, String in_phase, String in_seq_start, String in_FOP, String in_next_set, String in_color_index, String in_TransitionEvent) {
         int transition_event;
@@ -60,11 +44,6 @@ public class Events {
         else transition_event = Integer.parseInt(in_TransitionEvent);
 
         event_list.add(new EventRow(Integer.parseInt(in_id), Integer.parseInt(in_group_id), in_description, in_phase, Boolean.parseBoolean(in_seq_start), Boolean.parseBoolean(in_FOP), in_next_set, in_color_index, transition_event));
-    }
-
-    // Member Function: Check if an event group has a specific color to use
-    public boolean hasGroupColor(int in_GroupId) {
-        return (!EventGroup.get(in_GroupId).color.isEmpty());
     }
 
     // Member Function: Check if an event has a specific color to use
@@ -77,10 +56,6 @@ public class Events {
         return false;
     }
 
-    // Member Function: Return the color code for this event
-    public int getGroupColor(int in_GroupId) {
-        return Integer.parseInt(EventGroup.get(in_GroupId).color) - 1;
-    }
 
     // Member Function: Return the color code for this event
     public int getEventColor(int in_EventId) {
@@ -181,15 +156,6 @@ public class Events {
         }
     }
 
-    // Member Function: Empties out the list
-    public void clear() {
-        event_list.clear();
-        EventGroup.clear();
-
-        // EventGroup will use a 1-based group_id, so add a dummy record for index 0.
-        EventGroup.add(new EventGroup("", ""));
-    }
-
     // Member Function: Is this EventId one that happens in the FOP
     public boolean isEventInFOP(int in_EventId) {
         for (EventRow er : event_list) {
@@ -250,7 +216,7 @@ public class Events {
     // Class:       EventRow
     // Description: Defines a structure/class to hold the information for each Event
     // =============================================================================================
-    private static class EventRow {
+    protected static class EventRow {
         final int id;
         final int group_id;
         final String description;
@@ -276,21 +242,6 @@ public class Events {
             next_events_ids = new ArrayList<>();
             color = in_color_index;
             transition_event = in_transition_event;
-        }
-    }
-
-    // =============================================================================================
-    // Class:       EventGroup
-    // Description: Defines a structure/class to hold the information for each Event Group
-    // =============================================================================================
-    private static class EventGroup {
-        String name;
-        String color;
-
-        // Constructor
-        public EventGroup(String in_name, String in_color_index) {
-            name = in_name;
-            color = in_color_index;
         }
     }
 }

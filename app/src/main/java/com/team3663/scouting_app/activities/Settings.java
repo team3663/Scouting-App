@@ -163,7 +163,7 @@ public class Settings extends AppCompatActivity {
         if ((savedDeviceId > -1) && (adp_Device.getCount() >0)) {
             settingsBinding.spinnerDevice.setSelection(adp_Device.getPosition(Globals.DeviceList.getDeviceDescription(savedDeviceId)), true);
             settingsBinding.editScoutingTeam.setText(String.valueOf(Globals.DeviceList.getTeamNumberByDeviceId(savedDeviceId)));
-            settingsBinding.textScoutingTeamName.setText(Globals.TeamList.getOrDefault(Globals.DeviceList.getTeamNumberByDeviceId(savedDeviceId), ""));
+            settingsBinding.textScoutingTeamName.setText(Globals.TeamList.getTeam(Globals.DeviceList.getTeamNumberByDeviceId(savedDeviceId)));
         }
 
         // Define the actions when an item is selected.  Set text color and set description text
@@ -173,7 +173,7 @@ public class Settings extends AppCompatActivity {
                 Settings.this.runOnUiThread(() -> {
                     String team_num = Globals.DeviceList.getTeamNumberByDescription(settingsBinding.spinnerDevice.getSelectedItem().toString());
                     settingsBinding.editScoutingTeam.setText(team_num);
-                    settingsBinding.textScoutingTeamName.setText(Globals.TeamList.getOrDefault(team_num, ""));
+                    settingsBinding.textScoutingTeamName.setText(Globals.TeamList.getTeam(team_num));
                 });
             }
 
@@ -260,14 +260,14 @@ public class Settings extends AppCompatActivity {
         // Define a text box for the name of the Team to appear in when you enter the Number
         String ScoutingTeamNumStr = String.valueOf(settingsBinding.editScoutingTeam.getText());
         if (!ScoutingTeamNumStr.isEmpty()) {
-            settingsBinding.textScoutingTeamName.setText(Globals.TeamList.getOrDefault(ScoutingTeamNumStr, ""));
+            settingsBinding.textScoutingTeamName.setText(Globals.TeamList.getTeam(ScoutingTeamNumStr));
         }
 
         settingsBinding.editScoutingTeam.setOnFocusChangeListener((view, focus) -> {
             if (!focus) {
                 String ScoutingTeamNumStr1 = String.valueOf(settingsBinding.editScoutingTeam.getText());
                 if (!ScoutingTeamNumStr1.isEmpty()) {
-                    settingsBinding.textScoutingTeamName.setText(Globals.TeamList.getOrDefault(ScoutingTeamNumStr1, ""));
+                    settingsBinding.textScoutingTeamName.setText(Globals.TeamList.getTeam(ScoutingTeamNumStr1));
                 }
             }
         });

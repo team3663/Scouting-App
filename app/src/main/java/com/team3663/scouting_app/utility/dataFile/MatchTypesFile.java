@@ -1,18 +1,29 @@
-package com.team3663.scouting_app.data;
+package com.team3663.scouting_app.utility.dataFile;
+
+import android.content.Context;
+
+import com.team3663.scouting_app.R;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-// =============================================================================================
-// Class:       MatchTypes
-// Description: Defines a structure/class to hold the information for all Match Types
-// =============================================================================================
-public class MatchTypes {
+public class MatchTypesFile extends _DataFile {
     private final ArrayList<MatchTypeRow> matchType_list;
 
-    // Constructor
-    public MatchTypes() {
+    public MatchTypesFile(Context in_context) {
+        super(in_context, in_context.getString(R.string.file_match_types), in_context.getString(R.string.applaunch_loading_match_types), in_context.getString(R.string.applaunch_file_error_match_types));
+
         matchType_list = new ArrayList<>();
+    }
+
+    @Override
+    protected void processLine(String[] in_line, String in_orig_line) {
+        addMatchTypeRow(in_line[0], in_line[1]);
+    }
+
+    @Override
+    public void clearList() {
+        matchType_list.clear();
     }
 
     // Member Function: Add a row of match type info into the list giving the data individually
@@ -63,16 +74,11 @@ public class MatchTypes {
         return ret;
     }
 
-    // Member Function: Empties out the list
-    public void clear() {
-        matchType_list.clear();
-    }
-
     // =============================================================================================
     // Class:       MatchTypeRow
     // Description: Defines a structure/class to hold the information for each match type
     // =============================================================================================
-    private static class MatchTypeRow {
+    protected static class MatchTypeRow {
         private final String short_form;
         private final String description;
 
@@ -83,4 +89,3 @@ public class MatchTypes {
         }
     }
 }
-

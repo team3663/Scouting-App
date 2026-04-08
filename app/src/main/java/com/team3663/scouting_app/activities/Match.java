@@ -123,14 +123,14 @@ public class Match extends AppCompatActivity {
                 if (Globals.EventList.hasEventsForGroup(i, Globals.CurrentMatchPhase)) {
                     // Params: groupID, eventID, ordering, eventDescription
                     // eventID must be ID_NO_EVENT so we don't log it when clicked (to open the submenu)
-                    SubMenu subMenu = in_menu.addSubMenu(i, Constants.Events.ID_NO_EVENT, i-1, Globals.EventList.getGroupName(i));
+                    SubMenu subMenu = in_menu.addSubMenu(i, Constants.Events.ID_NO_EVENT, i-1, Globals.EventGroupList.getGroupName(i));
 
                     // If this menuItem has a color to use, then use it
                     if (Globals.ColorList.isColorValid(Globals.CurrentColorId - 1)) {
                         SpannableString ss = new SpannableString(in_menu.getItem(i-1).getTitle());
                         ss.setSpan(new AbsoluteSizeSpan(24), 0, ss.length(), 0);
-                        if (Globals.EventList.hasGroupColor(i))
-                            ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColor(Globals.CurrentColorId - 1, Globals.EventList.getGroupColor(i))), 0, ss.length(), 0);
+                        if (Globals.EventGroupList.hasGroupColor(i))
+                            ss.setSpan(new ForegroundColorSpan(Globals.ColorList.getColor(Globals.CurrentColorId - 1, Globals.EventGroupList.getGroupColor(i))), 0, ss.length(), 0);
                         in_menu.getItem(i-1).setTitle(ss);
                     }
 
@@ -545,7 +545,7 @@ public class Match extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initTeam() {
-        String new_team = Globals.CurrentTeamToScout + " - " + Globals.TeamList.getOrDefault(Globals.CurrentTeamToScout, "");
+        String new_team = Globals.CurrentTeamToScout + " - " + Globals.TeamList.getTeam(Globals.CurrentTeamToScout);
         matchBinding.textTeam.setText(new_team);
         matchBinding.textTeam.setTextColor(Color.WHITE);
     }
