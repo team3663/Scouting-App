@@ -21,7 +21,16 @@ public class MatchesFile extends _DataFile {
     @Override
     protected void processLine(String[] in_line, String in_orig_line) {
         // Use only the match information that equals the competition we're in.
-        if (Integer.parseInt(in_line[0]) == Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1)) {
+        boolean correct_competition = false;
+
+        // compare against the Global current competition id (if valid).  Otherwise compare against the competition id in the preferences
+        if (Globals.CurrentCompetitionId > 0) {
+            if (Integer.parseInt(in_line[0]) == Globals.CurrentCompetitionId)
+                correct_competition = true;
+        }
+        else if (Integer.parseInt(in_line[0]) == Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1)) correct_competition = true;
+
+        if (correct_competition) {
             Globals.CurrentMatchType = in_line[1];
             Globals.MatchList.addMatchRow(in_line[1], in_line[2], in_line[3], in_line[4], in_line[5], in_line[6], in_line[7], in_line[8]);
         }

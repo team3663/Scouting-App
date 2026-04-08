@@ -33,7 +33,7 @@ public class Globals {
     public static ClimbPosition ClimbPositionList = new ClimbPosition();
     public static String CurrentClimbPosition = Constants.PostMatch.CLIMB_POSITION_NOT_SELECTED;
 
-    public static int CurrentCompetitionId;
+    public static int CurrentCompetitionId = 0;
     public static int CurrentMatchNumber = 0;
     public static int CurrentDeviceId;
     public static int CurrentColorId;

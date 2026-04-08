@@ -122,8 +122,13 @@ public class PreMatch extends AppCompatActivity {
                         int CompetitionId = Globals.CompetitionList.getCompetitionId(spinnerCompetition.getSelectedItem().toString());
                         preMatchBinding.textCompetition.setText(Globals.CompetitionList.getCompetitionDescription(CompetitionId));
                         if (Globals.CurrentCompetitionId != CompetitionId) {
+                            Globals.CurrentCompetitionId = CompetitionId;
+                            Globals.CurrentMatchNumber = 0;
+                            Globals.MatchList.setContext(this);
                             Globals.MatchList.clearList();
-                            Globals.MatchList.LoadDataFile(null, null, null);
+                            Globals.MatchList.LoadDataFile(null, null, null, null, null);
+                            preMatchBinding.editMatch.setText("");
+                            loadTeamToScout();
                         }
                     })
                     .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());

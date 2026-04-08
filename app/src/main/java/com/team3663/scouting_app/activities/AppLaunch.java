@@ -52,7 +52,7 @@ public class AppLaunch extends AppCompatActivity {
                     Intent data = result.getData();
                     if (Objects.requireNonNull(data).getIntExtra(Constants.Settings.RELOAD_DATA_KEY, 0) == 1) {
                         Globals.MatchList.clearList();
-                        Globals.MatchList.LoadDataFile(appLaunchBinding.textStatusFile, appLaunchBinding.progressBarFile, appLaunchBinding.textPercentFile);
+                        Globals.MatchList.LoadDataFile(appLaunchBinding.textStatusFile, appLaunchBinding.progressBarFile, appLaunchBinding.textPercentFile, appLaunchBinding.progressBarOverall, appLaunchBinding.textStatusOverall);
                         appLaunchBinding.textStatusFile.setText("");
                     }
                 }
@@ -262,7 +262,7 @@ public class AppLaunch extends AppCompatActivity {
                 appLaunchBinding.textPercentOverall.setText(getString(R.string.applaunch_percent, 0));
 
                 // Load all of the data with a BRIEF delay between.  :)
-                _DataFile.LoadAllDataFiles(appLaunchBinding.textStatusFile, appLaunchBinding.progressBarFile, appLaunchBinding.textPercentFile);
+                _DataFile.LoadAllDataFiles(appLaunchBinding.textStatusFile, appLaunchBinding.progressBarFile, appLaunchBinding.textPercentFile, appLaunchBinding.progressBarOverall, appLaunchBinding.textPercentOverall);
 
                 // After loading all of the data, we need to build the set of "next events"
                 Globals.EventList.buildNextEvents();

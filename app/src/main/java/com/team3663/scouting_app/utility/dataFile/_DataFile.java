@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.team3663.scouting_app.R;
+import com.team3663.scouting_app.activities.AppLaunch;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 
@@ -124,10 +125,10 @@ public abstract class _DataFile {
     //              in_percent_view = (optional) view to display the percent complete
     // Output:      void
     // =============================================================================================
-    public static void LoadAllDataFiles(TextView in_status_view, ProgressBar in_progress_bar, TextView in_percent_view) {
+    public static void LoadAllDataFiles(TextView in_status_view, ProgressBar in_progress_bar, TextView in_percent_view, ProgressBar in_progress_bar_overall, TextView in_percent_view_overall) {
         for (_DataFile subclass : subclasses) {
             try {
-                subclass.LoadDataFile(in_status_view, in_progress_bar, in_percent_view);
+                subclass.LoadDataFile(in_status_view, in_progress_bar, in_percent_view, in_progress_bar_overall, in_percent_view_overall);
                 Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -145,7 +146,7 @@ public abstract class _DataFile {
     //              in_percent_view = (optional) view to display the percent complete
     // Output:      void
     // =============================================================================================
-    public void LoadDataFile(TextView in_status_view, ProgressBar in_progress_bar, TextView in_percent_view) {
+    public void LoadDataFile(TextView in_status_view, ProgressBar in_progress_bar, TextView in_percent_view, ProgressBar in_progress_bar_overall, TextView in_percent_view_overall) {
         boolean usePublic;
         String line;
         long fileSize = 0;
@@ -248,5 +249,14 @@ public abstract class _DataFile {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        // increment the overall progress
+        ((Activity)context).runOnUiThread(() -> {
+            if (in_progress_bar_overall != null) {
+                in_progress_bar_overall.setProgress(in_progress_bar_overall.getProgress() + 1);
+                if (in_percent_view_overall != null) in_percent_view_overall.setText(context.getString(R.string.applaunch_percent, 100 * in_progress_bar_overall.getProgress() / in_progress_bar_overall.getMax()));
+            }
+        });
+
     }
 }
