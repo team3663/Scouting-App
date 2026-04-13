@@ -102,10 +102,6 @@ public class PreMatch extends AppCompatActivity {
 
             final Spinner spinnerCompetition = popupView.findViewById(R.id.spin_Competition);
 
-            // Set an TextChangeListener so we can display the team name as they type (assuming we find one)
-            // Doing it "as they type" since they likely won't change focus on this field unless they need to
-            // override the alliance - show best to "show as we go".
-
             // Adds Competition information to spinner
             ArrayAdapter<String> adp_Competition = new ArrayAdapter<>(this,
                     R.layout.cpr_spinner, Globals.CompetitionList.getCompetitionList());
@@ -366,7 +362,7 @@ public class PreMatch extends AppCompatActivity {
 
             // Set an TextChangeListener so we can display the team name as they type (assuming we find one)
             // Doing it "as they type" since they likely won't change focus on this field unless they need to
-            // override the alliance - show best to "show as we go".
+            // override the alliance - so it's best to "show as we go".
             editTeamNumber.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
