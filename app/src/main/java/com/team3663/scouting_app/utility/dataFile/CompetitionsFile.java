@@ -1,19 +1,30 @@
-package com.team3663.scouting_app.data;
+package com.team3663.scouting_app.utility.dataFile;
+
+import android.content.Context;
+import com.team3663.scouting_app.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-// =============================================================================================
-// Class:       Competitions
-// Description: Defines a structure/class to hold the information for all Competitions
-// =============================================================================================
-public class Competitions {
+public class CompetitionsFile extends _DataFile {
     private final ArrayList<CompetitionRow> competition_list;
 
-    // Constructor
-    public Competitions() {
+    public CompetitionsFile(Context in_context) {
+        super(in_context, in_context.getString(R.string.file_competitions), in_context.getString(R.string.applaunch_loading_competitions), in_context.getString(R.string.applaunch_file_error_competitions));
+
         competition_list = new ArrayList<>();
     }
+
+    @Override
+    protected void processLine(String[] in_line, String in_orig_line) {
+        addCompetitionRow(in_line[0], in_line[4], in_line[6]);
+    }
+
+    @Override
+    public void clearList() {
+        competition_list.clear();
+    }
+
 
     // Member Function: Add a row of competition info into the list giving all of the data individually
     public void addCompetitionRow(String in_Id, String in_description, String in_attended) {
@@ -83,16 +94,11 @@ public class Competitions {
         return ret;
     }
 
-    // Member Function: Empties out the list
-    public void clear() {
-        competition_list.clear();
-    }
-
     // =============================================================================================
     // Class:       CompetitionRow
     // Description: Defines a structure/class to hold the information for each Competition.
     // =============================================================================================
-    private static class CompetitionRow {
+    protected static class CompetitionRow {
         private final int id;
         private final String description;
         private final boolean attended;
@@ -106,4 +112,3 @@ public class Competitions {
         }
     }
 }
-

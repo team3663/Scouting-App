@@ -1,20 +1,32 @@
-package com.team3663.scouting_app.data;
+package com.team3663.scouting_app.utility.dataFile;
 
+import android.content.Context;
 import android.graphics.Color;
+
+import com.team3663.scouting_app.R;
 
 import java.util.ArrayList;
 
-// =============================================================================================
-// Class:       Colors
-// Description: Defines a structure/class to hold the information for all Colors
-// Methods:     addColorRow()
-// =============================================================================================
-public class Colors {
+public class ColorsFile extends _DataFile {
     private final ArrayList<ColorRow> color_list;
 
-    // Constructor
-    public Colors() {
+    public ColorsFile(Context in_context) {
+        super(in_context, in_context.getString(R.string.file_colors), in_context.getString(R.string.applaunch_loading_colors), in_context.getString(R.string.applaunch_file_error_colors));
+
         color_list = new ArrayList<>();
+    }
+
+    @Override
+    protected void processLine(String[] in_line, String in_orig_line) {
+        if (Boolean.parseBoolean(in_line[1])) {
+            String[] info_colors = in_orig_line.split(",", 4);
+            addColorRow(in_line[0], in_line[2], info_colors[3]);
+        }
+    }
+
+    @Override
+    public void clearList() {
+        color_list.clear();
     }
 
     // Member Function: Add a row of Color info into the list giving the data individually
@@ -79,16 +91,11 @@ public class Colors {
         return ret;
     }
 
-    // Member Function: Empties out the list
-    public void clear() {
-        color_list.clear();
-    }
-
     // =============================================================================================
     // Class:       ColorRow
     // Description: Defines a structure/class to hold the information for each Color
     // =============================================================================================
-    private static class ColorRow {
+    protected static class ColorRow {
         private final int id;
         private final String description;
         private final ArrayList<Integer> color = new ArrayList<>();
@@ -105,4 +112,3 @@ public class Colors {
         }
     }
 }
-

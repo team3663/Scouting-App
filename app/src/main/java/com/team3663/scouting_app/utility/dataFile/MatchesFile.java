@@ -1,24 +1,48 @@
-package com.team3663.scouting_app.data;
+package com.team3663.scouting_app.utility.dataFile;
 
+import android.content.Context;
+
+import com.team3663.scouting_app.R;
+import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-// =============================================================================================
-// Class:       Matches
-// Description: Defines a structure/class to hold the information for all Matches.  This means
-//              we have an array of arrays.  First array defines which match type we're holding
-//              (quals, semis, finals).  The second (inner) array has the list of matches for
-//              that type.
-// =============================================================================================
-public class Matches {
+public class MatchesFile extends _DataFile {
     private final HashMap<String, MatchesForType> match_list;
 
-    // Constructor
-    public Matches(){
-        // We need to add a whole match list for each type of matches
+    public MatchesFile(Context in_context) {
+        super(in_context, in_context.getString(R.string.file_matches), in_context.getString(R.string.applaunch_loading_matches), in_context.getString(R.string.applaunch_file_error_matches));
+
         match_list = new HashMap<>();
+    }
+
+    @Override
+    protected void processLine(String[] in_line, String in_orig_line) {
+        // Use only the match information that equals the competition we're in.
+        boolean correct_competition = false;
+
+        // compare against the Global current competition id (if valid).  Otherwise compare against the competition id in the preferences
+        if (Globals.CurrentCompetitionId > 0) {
+            if (Integer.parseInt(in_line[0]) == Globals.CurrentCompetitionId)
+                correct_competition = true;
+        }
+        else if (Integer.parseInt(in_line[0]) == Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1)) correct_competition = true;
+
+        if (correct_competition) {
+            Globals.CurrentMatchType = in_line[1];
+            Globals.MatchList.addMatchRow(in_line[1], in_line[2], in_line[3], in_line[4], in_line[5], in_line[6], in_line[7], in_line[8]);
+        }
+    }
+
+    @Override
+    public void clearList() {
+        for (MatchesForType mft : match_list.values()) {
+            mft.clear();
+        }
+
+        match_list.clear();
     }
 
     // Member Function: Add a row of match info into the list giving the individual data
@@ -56,15 +80,6 @@ public class Matches {
         return mft.getTeamInPosition(in_position);
     }
 
-    // Member Function: Empties out the list
-    public void clear() {
-        for (MatchesForType mft : match_list.values()) {
-            mft.clear();
-        }
-
-        match_list.clear();
-    }
-
     // Member Function: Return the alliance that the team is on
     public String getAllianceForTeam(String in_Team) {
         String ret = "";
@@ -82,8 +97,8 @@ public class Matches {
             ret = "BLUE";
         }
         else if (in_Team.equals(mir.red1) ||
-                    in_Team.equals(mir.red2) ||
-                    in_Team.equals(mir.red3)) {
+                in_Team.equals(mir.red2) ||
+                in_Team.equals(mir.red3)) {
             ret = "RED";
         }
 
@@ -94,8 +109,8 @@ public class Matches {
     // Class:       MatchesForType
     // Description: Defines a structure/class to hold the information for all Matches
     // =============================================================================================
-    public static class MatchesForType {
-        private final HashMap<Integer,MatchInfoRow> match_list_for_type;
+    protected static class MatchesForType {
+        private final HashMap<Integer, MatchInfoRow> match_list_for_type;
 
         // Constructor
         public MatchesForType() {
@@ -186,7 +201,7 @@ public class Matches {
         // Class:       MatchInfoRow
         // Description: Defines a structure/class to hold the information for each Match
         // =============================================================================================
-        private static class MatchInfoRow {
+        protected static class MatchInfoRow {
             private final String red1;
             private final String red2;
             private final String red3;

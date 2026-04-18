@@ -33,6 +33,7 @@ public class QRCode extends AppCompatActivity {
     private QrCodeBinding qrCodeBinding;
     static private QR_FileString qrFileString;
     static private int currentImagePage;
+    static private final int CurrentQRSize = Globals.sp.getInt(Constants.Prefs.QR_SIZE, 0);
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -278,8 +279,8 @@ public class QRCode extends AppCompatActivity {
             int end;
 
             while (begin < size) {
-                if (size - begin <= Globals.CurrentQRSize) end = size;
-                else end = begin + (Globals.CurrentQRSize * Constants.QRCode.QR_PREFERRED_SIZE_PERCENTAGE / 100);
+                if (size - begin <= CurrentQRSize) end = size;
+                else end = begin + (CurrentQRSize * Constants.QRCode.QR_PREFERRED_SIZE_PERCENTAGE / 100);
 
                 file_page.add(in_data.substring(begin, end));
                 begin = end;

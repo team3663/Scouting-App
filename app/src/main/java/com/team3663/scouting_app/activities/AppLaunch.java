@@ -30,14 +30,8 @@ import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.AppLaunchBinding;
+import com.team3663.scouting_app.utility.dataFile.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Timer;
@@ -57,14 +51,9 @@ public class AppLaunch extends AppCompatActivity {
                     // There are no request codes
                     Intent data = result.getData();
                     if (Objects.requireNonNull(data).getIntExtra(Constants.Settings.RELOAD_DATA_KEY, 0) == 1) {
-                        try {
-                            Globals.MatchList.clear();
-                            LoadDataFile(getString(R.string.file_matches), getString(R.string.applaunch_loading_matches), getString(R.string.applaunch_file_error_matches));
-                            Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                            appLaunchBinding.textStatusFile.setText("");
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
+                        Globals.MatchList.clearList();
+                        Globals.MatchList.LoadDataFile(appLaunchBinding.textStatusFile, appLaunchBinding.progressBarFile, appLaunchBinding.textPercentFile, appLaunchBinding.progressBarOverall, appLaunchBinding.textStatusOverall);
+                        appLaunchBinding.textStatusFile.setText("");
                     }
                 }
             });
@@ -81,9 +70,10 @@ public class AppLaunch extends AppCompatActivity {
                         Globals.spe.putString(Constants.Prefs.STORAGE_URI, treeUri.toString());
                         Globals.spe.apply();
                         Globals.baseStorageURI = treeUri;
+                        initDataFiles();
                     }
 
-                    loadData();
+                    loadDataFiles();
                 }
             });
 
@@ -131,322 +121,13 @@ public class AppLaunch extends AppCompatActivity {
         // Otherwise, initiate getting permissions (which will then load the data afterwards)
         if (havePerms) {
             Globals.baseStorageURI = Uri.parse(Globals.sp.getString(Constants.Prefs.STORAGE_URI, null));
-            loadData();
+            initDataFiles();
+            loadDataFiles();
         } else
             initStoragePermissions();
 
         // While loading Matches, we messed with Globals.CurrentMatchType, so reset it
         Globals.CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
-    }
-
-    // =============================================================================================
-    // Function:    loadData
-    // Description: load all of the configurable data for the app
-    // Output:      void
-    // Parameters:  void
-    // =============================================================================================
-    private void loadData() {
-        // Make sure we have our directory structure created
-        DocumentFile storage_df = DocumentFile.fromTreeUri(this, Globals.baseStorageURI);
-
-        // Check that the BASE directory exists and create it if not.
-        assert storage_df != null;
-        Globals.base_df = storage_df.findFile(Constants.Data.PUBLIC_BASE_DIR);
-
-        // If the base dir isn't there, the others won't be either, so create them
-        if (Globals.base_df == null) {
-            Globals.base_df = storage_df.createDirectory(Constants.Data.PUBLIC_BASE_DIR);
-            if (Globals.base_df != null) {
-                Globals.input_df = Globals.base_df.createDirectory(Constants.Data.PUBLIC_INPUT_DIR);
-                Globals.output_df = Globals.base_df.createDirectory(Constants.Data.PUBLIC_OUTPUT_DIR);
-            }
-        } else {
-            // The base dir is there but we should check the two sub directories are there.
-            Globals.input_df = Globals.base_df.findFile(Constants.Data.PUBLIC_INPUT_DIR);
-            if (Globals.input_df == null)
-                Globals.input_df = Globals.base_df.createDirectory(Constants.Data.PUBLIC_INPUT_DIR);
-            Globals.output_df = Globals.base_df.findFile(Constants.Data.PUBLIC_OUTPUT_DIR);
-            if (Globals.output_df == null)
-                Globals.output_df = Globals.base_df.createDirectory(Constants.Data.PUBLIC_OUTPUT_DIR);
-        }
-
-        // Set a TimerTask to load the data shortly AFTER this OnCreate finishes
-        appLaunch_timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                // Force all lists to be empty (just to be sure)
-                Globals.ColorList.clear();
-                Globals.CommentList.clear();
-                Globals.CompetitionList.clear();
-                Globals.DeviceList.clear();
-                Globals.EventList.clear();
-                Globals.MatchTypeList.clear();
-                Globals.MatchList.clear();
-                Globals.TeamList.clear();
-
-                appLaunchBinding.progressBarOverall.setMax(9);
-                appLaunchBinding.progressBarOverall.setProgress(0);
-                appLaunchBinding.textStatusOverall.setText(getString(R.string.applaunch_loading));
-                appLaunchBinding.textPercentOverall.setText(getString(R.string.applaunch_percent, 0));
-
-                // Load the data with a BRIEF delay between.  :)
-                try {
-                    LoadDataFile(getString(R.string.file_colors), getString(R.string.applaunch_loading_colors), getString(R.string.applaunch_file_error_colors));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_comments), getString(R.string.applaunch_loading_comments), getString(R.string.applaunch_file_error_comments));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_competitions), getString(R.string.applaunch_loading_competitions), getString(R.string.applaunch_file_error_competitions));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_devices), getString(R.string.applaunch_loading_devices), getString(R.string.applaunch_file_error_devices));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_event_groups), getString(R.string.applaunch_loading_event_groups), getString(R.string.applaunch_file_error_event_groups));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_events), getString(R.string.applaunch_loading_events), getString(R.string.applaunch_file_error_events));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_match_types), getString(R.string.applaunch_loading_match_types), getString(R.string.applaunch_file_error_match_types));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_matches), getString(R.string.applaunch_loading_matches), getString(R.string.applaunch_file_error_matches));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    LoadDataFile(getString(R.string.file_teams), getString(R.string.applaunch_loading_teams), getString(R.string.applaunch_file_error_teams));
-                    Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-
-                    // We need to build the "Next Events" possible but needs to be done now, after all data is loaded.
-                    Globals.EventList.buildNextEvents();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-
-                // Setting the Visibility attribute can't be set from a non-UI thread (like withing a TimerTask
-                // that runs on a separate thread.  So we need to make a Runner that will execute on the UI thread
-                // to set these.
-                AppLaunch.this.runOnUiThread(() -> {
-                    // Sleep a tiny bit to help the UI not glitch (otherwise this block of code doesn't
-                    // do what it's trying to do (things don't become visible, etc).
-                    try {
-                        Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-                    }
-                    catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    appLaunchBinding.progressBarOverall.setVisibility(View.INVISIBLE);
-                    appLaunchBinding.progressBarFile.setVisibility(View.INVISIBLE);
-                    appLaunchBinding.textStatusOverall.setVisibility(View.INVISIBLE);
-                    appLaunchBinding.textPercentOverall.setVisibility(View.INVISIBLE);
-                    appLaunchBinding.textStatusFile.setVisibility(View.INVISIBLE);
-                    appLaunchBinding.textPercentFile.setVisibility(View.INVISIBLE);
-                    appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
-                    appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
-                    appLaunchBinding.butStartScouting.setClickable(true);
-                    appLaunchBinding.imgButSettings.setClickable(true);
-                    appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
-                    appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
-
-                    // Erase the status text
-                    appLaunchBinding.textStatusFile.setText("");
-                    appLaunchBinding.textStatusOverall.setText("");
-                    appLaunchBinding.textPercentFile.setText("");
-                    appLaunchBinding.textPercentOverall.setText("");
-
-                    // Enable the start scouting button and settings button
-                    appLaunchBinding.butStartScouting.setClickable(true);
-                    appLaunchBinding.imgButSettings.setClickable(true);
-                });
-            }
-        }, Constants.AppLaunch.SPLASH_SCREEN_DELAY);
-    }
-
-    // =============================================================================================
-    // Function:    CopyPrivateToPublicFile
-    // Description: If the public file doesn't exist, read in the private one and copy it to the
-    //              public one.
-    // Output:      Whether to use the public file or not
-    // Parameters:  in_PrivateFileName
-    //                  filename for the "private" accessible file
-    //              in_PublicFileName
-    //                  filename for the "public" accessible file
-    // =============================================================================================
-    private boolean CopyPrivateToPublicFile(String in_FileName, String in_msgError) {
-        boolean ret = true;
-
-        try {
-            InputStream in = getAssets().open(Constants.Data.PRIVATE_BASE_DIR + "/" + in_FileName);
-            DocumentFile out_file = Globals.input_df.findFile(in_FileName);
-
-            // If the output file doesn't exist, output a stream to it and copy contents over
-            if (out_file == null) {
-                out_file = Globals.input_df.createFile("text/csv", in_FileName);
-                if (out_file != null) {
-                    OutputStream out = getContentResolver().openOutputStream(out_file.getUri());
-
-                    if (out != null) {
-                        byte[] buffer = new byte[1024];
-                        int read;
-                        while ((read = in.read(buffer)) != -1) {
-                            out.write(buffer, 0, read);
-                        }
-
-                        out.close();
-                    }
-                }
-
-            }
-        } catch (IOException e) {
-            // If anything goes wrong, just use the Private file
-            ret = false;
-
-            AppLaunch.this.runOnUiThread(() -> Toast.makeText(AppLaunch.this, in_msgError, Toast.LENGTH_SHORT).show());
-        }
-
-        return ret;
-    }
-
-    // =============================================================================================
-    // Function:    LoadDataFile
-    // Description: Read from the .csv data file and populates the data into the in_List.
-    //              If the in_PublicFileName doesn't exist, try to create if from the private one.
-    //              If we can't read from the Public file, read from the Private one.
-    // Parameters:  in_msgLoading
-    //                  String to display to the UI that we're loading the file
-    //              in_msgError
-    //                  String to display to user if there's an error loading the file
-    // Output:      void
-    // =============================================================================================
-    public void LoadDataFile(String in_fileName, String in_msgLoading, String in_msgError) {
-        boolean usePublic;
-        String line;
-        long fileSize = 0;
-        long bytesRead = 0;
-        int percentComplete = 0;
-
-        // Ensure the public file exists, and if not, copy the private one there.
-        // Return back if we should use the private or public file.
-        usePublic = CopyPrivateToPublicFile(in_fileName, in_msgError);
-
-        // Update the loading status
-        AppLaunch.this.runOnUiThread(() -> appLaunchBinding.textStatusFile.setText(in_msgLoading));
-
-        try {
-            // Open up the correct input stream
-            InputStream is;
-
-            // If we can use the Public file, open the file, then the stream.  for the Private file, we can open the stream directly.
-            if (usePublic) {
-                DocumentFile df = Globals.input_df.findFile(in_fileName);
-
-                assert df != null;
-                assert df.getUri().getPath() != null;
-                fileSize = new File(Environment.getExternalStorageDirectory().getPath() + "/Documents/" + Constants.Data.PUBLIC_BASE_DIR + "/" + Constants.Data.PUBLIC_INPUT_DIR + "/" + in_fileName).length();
-                is = getContentResolver().openInputStream(df.getUri());
-            } else {
-                is = getAssets().open(Constants.Data.PRIVATE_BASE_DIR + "/" + in_fileName);
-            }
-
-            // Sleep a tiny bit to help the UI not glitch (otherwise this block of code doesn't
-            // do what it's trying to do (things don't become visible, etc).
-            long finalFileSize = fileSize; // compiler complained if this wasn't done this way.
-
-            AppLaunch.this.runOnUiThread(() -> {
-                appLaunchBinding.progressBarFile.setProgress(0);
-                appLaunchBinding.textPercentFile.setText(getString(R.string.applaunch_percent, 0));
-                appLaunchBinding.progressBarFile.setMax((int) finalFileSize);
-            });
-
-            // Read in the data
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            br.readLine();
-            while ((line = br.readLine()) != null) {
-                // Split out the csv line and calculate the number of bytes read so far.
-                String[] info;
-                bytesRead += line.length() + 2;
-                if (bytesRead > fileSize) bytesRead = fileSize;
-
-                // Update file progress (if we know the size) and only update the progressBar if the %age increased.
-                // Otherwise, the Teams file has so many updates to the progress bar / text view, it can hang the UI.
-                if (fileSize > 0) {
-                    int newPercent = (int)(100 * bytesRead / fileSize);
-                    if (newPercent > percentComplete) {
-                        percentComplete = newPercent;
-
-                        long finalBytesRead = bytesRead; // compiler complained if this wasn't done this way.
-                        int finalPercentComplete = percentComplete; // compiler complained if this wasn't done this way.
-
-                        AppLaunch.this.runOnUiThread(() -> {
-                            appLaunchBinding.progressBarFile.setProgress((int) finalBytesRead);
-                            appLaunchBinding.textPercentFile.setText(getString(R.string.applaunch_percent, finalPercentComplete));
-                        });
-                    }
-                }
-
-                if (line.contains("\"")) {
-                    boolean inQuotes = false;
-                    StringBuilder sb = new StringBuilder();
-                    List<String> tokens = new ArrayList<>();
-                    char[] chars = line.toCharArray();
-
-                    for (char c : chars) {
-                        if (c == '\"') {
-                            inQuotes = !inQuotes;
-                            sb.append(c);
-                        } else if (c == ',' && !inQuotes) {
-                            tokens.add(sb.toString());
-                            sb.setLength(0);
-                        } else {
-                            sb.append(c);
-                        }
-                    }
-                    tokens.add(sb.toString());
-                    info = tokens.toArray(new String[0]);
-                }
-                else info = line.split(",", -1);
-
-                // Before we process this line, make sure it's not empty.  If so, just skip it.
-                // An empty line (even with spaces) will have a length of 1.  We always will want at least 2 values.
-                if (info.length > 1) {
-                    // A bit messy but we need to know which Global to add the data to, and which fields to pass in.
-                    // Switch needs a constant in the "case" expression, and complains about using getResources().
-                    if (in_fileName.equals(getString(R.string.file_colors))) {
-                        // We don't know how many color codes there will be so re-split the line and pass in the csv of color choices
-                        if (Boolean.parseBoolean(info[1])) {
-                            String[] info_colors = line.split(",", 4);
-                            Globals.ColorList.addColorRow(info[0], info[2], info_colors[3]);
-                        }
-                    } else if (in_fileName.equals(getString(R.string.file_comments))) {
-                        if (Boolean.parseBoolean(info[1]))
-                            Globals.CommentList.addCommentRow(info[0], info[2]);
-                    } else if (in_fileName.equals(getString(R.string.file_competitions))) {
-                        Globals.CompetitionList.addCompetitionRow(info[0], info[4], info[6]);
-                    } else if (in_fileName.equals(getString(R.string.file_devices))) {
-                        Globals.DeviceList.addDeviceRow(info[0], info[1], info[5]);
-                    } else if (in_fileName.equals(getString(R.string.file_event_groups))) {
-                        Globals.EventList.addEventGroup(info[0], info[1]);
-                    } else if (in_fileName.equals(getString(R.string.file_events))) {
-                        Globals.EventList.addEventRow(info[0], info[1], info[3], info[2].toUpperCase(), info[4], info[5], info[6], info[8], info[9]);
-                    } else if (in_fileName.equals(getString(R.string.file_match_types))) {
-                        Globals.MatchTypeList.addMatchTypeRow(info[0], info[1]);
-                    } else if (in_fileName.equals(getString(R.string.file_matches))) {
-                        // Use only the match information that equals the competition we're in.
-                        if (Integer.parseInt(info[0]) == Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1)) {
-                            Globals.CurrentMatchType = info[1];
-                            Globals.MatchList.addMatchRow(info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8]);
-                        }
-                    } else if (in_fileName.equals(getString(R.string.file_teams))) {
-                        Globals.TeamList.put(info[0], info[1]);
-                    }
-                }
-            }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            // You can't TOAST on a non-UI thread (like in a Timer)
-            AppLaunch.this.runOnUiThread(() -> Toast.makeText(AppLaunch.this, R.string.applaunch_malformed_file, Toast.LENGTH_LONG).show());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        // increment the overall progress
-        AppLaunch.this.runOnUiThread(() -> {
-            appLaunchBinding.progressBarOverall.setProgress(appLaunchBinding.progressBarOverall.getProgress() + 1);
-            appLaunchBinding.textPercentOverall.setText(getString(R.string.applaunch_percent, 100 * appLaunchBinding.progressBarOverall.getProgress() / appLaunchBinding.progressBarOverall.getMax()));
-        });
     }
 
     // =============================================================================================
@@ -515,5 +196,114 @@ public class AppLaunch extends AppCompatActivity {
         Uri initialUri = Uri.parse(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toURI().toString());
         intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, initialUri);
         storageActivityResultLauncher.launch(intent);
+    }
+
+    // =============================================================================================
+    // Function:    initDataFiles
+    // Description: Initialize the Global variables for the data files
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initDataFiles() {
+        // Make sure we have our directory structure created
+        DocumentFile storage_df = DocumentFile.fromTreeUri(this, Globals.baseStorageURI);
+
+        // Check that the BASE directory exists and create it if not.
+        assert storage_df != null;
+        Globals.base_df = storage_df.findFile(Constants.Data.PUBLIC_BASE_DIR);
+
+        // If the base dir isn't there, the others won't be either, so create them
+        if (Globals.base_df == null) {
+            Globals.base_df = storage_df.createDirectory(Constants.Data.PUBLIC_BASE_DIR);
+            if (Globals.base_df != null) {
+                Globals.input_df = Globals.base_df.createDirectory(Constants.Data.PUBLIC_INPUT_DIR);
+                Globals.output_df = Globals.base_df.createDirectory(Constants.Data.PUBLIC_OUTPUT_DIR);
+            }
+        } else {
+            // The base dir is there but we should check the two sub directories are there.
+            Globals.input_df = Globals.base_df.findFile(Constants.Data.PUBLIC_INPUT_DIR);
+            if (Globals.input_df == null)
+                Globals.input_df = Globals.base_df.createDirectory(Constants.Data.PUBLIC_INPUT_DIR);
+            Globals.output_df = Globals.base_df.findFile(Constants.Data.PUBLIC_OUTPUT_DIR);
+            if (Globals.output_df == null)
+                Globals.output_df = Globals.base_df.createDirectory(Constants.Data.PUBLIC_OUTPUT_DIR);
+        }
+
+        // Instantiate the Global variables or reset their context
+        if (Globals.ColorList == null) Globals.ColorList = new ColorsFile(this); else Globals.ColorList.setContext(this);
+        if (Globals.CommentList == null) Globals.CommentList = new CommentsFile(this); else Globals.CommentList.setContext(this);
+        if (Globals.CompetitionList == null) Globals.CompetitionList = new CompetitionsFile(this); else Globals.CompetitionList.setContext(this);
+        if (Globals.DeviceList == null) Globals.DeviceList = new DevicesFile(this); else Globals.DeviceList.setContext(this);
+        if (Globals.EventGroupList == null) Globals.EventGroupList = new EventGroupsFile(this); else Globals.EventGroupList.setContext(this);
+        if (Globals.EventList == null) Globals.EventList = new EventsFile(this); else Globals.EventList.setContext(this);
+        if (Globals.MatchTypeList == null) Globals.MatchTypeList = new MatchTypesFile(this); else Globals.MatchTypeList.setContext(this);
+        if (Globals.MatchList == null) Globals.MatchList = new MatchesFile(this); else Globals.MatchList.setContext(this);
+        if (Globals.TeamList == null) Globals.TeamList = new TeamsFile(this); else Globals.TeamList.setContext(this);
+    }
+
+    // =============================================================================================
+    // Function:    loadDataFiles
+    // Description: Load the data files into the Global variables
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void loadDataFiles() {
+        // Clear out the lists, just in case
+        _DataFile.clearAllLists();
+
+        // Load the data files
+        // Set a TimerTask to load the data shortly AFTER this OnCreate finishes
+        appLaunch_timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                appLaunchBinding.progressBarOverall.setMax(Globals.CompetitionList.getNumberOfFiles());
+                appLaunchBinding.progressBarOverall.setProgress(0);
+                appLaunchBinding.textStatusOverall.setText(getString(R.string.applaunch_loading));
+                appLaunchBinding.textPercentOverall.setText(getString(R.string.applaunch_percent, 0));
+
+                // Load all of the data with a BRIEF delay between.  :)
+                _DataFile.LoadAllDataFiles(appLaunchBinding.textStatusFile, appLaunchBinding.progressBarFile, appLaunchBinding.textPercentFile, appLaunchBinding.progressBarOverall, appLaunchBinding.textPercentOverall);
+
+                // After loading all of the data, we need to build the set of "next events"
+                Globals.EventList.buildNextEvents();
+
+                // Setting the Visibility attribute can't be set from a non-UI thread (like withing a TimerTask
+                // that runs on a separate thread.  So we need to make a Runner that will execute on the UI thread
+                // to set these.
+                AppLaunch.this.runOnUiThread(() -> {
+                    // Sleep a tiny bit to help the UI not glitch (otherwise this block of code doesn't
+                    // do what it's trying to do (things don't become visible, etc).
+                    try {
+                        Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
+                    }
+                    catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    appLaunchBinding.progressBarOverall.setVisibility(View.INVISIBLE);
+                    appLaunchBinding.progressBarFile.setVisibility(View.INVISIBLE);
+                    appLaunchBinding.textStatusOverall.setVisibility(View.INVISIBLE);
+                    appLaunchBinding.textPercentOverall.setVisibility(View.INVISIBLE);
+                    appLaunchBinding.textStatusFile.setVisibility(View.INVISIBLE);
+                    appLaunchBinding.textPercentFile.setVisibility(View.INVISIBLE);
+                    appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
+                    appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
+                    appLaunchBinding.butStartScouting.setClickable(true);
+                    appLaunchBinding.imgButSettings.setClickable(true);
+                    appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
+                    appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
+
+                    // Erase the status text
+                    appLaunchBinding.textStatusFile.setText("");
+                    appLaunchBinding.textStatusOverall.setText("");
+                    appLaunchBinding.textPercentFile.setText("");
+                    appLaunchBinding.textPercentOverall.setText("");
+
+                    // Enable the start scouting button and settings button
+                    appLaunchBinding.butStartScouting.setClickable(true);
+                    appLaunchBinding.imgButSettings.setClickable(true);
+                });
+            }
+        }, Constants.AppLaunch.SPLASH_SCREEN_DELAY);
     }
 }

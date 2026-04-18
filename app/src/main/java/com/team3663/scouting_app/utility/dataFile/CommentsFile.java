@@ -1,18 +1,29 @@
-package com.team3663.scouting_app.data;
+package com.team3663.scouting_app.utility.dataFile;
+
+import android.content.Context;
+
+import com.team3663.scouting_app.R;
 
 import java.util.ArrayList;
 
-// =============================================================================================
-// Class:       Comments
-// Description: Defines a structure/class to hold the information for all Comments
-// Methods:     addCommentRow()
-// =============================================================================================
-public class Comments {
+public class CommentsFile extends _DataFile {
     private final ArrayList<CommentRow> comment_list;
 
-    // Constructor
-    public Comments() {
+    public CommentsFile(Context in_context) {
+        super(in_context, in_context.getString(R.string.file_comments), in_context.getString(R.string.applaunch_loading_comments), in_context.getString(R.string.applaunch_file_error_comments));
+
         comment_list = new ArrayList<>();
+    }
+
+    @Override
+    protected void processLine(String[] in_line, String in_orig_line) {
+        if (Boolean.parseBoolean(in_line[1]))
+            addCommentRow(in_line[0], in_line[2]);
+    }
+
+    @Override
+    public void clearList() {
+        comment_list.clear();
     }
 
     // Member Function: Add a row of Comment info into the list giving the data individually
@@ -50,16 +61,11 @@ public class Comments {
         return descriptions;
     }
 
-    // Member Function: Empties out the list
-    public void clear() {
-        comment_list.clear();
-    }
-
     // =============================================================================================
     // Class:       CommentRow
     // Description: Defines a structure/class to hold the information for each Comment
     // =============================================================================================
-    private static class CommentRow {
+    protected static class CommentRow {
         private final int id;
         private final String description;
 

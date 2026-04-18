@@ -509,7 +509,7 @@ public class MatchTally extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initTeam() {
-        String new_team = Globals.CurrentTeamToScout + " - " + Globals.TeamList.getOrDefault(Globals.CurrentTeamToScout, "");
+        String new_team = Globals.CurrentTeamToScout + " - " + Globals.TeamList.getTeam(Globals.CurrentTeamToScout);
         matchBinding.textTeam.setText(new_team);
         matchBinding.textTeam.setTextColor(Color.WHITE);
 

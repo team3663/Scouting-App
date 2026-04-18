@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ArrayAdapter;
@@ -68,7 +69,6 @@ public class PreMatch extends AppCompatActivity {
         Globals.CurrentColorId = Globals.sp.getInt(Constants.Prefs.COLOR_CONTEXT_MENU, 1);
         Globals.CurrentPrefTeamPos = Globals.sp.getInt(Constants.Prefs.PREF_TEAM_POS, 0);
         Globals.CurrentFieldOrientationPos = Globals.sp.getInt(Constants.Prefs.PREF_ORIENTATION, 0);
-        Globals.CurrentQRSize = Globals.sp.getInt(Constants.Prefs.QR_SIZE, 0);
 
         // Initialize activity components
         initCompetition();
@@ -94,6 +94,52 @@ public class PreMatch extends AppCompatActivity {
     // =============================================================================================
     private void initCompetition() {
         preMatchBinding.textCompetition.setText(Globals.CompetitionList.getCompetitionDescription(Globals.CurrentCompetitionId));
+
+        preMatchBinding.imgButCompetition.setOnClickListener(view -> {
+            // Inflate the custom layout
+            LayoutInflater inflater = getLayoutInflater();
+            View popupView = inflater.inflate(R.layout.pop_up_competition, null);
+
+            final Spinner spinnerCompetition = popupView.findViewById(R.id.spin_Competition);
+
+            // Adds Competition information to spinner
+            ArrayAdapter<String> adp_Competition = new ArrayAdapter<>(this,
+                    R.layout.cpr_spinner, Globals.CompetitionList.getCompetitionList());
+            adp_Competition.setDropDownViewResource(R.layout.cpr_spinner_item);
+            spinnerCompetition.setAdapter(adp_Competition);
+
+            // Build the AlertDialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setView(popupView)
+                    .setTitle("Choose Competition")
+                    .setCancelable(false) // Prevent closing by tapping outside
+                    .setPositiveButton("Select", (dialog, which) -> {
+                        int CompetitionId = Globals.CompetitionList.getCompetitionId(spinnerCompetition.getSelectedItem().toString());
+                        preMatchBinding.textCompetition.setText(Globals.CompetitionList.getCompetitionDescription(CompetitionId));
+                        if (Globals.CurrentCompetitionId != CompetitionId) {
+                            Globals.CurrentCompetitionId = CompetitionId;
+                            Globals.CurrentMatchNumber = 0;
+                            Globals.MatchList.setContext(this);
+                            Globals.MatchList.clearList();
+                            Globals.MatchList.LoadDataFile(null, null, null, null, null);
+                            preMatchBinding.editMatch.setText("");
+                            loadTeamToScout();
+                        }
+                    })
+                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+            // Show the dialog
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+            // Set dialog width to match pop-up form
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setLayout(
+                        450, // width
+                        ViewGroup.LayoutParams.WRAP_CONTENT // height
+                );
+            }
+        });
     }
 
     // =============================================================================================
@@ -208,7 +254,7 @@ public class PreMatch extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String TeamToScoutStr = preMatchBinding.spinnerTeamToScout.getSelectedItem().toString();
                 if (!TeamToScoutStr.isEmpty() && !TeamToScoutStr.equals(getString(R.string.pre_dropdown_no_items))) {
-                    String ScoutingTeamName = Globals.TeamList.getOrDefault(TeamToScoutStr, "");
+                    String ScoutingTeamName = Globals.TeamList.getTeam(TeamToScoutStr);
                     preMatchBinding.textTeamToScoutName.setText(ScoutingTeamName);
 
                     // Save off what you selected for if you go to the match and then back
@@ -316,7 +362,7 @@ public class PreMatch extends AppCompatActivity {
 
             // Set an TextChangeListener so we can display the team name as they type (assuming we find one)
             // Doing it "as they type" since they likely won't change focus on this field unless they need to
-            // override the alliance - show best to "show as we go".
+            // override the alliance - so it's best to "show as we go".
             editTeamNumber.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -328,7 +374,7 @@ public class PreMatch extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    textTeamName.setText(Globals.TeamList.getOrDefault(s.toString().trim(), ""));
+                    textTeamName.setText(Globals.TeamList.getTeam(s.toString().trim()));
                 }
             });
 
