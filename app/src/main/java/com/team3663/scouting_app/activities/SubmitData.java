@@ -376,6 +376,7 @@ public class SubmitData extends AppCompatActivity {
             // The dialog is automatically dismissed when a dialog button is clicked.
             .setPositiveButton(getString(R.string.submit_alert_quit_positive), (dialog, which) -> {
                 SubmitData.this.finishAffinity();
+                stopLockTask();
                 System.exit(0);
             })
 

@@ -3,13 +3,13 @@ plugins {
     id("base")
 }
 
-var versionMajor = 3
-var versionMinor = 5
+var versionMajor = 4
+var versionMinor = 0
 var versionPatch = 0
 
 android {
     namespace = "com.team3663.scouting_app"
-    compileSdk = 34
+    compileSdk = 37
 
     buildFeatures {
         viewBinding = true
@@ -18,7 +18,7 @@ android {
     defaultConfig {
         applicationId = "com.team3663.scouting_app"
         minSdk = 30
-        targetSdk = 34
+        targetSdk = 37
         versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
         versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
         
@@ -27,7 +27,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
