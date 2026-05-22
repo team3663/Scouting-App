@@ -326,11 +326,11 @@
                     android:id="@+id/but_ShootTap"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
+                    android:layout_gravity="center_horizontal"
+                    android:backgroundTint="@color/dark_green"
                     android:text="@string/button_shoot1"
                     android:textSize="19sp"
-                    android:backgroundTint="@color/dark_green"
-                    android:layout_gravity="center_horizontal"
-                    app:cornerRadius="24dp"/>
+                    app:cornerRadius="24dp" />
 
                 <TextView
                     android:layout_width="match_parent"

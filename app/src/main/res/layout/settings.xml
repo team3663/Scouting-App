@@ -8,371 +8,375 @@
     android:background="@color/cpr_bkgnd"
     tools:context=".activities.Settings">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/heading"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:textColor="@color/cpr_green"
-        android:textSize="42sp"
-        android:gravity="center"
-        android:text="@string/settings_heading" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-65dp">
 
         <TextView
-            android:id="@+id/text_Competition"
-            android:layout_width="320dp"
-            android:layout_height="match_parent"
-            android:gravity="end|center"
-            android:paddingEnd="20dp"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            android:text="@string/settings_competition"
-            tools:ignore="RtlSymmetry" />
-
-        <RelativeLayout
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <Spinner
-                android:id="@+id/spinner_Competition"
-                android:spinnerMode="dropdown"
-                android:verticalScrollbarPosition="left"
-                android:scrollbarThumbVertical="@drawable/scrollbar_style"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:gravity="end|center"
-                android:paddingStart="10dp"
-                tools:ignore="RtlSymmetry" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:paddingEnd="10dp"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:src="@drawable/cpr_drop_down_arrow"
-                tools:ignore="ContentDescription" />
-        </RelativeLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/text_Color"
-            android:layout_width="320dp"
-            android:layout_height="match_parent"
-            android:gravity="end|center"
-            android:paddingEnd="20dp"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            android:text="@string/settings_color"
-            tools:ignore="RtlSymmetry" />
-
-        <RelativeLayout
-            android:layout_width="400dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <Spinner
-                android:id="@+id/spinner_Color"
-                android:spinnerMode="dropdown"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:gravity="end|center"
-                android:paddingStart="10dp"
-                tools:ignore="RtlSymmetry" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:paddingEnd="10dp"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:src="@drawable/cpr_drop_down_arrow"
-                tools:ignore="ContentDescription" />
-        </RelativeLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/text_Orientation"
-            android:layout_width="320dp"
-            android:layout_height="match_parent"
-            android:gravity="end|center"
-            android:paddingEnd="20dp"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            android:text="@string/settings_orientation"
-            tools:ignore="RtlSymmetry" />
-
-        <RelativeLayout
-            android:layout_width="400dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <Spinner
-                android:id="@+id/spinner_Orientation"
-                android:spinnerMode="dropdown"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:gravity="end|center"
-                android:paddingStart="10dp"
-                tools:ignore="RtlSymmetry" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:paddingEnd="10dp"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:src="@drawable/cpr_drop_down_arrow"
-                tools:ignore="ContentDescription" />
-        </RelativeLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/text_ScoutingTeam"
-            android:layout_width="320dp"
-            android:layout_height="match_parent"
-            android:gravity="end|center"
-            android:paddingEnd="20dp"
-            android:text="@string/settings_scouting_team"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            tools:ignore="RtlSymmetry" />
-
-        <EditText
-            android:id="@+id/edit_ScoutingTeam"
-            android:layout_width="130dp"
-            android:layout_height="match_parent"
-            android:autofillHints="Enter Scouting team number here"
+            android:id="@+id/heading"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
             android:gravity="center"
-            android:inputType="number"
-            android:textColor="@color/cpr_bkgnd"
-            android:background="@color/white"
-            android:textColorHint="@color/black"
-            android:textSize="24sp"
-            android:paddingHorizontal="20dp"
-            tools:ignore="LabelFor" />
+            android:text="@string/settings_heading"
+            android:textColor="@color/cpr_green"
+            android:textSize="42sp" />
 
-        <TextView
-            android:id="@+id/text_ScoutingTeamName"
-            android:layout_width="500dp"
-            android:layout_height="match_parent"
-            android:gravity="start|center"
-            android:paddingStart="20dp"
-            android:paddingHorizontal="20dp"
-            android:textColor="@color/light_grey"
-            android:textSize="20sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/text_Device"
-            android:layout_width="270dp"
-            android:layout_height="match_parent"
-            android:gravity="end|center"
-            android:paddingEnd="20dp"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            android:text="@string/settings_device"
-            tools:ignore="RtlSymmetry" />
-
-        <RelativeLayout
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
             android:orientation="horizontal">
 
-            <Spinner
-                android:id="@+id/spinner_Device"
-                android:spinnerMode="dropdown"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/text_Competition"
+                android:layout_width="320dp"
                 android:layout_height="match_parent"
-                android:background="@color/white"
                 android:gravity="end|center"
-                android:paddingStart="10dp"
+                android:paddingEnd="20dp"
+                android:text="@string/settings_competition"
+                android:textColor="@color/white"
+                android:textSize="24sp"
                 tools:ignore="RtlSymmetry" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:paddingEnd="10dp"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:src="@drawable/cpr_drop_down_arrow"
-                tools:ignore="ContentDescription" />
+            <RelativeLayout
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
 
-        </RelativeLayout>
+                <Spinner
+                    android:id="@+id/spinner_Competition"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:gravity="end|center"
+                    android:paddingStart="10dp"
+                    android:scrollbarThumbVertical="@drawable/scrollbar_style"
+                    android:spinnerMode="dropdown"
+                    android:verticalScrollbarPosition="left"
+                    tools:ignore="RtlSymmetry" />
 
-        <TextView
-            android:id="@+id/text_PrefTeamPos"
-            android:layout_width="270dp"
-            android:layout_height="match_parent"
-            android:gravity="end|center"
-            android:paddingEnd="20dp"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            android:text="@string/settings_team_pref"
-            tools:ignore="RtlSymmetry" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:paddingEnd="10dp"
+                    android:src="@drawable/cpr_drop_down_arrow"
+                    tools:ignore="ContentDescription" />
+            </RelativeLayout>
+        </LinearLayout>
 
-        <RelativeLayout
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="15dp"
             android:orientation="horizontal">
 
-            <Spinner
-                android:id="@+id/spinner_PrefTeamPos"
-                android:spinnerMode="dropdown"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/text_Color"
+                android:layout_width="320dp"
                 android:layout_height="match_parent"
-                android:background="@color/white"
                 android:gravity="end|center"
-                android:paddingStart="10dp"
+                android:paddingEnd="20dp"
+                android:text="@string/settings_color"
+                android:textColor="@color/white"
+                android:textSize="24sp"
                 tools:ignore="RtlSymmetry" />
 
-            <ImageView
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="400dp"
                 android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:paddingEnd="10dp"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:src="@drawable/cpr_drop_down_arrow"
-                tools:ignore="ContentDescription" />
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
 
-        </RelativeLayout>
+                <Spinner
+                    android:id="@+id/spinner_Color"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:gravity="end|center"
+                    android:paddingStart="10dp"
+                    android:spinnerMode="dropdown"
+                    tools:ignore="RtlSymmetry" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:paddingEnd="10dp"
+                    android:src="@drawable/cpr_drop_down_arrow"
+                    tools:ignore="ContentDescription" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_Orientation"
+                android:layout_width="320dp"
+                android:layout_height="match_parent"
+                android:gravity="end|center"
+                android:paddingEnd="20dp"
+                android:text="@string/settings_orientation"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                tools:ignore="RtlSymmetry" />
+
+            <RelativeLayout
+                android:layout_width="400dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/spinner_Orientation"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:gravity="end|center"
+                    android:paddingStart="10dp"
+                    android:spinnerMode="dropdown"
+                    tools:ignore="RtlSymmetry" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:paddingEnd="10dp"
+                    android:src="@drawable/cpr_drop_down_arrow"
+                    tools:ignore="ContentDescription" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_ScoutingTeam"
+                android:layout_width="320dp"
+                android:layout_height="match_parent"
+                android:gravity="end|center"
+                android:paddingEnd="20dp"
+                android:text="@string/settings_scouting_team"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                tools:ignore="RtlSymmetry" />
+
+            <EditText
+                android:id="@+id/edit_ScoutingTeam"
+                android:layout_width="130dp"
+                android:layout_height="match_parent"
+                android:autofillHints="Enter Scouting team number here"
+                android:background="@color/white"
+                android:gravity="center"
+                android:inputType="number"
+                android:paddingHorizontal="20dp"
+                android:textColor="@color/cpr_bkgnd"
+                android:textColorHint="@color/black"
+                android:textSize="24sp"
+                tools:ignore="LabelFor" />
+
+            <TextView
+                android:id="@+id/text_ScoutingTeamName"
+                android:layout_width="500dp"
+                android:layout_height="match_parent"
+                android:gravity="start|center"
+                android:paddingHorizontal="20dp"
+                android:paddingStart="20dp"
+                android:textColor="@color/light_grey"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_Device"
+                android:layout_width="270dp"
+                android:layout_height="match_parent"
+                android:gravity="end|center"
+                android:paddingEnd="20dp"
+                android:text="@string/settings_device"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                tools:ignore="RtlSymmetry" />
+
+            <RelativeLayout
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/spinner_Device"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:gravity="end|center"
+                    android:paddingStart="10dp"
+                    android:spinnerMode="dropdown"
+                    tools:ignore="RtlSymmetry" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:paddingEnd="10dp"
+                    android:src="@drawable/cpr_drop_down_arrow"
+                    tools:ignore="ContentDescription" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/text_PrefTeamPos"
+                android:layout_width="270dp"
+                android:layout_height="match_parent"
+                android:gravity="end|center"
+                android:paddingEnd="20dp"
+                android:text="@string/settings_team_pref"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                tools:ignore="RtlSymmetry" />
+
+            <RelativeLayout
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/spinner_PrefTeamPos"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:gravity="end|center"
+                    android:paddingStart="10dp"
+                    android:spinnerMode="dropdown"
+                    tools:ignore="RtlSymmetry" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:paddingEnd="10dp"
+                    android:src="@drawable/cpr_drop_down_arrow"
+                    tools:ignore="ContentDescription" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_NumMatches"
+                android:layout_width="270dp"
+                android:layout_height="match_parent"
+                android:gravity="end|center"
+                android:paddingEnd="20dp"
+                android:text="@string/settings_num_files"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                tools:ignore="RtlSymmetry" />
+
+            <EditText
+                android:id="@+id/edit_NumMatches"
+                android:layout_width="180dp"
+                android:layout_height="match_parent"
+                android:autofillHints="Enter Scouting team number here"
+                android:background="@color/white"
+                android:gravity="center"
+                android:inputType="number"
+                android:paddingHorizontal="20dp"
+                android:textColor="@color/cpr_bkgnd"
+                android:textColorHint="@color/black"
+                android:textSize="24sp"
+                tools:ignore="LabelFor" />
+
+            <TextView
+                android:id="@+id/text_QRSize"
+                android:layout_width="270dp"
+                android:layout_height="match_parent"
+                android:gravity="end|center"
+                android:paddingEnd="20dp"
+                android:text="@string/settings_qr_size"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                tools:ignore="RtlSymmetry" />
+
+            <EditText
+                android:id="@+id/edit_QRSize"
+                android:layout_width="180dp"
+                android:layout_height="match_parent"
+                android:autofillHints="Enter size of QR Code here"
+                android:background="@color/white"
+                android:gravity="center"
+                android:inputType="number"
+                android:paddingHorizontal="20dp"
+                android:textColor="@color/cpr_bkgnd"
+                android:textColorHint="@color/black"
+                android:textSize="24sp"
+                tools:ignore="LabelFor" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/checkbox_ShadowMode"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+                android:gravity="end|center"
+                android:paddingStart="10dp"
+                android:paddingEnd="0dp"
+                android:text="@string/settings_shadowmode"
+                android:textColor="@color/white"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/text_ShadowModePadding"
+                android:layout_width="715dp"
+                android:layout_height="match_parent"
+                tools:ignore="RtlSymmetry" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/text_NumMatches"
-            android:layout_width="270dp"
-            android:layout_height="match_parent"
-            android:gravity="end|center"
-            android:paddingEnd="20dp"
-            android:text="@string/settings_num_files"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            tools:ignore="RtlSymmetry" />
-
-        <EditText
-            android:id="@+id/edit_NumMatches"
-            android:layout_width="180dp"
-            android:layout_height="match_parent"
-            android:autofillHints="Enter Scouting team number here"
-            android:gravity="center"
-            android:inputType="number"
-            android:textColor="@color/cpr_bkgnd"
-            android:background="@color/white"
-            android:textColorHint="@color/black"
-            android:textSize="24sp"
-            android:paddingHorizontal="20dp"
-            tools:ignore="LabelFor" />
-
-        <TextView
-            android:id="@+id/text_QRSize"
-            android:layout_width="270dp"
-            android:layout_height="match_parent"
-            android:gravity="end|center"
-            android:paddingEnd="20dp"
-            android:text="@string/settings_qr_size"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            tools:ignore="RtlSymmetry" />
-
-        <EditText
-            android:id="@+id/edit_QRSize"
-            android:layout_width="180dp"
-            android:layout_height="match_parent"
-            android:autofillHints="Enter size of QR Code here"
-            android:gravity="center"
-            android:inputType="number"
-            android:textColor="@color/cpr_bkgnd"
-            android:background="@color/white"
-            android:textColorHint="@color/black"
-            android:textSize="24sp"
-            android:paddingHorizontal="20dp"
-            tools:ignore="LabelFor" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:orientation="horizontal">
-
-        <CheckBox
-            android:id="@+id/checkbox_ShadowMode"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:button="@null"
-            android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
-            android:textColor="@color/white"
-            android:gravity="end|center"
-            android:paddingEnd="0dp"
-            android:paddingStart="10dp"
-            android:textSize="24sp"
-            android:text="@string/settings_shadowmode" />
-
-        <TextView
-            android:id="@+id/text_ShadowModePadding"
-            android:layout_width="715dp"
-            android:layout_height="match_parent"
-            tools:ignore="RtlSymmetry" />
-    </LinearLayout>
-
-</LinearLayout>
-
-<com.google.android.material.button.MaterialButton
+    <com.google.android.material.button.MaterialButton
     android:id="@+id/but_Cancel"
     android:layout_width="175dp"
     android:layout_height="60dp"
@@ -386,6 +390,21 @@
     tools:ignore="HardcodedText,MissingConstraints"
     android:text="Cancel"
     app:cornerRadius="16dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/but_acheveTest"
+        android:layout_width="175dp"
+        android:layout_height="60dp"
+        android:textSize="28sp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="300dp"
+        android:textColor="@color/cpr_bkgnd"
+        app:backgroundTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="HardcodedText,MissingConstraints"
+        android:text="achieve"
+        app:cornerRadius="16dp"/>
 
 <com.google.android.material.button.MaterialButton
     android:id="@+id/but_Save"
