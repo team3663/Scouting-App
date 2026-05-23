@@ -18,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.*;
 import com.team3663.scouting_app.databinding.SettingsBinding;
+import com.team3663.scouting_app.utility.achieve;
 
 public class Settings extends AppCompatActivity {
     // =============================================================================================
@@ -60,6 +61,9 @@ public class Settings extends AppCompatActivity {
 
         // Define a Save Button
         settingsBinding.butSave.setOnClickListener(view -> SaveSettings());
+
+        //define achivement test button
+        settingsBinding.butAcheveTest.setOnClickListener(veiw -> achieve.test() );
     }
 
     // =============================================================================================
