@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
-    <TextView
+        <TextView
         android:id="@+id/text_Heading"
         android:layout_width="match_parent"
         android:layout_height="80dp"
@@ -159,6 +159,33 @@
                 tools:ignore="HardcodedText,MissingConstraints"
                 app:cornerRadius="16dp"/>
         </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_TSTpadding"
+                android:gravity="center"
+                android:layout_width="410dp"
+                android:layout_height="60dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/but_test_acheivement"
+                android:layout_width="180dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:backgroundTint="@color/white"
+                android:text="Acheive"
+                android:textColor="@color/cpr_bkgnd"
+                android:textSize="24sp"
+                app:cornerRadius="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:ignore="HardcodedText,MissingConstraints" />
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -171,6 +198,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:srcCompat="@drawable/achievement" />
+
+    <ImageView
+        android:id="@+id/image_Achievement_Open"
+        android:layout_width="400dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/achievement_open" />
 
     <TextView
         android:id="@+id/text_AchievementTitle"

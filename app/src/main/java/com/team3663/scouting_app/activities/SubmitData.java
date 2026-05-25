@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -275,9 +278,11 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initAchievements() {
+        submitDataBinding.butTestAcheivement.setOnClickListener(view -> {acheivment("tested", "test achevements");});
         ArrayList<Achievements.PoppedAchievement> pop_list = Achievements.popAchievements();
 
         // Keep Achievements invisible
+        submitDataBinding.imageAchievementOpen.setVisibility(View.INVISIBLE);
         submitDataBinding.imageAchievement.setVisibility(View.INVISIBLE);
         submitDataBinding.textAchievementTitle.setVisibility(View.INVISIBLE);
         submitDataBinding.textAchievementDesc.setVisibility(View.INVISIBLE);
@@ -410,5 +415,13 @@ public class SubmitData extends AppCompatActivity {
 
             finish();
         });
+    }
+    private void acheivment(String title, String description) {
+
+        submitDataBinding.imageAchievementOpen.setVisibility(View.VISIBLE);
+        submitDataBinding.imageAchievement.setVisibility(View.VISIBLE);
+        submitDataBinding.textAchievementTitle.setVisibility(View.VISIBLE);
+        submitDataBinding.textAchievementDesc.setVisibility(View.VISIBLE);
+
     }
 }

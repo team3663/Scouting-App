@@ -391,21 +391,6 @@
     android:text="Cancel"
     app:cornerRadius="16dp"/>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/but_acheveTest"
-        android:layout_width="175dp"
-        android:layout_height="60dp"
-        android:textSize="28sp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginEnd="300dp"
-        android:textColor="@color/cpr_bkgnd"
-        app:backgroundTint="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:ignore="HardcodedText,MissingConstraints"
-        android:text="achieve"
-        app:cornerRadius="16dp"/>
-
 <com.google.android.material.button.MaterialButton
     android:id="@+id/but_Save"
     android:layout_width="175dp"
