@@ -172,6 +172,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:srcCompat="@drawable/achievement" />
 
+    <ImageView
+        android:id="@+id/image_Achievement_Open"
+        android:layout_width="400dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="50dp"
+        android:layout_marginStart="-318dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/achievement_open" />
+
     <TextView
         android:id="@+id/text_AchievementTitle"
         android:gravity="center_vertical"
