@@ -185,8 +185,8 @@ public class SubmitData extends AppCompatActivity {
 
         @Override
         public void run() {
-            achievement_timer.schedule(new AchievementTimerTaskStart(myAchievement), 1);
-            achievement_timer.schedule(new AchievementTimerTaskEnd(isLast), Constants.Achievements.DISPLAY_TIME);
+            achievement_timer.schedule(new AchievementTimerTaskStart(myAchievement), 500);
+            achievement_timer.schedule(new AchievementTimerTaskEnd(isLast), Constants.Achievements.DISPLAY_TIME + 500);
         }
     }
 
@@ -234,10 +234,7 @@ public class SubmitData extends AppCompatActivity {
         @Override
         public void run() {
             SubmitData.this.runOnUiThread(() -> {
-                submitDataBinding.imageAchievementOpen.setVisibility(View.INVISIBLE);
-                submitDataBinding.imageAchievement.setVisibility(View.INVISIBLE);
-                submitDataBinding.textAchievementTitle.setVisibility(View.INVISIBLE);
-                submitDataBinding.textAchievementDesc.setVisibility(View.INVISIBLE);
+                animateAchievementEnd();
             });
 
             if (isLast) closeAchievements();
@@ -309,11 +306,11 @@ public class SubmitData extends AppCompatActivity {
         submitDataBinding.imageAchievementOpen.setVisibility(View.VISIBLE);
 
         //scale opening image at begening
-        submitDataBinding.imageAchievementOpen.animate().scaleX(openingScaleValue).scaleY(openingScaleValue).setDuration(1000)
+        submitDataBinding.imageAchievementOpen.animate().scaleX(openingScaleValue).scaleY(openingScaleValue).setDuration(500)
                 .withEndAction(new Runnable() {
                     @Override
                     public void run() {
-                        submitDataBinding.imageAchievementOpen.animate().scaleX(1.0f).scaleY(1.0f).setDuration(1000);
+                        submitDataBinding.imageAchievementOpen.animate().scaleX(1.0f).scaleY(1.0f).setDuration(500);
                     }
                 });
 
@@ -327,14 +324,50 @@ public class SubmitData extends AppCompatActivity {
         // Scale it up smoothly to full size from the left pivot
         submitDataBinding.imageAchievement.animate()
                 .scaleX(1.0f)
-                .setDuration(100)
+                .setDuration(750)
                 .withEndAction(new Runnable() {
                     @Override
                     public void run() {
-                        // 5. Reveal the text details after the scaling finishes
+                        // Reveal the text details after the scaling finishes
                         submitDataBinding.imageAchievement.setVisibility(View.VISIBLE);
                         submitDataBinding.textAchievementTitle.setVisibility(View.VISIBLE);
                         submitDataBinding.textAchievementDesc.setVisibility(View.VISIBLE);
+                    }
+                })
+                .start();
+    }
+
+    public void animateAchievementEnd() {
+        final float openingScaleValue = 1.2f;
+        // Show the opening logo overlay
+        submitDataBinding.imageAchievementOpen.setVisibility(View.VISIBLE);
+
+        //scale opening image at begening
+        submitDataBinding.imageAchievementOpen.animate().scaleX(openingScaleValue).scaleY(openingScaleValue).setDuration(500)
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        submitDataBinding.imageAchievementOpen.animate().scaleX(1.0f).scaleY(1.0f).setDuration(500);
+                    }
+                });
+
+        // FORCE THE PIVOT TO THE LEFT EDGE (0 horizontal, middle vertical)
+        submitDataBinding.imageAchievement.setPivotX(0f);
+
+        // Set the achievement image visibility and shrink it to 0 immediately
+        submitDataBinding.imageAchievement.setScaleX(1.0f);
+        submitDataBinding.imageAchievement.setVisibility(View.VISIBLE);
+
+        // Scale it up smoothly to full size from the left pivot
+        submitDataBinding.imageAchievement.animate()
+                .scaleX(0.0f)
+                .setDuration(750)
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        submitDataBinding.imageAchievementOpen.setVisibility(View.INVISIBLE);
+                        submitDataBinding.textAchievementDesc.setVisibility(View.INVISIBLE);
+                        submitDataBinding.textAchievementTitle.setVisibility(View.INVISIBLE);
                     }
                 })
                 .start();
