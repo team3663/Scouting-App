@@ -347,6 +347,9 @@ public class SubmitData extends AppCompatActivity {
                 .withEndAction(new Runnable() {
                     @Override
                     public void run() {
+                        submitDataBinding.imageAchievementOpen.setVisibility(View.INVISIBLE);
+                        submitDataBinding.textAchievementDesc.setVisibility(View.INVISIBLE);
+                        submitDataBinding.textAchievementTitle.setVisibility(View.INVISIBLE);
                         submitDataBinding.imageAchievementOpen.animate().scaleX(1.0f).scaleY(1.0f).setDuration(500);
                     }
                 });
@@ -362,14 +365,6 @@ public class SubmitData extends AppCompatActivity {
         submitDataBinding.imageAchievement.animate()
                 .scaleX(0.0f)
                 .setDuration(750)
-                .withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        submitDataBinding.imageAchievementOpen.setVisibility(View.INVISIBLE);
-                        submitDataBinding.textAchievementDesc.setVisibility(View.INVISIBLE);
-                        submitDataBinding.textAchievementTitle.setVisibility(View.INVISIBLE);
-                    }
-                })
                 .start();
     }
 
