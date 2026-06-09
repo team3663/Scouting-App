@@ -365,7 +365,7 @@ public class PostMatch extends AppCompatActivity {
                 Achievements.data_FieldReset++;
 
                 // Reset post-Match values if match is reset
-                Globals.CurrentAccuracy = Constants.PostMatch.ACCURACY_NOT_SELECTED;
+                Globals.CurrentAccuracy = Constants.PostMatch.ACCURACY_NOT_SELECTED + 1;
                 Globals.CurrentClimbLevel = Constants.PostMatch.CLIMB_LEVEL_NOT_SELECTED;
                 Globals.CurrentClimbPosition = Constants.PostMatch.CLIMB_POSITION_NOT_SELECTED;
                 Globals.stealFuelValue = Constants.PostMatch.STEAL_FUEL_NOT_SELECTED;
@@ -373,6 +373,7 @@ public class PostMatch extends AppCompatActivity {
 
                 Intent GoToPreMatch = new Intent(PostMatch.this, PreMatch.class);
                 startActivity(GoToPreMatch);
+                // this is a test comment
             } else {
                // Log all of the data from this page
                 StringBuilder comment_sep_ID = new StringBuilder();

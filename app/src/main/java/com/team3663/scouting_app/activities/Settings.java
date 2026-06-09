@@ -237,7 +237,7 @@ public class Settings extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Settings.this.runOnUiThread(() -> {
-
+//this is a comment
                 });
             }
 
