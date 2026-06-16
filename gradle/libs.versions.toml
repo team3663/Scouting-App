@@ -1,5 +1,5 @@
 [versions]
-agp = "9.0.0"
+agp = "9.2.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -9,6 +9,11 @@ activity = "1.9.1"
 qrgenVersion = "4.3.0"
 constraintlayout = "2.1.4"
 preference = "1.2.0"
+viewpager2 = "1.1.0"
+mssql-jdbc = "12.7.0"
+play-services-auth = "21.5.1"
+google-api-client = "2.9.0"
+google-drive-v3 = "v3-rev20260405-2.0.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -20,6 +25,11 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
 qr-generator = { group = "com.journeyapps", name = "zxing-android-embedded", version.ref = "qrgenVersion" }
+viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2" }
+mssql-jdbc = { group = "com.microsoft.sqlserver", name = "mssql-jdbc", version.ref = "mssql-jdbc" }
+play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services-auth" }
+google-api-client = { group = "com.google.api-client", name = "google-api-client-android", version.ref = "google-api-client" }
+google-drive-services = { group = "com.google.apis", name = "google-api-services-drive", version.ref = "google-drive-v3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
