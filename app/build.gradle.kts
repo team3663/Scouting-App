@@ -7,7 +7,7 @@ var versionMajor = 4
 var versionMinor = 0
 var versionPatch = 0
 
-android {
+configure<com.android.build.api.dsl.ApplicationExtension> {
     namespace = "com.team3663.scouting_app"
     compileSdk = 37
 
@@ -19,19 +19,19 @@ android {
         applicationId = "com.team3663.scouting_app"
         minSdk = 30
         targetSdk = 37
-        versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
-        versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
+        versionCode = (versionMajor * 10000) + (versionMinor * 100) + versionPatch
+        versionName = "$versionMajor.$versionMinor.$versionPatch"
         
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
-        release {
+        getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -43,7 +43,7 @@ android {
 }
 
 base {
-    archivesName = "CPR-Scout-${android.defaultConfig.versionName}"
+    archivesName = "CPR-Scout-${versionMajor}.${versionMinor}.${versionPatch}"
 }
 
 dependencies {
