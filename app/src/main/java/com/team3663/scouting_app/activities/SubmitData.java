@@ -342,18 +342,19 @@ public class SubmitData extends AppCompatActivity {
         // Show the opening logo overlay
         submitDataBinding.imageAchievementOpen.setVisibility(View.VISIBLE);
 
-        //scale opening image at begening
-        submitDataBinding.imageAchievementOpen.animate().scaleX(openingScaleValue).scaleY(openingScaleValue).setDuration(500)
-                .withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        submitDataBinding.imageAchievementOpen.setVisibility(View.INVISIBLE);
-                        submitDataBinding.textAchievementDesc.setVisibility(View.INVISIBLE);
-                        submitDataBinding.textAchievementTitle.setVisibility(View.INVISIBLE);
-                        submitDataBinding.imageAchievementOpen.animate().scaleX(1.0f).scaleY(1.0f).setDuration(500);
-                    }
-                });
-
+        //scale opening image at begining
+        submitDataBinding.imageAchievementOpen.animate().scaleX(openingScaleValue).scaleY(openingScaleValue).setDuration(500);
+        submitDataBinding.textAchievementDesc.setVisibility(View.INVISIBLE);
+        submitDataBinding.textAchievementTitle.setVisibility(View.INVISIBLE);
+        submitDataBinding.imageAchievement.animate()
+                .scaleX(0.0f)
+                .setDuration(750)
+                        .withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                submitDataBinding.imageAchievementOpen.setVisibility(View.INVISIBLE);
+                            }
+                        });
         // FORCE THE PIVOT TO THE LEFT EDGE (0 horizontal, middle vertical)
         submitDataBinding.imageAchievement.setPivotX(0f);
 
