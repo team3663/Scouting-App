@@ -45,16 +45,18 @@ public class Settings extends AppCompatActivity {
 
         adapter = new SettingsPagerAdapter(this);
         settingsBinding.viewPager.setAdapter(adapter);
+
+        // Number of pages kept in memory to the left and right of current page
         settingsBinding.viewPager.setOffscreenPageLimit(1);
 
         new TabLayoutMediator(settingsBinding.tabLayout, settingsBinding.viewPager,
                 (tab, position) -> {} // No text needed for dot indicators
         ).attach();
 
-        // Define a Save Button
+        // Define a Cancel Button
         settingsBinding.butCancel.setOnClickListener(view -> finish());
 
-        // Define a Cancel Button
+        // Define a Save Button
         settingsBinding.butSave.setOnClickListener(view -> SaveSettings());
     }
 
