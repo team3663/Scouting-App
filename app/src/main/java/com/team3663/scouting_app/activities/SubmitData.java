@@ -342,7 +342,7 @@ public class SubmitData extends AppCompatActivity {
         final float openingScaleValue = 1.2f;
         // hide all acheivement eliments while keeping opener visible
         submitDataBinding.imageAchievementOpen.setVisibility(View.VISIBLE);
-        submitDataBinding.imageAchievementOpen.animate().scaleX(openingScaleValue).scaleY(openingScaleValue).setDuration(500);
+        submitDataBinding.imageAchievementOpen.animate().scaleX(openingScaleValue).scaleY(openingScaleValue).setDuration(250);
         submitDataBinding.textAchievementDesc.setVisibility(View.INVISIBLE);
         submitDataBinding.textAchievementTitle.setVisibility(View.INVISIBLE);
         submitDataBinding.imageAchievement.animate()
