@@ -315,7 +315,7 @@ public class SubmitData extends AppCompatActivity {
                 });
 
         // FORCE THE PIVOT TO THE LEFT EDGE (0 horizontal, middle vertical)
-        submitDataBinding.imageAchievement.setPivotX(0f);
+        submitDataBinding.imageAchievement.setPivotX(20f);
 
         // Set the achievement image visibility and shrink it to 0 immediately
         submitDataBinding.imageAchievement.setScaleX(0.0f);
@@ -341,32 +341,20 @@ public class SubmitData extends AppCompatActivity {
         final float openingScaleValue = 1.2f;
         // Show the opening logo overlay
         submitDataBinding.imageAchievementOpen.setVisibility(View.VISIBLE);
-
-        //scale opening image at begining
         submitDataBinding.imageAchievementOpen.animate().scaleX(openingScaleValue).scaleY(openingScaleValue).setDuration(500);
         submitDataBinding.textAchievementDesc.setVisibility(View.INVISIBLE);
         submitDataBinding.textAchievementTitle.setVisibility(View.INVISIBLE);
         submitDataBinding.imageAchievement.animate()
-                .scaleX(0.0f)
+                .scaleX(0.18f)
                 .setDuration(750)
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
-                                submitDataBinding.imageAchievementOpen.setVisibility(View.INVISIBLE);
+                                submitDataBinding.imageAchievement.setVisibility(View.INVISIBLE);
+                                submitDataBinding.imageAchievementOpen.animate().scaleX(0.0f).scaleY(0.0f).setDuration(250).start();
                             }
                         });
-        // FORCE THE PIVOT TO THE LEFT EDGE (0 horizontal, middle vertical)
-        submitDataBinding.imageAchievement.setPivotX(0f);
 
-        // Set the achievement image visibility and shrink it to 0 immediately
-        submitDataBinding.imageAchievement.setScaleX(1.0f);
-        submitDataBinding.imageAchievement.setVisibility(View.VISIBLE);
-
-        // Scale it up smoothly to full size from the left pivot
-        submitDataBinding.imageAchievement.animate()
-                .scaleX(0.0f)
-                .setDuration(750)
-                .start();
     }
 
     // =============================================================================================
