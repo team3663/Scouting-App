@@ -305,7 +305,7 @@ public class SubmitData extends AppCompatActivity {
         // Show the opening logo overlay
         submitDataBinding.imageAchievementOpen.setVisibility(View.VISIBLE);
 
-        //scale opening image at begening
+        //scale opening image at beginning
         submitDataBinding.imageAchievementOpen.animate().scaleX(openingScaleValue).scaleY(openingScaleValue).setDuration(500)
                 .withEndAction(new Runnable() {
                     @Override
@@ -314,14 +314,14 @@ public class SubmitData extends AppCompatActivity {
                     }
                 });
 
-        // FORCE THE PIVOT TO THE LEFT EDGE (0 horizontal, middle vertical)
+        // set pivot to a little bit in from the left
         submitDataBinding.imageAchievement.setPivotX(20f);
 
         // Set the achievement image visibility and shrink it to 0 immediately
         submitDataBinding.imageAchievement.setScaleX(0.0f);
         submitDataBinding.imageAchievement.setVisibility(View.VISIBLE);
 
-        // Scale it up smoothly to full size from the left pivot
+        // Scale it up to full size
         submitDataBinding.imageAchievement.animate()
                 .scaleX(1.0f)
                 .setDuration(750)
@@ -337,9 +337,10 @@ public class SubmitData extends AppCompatActivity {
                 .start();
     }
 
+    // hiding achievements
     public void animateAchievementEnd() {
         final float openingScaleValue = 1.2f;
-        // Show the opening logo overlay
+        // hide all acheivement eliments while keeping opener visible
         submitDataBinding.imageAchievementOpen.setVisibility(View.VISIBLE);
         submitDataBinding.imageAchievementOpen.animate().scaleX(openingScaleValue).scaleY(openingScaleValue).setDuration(500);
         submitDataBinding.textAchievementDesc.setVisibility(View.INVISIBLE);
