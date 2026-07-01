@@ -9,6 +9,7 @@ import androidx.documentfile.provider.DocumentFile;
 import com.team3663.scouting_app.data.Accuracy;
 import com.team3663.scouting_app.data.ClimbLevel;
 import com.team3663.scouting_app.data.ClimbPosition;
+import com.team3663.scouting_app.utility.CPR_Network;
 import com.team3663.scouting_app.utility.Logger;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 import com.team3663.scouting_app.utility.dataFile.*;
@@ -73,4 +74,6 @@ public class Globals {
 
     public static int TransmitMatchNum;
     public static String TransmitMatchType;
+
+    public static CPR_Network network;
 }

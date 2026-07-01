@@ -30,6 +30,7 @@ import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.AppLaunchBinding;
+import com.team3663.scouting_app.utility.CPR_Network;
 import com.team3663.scouting_app.utility.dataFile.*;
 
 import java.util.List;
@@ -128,6 +129,8 @@ public class AppLaunch extends AppCompatActivity {
 
         // While loading Matches, we messed with Globals.CurrentMatchType, so reset it
         Globals.CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
+        Globals.network = new CPR_Network(this);
+        boolean b = Globals.network.hasActiveInternet();
     }
 
     // =============================================================================================

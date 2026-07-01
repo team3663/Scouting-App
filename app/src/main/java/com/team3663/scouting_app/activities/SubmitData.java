@@ -377,6 +377,7 @@ public class SubmitData extends AppCompatActivity {
             .setPositiveButton(getString(R.string.submit_alert_quit_positive), (dialog, which) -> {
                 SubmitData.this.finishAffinity();
                 stopLockTask();
+                Globals.network.shutdown();
                 System.exit(0);
             })
 
