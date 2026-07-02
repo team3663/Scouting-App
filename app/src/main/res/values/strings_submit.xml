@@ -6,4 +6,7 @@
     <string name="submit_alert_quit_title">Quit app</string>
     <string name="submit_alert_quit_message">Are you sure you want to Quit the app?</string>
     <string name="submit_alert_quit_positive">Quit</string>
+    <string name="submit_wifi_signal_content_desc">Wi-Fi signal strength</string>
+    <string name="submit_internet_content_desc">Internet access</string>
+    <string name="submit_match_type">Match Type:</string>
 </resources>

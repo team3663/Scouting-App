@@ -2,13 +2,22 @@ package com.team3663.scouting_app.activities;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -35,6 +44,8 @@ public class SubmitData extends AppCompatActivity {
     private SubmitDataBinding submitDataBinding;
     private static final Timer achievement_timer = new Timer();
     private static MediaPlayer media;
+    private ConnectivityManager connectivityManager;
+    private ConnectivityManager.NetworkCallback networkCallback;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -61,6 +72,7 @@ public class SubmitData extends AppCompatActivity {
         }
 
         // Initialize activity components that don't log anything
+        initNetwork();
         initMatchType();
         initMatch();
         initQR();
@@ -68,6 +80,15 @@ public class SubmitData extends AppCompatActivity {
         initQuit();
         initNext();
         initOverride();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Important: Unregister to avoid memory leaks
+        if (connectivityManager != null && networkCallback != null) {
+            connectivityManager.unregisterNetworkCallback(networkCallback);
+        }
     }
 
     // =============================================================================================
@@ -259,6 +280,35 @@ public class SubmitData extends AppCompatActivity {
     }
 
     // =============================================================================================
+    // Function:    updateWifiIcon
+    // Description: Update the Wi-Fi signal icon with the correct signal strength level
+    // Parameters:  in_level    signal strength level
+    // Output:      void
+    // =============================================================================================
+    private void updateWifiIcon(int in_level) {
+        // You would typically swap icons here based on level
+        // 0: No signal, 1-4: Signal bars
+        switch (in_level) {
+            case 4: submitDataBinding.imageWifiSignal.setImageResource(R.drawable.wifi_bar_4); break;
+            case 3: submitDataBinding.imageWifiSignal.setImageResource(R.drawable.wifi_bar_3); break;
+            case 2: submitDataBinding.imageWifiSignal.setImageResource(R.drawable.wifi_bar_2); break;
+            case 1: submitDataBinding.imageWifiSignal.setImageResource(R.drawable.wifi_bar_1); break;
+            default: submitDataBinding.imageWifiSignal.setImageResource(R.drawable.wifi_bar_0); break;
+        }
+
+        // check if we have access to the internet
+        if (Globals.network.hasActiveInternet()) {
+            submitDataBinding.imageInternet.setVisibility(View.VISIBLE);
+            submitDataBinding.butSendGoogle.setEnabled(true);
+            submitDataBinding.butSendDatabase.setEnabled(true);
+        } else {
+            submitDataBinding.imageInternet.setVisibility(View.INVISIBLE);
+            submitDataBinding.butSendGoogle.setEnabled(false);
+            submitDataBinding.butSendDatabase.setEnabled(false);
+        }
+    }
+
+    // =============================================================================================
     // Function:    initOverride
     // Description: Override team number reset for next match
     // Parameters:  void
@@ -321,6 +371,52 @@ public class SubmitData extends AppCompatActivity {
     }
 
     // =============================================================================================
+    // Function:    initNetwork
+    // Description: Initialize the network related fields and process
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initNetwork() {
+        // setup Wi-Fi monitoring
+        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkRequest networkRequest = new NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .build();
+
+        networkCallback = new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onCapabilitiesChanged(@NonNull Network in_network, @NonNull NetworkCapabilities in_capabilities) {
+                int rssi = 0;
+
+                // On API 31+, WifiInfo is part of the capabilities (requires location permission)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    WifiInfo wifiInfo = (WifiInfo) in_capabilities.getTransportInfo();
+                    if (wifiInfo != null) rssi = wifiInfo.getRssi();
+                } else {
+                    // Fallback for API 30
+                    WifiManager wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                    rssi = wm.getConnectionInfo().getRssi();
+                }
+
+                // Convert RSSI to a signal level (0 to 4)
+                int level = WifiManager.calculateSignalLevel(rssi, 5);
+
+                // Update UI on the main thread
+                runOnUiThread(() -> updateWifiIcon(level));
+            }
+
+            @Override
+            public void onLost(@NonNull Network in_network) {
+                // Signal lost or Wi-Fi turned off
+                runOnUiThread(() -> updateWifiIcon(-1));
+            }
+        };
+
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
+    }
+
+    // =============================================================================================
     // Function:    initQR
     // Description: Initialize the QR Code field
     // Parameters:  void
@@ -347,6 +443,9 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initBluetooth() {
+        // Until we have BT working...
+        submitDataBinding.butSendBT.setEnabled(false);
+
         submitDataBinding.butSendBT.setOnClickListener(view -> {
             // Reset pre-Match settings for next time
             Globals.numStartingGamePiece = Constants.PreMatch.STARTING_GAME_PIECES;
@@ -404,7 +503,7 @@ public class SubmitData extends AppCompatActivity {
             Globals.affectedByDefenseValue = Constants.PostMatch.AFFECTED_BY_DEFENSE_NOT_SELECTED;
             Globals.isPractice = false;
 
-            // Increases the team number so that it auto fills for the next match correctly
+            // Increases the team number so that it will autofill for the next match correctly
             Globals.CurrentMatchNumber++;
 
             Intent GoToPreMatch = new Intent(SubmitData.this, PreMatch.class);
