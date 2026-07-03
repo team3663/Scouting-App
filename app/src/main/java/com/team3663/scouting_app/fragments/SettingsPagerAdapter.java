@@ -8,6 +8,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 public class SettingsPagerAdapter extends FragmentStateAdapter {
     private SettingsPage1 fragmentPage1;
     private SettingsPage2 fragmentPage2;
+    private SettingsPage3 fragmentPage3;
 
     public SettingsPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
@@ -26,6 +27,10 @@ public class SettingsPagerAdapter extends FragmentStateAdapter {
                 fragmentPage2 = new SettingsPage2();
                 frag = fragmentPage2;
                 break;
+            case 2:
+                fragmentPage3 = new SettingsPage3();
+                frag = fragmentPage3;
+                break;
         }
         
         return frag;
@@ -33,14 +38,16 @@ public class SettingsPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 2;
+        return 3;
     }
 
     public SettingsPage1 getFragmentPage1() {
         return fragmentPage1;
     }
-
     public SettingsPage2 getFragmentPage2() {
         return fragmentPage2;
+    }
+    public SettingsPage3 getFragmentPage3() {
+        return fragmentPage3;
     }
 }
