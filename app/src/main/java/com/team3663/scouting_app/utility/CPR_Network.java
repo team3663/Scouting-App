@@ -17,81 +17,80 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Checks whether a remote host:port is reachable.
- *
- * <p>Two-step check:
- * <ol>
- *   <li>Is there any active network with internet capability? (cheap, no I/O)</li>
- *   <li>Can we open a TCP socket to the given host:port? (blocking, runs off the UI thread)</li>
- * </ol>
- *
- * <p>Required manifest permissions:
- * <pre>
- *   &lt;uses-permission android:name="android.permission.INTERNET" /&gt;
- *   &lt;uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /&gt;
- * </pre>
- */public class CPR_Network {
+// =============================================================================================
+// Class:       CPR_Network
+// Description: Custom class to handle network related tasks.
+// =============================================================================================
+public class CPR_Network {
+    // =============================================================================================
+    // Class Globals
+    // =============================================================================================
+    private final Context appContext;
+    private final ExecutorService executor;
+    private final Handler mainHandler;
 
-    /**
-     * Why a reachability check ended the way it did.
-     */
+    // =============================================================================================
+    // Why a reachability check ended the way it did.
+    // =============================================================================================
     public enum Result {
         REACHABLE,          // socket connected successfully
         NO_NETWORK,         // device has no active internet-capable network
         HOST_UNREACHABLE    // network exists, but host:port could not be reached
     }
 
-    /**
-     * Delivered on the main thread.
-     */
     public interface Callback {
         void onResult(@NonNull Result result);
     }
 
-    private final Context appContext;
-    private final ExecutorService executor;
-    private final Handler mainHandler;
-
-    public CPR_Network(@NonNull Context context) {
+    // Constructor: create the new Network object
+    public CPR_Network(@NonNull Context in_context) {
         // Use the application context to avoid leaking an Activity.
-        this.appContext = context.getApplicationContext();
+        this.appContext = in_context.getApplicationContext();
         this.executor = Executors.newCachedThreadPool();
         this.mainHandler = new Handler(Looper.getMainLooper());
     }
 
-    /**
-     * Asynchronously checks reachability. The callback is invoked on the main thread.
-     *
-     * @param host      hostname or IP of the remote machine
-     * @param port      port the remote service listens on (e.g. 8080, 443, 22)
-     * @param timeoutMs socket connect timeout in milliseconds
-     * @param callback  invoked on the main thread with the result
-     */
-    public void check(@NonNull String host, int port, int timeoutMs, @NonNull Callback callback) {
+    // =============================================================================================
+    // Function:    check (step 1)
+    // Description: Asynchronously checks reachability. The callback is invoked on the main thread.
+    // Parameters:  in_host      hostname or IP of the remote machine
+    //              in_port      port the remote service listens on (e.g. 8080, 443, 22)
+    //              in_timeoutMs socket connect timeout in milliseconds
+    //              in_callback  invoked on the main thread with the result
+    // Output:      void
+    // =============================================================================================
+    public void check(@NonNull String in_host, int in_port, int in_timeoutMs, @NonNull Callback in_callback) {
         executor.execute(() -> {
-            Result result = checkBlocking(host, port, timeoutMs);
-            mainHandler.post(() -> callback.onResult(result));
+            Result result = checkBlocking(in_host, in_port, in_timeoutMs);
+            mainHandler.post(() -> in_callback.onResult(result));
         });
     }
 
-    /**
-     * Synchronous check. Must NOT be called on the main thread (blocks on socket I/O).
-     * Exposed for use inside your own background threads / coroutines.
-     */
+    // =============================================================================================
+    // Function:    checkBlocking
+    // Description: Synchronous check. Must NOT be called on the main thread (blocks on socket I/O).
+    //              Exposed for use inside your own background threads / coroutines.
+    // Parameters:  in_host      hostname or IP of the remote machine
+    //              in_port      port the remote service listens on (e.g. 8080, 443, 22)
+    //              in_timeoutMs socket connect timeout in milliseconds
+    // Output:      void
+    // =============================================================================================
     @NonNull
-    public Result checkBlocking(@NonNull String host, int port, int timeoutMs) {
+    public Result checkBlocking(@NonNull String in_host, int in_port, int in_timeoutMs) {
         if (!hasActiveInternet()) {
             return Result.NO_NETWORK;
         }
-        return isHostReachable(host, port, timeoutMs)
+        return isHostReachable(in_host, in_port, in_timeoutMs)
                 ? Result.REACHABLE
                 : Result.HOST_UNREACHABLE;
     }
 
-    /**
-     * Step 1: is there an active, internet-capable network?
-     */
+    // =============================================================================================
+    // Function:    hasActiveInternet
+    // Description: is there an active, internet-capable network?
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
     public boolean hasActiveInternet() {
         ConnectivityManager cm =
                 (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -107,12 +106,17 @@ import java.util.concurrent.Executors;
                 && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
     }
 
-    /**
-     * Step 2: can we open a TCP connection to host:port?
-     */
-    private boolean isHostReachable(@NonNull String host, int port, int timeoutMs) {
+    // =============================================================================================
+    // Function:    isHostReachable (step 2)
+    // Description: can we open a TCP connection to host:port?
+    // Parameters:  in_host      hostname or IP of the remote machine
+    //              in_port      port the remote service listens on (e.g. 8080, 443, 22)
+    //              in_timeoutMs socket connect timeout in milliseconds
+    // Output:      void
+    // =============================================================================================
+    private boolean isHostReachable(@NonNull String in_host, int in_port, int in_timeoutMs) {
         try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress(host, port), timeoutMs);
+            socket.connect(new InetSocketAddress(in_host, in_port), in_timeoutMs);
             return true;
         } catch (IOException e) {
             // unreachable, connection refused, or timed out
@@ -120,16 +124,22 @@ import java.util.concurrent.Executors;
         }
     }
 
-    /**
-     * Call when you're done (e.g. in onDestroy) to release the thread pool.
-     */
+    // =============================================================================================
+    // Function:    shutdown
+    // Description: Call when you're done (e.g. in onDestroy) to release the thread pool.
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
     public void shutdown() {
         executor.shutdownNow();
     }
 
-    /**
-     * Choose new wifi to connect to
-     */
+    // =============================================================================================
+    // Function:    pickWIFI
+    // Description: Choose new wifi to connect to
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
     public void pickWIFI() {
         try {
             // Try quick Wi-Fi panel

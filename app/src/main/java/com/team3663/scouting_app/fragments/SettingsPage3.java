@@ -1,7 +1,6 @@
 package com.team3663.scouting_app.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -18,8 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.team3663.scouting_app.R;
-import com.team3663.scouting_app.activities.QRCode;
-import com.team3663.scouting_app.activities.SubmitData;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.FragmentSettingsPage3Binding;
@@ -29,7 +26,6 @@ public class SettingsPage3 extends Fragment {
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
 
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentSettingsPage3Binding.inflate(inflater, container, false);
@@ -91,9 +87,7 @@ public class SettingsPage3 extends Fragment {
     // Output:      void
     // =============================================================================================
     private void initChooseWifi() {
-        binding.butChoose.setOnClickListener(view -> {
-            Globals.network.pickWIFI();
-        });
+        binding.butChoose.setOnClickListener(view -> Globals.network.pickWIFI());
     }
 
     // =============================================================================================
