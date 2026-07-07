@@ -54,7 +54,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.qr.generator)
     implementation(libs.preference)
-    implementation(libs.mssql.jdbc)
+    implementation(libs.jtds)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

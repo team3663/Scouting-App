@@ -503,15 +503,21 @@ public class SubmitData extends AppCompatActivity {
     private void initDatabase() {
         if (!Globals.network.hasActiveInternet()) {
             submitDataBinding.butSendDatabase.setEnabled(false);
+            submitDataBinding.butSendDatabase.setClickable(false);
+            submitDataBinding.butSendDatabase.setBackgroundColor(getColor(R.color.light_grey));
             return;
         }
 
         submitDataBinding.butSendDatabase.setOnClickListener(view -> {
             //Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
             submitDataBinding.butSendDatabase.setEnabled(false);
+            submitDataBinding.butSendDatabase.setClickable(false);
+            submitDataBinding.butSendDatabase.setBackgroundColor(getColor(R.color.light_grey));
 
             Globals.network.sendFileToSQLServer(result -> {
                 submitDataBinding.butSendDatabase.setEnabled(true);
+                submitDataBinding.butSendDatabase.setClickable(true);
+                submitDataBinding.butSendDatabase.setBackgroundColor(getColor(R.color.white));
                 switch (result) {
                     case TRANSMISSION_SUCCESS:
                         Toast.makeText(this, "Successfully transmitted!", Toast.LENGTH_SHORT).show();
