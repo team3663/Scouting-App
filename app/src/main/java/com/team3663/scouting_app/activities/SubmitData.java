@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -77,6 +79,8 @@ public class SubmitData extends AppCompatActivity {
         initMatch();
         initQR();
         initBluetooth();
+        initGoogle();
+        initDatabase();
         initQuit();
         initNext();
         initOverride();
@@ -361,6 +365,18 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initMatch() {
+        submitDataBinding.spinnerMatch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                // Save off what you selected to be used until changed again
+                Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+
         // Adds the items from the match log files array to the list
         ArrayAdapter<String> adp_Match = new ArrayAdapter<>(this,
                 R.layout.cpr_spinner, FindMatches());
@@ -368,6 +384,7 @@ public class SubmitData extends AppCompatActivity {
         submitDataBinding.spinnerMatch.setAdapter(adp_Match);
         // Set the selection (if there are any) to the latest match (largest value in the list)
         if (adp_Match.getCount() > 0) submitDataBinding.spinnerMatch.setSelection(adp_Match.getCount() - 1, true);
+        Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
     }
 
     // =============================================================================================
@@ -457,6 +474,66 @@ public class SubmitData extends AppCompatActivity {
 //            startActivity(GoToBluetooth);
 
             finish();
+        });
+    }
+
+    // =============================================================================================
+    // Function:    initGoogle
+    // Description: Initialize the Google field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initGoogle() {
+        if (!Globals.network.hasActiveInternet()) {
+            submitDataBinding.butSendGoogle.setEnabled(false);
+            return;
+        }
+
+        submitDataBinding.butSendGoogle.setOnClickListener(view -> {
+            Toast.makeText(this, "Coming Soon...", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    // =============================================================================================
+    // Function:    initDatabase
+    // Description: Initialize the Database field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initDatabase() {
+        if (!Globals.network.hasActiveInternet()) {
+            submitDataBinding.butSendDatabase.setEnabled(false);
+            return;
+        }
+
+        submitDataBinding.butSendDatabase.setOnClickListener(view -> {
+            //Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
+            submitDataBinding.butSendDatabase.setEnabled(false);
+
+            Globals.network.sendFileToSQLServer(result -> {
+                submitDataBinding.butSendDatabase.setEnabled(true);
+                switch (result) {
+                    case TRANSMISSION_SUCCESS:
+                        Toast.makeText(this, "Successfully transmitted!", Toast.LENGTH_SHORT).show();
+                        break;
+                    case NO_NETWORK:
+                        Toast.makeText(this, "No network connection", Toast.LENGTH_SHORT).show();
+                        break;
+                    case HOST_UNREACHABLE:
+                        Toast.makeText(this, "SQL Server is unreachable", Toast.LENGTH_SHORT).show();
+                        break;
+                    case NO_DATA:
+                        Toast.makeText(this, "No data to send", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SQL_EXCEPTION:
+                        Toast.makeText(this, "SQL Server Exception", Toast.LENGTH_SHORT).show();
+                        break;
+                    case TRANSMISSION_FAILURE:
+                    default:
+                        Toast.makeText(this, "Transmission failed", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            });
         });
     }
 

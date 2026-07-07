@@ -48,11 +48,13 @@ base {
 
 dependencies {
     implementation(libs.appcompat)
+    implementation(libs.documentfile)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.qr.generator)
     implementation(libs.preference)
+    implementation(libs.mssql.jdbc)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

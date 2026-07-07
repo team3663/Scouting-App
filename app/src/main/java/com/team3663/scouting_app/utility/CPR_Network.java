@@ -10,10 +10,21 @@ import android.os.Looper;
 import android.provider.Settings;
 
 import androidx.annotation.NonNull;
+import androidx.documentfile.provider.DocumentFile;
 
+import com.team3663.scouting_app.config.Constants;
+import com.team3663.scouting_app.config.Globals;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -33,9 +44,13 @@ public class CPR_Network {
     // Why a reachability check ended the way it did.
     // =============================================================================================
     public enum Result {
-        REACHABLE,          // socket connected successfully
-        NO_NETWORK,         // device has no active internet-capable network
-        HOST_UNREACHABLE    // network exists, but host:port could not be reached
+        REACHABLE,              // socket connected successfully
+        NO_NETWORK,             // device has no active internet-capable network
+        HOST_UNREACHABLE,       // network exists, but host:port could not be reached
+        TRANSMISSION_SUCCESS,   // data sent successfully
+        TRANSMISSION_FAILURE,   // data send failed
+        NO_DATA,                // no data to send
+        SQL_EXCEPTION           // SQL error occurred
     }
 
     public interface Callback {
@@ -136,7 +151,7 @@ public class CPR_Network {
 
     // =============================================================================================
     // Function:    pickWIFI
-    // Description: Choose new wifi to connect to
+    // Description: Choose new Wi-Fi to connect to
     // Parameters:  void
     // Output:      void
     // =============================================================================================
@@ -152,5 +167,116 @@ public class CPR_Network {
             GoToSystemWIFI.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             appContext.startActivity(GoToSystemWIFI);
         }
+    }
+
+    // =============================================================================================
+    // Function:    sendFileToSQLServer
+    // Description: Asynchronously sends a scouting file to the SQL Server. Callback is on main thread.
+    // Parameters:  in_callback  invoked on the main thread with the result
+    // Output:      void
+    // =============================================================================================
+    public void sendFileToSQLServer(@NonNull Callback in_callback) {
+        executor.execute(() -> {
+            Result result = sendFileToSQLServerBlocking();
+            mainHandler.post(() -> in_callback.onResult(result));
+        });
+    }
+
+    // =============================================================================================
+    // Function:    sendFileToSQLServerBlocking
+    // Description: Synchronous send. Must NOT be called on the main thread.
+    // Parameters:  void
+    // Output:      Result
+    // =============================================================================================
+    @NonNull
+    public Result sendFileToSQLServerBlocking() {
+        if (!hasActiveInternet()) {
+            return Result.NO_NETWORK;
+        }
+
+        String sql_server = Globals.sp.getString(Constants.Prefs.SQL_SERVER, "");
+        String sql_database = Globals.sp.getString(Constants.Prefs.SQL_DATABASE, "");
+        String sql_user = Globals.sp.getString(Constants.Prefs.SQL_USER, "");
+        String sql_password = Globals.sp.getString(Constants.Prefs.SQL_PASSWORD, "");
+
+        // Before proceeding, make sure we have settings and a valid connection to the SQL Server
+        if (sql_server.isEmpty() || sql_database.isEmpty() || sql_user.isEmpty() || sql_password.isEmpty()) {
+            return Result.TRANSMISSION_FAILURE;
+        }
+
+        if (!isHostReachable(sql_server, 1433, 3000)) {
+            return Result.HOST_UNREACHABLE;
+        }
+
+        String url = "jdbc:sqlserver://" + sql_server + ";database=" + sql_database + ";encrypt=true;trustServerCertificate=true;useBulkCopyForBatchInsert=true;bulkCopyForBatchInsertFireTriggers=true";
+        String sql = "INSERT INTO Load.Scouting_File(Line) VALUES(?)";
+        HashMap<Integer, String> line_values = new HashMap<>();
+        line_values = getFileAsStringHashMap();
+
+        // Before proceeding, make sure we have data to send
+        if (line_values.isEmpty()) {
+            return Result.NO_DATA;
+        }
+
+        try (Connection conn = DriverManager.getConnection(url, sql_user, sql_password)) {
+            conn.setAutoCommit(false);
+            // Insert the data, line by line
+            try (java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+                for (String line : line_values.values()) {
+                    ps.setString(1, line);
+                    ps.addBatch();
+                }
+
+                ps.executeBatch();
+                conn.commit();
+                return Result.TRANSMISSION_SUCCESS;
+            } catch (SQLException e) {
+                // Rollback the transaction on error
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    // ignore
+                }
+                return Result.SQL_EXCEPTION;
+            }
+        } catch (SQLException e) {
+            return Result.SQL_EXCEPTION;
+        }
+    }
+
+    // =============================================================================================
+    // Function:    getFileAsStringHashMap
+    // Description: Initialize the Next Match button
+    // Parameters:  void
+    // Output:      String representing the entire contents of the file
+    // =============================================================================================
+    public HashMap<Integer, String> getFileAsStringHashMap() {
+        String filename = Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.TransmitMatchType + ".csv";
+        HashMap<Integer, String> file_as_hashmap = new HashMap<>();
+        String line;
+        int size = 0;
+
+        try {
+            // Open up the correct input stream
+            InputStream is;
+            DocumentFile df = Globals.output_df.findFile(filename);
+            assert df != null;
+            is = appContext.getContentResolver().openInputStream(df.getUri());
+
+            // Read in the data
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+            while ((line = br.readLine()) != null) {
+                size++;
+                file_as_hashmap.put(size, line);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // If we made it this far, add the "F" record at the beginning
+        file_as_hashmap.put(0, "F," + Globals.CurrentCompetitionId + "," + Globals.TransmitMatchNum + "," + Globals.CurrentDeviceId + "," + Globals.TransmitMatchType);
+
+        return file_as_hashmap;
     }
 }
