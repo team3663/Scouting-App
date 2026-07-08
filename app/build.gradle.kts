@@ -54,6 +54,8 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.qr.generator)
     implementation(libs.preference)
+    implementation(libs.google.api.client)
+    implementation(libs.google.drive.services)
     implementation(libs.jtds)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

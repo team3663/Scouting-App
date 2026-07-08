@@ -5,15 +5,21 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
+
+import com.google.api.client.http.InputStreamContent;
+import com.google.api.services.drive.Drive;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,6 +30,7 @@ import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -39,6 +46,7 @@ public class CPR_Network {
     private final Context appContext;
     private final ExecutorService executor;
     private final Handler mainHandler;
+    private static final String GOOGLE_TAG = "DriveUploadHelper";
 
     // =============================================================================================
     // Why a reachability check ended the way it did.
@@ -346,5 +354,90 @@ public class CPR_Network {
         file_as_hashmap.put(0, "F," + Globals.CurrentCompetitionId + "," + Globals.TransmitMatchNum + "," + Globals.CurrentDeviceId + "," + Globals.TransmitMatchType);
 
         return file_as_hashmap;
+    }
+
+    // =============================================================================================
+    // Function:    uploadToGoogle
+    // Description: Asynchronously copy the file to a Google Drive
+    // Parameters:  in_host      hostname or IP of the remote machine
+    //              in_port      port the remote service listens on (e.g. 8080, 443, 22)
+    //              in_timeoutMs socket connect timeout in milliseconds
+    //              in_callback  invoked on the main thread with the result
+    // Output:      void
+    // =============================================================================================
+    public void uploadToGoogle(@NonNull Context in_context) {
+        final String filename = Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.TransmitMatchType + ".csv";
+        DocumentFile df = Globals.output_df.findFile(filename);
+
+        // validate the file exists
+        if (df==null || !df.exists() || !df.isFile()) {
+            Toast.makeText(in_context, "Google Upload Failed: File not found", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        final long localSize = df.length();
+        final Uri sourceUri = df.getUri();
+
+        executor.execute(() -> {
+            try {
+                // validate connectivity
+                if (!hasActiveInternet()) {
+                    Toast.makeText(in_context, "Google Upload Failed: No Internet Connection", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                String mimeType = in_context.getContentResolver().getType(sourceUri);
+                if (mimeType == null) {
+                    Toast.makeText(in_context, "Google Upload Failed: File Type Not Found", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                com.google.api.services.drive.model.File fileMetadata = new com.google.api.services.drive.model.File();
+                fileMetadata.setName(filename);
+                fileMetadata.setParents(Collections.singletonList(Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE, "")));
+
+                InputStream inputStream = in_context.getContentResolver().openInputStream(sourceUri);
+                if (inputStream == null) {
+                    Toast.makeText(in_context, "Google Upload Failed: Unable to open file", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                InputStreamContent fileContent = new InputStreamContent(mimeType, inputStream);
+                if (localSize > 0) {
+                    fileContent.setLength(localSize);
+                }
+
+                com.google.api.services.drive.model.File uploadedFile = driveService.files()
+                        .create(fileMetadata, fileContent)
+                        .setFields("id, name, size, trashed")
+                        .execute();
+
+                if (uploadedFile == null) {
+                    Toast.makeText(in_context, "Google Upload Failed: Error transferring file", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                // Validate upload
+                com.google.api.services.drive.model.File remoteFile = driveService.files()
+                        .get(uploadedFile.getId())
+                        .setFields("id, size, trashed")
+                        .execute();
+
+                if (remoteFile == null || remoteFile.getId() == null || Boolean.TRUE.equals(remoteFile.getTrashed())) {
+                    Toast.makeText(in_context, "Google Upload Failed: Unable to find remote file", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                if (remoteFile.getSize() == null || remoteFile.getSize() != localSize) {
+                    Toast.makeText(in_context, "Google Upload Failed: File size mismatch", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                Toast.makeText(in_context, "Google Upload Successful", Toast.LENGTH_LONG).show();
+            }
+            catch (Exception e) {
+                Toast.makeText(in_context, "Google Upload Failed: Exception occurred", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
