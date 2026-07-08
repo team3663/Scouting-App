@@ -12,7 +12,6 @@ import android.provider.Settings;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.team3663.scouting_app.config.Constants;
@@ -216,6 +215,7 @@ public class CPR_Network {
             return Result.HOST_UNREACHABLE;
         }
 
+        // String url = "jdbc:sqlserver://" + sql_server + ";database=" + sql_database + ";encrypt=true;trustServerCertificate=true;useBulkCopyForBatchInsert=true;bulkCopyForBatchInsertFireTriggers=true";
         String url = "jdbc:jtds:sqlserver://" + sql_server + ":1433/" + sql_database + ";loginTimeout=10;socketTimeout=30";
         String sql = "INSERT INTO Load.Scouting_File(Line) VALUES(?)";
         HashMap<Integer, String> line_values = getFileAsStringHashMap();
