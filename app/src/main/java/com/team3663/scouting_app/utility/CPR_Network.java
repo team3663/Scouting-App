@@ -1,5 +1,6 @@
 package com.team3663.scouting_app.utility;
 
+import android.accounts.Account;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -17,8 +18,12 @@ import androidx.documentfile.provider.DocumentFile;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.http.InputStreamContent;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -46,6 +51,12 @@ public class CPR_Network {
     private final ExecutorService executor;
     private final Handler mainHandler;
     private static final String GOOGLE_TAG = "DriveUploadHelper";
+    // drive.file is a non-sensitive scope (no OAuth verification needed). It grants access only to
+    // files this app creates, which is all we do here: create a file in the shared folder (any
+    // signed-in account can write to it via the folder's "anyone with the link can edit" grant).
+    // Note: this scope does NOT allow listing/reading other files in that folder.
+    public static final String GOOGLE_DRIVE_SCOPE = DriveScopes.DRIVE_FILE;
+    private Drive driveService;
 
     // =============================================================================================
     // Why a reachability check ended the way it did.
@@ -357,21 +368,69 @@ public class CPR_Network {
     }
 
     // =============================================================================================
+    // Function:    initDriveService
+    // Description: Build the Google Drive service from a signed-in Google account. Must be called
+    //              (with a Drive-scoped account) before uploadToGoogle(). Uploads run as this
+    //              user, so any Drive folder shared with them (including one they don't own) is
+    //              reachable by folder id.
+    // Parameters:  in_account  the signed-in Google account with GOOGLE_DRIVE_SCOPE granted
+    // Output:      void
+    // =============================================================================================
+    public void initDriveService(@NonNull Account in_account) {
+        GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(
+                appContext, Collections.singletonList(GOOGLE_DRIVE_SCOPE));
+        credential.setSelectedAccount(in_account);
+
+        driveService = new Drive.Builder(
+                new NetHttpTransport(),
+                GsonFactory.getDefaultInstance(),
+                credential)
+                .setApplicationName("CPR Scouting App")
+                .build();
+    }
+
+    // =============================================================================================
+    // Function:    isDriveServiceReady
+    // Description: Has a Drive service been built from a signed-in account yet?
+    // Parameters:  void
+    // Output:      boolean
+    // =============================================================================================
+    public boolean isDriveServiceReady() {
+        return driveService != null;
+    }
+
+    // =============================================================================================
+    // Function:    showToast
+    // Description: Post a Toast to the main thread (safe to call from a background thread).
+    // Parameters:  in_context   context used to build the Toast
+    //              in_message   text to display
+    //              in_duration  Toast.LENGTH_SHORT or Toast.LENGTH_LONG
+    // Output:      void
+    // =============================================================================================
+    private void showToast(@NonNull Context in_context, @NonNull String in_message, int in_duration) {
+        mainHandler.post(() -> Toast.makeText(in_context, in_message, in_duration).show());
+    }
+
+    // =============================================================================================
     // Function:    uploadToGoogle
-    // Description: Asynchronously copy the file to a Google Drive
-    // Parameters:  in_host      hostname or IP of the remote machine
-    //              in_port      port the remote service listens on (e.g. 8080, 443, 22)
-    //              in_timeoutMs socket connect timeout in milliseconds
-    //              in_callback  invoked on the main thread with the result
+    // Description: Asynchronously copy the file to the shared Google Drive folder. initDriveService()
+    //              must have been called first. Feedback is shown via Toast on the main thread.
+    // Parameters:  in_context  context used for content resolution and Toast feedback
     // Output:      void
     // =============================================================================================
     public void uploadToGoogle(@NonNull Context in_context) {
+        // We must have a Drive service (built from a signed-in account) before we can upload
+        if (driveService == null) {
+            showToast(in_context, "Google Upload Failed: Not signed in to Google", Toast.LENGTH_LONG);
+            return;
+        }
+
         final String filename = Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.TransmitMatchType + ".csv";
         DocumentFile df = Globals.output_df.findFile(filename);
 
         // validate the file exists
         if (df==null || !df.exists() || !df.isFile()) {
-            Toast.makeText(in_context, "Google Upload Failed: File not found", Toast.LENGTH_LONG).show();
+            showToast(in_context, "Google Upload Failed: File not found", Toast.LENGTH_LONG);
             return;
         }
 
@@ -382,13 +441,13 @@ public class CPR_Network {
             try {
                 // validate connectivity
                 if (!hasActiveInternet()) {
-                    Toast.makeText(in_context, "Google Upload Failed: No Internet Connection", Toast.LENGTH_LONG).show();
+                    showToast(in_context, "Google Upload Failed: No Internet Connection", Toast.LENGTH_LONG);
                     return;
                 }
 
                 String mimeType = in_context.getContentResolver().getType(sourceUri);
                 if (mimeType == null) {
-                    Toast.makeText(in_context, "Google Upload Failed: File Type Not Found", Toast.LENGTH_LONG).show();
+                    showToast(in_context, "Google Upload Failed: File Type Not Found", Toast.LENGTH_LONG);
                     return;
                 }
 
@@ -398,7 +457,7 @@ public class CPR_Network {
 
                 InputStream inputStream = in_context.getContentResolver().openInputStream(sourceUri);
                 if (inputStream == null) {
-                    Toast.makeText(in_context, "Google Upload Failed: Unable to open file", Toast.LENGTH_LONG).show();
+                    showToast(in_context, "Google Upload Failed: Unable to open file", Toast.LENGTH_LONG);
                     return;
                 }
 
@@ -407,36 +466,40 @@ public class CPR_Network {
                     fileContent.setLength(localSize);
                 }
 
+                // setSupportsAllDrives(true) is required when the parent folder lives in a Shared
+                // Drive (or was shared to us from another account).
                 com.google.api.services.drive.model.File uploadedFile = driveService.files()
                         .create(fileMetadata, fileContent)
+                        .setSupportsAllDrives(true)
                         .setFields("id, name, size, trashed")
                         .execute();
 
                 if (uploadedFile == null) {
-                    Toast.makeText(in_context, "Google Upload Failed: Error transferring file", Toast.LENGTH_LONG).show();
+                    showToast(in_context, "Google Upload Failed: Error transferring file", Toast.LENGTH_LONG);
                     return;
                 }
 
                 // Validate upload
                 com.google.api.services.drive.model.File remoteFile = driveService.files()
                         .get(uploadedFile.getId())
+                        .setSupportsAllDrives(true)
                         .setFields("id, size, trashed")
                         .execute();
 
                 if (remoteFile == null || remoteFile.getId() == null || Boolean.TRUE.equals(remoteFile.getTrashed())) {
-                    Toast.makeText(in_context, "Google Upload Failed: Unable to find remote file", Toast.LENGTH_LONG).show();
+                    showToast(in_context, "Google Upload Failed: Unable to find remote file", Toast.LENGTH_LONG);
                     return;
                 }
 
                 if (remoteFile.getSize() == null || remoteFile.getSize() != localSize) {
-                    Toast.makeText(in_context, "Google Upload Failed: File size mismatch", Toast.LENGTH_LONG).show();
+                    showToast(in_context, "Google Upload Failed: File size mismatch", Toast.LENGTH_LONG);
                     return;
                 }
 
-                Toast.makeText(in_context, "Google Upload Successful", Toast.LENGTH_LONG).show();
+                showToast(in_context, "Google Upload Successful", Toast.LENGTH_LONG);
             }
             catch (Exception e) {
-                Toast.makeText(in_context, "Google Upload Failed: Exception occurred", Toast.LENGTH_LONG).show();
+                showToast(in_context, "Google Upload Failed: Exception occurred", Toast.LENGTH_LONG);
             }
         });
     }

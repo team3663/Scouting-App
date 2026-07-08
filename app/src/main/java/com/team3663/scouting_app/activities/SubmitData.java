@@ -19,16 +19,24 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Scope;
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.SubmitDataBinding;
+import com.team3663.scouting_app.utility.CPR_Network;
 import com.team3663.scouting_app.utility.Logger;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
@@ -48,6 +56,7 @@ public class SubmitData extends AppCompatActivity {
     private static MediaPlayer media;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
+    private ActivityResultLauncher<Intent> googleSignInLauncher;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -62,6 +71,9 @@ public class SubmitData extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Register the Google sign-in launcher before the activity is STARTED
+        initGoogleSignIn();
 
         // Initialize activity components that need the Logger
         initAchievements();
@@ -490,8 +502,66 @@ public class SubmitData extends AppCompatActivity {
         }
 
         submitDataBinding.butSendGoogle.setOnClickListener(view -> {
-            Toast.makeText(this, "Coming Soon...", Toast.LENGTH_SHORT).show();
+            Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
+
+            // If the Drive service is already built this session, upload straight away
+            if (Globals.network.isDriveServiceReady()) {
+                Globals.network.uploadToGoogle(this);
+                return;
+            }
+
+            // Reuse an existing sign-in if it already granted the Drive scope
+            Scope driveScope = new Scope(CPR_Network.GOOGLE_DRIVE_SCOPE);
+            GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(this);
+            if (GoogleSignIn.hasPermissions(last, driveScope)) {
+                onGoogleSignedIn(last);
+                return;
+            }
+
+            // Otherwise start the interactive sign-in / consent flow
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .requestScopes(driveScope)
+                    .build();
+            googleSignInLauncher.launch(GoogleSignIn.getClient(this, gso).getSignInIntent());
         });
+    }
+
+    // =============================================================================================
+    // Function:    initGoogleSignIn
+    // Description: Register the launcher that receives the result of the Google sign-in flow.
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initGoogleSignIn() {
+        googleSignInLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    try {
+                        GoogleSignInAccount account = GoogleSignIn
+                                .getSignedInAccountFromIntent(result.getData())
+                                .getResult(ApiException.class);
+                        onGoogleSignedIn(account);
+                    } catch (ApiException e) {
+                        Toast.makeText(this, "Google sign-in failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    // =============================================================================================
+    // Function:    onGoogleSignedIn
+    // Description: Build the Drive service from the signed-in account and start the upload.
+    // Parameters:  in_account  the account returned from Google sign-in
+    // Output:      void
+    // =============================================================================================
+    private void onGoogleSignedIn(GoogleSignInAccount in_account) {
+        if (in_account == null || in_account.getAccount() == null) {
+            Toast.makeText(this, "Google sign-in failed", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Globals.network.initDriveService(in_account.getAccount());
+        Globals.network.uploadToGoogle(this);
     }
 
     // =============================================================================================
