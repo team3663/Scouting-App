@@ -1,5 +1,7 @@
 package com.team3663.scouting_app.activities;
 
+import static com.team3663.scouting_app.config.Constants.Achievements.ANIMATION_SCALE_DURATION;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -207,7 +209,6 @@ public class SubmitData extends AppCompatActivity {
                 submitDataBinding.textAchievementTitle.setText(myAchievement.title);
                 submitDataBinding.textAchievementDesc.setText(myAchievement.description);
 
-                //Animation animation = AnimationUtils.loadAnimation(SubmitData.this, R.anim.blink);
                 animateAchievementStart();
             });
 
@@ -301,16 +302,15 @@ public class SubmitData extends AppCompatActivity {
     }
 
     public void animateAchievementStart() {
-        final float openingScaleValue = 1.2f;
         // Show the opening logo overlay
         submitDataBinding.imageAchievementOpen.setVisibility(View.VISIBLE);
 
         //scale opening image at beginning
-        submitDataBinding.imageAchievementOpen.animate().scaleX(openingScaleValue).scaleY(openingScaleValue).setDuration(500)
+        submitDataBinding.imageAchievementOpen.animate().scaleX(Constants.Achievements.openingAnimationScaleValue).scaleY(Constants.Achievements.openingAnimationScaleValue).setDuration(ANIMATION_SCALE_DURATION)
                 .withEndAction(new Runnable() {
                     @Override
                     public void run() {
-                        submitDataBinding.imageAchievementOpen.animate().scaleX(1.0f).scaleY(1.0f).setDuration(500);
+                        submitDataBinding.imageAchievementOpen.animate().scaleX(1.0f).scaleY(1.0f).setDuration(ANIMATION_SCALE_DURATION);
                     }
                 });
 
@@ -324,7 +324,7 @@ public class SubmitData extends AppCompatActivity {
         // Scale it up to full size
         submitDataBinding.imageAchievement.animate()
                 .scaleX(1.0f)
-                .setDuration(750)
+                .setDuration(ANIMATION_SCALE_DURATION + (ANIMATION_SCALE_DURATION / 2))
                 .withEndAction(new Runnable() {
                     @Override
                     public void run() {
@@ -339,20 +339,19 @@ public class SubmitData extends AppCompatActivity {
 
     // hiding achievements
     public void animateAchievementEnd() {
-        final float openingScaleValue = 1.2f;
         // hide all acheivement eliments while keeping opener visible
         submitDataBinding.imageAchievementOpen.setVisibility(View.VISIBLE);
-        submitDataBinding.imageAchievementOpen.animate().scaleX(openingScaleValue).scaleY(openingScaleValue).setDuration(250);
+        submitDataBinding.imageAchievementOpen.animate().scaleX(Constants.Achievements.openingAnimationScaleValue).scaleY(Constants.Achievements.openingAnimationScaleValue).setDuration(ANIMATION_SCALE_DURATION / 2);
         submitDataBinding.textAchievementDesc.setVisibility(View.INVISIBLE);
         submitDataBinding.textAchievementTitle.setVisibility(View.INVISIBLE);
         submitDataBinding.imageAchievement.animate()
                 .scaleX(0.18f)
-                .setDuration(750)
+                .setDuration(ANIMATION_SCALE_DURATION + (ANIMATION_SCALE_DURATION / 2))
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
                                 submitDataBinding.imageAchievement.setVisibility(View.INVISIBLE);
-                                submitDataBinding.imageAchievementOpen.animate().scaleX(0.0f).scaleY(0.0f).setDuration(250).start();
+                                submitDataBinding.imageAchievementOpen.animate().scaleX(0.0f).scaleY(0.0f).setDuration(ANIMATION_SCALE_DURATION / 2).start();
                             }
                         });
 
