@@ -324,7 +324,7 @@ public class SubmitData extends AppCompatActivity {
         // Scale it up to full size
         submitDataBinding.imageAchievement.animate()
                 .scaleX(1.0f)
-                .setDuration(ANIMATION_SCALE_DURATION + (ANIMATION_SCALE_DURATION / 2))
+                .setDuration((long)(ANIMATION_SCALE_DURATION * 1.5))
                 .withEndAction(new Runnable() {
                     @Override
                     public void run() {
