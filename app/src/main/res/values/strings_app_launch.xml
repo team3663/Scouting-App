@@ -9,6 +9,7 @@
     <string name="applaunch_loading_competitions">Competition Data</string>
     <string name="applaunch_loading_devices">Device Data</string>
     <string name="applaunch_loading_comments">Comment Data</string>
+    <string name="applaunch_loading_scouters">Scouters Data</string>
     <string name="applaunch_loading_colors">Color Data</string>
     <string name="applaunch_percent">%1$d %%</string>
 
@@ -20,6 +21,7 @@
     <string name="applaunch_file_error_competitions">Error loading competitions from data file!</string>
     <string name="applaunch_file_error_devices">Error loading devices from data file!</string>
     <string name="applaunch_file_error_comments">Error loading comments from data file!</string>
+    <string name="applaunch_file_error_Scouters">Error loading scouters from data file!</string>
     <string name="applaunch_file_error_colors">Error loading colors from data file!</string>
 
     <string name="applaunch_start_scouting">Start Scouting</string>
