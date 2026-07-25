@@ -21,6 +21,16 @@
         tools:ignore="MissingConstraints,VisualLintOverlap" />
 
     <ImageView
+        android:id="@+id/image_internet"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="8dp"
+        android:contentDescription="@string/submit_internet_content_desc"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/text_Version"
+        android:src="@drawable/internet" />
+
+    <ImageView
         android:id="@+id/image_CPR3663"
         android:layout_width="502dp"
         android:layout_height="270dp"

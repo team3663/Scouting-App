@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,9 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.*;
 import com.team3663.scouting_app.databinding.SettingsBinding;
-import com.team3663.scouting_app.fragments.SettingsPagerAdapter;
-import com.team3663.scouting_app.fragments.SettingsPage1;
-import com.team3663.scouting_app.fragments.SettingsPage2;
+import com.team3663.scouting_app.fragments.*;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 public class Settings extends AppCompatActivity {
@@ -70,8 +69,9 @@ public class Settings extends AppCompatActivity {
         Intent intent = new Intent();
         SettingsPage1 fragmentPage1 = adapter.getFragmentPage1();
         SettingsPage2 fragmentPage2 = adapter.getFragmentPage2();
+        SettingsPage3 fragmentPage3 = adapter.getFragmentPage3();
 
-        // Page1 & Page2 Settings
+        // Page1 Settings
         if (fragmentPage1 != null && fragmentPage1.binding != null) {
             int CompetitionId = Globals.CompetitionList.getCompetitionId(fragmentPage1.binding.spinnerCompetition.getSelectedItem().toString());
 
@@ -97,7 +97,7 @@ public class Settings extends AppCompatActivity {
             Globals.spe.putInt(Constants.Prefs.NUM_MATCHES, NumMatches);
         }
 
-        // UI Settings
+        // Page2 Settings
         if (fragmentPage2 != null && fragmentPage2.binding != null) {
             int ColorId = Globals.ColorList.getColorId(fragmentPage2.binding.spinnerColor.getSelectedItem().toString());
             if (ColorId > 0) {
@@ -112,6 +112,26 @@ public class Settings extends AppCompatActivity {
 
             Globals.CurrentFieldOrientationPos = fragmentPage2.binding.spinnerOrientation.getSelectedItemPosition();
             Globals.spe.putInt(Constants.Prefs.PREF_ORIENTATION, Globals.CurrentFieldOrientationPos);
+        }
+
+        // Page3 Settings
+        if (fragmentPage3 != null && fragmentPage3.binding != null) {
+            Editable userField;
+
+            userField = fragmentPage3.binding.editGoogleDrive.getText();
+            Globals.spe.putString(Constants.Prefs.GOOGLE_DRIVE, (userField != null) ? userField.toString() : "");
+
+            userField = fragmentPage3.binding.editServer.getText();
+            Globals.spe.putString(Constants.Prefs.SQL_SERVER, (userField != null) ? userField.toString() : "");
+
+            userField = fragmentPage3.binding.editDatabase.getText();
+            Globals.spe.putString(Constants.Prefs.SQL_DATABASE, (userField != null) ? userField.toString() : "");
+
+            userField = fragmentPage3.binding.editUser.getText();
+            Globals.spe.putString(Constants.Prefs.SQL_USER, (userField != null) ? userField.toString() : "");
+
+            userField = fragmentPage3.binding.editPassword.getText();
+            Globals.spe.putString(Constants.Prefs.SQL_PASSWORD, (userField != null) ? userField.toString() : "");
         }
 
         Globals.spe.apply();

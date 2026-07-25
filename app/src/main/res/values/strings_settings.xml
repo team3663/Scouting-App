@@ -10,4 +10,13 @@
     <string name="settings_orientation">Field orientation:</string>
     <string name="settings_shadowmode">Shadow Mode:</string>
     <string name="settings_qr_size">QR Code Size:</string>
+    <string name="settings_network_wifi">Wi-Fi Connectivity</string>
+    <string name="settings_network_refresh">Refresh</string>
+    <string name="settings_network_choose">Choose Wi-Fi</string>
+    <string name="settings_network_google">Google Drive ID</string>
+    <string name="settings_network_database_server">SQL Server Name</string>
+    <string name="settings_network_database_db">SQL Database</string>
+    <string name="settings_network_database_user">SQL User</string>
+    <string name="settings_network_database_pwd">SQL Password</string>
+
 </resources>

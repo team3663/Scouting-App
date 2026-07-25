@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/cpr_bkgnd">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="320dp"
+            android:layout_height="match_parent"
+            android:gravity="end|center"
+            android:paddingEnd="20dp"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:text="@string/settings_network_wifi"
+            tools:ignore="RtlSymmetry" />
+
+        <ImageView
+            android:id="@+id/image_wifi_signal"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/submit_wifi_signal_content_desc"
+            android:src="@drawable/wifi_bar_0" />
+
+        <ImageView
+            android:id="@+id/image_internet"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:contentDescription="@string/submit_internet_content_desc"
+            android:src="@drawable/internet" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/but_Choose"
+            android:layout_width="170dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="35dp"
+            android:text="@string/settings_network_choose"
+            android:textSize="20sp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/cpr_bkgnd"
+            tools:ignore="HardcodedText,MissingConstraints"
+            app:cornerRadius="16dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/but_Refresh"
+            android:layout_width="170dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="35dp"
+            android:text="@string/settings_network_refresh"
+            android:textSize="20sp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/cpr_bkgnd"
+            tools:ignore="HardcodedText,MissingConstraints"
+            app:cornerRadius="16dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="320dp"
+            android:layout_height="40dp"
+            android:gravity="end|center"
+            android:paddingEnd="20dp"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:text="@string/settings_network_google"
+            tools:ignore="RtlSymmetry" />
+
+        <EditText
+            android:id="@+id/edit_GoogleDrive"
+            android:layout_width="500dp"
+            android:layout_height="match_parent"
+            android:paddingStart="15dp"
+            android:background="@color/white"
+            android:gravity="center|start"
+            android:inputType="text"
+            android:textColor="@color/cpr_bkgnd"
+            android:textSize="22sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="320dp"
+            android:layout_height="match_parent"
+            android:gravity="end|center"
+            android:paddingEnd="20dp"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:text="@string/settings_network_database_server"
+            tools:ignore="RtlSymmetry" />
+
+        <EditText
+            android:id="@+id/edit_Server"
+            android:layout_width="500dp"
+            android:layout_height="match_parent"
+            android:paddingStart="15dp"
+            android:background="@color/white"
+            android:gravity="center|start"
+            android:inputType="text"
+            android:textColor="@color/cpr_bkgnd"
+            android:textSize="22sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="320dp"
+            android:layout_height="match_parent"
+            android:gravity="end|center"
+            android:paddingEnd="20dp"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:text="@string/settings_network_database_db"
+            tools:ignore="RtlSymmetry" />
+
+        <EditText
+            android:id="@+id/edit_Database"
+            android:layout_width="500dp"
+            android:layout_height="match_parent"
+            android:paddingStart="15dp"
+            android:background="@color/white"
+            android:gravity="center|start"
+            android:inputType="text"
+            android:textColor="@color/cpr_bkgnd"
+            android:textSize="22sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="320dp"
+            android:layout_height="match_parent"
+            android:gravity="end|center"
+            android:paddingEnd="20dp"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:text="@string/settings_network_database_user"
+            tools:ignore="RtlSymmetry" />
+
+        <EditText
+            android:id="@+id/edit_User"
+            android:layout_width="500dp"
+            android:layout_height="match_parent"
+            android:paddingStart="15dp"
+            android:background="@color/white"
+            android:gravity="center|start"
+            android:inputType="text"
+            android:textColor="@color/cpr_bkgnd"
+            android:textSize="22sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="320dp"
+            android:layout_height="match_parent"
+            android:gravity="end|center"
+            android:paddingEnd="20dp"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:text="@string/settings_network_database_pwd"
+            app:endIconMode="password_toggle"
+            tools:ignore="RtlSymmetry" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/password_toggle"
+            android:layout_width="500dp"
+            android:layout_height="match_parent"
+            app:boxBackgroundColor="@android:color/white"
+            app:boxCollapsedPaddingTop="0dp"
+            app:endIconMode="password_toggle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_Password"
+                android:layout_width="500dp"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:includeFontPadding="false"
+                android:minHeight="0dp"
+                app:hintEnabled="false"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:inputType="textPassword"
+                android:textColor="@color/cpr_bkgnd"
+                android:textSize="22sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+</LinearLayout>

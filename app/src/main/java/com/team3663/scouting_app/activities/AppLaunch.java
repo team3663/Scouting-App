@@ -30,6 +30,7 @@ import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.AppLaunchBinding;
+import com.team3663.scouting_app.utility.CPR_Network;
 import com.team3663.scouting_app.utility.dataFile.*;
 
 import java.util.List;
@@ -92,6 +93,10 @@ public class AppLaunch extends AppCompatActivity {
             return insets;
         });
 
+        // Default to NO internet
+        appLaunchBinding.imageInternet.setVisibility(View.INVISIBLE);
+        Globals.network = new CPR_Network(this);
+
         // Display app version
         PackageInfo pInfo;
         try {
@@ -118,7 +123,7 @@ public class AppLaunch extends AppCompatActivity {
         boolean havePerms = !perm_list.isEmpty();
 
         // If we have storage permissions go ahead and load the data.
-        // Otherwise, initiate getting permissions (which will then load the data afterwards)
+        // Otherwise, initiate getting permissions (which will then load the data afterward)
         if (havePerms) {
             Globals.baseStorageURI = Uri.parse(Globals.sp.getString(Constants.Prefs.STORAGE_URI, null));
             initDataFiles();
@@ -128,7 +133,13 @@ public class AppLaunch extends AppCompatActivity {
 
         // While loading Matches, we messed with Globals.CurrentMatchType, so reset it
         Globals.CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
-    }
+
+        // check if we have access to the internet
+        if (Globals.network.hasActiveInternet())
+            appLaunchBinding.imageInternet.setVisibility(View.VISIBLE);
+        else
+            appLaunchBinding.imageInternet.setVisibility(View.INVISIBLE);
+        }
 
     // =============================================================================================
     // Function:    initSettings

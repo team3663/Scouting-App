@@ -121,6 +121,11 @@ public class Constants {
         public static final String STORAGE_URI = "StorageURI";
         public static final String PREF_ORIENTATION = "PreferredFieldOrientation";
         public static final String QR_SIZE = "PreferredQRSize";
+        public static final String GOOGLE_DRIVE = "PreferredGoogleDrive";
+        public static final String SQL_SERVER = "PreferredSqlServer";
+        public static final String SQL_DATABASE = "PreferredSqlDatabase";
+        public static final String SQL_USER = "PreferredSqlUser";
+        public static final String SQL_PASSWORD = "PreferredSqlPassword";
     }
 
     public static class Settings {
