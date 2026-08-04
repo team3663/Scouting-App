@@ -203,16 +203,17 @@
                 android:textSize="24sp"
                 tools:ignore="RtlSymmetry" />
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/edit_ScouterName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/white"
                 android:gravity="center"
-                android:inputType="text"
+                android:inputType="textAutoComplete|text"
                 android:textColor="@color/cpr_bkgnd"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                tools:ignore="LabelFor" />
 
             <TextView
                 android:id="@+id/text_ScouterNamePadding"
