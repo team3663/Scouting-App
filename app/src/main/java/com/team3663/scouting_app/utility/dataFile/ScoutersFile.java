@@ -1,19 +1,23 @@
-package input_data;
+package com.team3663.scouting_app.utility.dataFile;
 
 import android.content.Context;
+import android.icu.text.IDNA;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.team3663.scouting_app.R;
-import com.team3663.scouting_app.utility.dataFile._DataFile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ScoutersFile extends _DataFile {
-    private final ArrayList<CommentRow> comment_list;
+    private static ArrayList<CommentRow> comment_list;
 
     public ScoutersFile(Context in_context) {
         super(in_context, in_context.getString(R.string.file_Scouters), in_context.getString(R.string.applaunch_loading_scouters), in_context.getString(R.string.applaunch_file_error_Scouters));
 
         comment_list = new ArrayList<>();
+
     }
 
     @Override
@@ -53,7 +57,7 @@ public class ScoutersFile extends _DataFile {
     }
 
     // Member Function: Return a string list of all records
-    public ArrayList<String> getDescriptionList() {
+    public static ArrayList<String> getDescriptionList() {
         ArrayList<String> descriptions = new ArrayList<>();
 
         for (int i = 0; i < comment_list.size(); i++) {
@@ -75,5 +79,12 @@ public class ScoutersFile extends _DataFile {
             id = Integer.parseInt(in_id);
             description = in_description;
         }
+    }
+
+    public static  String[] get() {
+
+        ArrayList<String> myScouters = getDescriptionList();
+        String[] ScoutersArray = myScouters.toArray(new String[0]);
+        return ScoutersArray;
     }
 }

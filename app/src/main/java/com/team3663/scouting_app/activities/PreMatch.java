@@ -1,6 +1,7 @@
 package com.team3663.scouting_app.activities;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -32,6 +34,7 @@ import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.PreMatchBinding;
 import com.team3663.scouting_app.utility.achievements.Achievements;
+import com.team3663.scouting_app.utility.dataFile.ScoutersFile;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -681,5 +684,19 @@ public class PreMatch extends AppCompatActivity {
 
             Objects.requireNonNull(Globals.output_df.findFile(in_filename)).renameTo(backupFilename);
         }
+    }
+    public class scoutersActivity extends Activity {
+        protected void onCreate(Bundle icicle) {
+            super.onCreate(icicle);
+            setContentView(preMatchBinding.editScouterName);
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_dropdown_item_1line, COUNTRIES);
+            AutoCompleteTextView textView = (AutoCompleteTextView)
+                    preMatchBinding.editScouterName;
+            textView.setAdapter(adapter);
+        }
+
+        private final String[] COUNTRIES = ScoutersFile.get();
     }
 }
