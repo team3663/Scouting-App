@@ -64,6 +64,12 @@ configure<com.android.build.api.dsl.ApplicationExtension> {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
+    packaging {
+        resources {
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/DEPENDENCIES"
+        }
+    }
 }
 
 base {
@@ -81,7 +87,8 @@ dependencies {
     implementation(libs.google.api.client)
     implementation(libs.google.drive.services)
     implementation(libs.play.services.auth)
-    implementation(libs.jtds)
+//    implementation(libs.jtds)
+    implementation(libs.mssql)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

@@ -7,13 +7,14 @@ appcompat = "1.7.1"
 material = "1.14.0"
 activity = "1.13.0"
 qrgenVersion = "4.3.0"
-constraintlayout = "2.2.1"
+constraintlayout = "2.2.2"
 preference = "1.2.1"
 google-api-client = "2.9.0"
 google-drive-v3 = "v3-rev20260405-2.0.0"
 play-services-auth = "21.6.0"
 documentfile = "1.1.0"
-jtds="1.3.1"
+#jtds="1.3.1"
+mssql-jdbc="13.5.1.jre11-preview"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -25,11 +26,12 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
 qr-generator = { group = "com.journeyapps", name = "zxing-android-embedded", version.ref = "qrgenVersion" }
-jtds = { group = "net.sourceforge.jtds", name = "jtds", version.ref = "jtds"}
+#jtds = { group = "net.sourceforge.jtds", name = "jtds", version.ref = "jtds"}
 documentfile = { group = "androidx.documentfile", name = "documentfile", version.ref = "documentfile" }
 google-api-client = { group = "com.google.api-client", name = "google-api-client-android", version.ref = "google-api-client" }
 google-drive-services = { group = "com.google.apis", name = "google-api-services-drive", version.ref = "google-drive-v3" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services-auth" }
+mssql = { group = "com.microsoft.sqlserver", name = "mssql-jdbc", version.ref = "mssql-jdbc"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

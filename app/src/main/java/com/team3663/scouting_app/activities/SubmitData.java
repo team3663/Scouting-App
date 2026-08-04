@@ -395,8 +395,10 @@ public class SubmitData extends AppCompatActivity {
         adp_Match.setDropDownViewResource(R.layout.cpr_spinner_item);
         submitDataBinding.spinnerMatch.setAdapter(adp_Match);
         // Set the selection (if there are any) to the latest match (largest value in the list)
-        if (adp_Match.getCount() > 0) submitDataBinding.spinnerMatch.setSelection(adp_Match.getCount() - 1, true);
-        Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
+        if (adp_Match.getCount() > 0) {
+            submitDataBinding.spinnerMatch.setSelection(adp_Match.getCount() - 1, true);
+            Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
+        }
     }
 
     // =============================================================================================

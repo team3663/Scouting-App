@@ -296,6 +296,7 @@ public class CPR_Network {
         }
 
         String url = "jdbc:sqlserver://" + sql_server + ";database=" + sql_database + ";encrypt=true;trustServerCertificate=true;useBulkCopyForBatchInsert=true;bulkCopyForBatchInsertFireTriggers=true";
+        // String url = "jdbc:jtds:sqlserver://" + sql_server + ":1433/" + sql_database + ";loginTimeout=10;socketTimeout=30";
         String sql = "INSERT INTO Load.Scouting_File(Line) VALUES(?)";
         HashMap<Integer, String> line_values = new HashMap<>();
         line_values = getFileAsStringHashMap();
