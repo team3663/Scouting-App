@@ -382,6 +382,8 @@ public class SubmitData extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 // Save off what you selected to be used until changed again
                 Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
+                submitDataBinding.imageGoogleResult.setImageResource(0);
+                submitDataBinding.imageDatabaseResult.setImageResource(0);
             }
 
             @Override
@@ -505,28 +507,32 @@ public class SubmitData extends AppCompatActivity {
 
         submitDataBinding.butSendGoogle.setOnClickListener(view -> {
             Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
+            submitDataBinding.imageGoogleResult.setImageResource(0);
 
             // If the Drive service is already built this session, upload straight away
             if (Globals.network.isDriveServiceReady()) {
-                Globals.network.uploadToGoogle(this);
-                return;
+                if (Globals.network.uploadToGoogle(this)) {
+                    submitDataBinding.imageGoogleResult.setImageResource(R.drawable.checkmark);
+                } else {
+                    submitDataBinding.imageGoogleResult.setImageResource(R.drawable.x);
+                }
             }
-
-            // Reuse an existing sign-in if it already granted the Drive scope
-            Scope driveScope = new Scope(CPR_Network.GOOGLE_DRIVE_SCOPE);
-            GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(this);
-            if (GoogleSignIn.hasPermissions(last, driveScope)) {
-                onGoogleSignedIn(last);
-                return;
-            }
-
-            // Otherwise start the interactive sign-in / consent flow
-            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestEmail()
-                    .requestScopes(driveScope)
-                    .build();
-            googleSignInLauncher.launch(GoogleSignIn.getClient(this, gso).getSignInIntent());
         });
+
+        // Reuse an existing sign-in if it already granted the Drive scope
+        Scope driveScope = new Scope(CPR_Network.GOOGLE_DRIVE_SCOPE);
+        GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(this);
+        if (GoogleSignIn.hasPermissions(last, driveScope)) {
+            onGoogleSignedIn(last);
+            return;
+        }
+
+        // Otherwise start the interactive sign-in / consent flow
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestScopes(driveScope)
+                .build();
+        googleSignInLauncher.launch(GoogleSignIn.getClient(this, gso).getSignInIntent());
     }
 
     // =============================================================================================
@@ -546,6 +552,7 @@ public class SubmitData extends AppCompatActivity {
                         onGoogleSignedIn(account);
                     } catch (ApiException e) {
                         Toast.makeText(this, "Google sign-in failed", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageGoogleResult.setImageResource(R.drawable.x);
                     }
                 });
     }
@@ -559,6 +566,7 @@ public class SubmitData extends AppCompatActivity {
     private void onGoogleSignedIn(GoogleSignInAccount in_account) {
         if (in_account == null || in_account.getAccount() == null) {
             Toast.makeText(this, "Google sign-in failed", Toast.LENGTH_SHORT).show();
+            submitDataBinding.imageGoogleResult.setImageResource(R.drawable.x);
             return;
         }
 
@@ -585,6 +593,8 @@ public class SubmitData extends AppCompatActivity {
             submitDataBinding.butSendDatabase.setEnabled(false);
             submitDataBinding.butSendDatabase.setClickable(false);
             submitDataBinding.butSendDatabase.setBackgroundColor(getColor(R.color.light_grey));
+            submitDataBinding.imageDatabaseResult.setImageResource(0);
+
 
             Globals.network.sendFileToSQLServer(result -> {
                 submitDataBinding.butSendDatabase.setEnabled(true);
@@ -593,22 +603,28 @@ public class SubmitData extends AppCompatActivity {
                 switch (result) {
                     case TRANSMISSION_SUCCESS:
                         Toast.makeText(this, "Successfully transmitted!", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.checkmark);
                         break;
                     case NO_NETWORK:
                         Toast.makeText(this, "No network connection", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
                         break;
                     case HOST_UNREACHABLE:
                         Toast.makeText(this, "SQL Server is unreachable", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
                         break;
                     case NO_DATA:
                         Toast.makeText(this, "No data to send", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
                         break;
                     case SQL_EXCEPTION:
                         Toast.makeText(this, "SQL Server Exception", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
                         break;
                     case TRANSMISSION_FAILURE:
                     default:
                         Toast.makeText(this, "Transmission failed", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
                         break;
                 }
             });

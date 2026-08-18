@@ -418,11 +418,11 @@ public class CPR_Network {
     // Parameters:  in_context  context used for content resolution and Toast feedback
     // Output:      void
     // =============================================================================================
-    public void uploadToGoogle(@NonNull Context in_context) {
+    public boolean uploadToGoogle(@NonNull Context in_context) {
         // We must have a Drive service (built from a signed-in account) before we can upload
         if (driveService == null) {
             showToast(in_context, "Google Upload Failed: Not signed in to Google", Toast.LENGTH_LONG);
-            return;
+            return false;
         }
 
         final String filename = Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.TransmitMatchType + ".csv";
@@ -431,7 +431,7 @@ public class CPR_Network {
         // validate the file exists
         if (df==null || !df.exists() || !df.isFile()) {
             showToast(in_context, "Google Upload Failed: File not found", Toast.LENGTH_LONG);
-            return;
+            return false;
         }
 
         final long localSize = df.length();
@@ -502,5 +502,7 @@ public class CPR_Network {
                 showToast(in_context, "Google Upload Failed: Exception occurred", Toast.LENGTH_LONG);
             }
         });
+
+        return true;
     }
 }
