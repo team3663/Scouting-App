@@ -270,70 +270,8 @@ public class CPR_Network {
     }
 
     // =============================================================================================
-    // Function:    sendFileToSQLServerBlocking
-    // Description: Synchronous send. Must NOT be called on the main thread.
-    // Parameters:  void
-    // Output:      Result
-    // =============================================================================================
-    @NonNull
-    public Result sendFileToSQLServerBlockingJDBC() {
-        if (!hasActiveInternet()) {
-            return Result.NO_NETWORK;
-        }
-
-        String sql_server = Globals.sp.getString(Constants.Prefs.SQL_SERVER, "");
-        String sql_database = Globals.sp.getString(Constants.Prefs.SQL_DATABASE, "");
-        String sql_user = Globals.sp.getString(Constants.Prefs.SQL_USER, "");
-        String sql_password = Globals.sp.getString(Constants.Prefs.SQL_PASSWORD, "");
-
-        // Before proceeding, make sure we have settings and a valid connection to the SQL Server
-        if (sql_server.isEmpty() || sql_database.isEmpty() || sql_user.isEmpty() || sql_password.isEmpty()) {
-            return Result.TRANSMISSION_FAILURE;
-        }
-
-        if (!isHostReachable(sql_server, 1433, 3000)) {
-            return Result.HOST_UNREACHABLE;
-        }
-
-        String url = "jdbc:sqlserver://" + sql_server + ";database=" + sql_database + ";encrypt=true;trustServerCertificate=true;useBulkCopyForBatchInsert=true;bulkCopyForBatchInsertFireTriggers=true";
-        String sql = "INSERT INTO Load.Scouting_File(Line) VALUES(?)";
-        HashMap<Integer, String> line_values = new HashMap<>();
-        line_values = getFileAsStringHashMap();
-
-        // Before proceeding, make sure we have data to send
-        if (line_values.isEmpty()) {
-            return Result.NO_DATA;
-        }
-
-        try (Connection conn = DriverManager.getConnection(url, sql_user, sql_password)) {
-            conn.setAutoCommit(false);
-            // Insert the data, line by line
-            try (java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
-                for (String line : line_values.values()) {
-                    ps.setString(1, line);
-                    ps.addBatch();
-                }
-
-                ps.executeBatch();
-                conn.commit();
-                return Result.TRANSMISSION_SUCCESS;
-            } catch (SQLException e) {
-                // Rollback the transaction on error
-                try {
-                    conn.rollback();
-                } catch (SQLException ex) {
-                    // ignore
-                }
-                return Result.SQL_EXCEPTION;
-            }
-        } catch (SQLException e) {
-            return Result.SQL_EXCEPTION;
-        }
-    }
-
-    // =============================================================================================
     // Function:    getFileAsStringHashMap
-    // Description: Initialize the Next Match button
+    // Description: Reads in the scouting file (defined by Globals) and convert it to a string hashmap
     // Parameters:  void
     // Output:      String representing the entire contents of the file
     // =============================================================================================
