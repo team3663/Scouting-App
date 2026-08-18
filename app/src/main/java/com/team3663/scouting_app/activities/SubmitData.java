@@ -561,31 +561,51 @@ public class SubmitData extends AppCompatActivity {
         submitDataBinding.butSendGoogle.setOnClickListener(view -> {
             Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
             submitDataBinding.imageGoogleResult.setImageResource(0);
+            submitDataBinding.butSendGoogle.setEnabled(false);
+            submitDataBinding.butSendGoogle.setClickable(false);
+            submitDataBinding.butSendGoogle.setBackgroundColor(getColor(R.color.light_grey));
+
 
             // If the Drive service is already built this session, upload straight away
             if (Globals.network.isDriveServiceReady()) {
-                if (Globals.network.uploadToGoogle(this)) {
-                    submitDataBinding.imageGoogleResult.setImageResource(R.drawable.checkmark);
-                } else {
-                    submitDataBinding.imageGoogleResult.setImageResource(R.drawable.x);
-                }
+                Globals.network.uploadToGoogle(this, this::handleGoogleUploadResult);
+                return;
             }
-        });
 
-        // Reuse an existing sign-in if it already granted the Drive scope
-        Scope driveScope = new Scope(CPR_Network.GOOGLE_DRIVE_SCOPE);
-        GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(this);
-        if (GoogleSignIn.hasPermissions(last, driveScope)) {
-            onGoogleSignedIn(last);
-            return;
+            // Reuse an existing sign-in if it already granted the Drive scope
+            Scope driveScope = new Scope(CPR_Network.GOOGLE_DRIVE_SCOPE);
+            GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(this);
+            if (GoogleSignIn.hasPermissions(last, driveScope)) {
+                onGoogleSignedIn(last);
+                return;
+            }
+
+            // Otherwise start the interactive sign-in / consent flow
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .requestScopes(driveScope)
+                    .build();
+            googleSignInLauncher.launch(GoogleSignIn.getClient(this, gso).getSignInIntent());
+        });
+    }
+
+    // =============================================================================================
+    // Function:    handleGoogleUploadResult
+    // Description: Handle the result of a Google Drive upload
+    // Parameters:  result  the result of the upload
+    // Output:      void
+    // =============================================================================================
+    private void handleGoogleUploadResult(CPR_Network.Result result) {
+        if (result == CPR_Network.Result.TRANSMISSION_SUCCESS) {
+            submitDataBinding.imageGoogleResult.setImageResource(R.drawable.checkmark);
+        } else {
+            submitDataBinding.imageGoogleResult.setImageResource(R.drawable.x);
         }
 
-        // Otherwise start the interactive sign-in / consent flow
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .requestScopes(driveScope)
-                .build();
-        googleSignInLauncher.launch(GoogleSignIn.getClient(this, gso).getSignInIntent());
+        submitDataBinding.butSendGoogle.setEnabled(true);
+        submitDataBinding.butSendGoogle.setClickable(true);
+        submitDataBinding.butSendGoogle.setBackgroundColor(getColor(R.color.white));
+
     }
 
     // =============================================================================================
@@ -624,7 +644,7 @@ public class SubmitData extends AppCompatActivity {
         }
 
         Globals.network.initDriveService(in_account.getAccount());
-        Globals.network.uploadToGoogle(this);
+        Globals.network.uploadToGoogle(this, this::handleGoogleUploadResult);
     }
 
     // =============================================================================================

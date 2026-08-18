@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
+import com.team3663.scouting_app.activities.SubmitData;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 
@@ -24,6 +25,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
+import com.team3663.scouting_app.databinding.SubmitDataBinding;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -354,13 +356,15 @@ public class CPR_Network {
     // Description: Asynchronously copy the file to the shared Google Drive folder. initDriveService()
     //              must have been called first. Feedback is shown via Toast on the main thread.
     // Parameters:  in_context  context used for content resolution and Toast feedback
+    //              in_callback invoked on the main thread with the result
     // Output:      void
     // =============================================================================================
-    public boolean uploadToGoogle(@NonNull Context in_context) {
+    public void uploadToGoogle(@NonNull Context in_context, @NonNull Callback in_callback) {
         // We must have a Drive service (built from a signed-in account) before we can upload
         if (driveService == null) {
             showToast(in_context, "Google Upload Failed: Not signed in to Google", Toast.LENGTH_LONG);
-            return false;
+            in_callback.onResult(Result.TRANSMISSION_FAILURE);
+            return;
         }
 
         final String filename = Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.TransmitMatchType + ".csv";
@@ -369,7 +373,8 @@ public class CPR_Network {
         // validate the file exists
         if (df==null || !df.exists() || !df.isFile()) {
             showToast(in_context, "Google Upload Failed: File not found", Toast.LENGTH_LONG);
-            return false;
+            in_callback.onResult(Result.NO_DATA);
+            return;
         }
 
         final long localSize = df.length();
@@ -380,12 +385,14 @@ public class CPR_Network {
                 // validate connectivity
                 if (!hasActiveInternet()) {
                     showToast(in_context, "Google Upload Failed: No Internet Connection", Toast.LENGTH_LONG);
+                    mainHandler.post(() -> in_callback.onResult(Result.NO_NETWORK));
                     return;
                 }
 
                 String mimeType = in_context.getContentResolver().getType(sourceUri);
                 if (mimeType == null) {
                     showToast(in_context, "Google Upload Failed: File Type Not Found", Toast.LENGTH_LONG);
+                    mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_FAILURE));
                     return;
                 }
 
@@ -396,6 +403,7 @@ public class CPR_Network {
                 InputStream inputStream = in_context.getContentResolver().openInputStream(sourceUri);
                 if (inputStream == null) {
                     showToast(in_context, "Google Upload Failed: Unable to open file", Toast.LENGTH_LONG);
+                    mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_FAILURE));
                     return;
                 }
 
@@ -414,6 +422,7 @@ public class CPR_Network {
 
                 if (uploadedFile == null) {
                     showToast(in_context, "Google Upload Failed: Error transferring file", Toast.LENGTH_LONG);
+                    mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_FAILURE));
                     return;
                 }
 
@@ -426,21 +435,23 @@ public class CPR_Network {
 
                 if (remoteFile == null || remoteFile.getId() == null || Boolean.TRUE.equals(remoteFile.getTrashed())) {
                     showToast(in_context, "Google Upload Failed: Unable to find remote file", Toast.LENGTH_LONG);
+                    mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_FAILURE));
                     return;
                 }
 
                 if (remoteFile.getSize() == null || remoteFile.getSize() != localSize) {
                     showToast(in_context, "Google Upload Failed: File size mismatch", Toast.LENGTH_LONG);
+                    mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_FAILURE));
                     return;
                 }
 
                 showToast(in_context, "Google Upload Successful", Toast.LENGTH_LONG);
+                mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_SUCCESS));
             }
             catch (Exception e) {
                 showToast(in_context, "Google Upload Failed: Exception occurred", Toast.LENGTH_LONG);
+                mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_FAILURE));
             }
         });
-
-        return true;
     }
 }
