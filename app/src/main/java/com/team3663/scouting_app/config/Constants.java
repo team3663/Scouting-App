@@ -158,5 +158,7 @@ public class Constants {
         public static final ArrayList<Integer> COMPETITION_IDS_WORLDS = new ArrayList<>(Arrays.asList(11, 12, 13, 14, 15, 16, 17, 18));
         public static final ArrayList<Integer> COMPETITION_IDS_DCMP = new ArrayList<>(List.of(10));
         public static final ArrayList<Integer> COMPETITION_IDS_EINSTEIN = new ArrayList<>(List.of(19));
+        public static final float openingAnimationScaleValue = 1.2f;
+        public static final long ANIMATION_SCALE_DURATION = 500;
     }
 }
