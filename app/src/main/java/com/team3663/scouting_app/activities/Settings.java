@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.*;
@@ -70,6 +71,7 @@ public class Settings extends AppCompatActivity {
         SettingsPage1 fragmentPage1 = adapter.getFragmentPage1();
         SettingsPage2 fragmentPage2 = adapter.getFragmentPage2();
         SettingsPage3 fragmentPage3 = adapter.getFragmentPage3();
+        SettingsPage4 fragmentPage4 = adapter.getFragmentPage4();
 
         // Page1 Settings
         if (fragmentPage1 != null && fragmentPage1.binding != null) {
@@ -92,9 +94,11 @@ public class Settings extends AppCompatActivity {
                 Globals.spe.putString(Constants.Prefs.SCOUTING_TEAM, ScoutingTeam);
             }
 
-            int NumMatches = Integer.parseInt(fragmentPage1.binding.editNumMatches.getText().toString());
-            if (NumMatches < 1) NumMatches = 1;
-            Globals.spe.putInt(Constants.Prefs.NUM_MATCHES, NumMatches);
+            Globals.CurrentPrefTeamPos = fragmentPage1.binding.spinnerPrefTeamPos.getSelectedItemPosition();
+            Globals.spe.putInt(Constants.Prefs.PREF_TEAM_POS, Globals.CurrentPrefTeamPos);
+
+            Globals.CurrentFieldOrientationPos = fragmentPage1.binding.spinnerOrientation.getSelectedItemPosition();
+            Globals.spe.putInt(Constants.Prefs.PREF_ORIENTATION, Globals.CurrentFieldOrientationPos);
         }
 
         // Page2 Settings
@@ -104,22 +108,17 @@ public class Settings extends AppCompatActivity {
                 Globals.spe.putInt(Constants.Prefs.COLOR_CONTEXT_MENU, ColorId);
             }
 
-            Globals.CurrentPrefTeamPos = fragmentPage2.binding.spinnerPrefTeamPos.getSelectedItemPosition();
-            Globals.spe.putInt(Constants.Prefs.PREF_TEAM_POS, Globals.CurrentPrefTeamPos);
-
             int CurrentQRSize = Integer.parseInt(fragmentPage2.binding.editQRSize.getText().toString());
             Globals.spe.putInt(Constants.Prefs.QR_SIZE, CurrentQRSize);
 
-            Globals.CurrentFieldOrientationPos = fragmentPage2.binding.spinnerOrientation.getSelectedItemPosition();
-            Globals.spe.putInt(Constants.Prefs.PREF_ORIENTATION, Globals.CurrentFieldOrientationPos);
+            int NumMatches = Integer.parseInt(fragmentPage2.binding.editNumMatches.getText().toString());
+            if (NumMatches < 1) NumMatches = 1;
+            Globals.spe.putInt(Constants.Prefs.NUM_MATCHES, NumMatches);
         }
 
         // Page3 Settings
         if (fragmentPage3 != null && fragmentPage3.binding != null) {
             Editable userField;
-
-            userField = fragmentPage3.binding.editGoogleDrive.getText();
-            Globals.spe.putString(Constants.Prefs.GOOGLE_DRIVE, (userField != null) ? userField.toString() : "");
 
             userField = fragmentPage3.binding.editServer.getText();
             Globals.spe.putString(Constants.Prefs.SQL_SERVER, (userField != null) ? userField.toString() : "");
@@ -132,6 +131,17 @@ public class Settings extends AppCompatActivity {
 
             userField = fragmentPage3.binding.editPassword.getText();
             Globals.spe.putString(Constants.Prefs.SQL_PASSWORD, (userField != null) ? userField.toString() : "");
+        }
+
+        // Page4 Settings
+        if (fragmentPage4 != null && fragmentPage4.binding != null) {
+            Editable userField;
+
+            userField = fragmentPage4.binding.editGoogleUpload.getText();
+            Globals.spe.putString(Constants.Prefs.GOOGLE_DRIVE_UPLOAD, (userField != null) ? userField.toString() : "");
+
+            userField = fragmentPage4.binding.editGoogleDownload.getText();
+            Globals.spe.putString(Constants.Prefs.GOOGLE_DRIVE_DOWNLOAD, (userField != null) ? userField.toString() : "");
         }
 
         Globals.spe.apply();

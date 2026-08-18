@@ -29,10 +29,9 @@ public class SettingsPage2 extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initColors();
-        initFieldOrientation();
-        initPrefTeamPos();
         initQRSize();
         initShadowMode();
+        initNumMatches();
     }
 
     // =============================================================================================
@@ -65,42 +64,6 @@ public class SettingsPage2 extends Fragment {
     }
 
     // =============================================================================================
-    // Function:    initFieldOrientation
-    // Description: Initialize the Preferred Field Orientation field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initFieldOrientation() {
-        // Adds PreferredFieldOrientation information to spinner
-        ArrayAdapter<String> adp_PrefOrientation = new ArrayAdapter<>(requireContext(),
-                R.layout.cpr_spinner, Constants.Settings.PREF_FIELD_ORIENTATION);
-        adp_PrefOrientation.setDropDownViewResource(R.layout.cpr_spinner_item);
-        binding.spinnerOrientation.setAdapter(adp_PrefOrientation);
-
-        // Set the selection (if there is one) to the saved one
-        int savedPrefOrientation = Globals.sp.getInt(Constants.Prefs.PREF_ORIENTATION, 0);
-        binding.spinnerOrientation.setSelection(savedPrefOrientation, true);
-    }
-
-    // =============================================================================================
-    // Function:    initPrefTeamPos
-    // Description: Initialize the Preferred Team Position field
-    // Parameters:  void
-    // Output:      void
-    // =============================================================================================
-    private void initPrefTeamPos() {
-        // Adds PreferredTeamPosition information to spinner
-        ArrayAdapter<String> adp_PrefTeamPos = new ArrayAdapter<>(requireContext(),
-                R.layout.cpr_spinner, Constants.Settings.PREF_TEAM_POS);
-        adp_PrefTeamPos.setDropDownViewResource(R.layout.cpr_spinner_item);
-        binding.spinnerPrefTeamPos.setAdapter(adp_PrefTeamPos);
-
-        // Set the selection (if there is one) to the saved one
-        int savedPrefTeamPos = Globals.sp.getInt(Constants.Prefs.PREF_TEAM_POS, 0);
-        binding.spinnerPrefTeamPos.setSelection(savedPrefTeamPos, true);
-    }
-
-    // =============================================================================================
     // Function:    initQRSize
     // Description: Initialize the QR Size field
     // Parameters:  void
@@ -126,6 +89,17 @@ public class SettingsPage2 extends Fragment {
         binding.checkboxShadowMode.setText(paddedText);
         binding.checkboxShadowMode.setChecked(Globals.isShadowMode);
         binding.checkboxShadowMode.setOnCheckedChangeListener((buttonView, isChecked) -> Globals.isShadowMode = isChecked);
+    }
+
+    // =============================================================================================
+    // Function:    initNumMatches
+    // Description: Initialize the Number of Matches to Keep field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initNumMatches() {
+        // Restore number of files to keep from saved preferences
+        binding.editNumMatches.setText(String.valueOf(Globals.sp.getInt(Constants.Prefs.NUM_MATCHES, 50)));
     }
 
     @Override

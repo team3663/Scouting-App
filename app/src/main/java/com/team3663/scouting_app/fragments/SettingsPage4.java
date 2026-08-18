@@ -19,16 +19,16 @@ import androidx.fragment.app.Fragment;
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
-import com.team3663.scouting_app.databinding.FragmentSettingsPage3Binding;
+import com.team3663.scouting_app.databinding.FragmentSettingsPage4Binding;
 
-public class SettingsPage3 extends Fragment {
-    public FragmentSettingsPage3Binding binding;
+public class SettingsPage4 extends Fragment {
+    public FragmentSettingsPage4Binding binding;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentSettingsPage3Binding.inflate(inflater, container, false);
+        binding = FragmentSettingsPage4Binding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -57,10 +57,50 @@ public class SettingsPage3 extends Fragment {
     // Output:      void
     // =============================================================================================
     private void initFields() {
-        binding.editServer.setText(Globals.sp.getString(Constants.Prefs.SQL_SERVER, "mssql01.cpr3663.io"));
-        binding.editDatabase.setText(Globals.sp.getString(Constants.Prefs.SQL_DATABASE, "CPR_Scouting_2025"));
-        binding.editUser.setText(Globals.sp.getString(Constants.Prefs.SQL_USER, "CPR_Tablet"));
-        binding.editPassword.setText(Globals.sp.getString(Constants.Prefs.SQL_PASSWORD, "Aa98o1nTlHb4sg2u0YB2eNHxVfU4n17z"));
+        String pref_Upload = Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_UPLOAD, "");
+        String pref_Download = Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_DOWNLOAD, "");
+
+        // Set up fields.  If the Google folders are either empty or happen to match the default, turn on the default checkbox,
+        // otherwise allow them to be edited.
+        if (pref_Upload.isEmpty() || pref_Upload.equals(Constants.Settings.DEFAULT_GOOGLE_UPLOAD)) {
+            binding.editGoogleUpload.setText(Constants.Settings.DEFAULT_GOOGLE_UPLOAD);
+            binding.butDefaultUpload.setChecked(true);
+            binding.editGoogleUpload.setEnabled(false);
+        } else {
+            binding.editGoogleUpload.setText(pref_Upload);
+            binding.butDefaultUpload.setChecked(false);
+            binding.editGoogleUpload.setEnabled(true);
+        }
+
+        if (pref_Download.isEmpty() || pref_Download.equals(Constants.Settings.DEFAULT_GOOGLE_DOWNLOAD)) {
+            binding.editGoogleDownload.setText(Constants.Settings.DEFAULT_GOOGLE_DOWNLOAD);
+            binding.butDefaultDownload.setChecked(true);
+            binding.editGoogleDownload.setEnabled(false);
+        } else {
+            binding.editGoogleDownload.setText(pref_Upload);
+            binding.butDefaultDownload.setChecked(false);
+            binding.editGoogleDownload.setEnabled(true);
+        }
+
+        // If we default the folder, set the checkbox to checked and disable the edit field and set the default folder name
+        binding.butDefaultUpload.setOnClickListener(view -> {
+            if (binding.butDefaultUpload.isChecked()) {
+                binding.editGoogleUpload.setText(Constants.Settings.DEFAULT_GOOGLE_UPLOAD);
+                binding.editGoogleUpload.setEnabled(false);
+            } else {
+                binding.editGoogleUpload.setEnabled(true);
+            }
+        });
+
+        // If we default the folder, set the checkbox to checked and disable the edit field and set the default folder name
+        binding.butDefaultDownload.setOnClickListener(view -> {
+            if (binding.butDefaultDownload.isChecked()) {
+                binding.editGoogleDownload.setText(Constants.Settings.DEFAULT_GOOGLE_DOWNLOAD);
+                binding.editGoogleDownload.setEnabled(false);
+            } else {
+                binding.editGoogleDownload.setEnabled(true);
+            }
+        });
     }
 
     // =============================================================================================

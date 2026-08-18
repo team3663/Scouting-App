@@ -226,8 +226,8 @@ public class CPR_Network {
             return Result.HOST_UNREACHABLE;
         }
 
-        // String url = "jdbc:sqlserver://" + sql_server + ";database=" + sql_database + ";encrypt=true;trustServerCertificate=true;useBulkCopyForBatchInsert=true;bulkCopyForBatchInsertFireTriggers=true";
-        String url = "jdbc:jtds:sqlserver://" + sql_server + ":1433/" + sql_database + ";loginTimeout=10;socketTimeout=30";
+        String url = "jdbc:sqlserver://" + sql_server + ";database=" + sql_database + ";encrypt=true;trustServerCertificate=true;useBulkCopyForBatchInsert=true;bulkCopyForBatchInsertFireTriggers=true";
+
         String sql = "INSERT INTO Load.Scouting_File(Line) VALUES(?)";
         HashMap<Integer, String> line_values = getFileAsStringHashMap();
 
@@ -238,7 +238,7 @@ public class CPR_Network {
 
         // On Android the driver must be registered explicitly; auto-discovery is unreliable
         try {
-            Class.forName("net.sourceforge.jtds.jdbc.Driver");
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
         } catch (ClassNotFoundException e) {
             return Result.SQL_EXCEPTION;
         }
@@ -296,7 +296,6 @@ public class CPR_Network {
         }
 
         String url = "jdbc:sqlserver://" + sql_server + ";database=" + sql_database + ";encrypt=true;trustServerCertificate=true;useBulkCopyForBatchInsert=true;bulkCopyForBatchInsertFireTriggers=true";
-        // String url = "jdbc:jtds:sqlserver://" + sql_server + ":1433/" + sql_database + ";loginTimeout=10;socketTimeout=30";
         String sql = "INSERT INTO Load.Scouting_File(Line) VALUES(?)";
         HashMap<Integer, String> line_values = new HashMap<>();
         line_values = getFileAsStringHashMap();
@@ -454,7 +453,7 @@ public class CPR_Network {
 
                 com.google.api.services.drive.model.File fileMetadata = new com.google.api.services.drive.model.File();
                 fileMetadata.setName(filename);
-                fileMetadata.setParents(Collections.singletonList(Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE, "")));
+                fileMetadata.setParents(Collections.singletonList(Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_UPLOAD, "")));
 
                 InputStream inputStream = in_context.getContentResolver().openInputStream(sourceUri);
                 if (inputStream == null) {

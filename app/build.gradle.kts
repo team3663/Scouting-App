@@ -87,7 +87,6 @@ dependencies {
     implementation(libs.google.api.client)
     implementation(libs.google.drive.services)
     implementation(libs.play.services.auth)
-//    implementation(libs.jtds)
     implementation(libs.mssql)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

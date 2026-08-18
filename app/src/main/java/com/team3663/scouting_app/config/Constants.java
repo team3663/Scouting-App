@@ -121,7 +121,8 @@ public class Constants {
         public static final String STORAGE_URI = "StorageURI";
         public static final String PREF_ORIENTATION = "PreferredFieldOrientation";
         public static final String QR_SIZE = "PreferredQRSize";
-        public static final String GOOGLE_DRIVE = "PreferredGoogleDrive";
+        public static final String GOOGLE_DRIVE_UPLOAD = "PreferredGoogleDriveUpload";
+        public static final String GOOGLE_DRIVE_DOWNLOAD = "PreferredGoogleDriveDownload";
         public static final String SQL_SERVER = "PreferredSqlServer";
         public static final String SQL_DATABASE = "PreferredSqlDatabase";
         public static final String SQL_USER = "PreferredSqlUser";
@@ -132,6 +133,8 @@ public class Constants {
         public static final String[] PREF_TEAM_POS = new String[]{"No Preference", "Blue 1", "Blue 2", "Blue 3", "Red 1", "Red 2", "Red 3"};
         public static final String[] PREF_FIELD_ORIENTATION = new String[]{"Automatic", "Blue On Left", "Red On Left"};
         public static final String RELOAD_DATA_KEY = "ReloadData";
+        public static final String DEFAULT_GOOGLE_UPLOAD = "1DB3Dg9N-4zbOxV28Sor-YJrWuoK_OfY8";
+        public static final String DEFAULT_GOOGLE_DOWNLOAD = "12up9moFxnuKezANiMV_ocmwmGz4ONA-v";
     }
 
     public static class AppLaunch {
