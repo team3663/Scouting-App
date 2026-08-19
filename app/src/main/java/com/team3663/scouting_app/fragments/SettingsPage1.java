@@ -15,6 +15,8 @@ import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.FragmentSettingsPage1Binding;
 
+import java.util.Objects;
+
 public class SettingsPage1 extends Fragment {
     public FragmentSettingsPage1Binding binding;
     public int savedCompetitionId;
@@ -44,7 +46,7 @@ public class SettingsPage1 extends Fragment {
     // =============================================================================================
     private void initCompetition() {
         // Adds Competition information to spinner
-        ArrayAdapter<String> adp_Competition = new ArrayAdapter<>(requireContext(),
+        ArrayAdapter<String> adp_Competition = new ArrayAdapter<>(requireContext().getApplicationContext(),
                 R.layout.cpr_spinner, Globals.CompetitionList.getCompetitionList());
         adp_Competition.setDropDownViewResource(R.layout.cpr_spinner_item);
         binding.spinnerCompetition.setAdapter(adp_Competition);
@@ -75,7 +77,7 @@ public class SettingsPage1 extends Fragment {
     // =============================================================================================
     private void initDevice() {
         // Adds Device information to spinner
-        ArrayAdapter<String> adp_Device = new ArrayAdapter<>(requireContext(),
+        ArrayAdapter<String> adp_Device = new ArrayAdapter<>(requireContext().getApplicationContext(),
                 R.layout.cpr_spinner, Globals.DeviceList.getDeviceList());
         adp_Device.setDropDownViewResource(R.layout.cpr_spinner_item);
         binding.spinnerDevice.setAdapter(adp_Device);
@@ -155,7 +157,7 @@ public class SettingsPage1 extends Fragment {
     // =============================================================================================
     private void initPrefTeamPos() {
         // Adds PreferredTeamPosition information to spinner
-        ArrayAdapter<String> adp_PrefTeamPos = new ArrayAdapter<>(requireContext(),
+        ArrayAdapter<String> adp_PrefTeamPos = new ArrayAdapter<>(requireContext().getApplicationContext(),
                 R.layout.cpr_spinner, Constants.Settings.PREF_TEAM_POS);
         adp_PrefTeamPos.setDropDownViewResource(R.layout.cpr_spinner_item);
         binding.spinnerPrefTeamPos.setAdapter(adp_PrefTeamPos);

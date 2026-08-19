@@ -15,7 +15,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
-import com.team3663.scouting_app.activities.SubmitData;
+import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.FileList;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 
@@ -25,19 +26,24 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
-import com.team3663.scouting_app.databinding.SubmitDataBinding;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -46,6 +52,8 @@ import java.util.concurrent.Executors;
 // Description: Custom class to handle network related tasks.
 // =============================================================================================
 public class CPR_Network {
+    public static boolean filesDownloaded = false;
+
     // =============================================================================================
     // Class Globals
     // =============================================================================================
@@ -57,7 +65,7 @@ public class CPR_Network {
     // files this app creates, which is all we do here: create a file in the shared folder (any
     // signed-in account can write to it via the folder's "anyone with the link can edit" grant).
     // Note: this scope does NOT allow listing/reading other files in that folder.
-    public static final String GOOGLE_DRIVE_SCOPE = DriveScopes.DRIVE_FILE;
+    public static final String GOOGLE_DRIVE_SCOPE = DriveScopes.DRIVE;
     private Drive driveService;
 
     // =============================================================================================
@@ -70,6 +78,7 @@ public class CPR_Network {
         TRANSMISSION_SUCCESS,   // data sent successfully
         TRANSMISSION_FAILURE,   // data send failed
         NO_DATA,                // no data to send
+        LOCAL_DIR_DNE,          // no local directory exists
         SQL_EXCEPTION           // SQL error occurred
     }
 
@@ -347,22 +356,21 @@ public class CPR_Network {
     //              in_duration  Toast.LENGTH_SHORT or Toast.LENGTH_LONG
     // Output:      void
     // =============================================================================================
-    private void showToast(@NonNull Context in_context, @NonNull String in_message, int in_duration) {
-        mainHandler.post(() -> Toast.makeText(in_context, in_message, in_duration).show());
+    private void showToast(@NonNull Context in_context, @NonNull String in_message) {
+        mainHandler.post(() -> Toast.makeText(in_context, in_message, Toast.LENGTH_LONG).show());
     }
 
     // =============================================================================================
     // Function:    uploadToGoogle
     // Description: Asynchronously copy the file to the shared Google Drive folder. initDriveService()
     //              must have been called first. Feedback is shown via Toast on the main thread.
-    // Parameters:  in_context  context used for content resolution and Toast feedback
-    //              in_callback invoked on the main thread with the result
+    // Parameters:  in_callback invoked on the main thread with the result
     // Output:      void
     // =============================================================================================
-    public void uploadToGoogle(@NonNull Context in_context, @NonNull Callback in_callback) {
+    public void uploadToGoogle(@NonNull Callback in_callback) {
         // We must have a Drive service (built from a signed-in account) before we can upload
         if (driveService == null) {
-            showToast(in_context, "Google Upload Failed: Not signed in to Google", Toast.LENGTH_LONG);
+            showToast(appContext, "Google Upload Failed: Not signed in to Google");
             in_callback.onResult(Result.TRANSMISSION_FAILURE);
             return;
         }
@@ -372,7 +380,7 @@ public class CPR_Network {
 
         // validate the file exists
         if (df==null || !df.exists() || !df.isFile()) {
-            showToast(in_context, "Google Upload Failed: File not found", Toast.LENGTH_LONG);
+            showToast(appContext, "Google Upload Failed: File not found");
             in_callback.onResult(Result.NO_DATA);
             return;
         }
@@ -384,14 +392,14 @@ public class CPR_Network {
             try {
                 // validate connectivity
                 if (!hasActiveInternet()) {
-                    showToast(in_context, "Google Upload Failed: No Internet Connection", Toast.LENGTH_LONG);
+                    showToast(appContext, "Google Upload Failed: No Internet Connection");
                     mainHandler.post(() -> in_callback.onResult(Result.NO_NETWORK));
                     return;
                 }
 
-                String mimeType = in_context.getContentResolver().getType(sourceUri);
+                String mimeType = appContext.getContentResolver().getType(sourceUri);
                 if (mimeType == null) {
-                    showToast(in_context, "Google Upload Failed: File Type Not Found", Toast.LENGTH_LONG);
+                    showToast(appContext, "Google Upload Failed: File Type Not Found");
                     mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_FAILURE));
                     return;
                 }
@@ -400,9 +408,9 @@ public class CPR_Network {
                 fileMetadata.setName(filename);
                 fileMetadata.setParents(Collections.singletonList(Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_UPLOAD, "")));
 
-                InputStream inputStream = in_context.getContentResolver().openInputStream(sourceUri);
+                InputStream inputStream = appContext.getContentResolver().openInputStream(sourceUri);
                 if (inputStream == null) {
-                    showToast(in_context, "Google Upload Failed: Unable to open file", Toast.LENGTH_LONG);
+                    showToast(appContext, "Google Upload Failed: Unable to open file");
                     mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_FAILURE));
                     return;
                 }
@@ -421,7 +429,7 @@ public class CPR_Network {
                         .execute();
 
                 if (uploadedFile == null) {
-                    showToast(in_context, "Google Upload Failed: Error transferring file", Toast.LENGTH_LONG);
+                    showToast(appContext, "Google Upload Failed: Error transferring file");
                     mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_FAILURE));
                     return;
                 }
@@ -434,24 +442,235 @@ public class CPR_Network {
                         .execute();
 
                 if (remoteFile == null || remoteFile.getId() == null || Boolean.TRUE.equals(remoteFile.getTrashed())) {
-                    showToast(in_context, "Google Upload Failed: Unable to find remote file", Toast.LENGTH_LONG);
+                    showToast(appContext, "Google Upload Failed: Unable to find remote file");
                     mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_FAILURE));
                     return;
                 }
 
                 if (remoteFile.getSize() == null || remoteFile.getSize() != localSize) {
-                    showToast(in_context, "Google Upload Failed: File size mismatch", Toast.LENGTH_LONG);
+                    showToast(appContext, "Google Upload Failed: File size mismatch");
                     mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_FAILURE));
                     return;
                 }
 
-                showToast(in_context, "Google Upload Successful", Toast.LENGTH_LONG);
+                showToast(appContext, "Google Upload Successful");
                 mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_SUCCESS));
             }
             catch (Exception e) {
-                showToast(in_context, "Google Upload Failed: Exception occurred", Toast.LENGTH_LONG);
+                showToast(appContext, "Google Upload Failed: Exception occurred");
                 mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_FAILURE));
             }
         });
+    }
+
+    // =============================================================================================
+    // Function:    downloadFromGoogle
+    // Description: Asynchronously copy the files from the shared Google Drive folder. initDriveService()
+    //              must have been called first. Feedback is shown via Toast on the main thread.
+    //              For each remote file:
+    //                  - if no local copy exists, download it
+    //                  - if a local copy exists and the MD5 checksum matches, skip it
+    //                  - if a local copy exists but the MD5 checksum differs, re-download (overwrite)
+    // Parameters:  in_callback invoked on the main thread with the result
+    // Output:      void
+    // =============================================================================================
+    public void downloadFromGoogle(@NonNull Callback in_callback) {
+        // validate connectivity
+        if (!hasActiveInternet()) {
+            showToast(appContext, "Google Download Failed: No Internet Connection");
+            mainHandler.post(() -> in_callback.onResult(Result.NO_NETWORK));
+            return;
+        }
+
+        // We must have a Drive service (built from a signed-in account) before we can upload
+        if (driveService == null) {
+            showToast(appContext, "Google Download Failed: Not signed in to Google");
+            in_callback.onResult(Result.TRANSMISSION_FAILURE);
+            return;
+        }
+
+        // Ensure the folder exists
+        if (!Globals.input_df.exists()) {
+            showToast(appContext, "Google Download Failed: Local directory not found");
+            in_callback.onResult(Result.LOCAL_DIR_DNE);
+            return;
+        }
+
+        final String filename = Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.TransmitMatchType + ".csv";
+        DocumentFile df = Globals.output_df.findFile(filename);
+
+        executor.execute(() -> {
+            try {
+                int files_downloaded = 0;
+                for (File remote : listGoogleFiles()) {
+                    // silently ignore any google native docs (they don't have a checksum)
+                    if (remote.getMd5Checksum() == null) continue;
+
+                    String name = remote.getName();
+                    DocumentFile local = Globals.input_df.findFile(name);
+
+                    // if the local file exists but isn't a file, abort
+                    if (local != null && !local.isFile()) {
+                        showToast(appContext, "Google Download Failed: File not found");
+                        mainHandler.post(() -> in_callback.onResult(Result.NO_DATA));
+                        return;
+                    }
+
+                    // if the local file doesn't exist, download it.
+                    if (local == null || !local.exists()) {
+                        if (downloadOneFileFromGoogle(remote.getId(), name)) files_downloaded++;
+                        else {
+                            showToast(appContext, "Google Download Failed: Error transmitting file " + name);
+                            mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_SUCCESS));
+                        }
+                        continue;
+                    }
+
+                    String remoteMD5 = remote.getMd5Checksum();
+                    String localMD5 = getFileMD5(local);
+
+                    // if the checksums differ, download it again
+                    if (!remoteMD5.equalsIgnoreCase(localMD5)) {
+                        if (downloadOneFileFromGoogle(remote.getId(), name)) files_downloaded++;
+                        else {
+                            showToast(appContext, "Google Download Failed: Error transmitting file " + local.getName());
+                            mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_SUCCESS));
+                        }
+                    }
+                }
+
+                if (files_downloaded > 0) {
+                    showToast(appContext, "Google Download Successful: " + files_downloaded + " files");
+                    CPR_Network.filesDownloaded = true;
+                }
+                else showToast(appContext, "Google Download: No new files found");
+
+                mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_SUCCESS));
+            }
+            catch (Exception e) {
+                if (!Objects.equals(e.getMessage(), "No files found")) showToast(appContext, "Google Download Failed: Exception occurred");
+                mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_FAILURE));
+            }
+        });
+    }
+
+    // =============================================================================================
+    // Function:    downloadOneFileFromGoogle
+    // Description: download a single file from Google
+    // Parameters:  in_remoteFileId     file ID from Google Drive
+    //              in_df               local documentFile
+    // Output:      List of Files
+    // =============================================================================================
+    public boolean downloadOneFileFromGoogle(String in_remoteFileId, String in_localFileName) throws IOException {
+        DocumentFile tmp = Globals.input_df.findFile(in_localFileName + ".part");
+        DocumentFile dest = Globals.input_df.findFile(in_localFileName);
+
+        // if the tmp file exists, delete it
+        if (tmp != null && tmp.exists()) tmp.delete();
+
+        // create the file
+        tmp = Globals.input_df.createFile("text/csv", in_localFileName + ".part");
+
+        if (tmp == null) return false;
+
+        try (OutputStream out = appContext.getContentResolver().openOutputStream(tmp.getUri(), "wt")) {
+            if (out == null) return false;
+
+            driveService.files().get(in_remoteFileId).executeMediaAndDownloadTo(out);
+            out.flush();
+        } catch (IOException e) {
+            tmp.delete();
+            return false;
+        }
+
+        // if we fail to delete the local file, abort
+        if (dest != null && dest.exists() && !dest.delete()) {
+            tmp.delete();
+            return false;
+        }
+
+        // if we fail to rename the tmp file, abort
+        if (!tmp.renameTo(in_localFileName)) {
+            tmp.delete();
+            return false;
+        }
+
+        return true;
+    }
+
+    // =============================================================================================
+    // Function:    listGoogleFiles
+    // Description: Lists all non-trashed files directly inside a GoogleDrive folder
+    // Parameters:  void
+    // Output:      List of Files
+    // =============================================================================================
+    public List<File> listGoogleFiles() throws IOException {
+        List<File> files = new ArrayList<>();
+        String pageToken = null;
+        String query = "'" + Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_DOWNLOAD, "") + "' in parents and trashed = false "
+                + "and mimeType != 'application/vnd.google-apps.folder'";
+        do {
+            FileList page = driveService.files().list()
+                    .setQ(query)
+                    .setSpaces("drive")
+                    .setFields("nextPageToken, files(id, name, md5Checksum, mimeType, size)")
+                    .setSupportsAllDrives(true)
+                    .setIncludeItemsFromAllDrives(true)
+                    .setPageSize(1000)
+                    .setPageToken(pageToken)
+                    .execute();
+
+            if (page.getFiles() != null) {
+                files.addAll(page.getFiles());
+            }
+
+            pageToken = page.getNextPageToken();
+        } while (pageToken != null);
+
+        if (files.isEmpty()) {
+            showToast(appContext, "Google Download Failed: No files found");
+            throw new IOException("No files found");
+        }
+
+        return files;
+    }
+
+    // =============================================================================================
+    // Function:    getFileMD5
+    // Description: Calculates the MD5 hash of a file. This matches the md5Checksum provided by
+    //              Google Drive metadata.
+    // Parameters:  in_df  DocumentFile to hash
+    // Output:      String representing the hex MD5 hash, or null if it fails
+    // =============================================================================================
+    public String getFileMD5(DocumentFile in_df) {
+        // validate the file exists
+        if (in_df==null || !in_df.exists() || !in_df.isFile()) {
+            showToast(appContext, "Local Checksum (MD5) Failed: File not found");
+            return "";
+        }
+
+        try (InputStream is = appContext.getContentResolver().openInputStream(in_df.getUri())) {
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            if (is == null) return null;
+            byte[] buffer = new byte[8192];
+            int read;
+            while ((read = is.read(buffer)) > 0) {
+                digest.update(buffer, 0, read);
+            }
+            byte[] md5sum = digest.digest();
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : md5sum) {
+                hexString.append(Character.forDigit((b >> 4) & 0xF, 16));
+                hexString.append(Character.forDigit(b & 0xF, 16));
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            showToast(appContext, "Local Checksum (MD5) Failed: MD5 algorithm unavailable");
+            return null;
+        }
+        catch (IOException e) {
+            showToast(appContext, "Local Checksum (MD5) Failed: Unable to read file");
+            return null;
+        }
     }
 }

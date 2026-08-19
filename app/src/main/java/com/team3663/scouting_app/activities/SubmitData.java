@@ -271,9 +271,7 @@ public class SubmitData extends AppCompatActivity {
 
         @Override
         public void run() {
-            SubmitData.this.runOnUiThread(() -> {
-                animateAchievementEnd();
-            });
+            SubmitData.this.runOnUiThread(SubmitData.this::animateAchievementEnd);
 
             if (isLast) closeAchievements();
         }
@@ -538,7 +536,6 @@ public class SubmitData extends AppCompatActivity {
             Globals.isPractice = false;
             Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
 
-
 //            Intent GoToBluetooth = new Intent(SubmitData.this, Bluetooth.class);
 //            startActivity(GoToBluetooth);
 
@@ -568,7 +565,7 @@ public class SubmitData extends AppCompatActivity {
 
             // If the Drive service is already built this session, upload straight away
             if (Globals.network.isDriveServiceReady()) {
-                Globals.network.uploadToGoogle(this, this::handleGoogleUploadResult);
+                Globals.network.uploadToGoogle(this::handleGoogleUploadResult);
                 return;
             }
 
@@ -605,7 +602,6 @@ public class SubmitData extends AppCompatActivity {
         submitDataBinding.butSendGoogle.setEnabled(true);
         submitDataBinding.butSendGoogle.setClickable(true);
         submitDataBinding.butSendGoogle.setBackgroundColor(getColor(R.color.white));
-
     }
 
     // =============================================================================================
@@ -644,7 +640,7 @@ public class SubmitData extends AppCompatActivity {
         }
 
         Globals.network.initDriveService(in_account.getAccount());
-        Globals.network.uploadToGoogle(this, this::handleGoogleUploadResult);
+        Globals.network.uploadToGoogle(this::handleGoogleUploadResult);
     }
 
     // =============================================================================================

@@ -1,6 +1,7 @@
 package com.team3663.scouting_app.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -12,19 +13,33 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Scope;
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.FragmentSettingsPage4Binding;
+import com.team3663.scouting_app.utility.CPR_Network;
+
+import java.util.Objects;
 
 public class SettingsPage4 extends Fragment {
     public FragmentSettingsPage4Binding binding;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
+    private ActivityResultLauncher<Intent> googleSignInLauncher;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -37,6 +52,7 @@ public class SettingsPage4 extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initNetwork();
         initChooseWifi();
+        initGoogleSignIn();
         initRefresh();
         initFields();
     }
@@ -48,6 +64,46 @@ public class SettingsPage4 extends Fragment {
         if (connectivityManager != null && networkCallback != null) {
             connectivityManager.unregisterNetworkCallback(networkCallback);
         }
+    }
+
+    // =============================================================================================
+    // Function:    handleGoogleDownloadResult
+    // Description: Handle the result of a Google Drive download
+    // Parameters:  result  the result of the download
+    // Output:      void
+    // =============================================================================================
+    private void handleGoogleDownloadResult(CPR_Network.Result result) {
+        if (result == CPR_Network.Result.TRANSMISSION_SUCCESS) {
+            binding.imageGoogleResult.setImageResource(R.drawable.checkmark);
+        } else {
+            binding.imageGoogleResult.setImageResource(R.drawable.x);
+        }
+
+        binding.butDownload.setEnabled(true);
+        binding.butDownload.setClickable(true);
+        binding.butDownload.setBackgroundColor(requireContext().getColor(R.color.white));
+    }
+
+    // =============================================================================================
+    // Function:    initGoogleSignIn
+    // Description: Register the launcher that receives the result of the Google sign-in flow.
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initGoogleSignIn() {
+        googleSignInLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    try {
+                        GoogleSignInAccount account = GoogleSignIn
+                                .getSignedInAccountFromIntent(result.getData())
+                                .getResult(ApiException.class);
+                        onGoogleSignedIn(account);
+                    } catch (ApiException e) {
+                        Toast.makeText(requireContext().getApplicationContext(), "Google sign-in failed", Toast.LENGTH_SHORT).show();
+                        binding.imageGoogleResult.setImageResource(R.drawable.x);
+                    }
+                });
     }
 
     // =============================================================================================
@@ -101,6 +157,52 @@ public class SettingsPage4 extends Fragment {
                 binding.editGoogleDownload.setEnabled(true);
             }
         });
+
+        // Listen for a button click
+        binding.butDownload.setOnClickListener(view -> {
+            binding.butDownload.setEnabled(false);
+            binding.butDownload.setClickable(false);
+            binding.butDownload.setBackgroundColor(requireContext().getColor(R.color.light_grey));
+
+            // If the Drive service is already built this session, upload straight away
+            if (Globals.network.isDriveServiceReady()) {
+                Globals.network.downloadFromGoogle(this::handleGoogleDownloadResult);
+                return;
+            }
+
+            // Reuse an existing sign-in if it already granted the Drive scope
+            Scope driveScope = new Scope(CPR_Network.GOOGLE_DRIVE_SCOPE);
+            GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(requireContext().getApplicationContext());
+            if (GoogleSignIn.hasPermissions(last, driveScope)) {
+                onGoogleSignedIn(last);
+                return;
+            }
+
+            // Otherwise start the interactive sign-in / consent flow
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .requestScopes(driveScope)
+                    .build();
+            googleSignInLauncher.launch(GoogleSignIn.getClient(requireContext().getApplicationContext(), gso).getSignInIntent());
+
+        });
+    }
+
+    // =============================================================================================
+    // Function:    onGoogleSignedIn
+    // Description: Build the Drive service from the signed-in account and start the upload.
+    // Parameters:  in_account  the account returned from Google sign-in
+    // Output:      void
+    // =============================================================================================
+    private void onGoogleSignedIn(GoogleSignInAccount in_account) {
+        if (in_account == null || in_account.getAccount() == null) {
+            Toast.makeText(requireContext().getApplicationContext(), "Google sign-in failed", Toast.LENGTH_SHORT).show();
+            binding.imageGoogleResult.setImageResource(R.drawable.x);
+            return;
+        }
+
+        Globals.network.initDriveService(in_account.getAccount());
+        Globals.network.downloadFromGoogle(this::handleGoogleDownloadResult);
     }
 
     // =============================================================================================

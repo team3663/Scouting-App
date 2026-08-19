@@ -15,6 +15,7 @@
     <string name="settings_network_choose">Choose Wi-Fi</string>
     <string name="settings_network_google_upload">Google Upload Folder</string>
     <string name="settings_network_google_download">Google Download Folder</string>
+    <string name="settings_network_google_download_button">Download Files</string>
     <string name="settings_network_database_server">SQL Server Name</string>
     <string name="settings_network_database_db">SQL Database</string>
     <string name="settings_network_database_user">SQL User</string>

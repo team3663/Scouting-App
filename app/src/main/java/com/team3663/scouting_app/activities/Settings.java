@@ -11,13 +11,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.Fragment;
 
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.*;
 import com.team3663.scouting_app.databinding.SettingsBinding;
 import com.team3663.scouting_app.fragments.*;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.team3663.scouting_app.utility.CPR_Network;
 
 public class Settings extends AppCompatActivity {
     // =============================================================================================
@@ -43,6 +43,9 @@ public class Settings extends AppCompatActivity {
         if (Globals.sp == null) Globals.sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
         if (Globals.spe == null) Globals.spe = Globals.sp.edit();
 
+        // Set the files downloaded to false when we first get into settings.
+        CPR_Network.filesDownloaded = false;
+
         adapter = new SettingsPagerAdapter(this);
         settingsBinding.viewPager.setAdapter(adapter);
 
@@ -54,10 +57,26 @@ public class Settings extends AppCompatActivity {
         ).attach();
 
         // Define a Cancel Button
-        settingsBinding.butCancel.setOnClickListener(view -> finish());
+        settingsBinding.butCancel.setOnClickListener(view -> CancelSettings());
 
         // Define a Save Button
         settingsBinding.butSave.setOnClickListener(view -> SaveSettings());
+    }
+
+    // =============================================================================================
+    // Function:    CancelSettings
+    // Description: Cancel any changes made (ignore them) but set the intent to reload the data
+    //              if new files were downloaded.
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void CancelSettings() {
+        Intent intent = new Intent();
+
+        if (CPR_Network.filesDownloaded) intent.putExtra(Constants.Settings.RELOAD_DATA_KEY, 1);
+
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     // =============================================================================================
@@ -142,6 +161,8 @@ public class Settings extends AppCompatActivity {
 
             userField = fragmentPage4.binding.editGoogleDownload.getText();
             Globals.spe.putString(Constants.Prefs.GOOGLE_DRIVE_DOWNLOAD, (userField != null) ? userField.toString() : "");
+
+            if (CPR_Network.filesDownloaded) intent.putExtra(Constants.Settings.RELOAD_DATA_KEY, 1);
         }
 
         Globals.spe.apply();

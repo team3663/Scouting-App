@@ -42,7 +42,7 @@ public class SettingsPage2 extends Fragment {
     // =============================================================================================
     private void initColors() {
         // Adds Color information to spinner
-        ArrayAdapter<String> adp_Color = new ArrayAdapter<>(requireContext(),
+        ArrayAdapter<String> adp_Color = new ArrayAdapter<>(requireContext().getApplicationContext(),
                 R.layout.cpr_spinner, Globals.ColorList.getDescriptionList());
         adp_Color.setDropDownViewResource(R.layout.cpr_spinner_item);
         binding.spinnerColor.setAdapter(adp_Color);
