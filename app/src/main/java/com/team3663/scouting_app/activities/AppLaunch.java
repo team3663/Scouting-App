@@ -148,7 +148,7 @@ public class AppLaunch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initSettings() {
-        // Define a Image Button to open up the Settings
+        // Define an Image Button to open up the Settings
         appLaunchBinding.imgButSettings.setImageResource(R.drawable.settings_icon);
         appLaunchBinding.imgButSettings.setVisibility(View.INVISIBLE);
         appLaunchBinding.imgButSettings.setClickable(false);
@@ -231,7 +231,7 @@ public class AppLaunch extends AppCompatActivity {
                 Globals.output_df = Globals.base_df.createDirectory(Constants.Data.PUBLIC_OUTPUT_DIR);
             }
         } else {
-            // The base dir is there but we should check the two sub directories are there.
+            // The base dir is there, but we should check the two subdirectories are there.
             Globals.input_df = Globals.base_df.findFile(Constants.Data.PUBLIC_INPUT_DIR);
             if (Globals.input_df == null)
                 Globals.input_df = Globals.base_df.createDirectory(Constants.Data.PUBLIC_INPUT_DIR);
@@ -241,6 +241,8 @@ public class AppLaunch extends AppCompatActivity {
         }
 
         // Instantiate the Global variables or reset their context
+        if (Globals.ClimbLevelList == null) Globals.ClimbLevelList = new ClimbLevelFile(this); else Globals.ClimbLevelList.setContext(this);
+        if (Globals.ClimbPositionList == null) Globals.ClimbPositionList = new ClimbPositionFile(this); else Globals.ClimbPositionList.setContext(this);
         if (Globals.ColorList == null) Globals.ColorList = new ColorsFile(this); else Globals.ColorList.setContext(this);
         if (Globals.CommentList == null) Globals.CommentList = new CommentsFile(this); else Globals.CommentList.setContext(this);
         if (Globals.CompetitionList == null) Globals.CompetitionList = new CompetitionsFile(this); else Globals.CompetitionList.setContext(this);
@@ -269,21 +271,21 @@ public class AppLaunch extends AppCompatActivity {
             public void run() {
                 appLaunchBinding.progressBarOverall.setMax(Globals.CompetitionList.getNumberOfFiles());
                 appLaunchBinding.progressBarOverall.setProgress(0);
-                appLaunchBinding.textStatusOverall.setText(getString(R.string.applaunch_loading));
+                appLaunchBinding.textStatusOverall.setText(getString(R.string.applaunch_loading_prefix));
                 appLaunchBinding.textPercentOverall.setText(getString(R.string.applaunch_percent, 0));
 
-                // Load all of the data with a BRIEF delay between.  :)
+                // Load all the data with a BRIEF delay between.  :)
                 _DataFile.LoadAllDataFiles(appLaunchBinding.textStatusFile, appLaunchBinding.progressBarFile, appLaunchBinding.textPercentFile, appLaunchBinding.progressBarOverall, appLaunchBinding.textPercentOverall);
 
-                // After loading all of the data, we need to build the set of "next events"
+                // After loading all the data, we need to build the set of "next events"
                 Globals.EventList.buildNextEvents();
 
                 // Setting the Visibility attribute can't be set from a non-UI thread (like withing a TimerTask
-                // that runs on a separate thread.  So we need to make a Runner that will execute on the UI thread
+                // that runs on a separate thread).  So we need to make a Runner that will execute on the UI thread
                 // to set these.
                 AppLaunch.this.runOnUiThread(() -> {
-                    // Sleep a tiny bit to help the UI not glitch (otherwise this block of code doesn't
-                    // do what it's trying to do (things don't become visible, etc).
+                    // Sleep a tiny bit to help the UI not glitch. Otherwise, this block of code doesn't
+                    // do what it's trying to do (things don't become visible, etc.).
                     try {
                         Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
                     }

@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="applaunch_loading">Loading…</string>
-    <string name="applaunch_loading_teams">Team Data</string>
-    <string name="applaunch_loading_match_types">Match Types Data</string>
-    <string name="applaunch_loading_matches">Match Data</string>
-    <string name="applaunch_loading_event_groups">Event Group Data</string>
-    <string name="applaunch_loading_events">Event Data</string>
-    <string name="applaunch_loading_competitions">Competition Data</string>
-    <string name="applaunch_loading_devices">Device Data</string>
-    <string name="applaunch_loading_comments">Comment Data</string>
-    <string name="applaunch_loading_colors">Color Data</string>
+    <string name="applaunch_loading_prefix">Loading…</string>
+    <string name="applaunch_loading_detail">%1$s Data</string>
+    <string name="applaunch_loading_suffix"> Data</string>
+    <string name="applaunch_loading_teams">Team</string>
+    <string name="applaunch_loading_match_types">Match Types</string>
+    <string name="applaunch_loading_matches">Match</string>
+    <string name="applaunch_loading_event_groups">Event Groups</string>
+    <string name="applaunch_loading_events">Events</string>
+    <string name="applaunch_loading_competitions">Competitions</string>
+    <string name="applaunch_loading_devices">Devices</string>
+    <string name="applaunch_loading_comments">Comments</string>
+    <string name="applaunch_loading_colors">Colors</string>
+    <string name="applaunch_loading_climb_positions">Climb Positions</string>>
+    <string name="applaunch_loading_climb_levels">Climb Levels</string>>
     <string name="applaunch_percent">%1$d %%</string>
 
-    <string name="applaunch_file_error_teams">Error loading teams from data file!</string>
-    <string name="applaunch_file_error_match_types">Error loading match types from data file!</string>
-    <string name="applaunch_file_error_matches">Error loading matches from data file!</string>
-    <string name="applaunch_file_error_event_groups">Error loading Event Groups from data file!</string>
-    <string name="applaunch_file_error_events">Error loading Events from data file!</string>
-    <string name="applaunch_file_error_competitions">Error loading competitions from data file!</string>
-    <string name="applaunch_file_error_devices">Error loading devices from data file!</string>
-    <string name="applaunch_file_error_comments">Error loading comments from data file!</string>
-    <string name="applaunch_file_error_colors">Error loading colors from data file!</string>
+    <string name="applaunch_file_error_message">Error loading %1$s from data file!</string>
 
     <string name="applaunch_start_scouting">Start Scouting</string>
     <string name="applaunch_not_configured">This device is not configured yet.  Go to Settings to set it up.</string>

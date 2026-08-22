@@ -10,7 +10,7 @@ public class TeamsFile extends _DataFile {
     private final HashMap<String, String> team_list;
 
     public TeamsFile(Context in_context) {
-        super(in_context, in_context.getString(R.string.file_teams), in_context.getString(R.string.applaunch_loading_teams), in_context.getString(R.string.applaunch_file_error_teams));
+        super(in_context, in_context.getString(R.string.file_teams), in_context.getString(R.string.applaunch_loading_teams));
 
         team_list = new HashMap<>();
     }

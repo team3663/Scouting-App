@@ -11,7 +11,7 @@ public class EventGroupsFile extends _DataFile {
     private final ArrayList<EventGroupRow> event_group_list;
 
     public EventGroupsFile(Context in_context) {
-        super(in_context, in_context.getString(R.string.file_event_groups), in_context.getString(R.string.applaunch_loading_event_groups), in_context.getString(R.string.applaunch_file_error_event_groups));
+        super(in_context, in_context.getString(R.string.file_event_groups), in_context.getString(R.string.applaunch_loading_event_groups));
 
         event_group_list = new ArrayList<>();
     }
@@ -50,7 +50,7 @@ public class EventGroupsFile extends _DataFile {
         return Integer.parseInt(event_group_list.get(in_GroupId).color) - 1;
     }
 
-    // Member Function: Return the Group Name for a given Group Id
+    // Member Function: Return the Group Name for a given Group ID
     public String getGroupName(int in_GroupId) {
         return event_group_list.get(in_GroupId).name;
     }

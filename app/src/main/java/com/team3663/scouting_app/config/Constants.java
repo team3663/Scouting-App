@@ -4,9 +4,7 @@ import android.graphics.Color;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class Constants {
     public static class Logger {
@@ -82,10 +80,10 @@ public class Constants {
     }
 
     public static class PostMatch {
-        public static final String[] NO_CLIMB = new String[]{"No Climb"};
         public static final int ACCURACY_NOT_SELECTED = -1;
-        public static final String CLIMB_LEVEL_NOT_SELECTED = "-1";
-        public static final String CLIMB_POSITION_NOT_SELECTED = "-1";
+        public static final int CLIMB_POSITION_NOT_SELECTED = -1;
+        public static final int CLIMB_LEVEL_NOT_SELECTED = -1;
+        public static final String[] NO_CLIMB = new String[]{"No Climb"};
         public static final String STEAL_FUEL_NOT_SELECTED = "-1";
         public static final String AFFECTED_BY_DEFENSE_NOT_SELECTED = "-1";
     }
@@ -105,7 +103,6 @@ public class Constants {
         public static final int ID_NOT_MOVING_START = 64;
         public static final int ID_NOT_MOVING_END = 65;
         public static final int ID_AUTO_START_GAME_PIECE = 0;
-        public static final int ID_AUTO_CLIMB = 6;
         public static final int ID_TELE_CLIMB = 40;
         public static final int ID_NO_EVENT = 999;   // use to check if the eventID you're looking for doesn't exist
     }

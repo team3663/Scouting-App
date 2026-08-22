@@ -13,7 +13,7 @@ public class MatchesFile extends _DataFile {
     private final HashMap<String, MatchesForType> match_list;
 
     public MatchesFile(Context in_context) {
-        super(in_context, in_context.getString(R.string.file_matches), in_context.getString(R.string.applaunch_loading_matches), in_context.getString(R.string.applaunch_file_error_matches));
+        super(in_context, in_context.getString(R.string.file_matches), in_context.getString(R.string.applaunch_loading_matches));
 
         match_list = new HashMap<>();
     }
@@ -23,7 +23,7 @@ public class MatchesFile extends _DataFile {
         // Use only the match information that equals the competition we're in.
         boolean correct_competition = false;
 
-        // compare against the Global current competition id (if valid).  Otherwise compare against the competition id in the preferences
+        // compare against the Global current competition id (if valid).  Otherwise, compare against the competition id in the preferences
         if (Globals.CurrentCompetitionId > 0) {
             if (Integer.parseInt(in_line[0]) == Globals.CurrentCompetitionId)
                 correct_competition = true;

@@ -12,7 +12,7 @@ public class EventsFile extends _DataFile {
     private final ArrayList<EventRow> event_list;
 
     public EventsFile(Context in_context) {
-        super(in_context, in_context.getString(R.string.file_events), in_context.getString(R.string.applaunch_loading_events), in_context.getString(R.string.applaunch_file_error_events));
+        super(in_context, in_context.getString(R.string.file_events), in_context.getString(R.string.applaunch_loading_events));
 
         event_list = new ArrayList<>();
     }
@@ -106,7 +106,7 @@ public class EventsFile extends _DataFile {
                 in_EventId = er.transition_event;
         }
 
-        // Find the event in the list, and return it's list of valid next events
+        // Find the event in the list, and return its list of valid next events
         for (EventRow er : event_list) {
             if (er.id == in_EventId) return er.next_events_desc;
         }
@@ -122,7 +122,7 @@ public class EventsFile extends _DataFile {
         if (!event_list.get(in_EventId).match_phase.equals(Globals.CurrentMatchPhase) && (event_list.get(in_EventId).transition_event > Constants.Match.TRANSITION_EVENT_DNE))
             in_EventId = event_list.get(in_EventId).transition_event;
 
-        // Find the event in the list, and return it's list of valid next events
+        // Find the event in the list, and return its list of valid next events
         for (EventRow er : event_list) {
             if (er.id == in_EventId) return er.next_events_ids;
         }

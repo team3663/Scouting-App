@@ -215,22 +215,22 @@ public class PostMatch extends AppCompatActivity {
                     new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            String newClimbLevel = Globals.ClimbLevelList.getClimbLevelValue(postMatchBinding.spinnerClimbLevel.getSelectedItem().toString());
+                            int newClimbLevel = Globals.ClimbLevelList.getClimbLevelId(postMatchBinding.spinnerClimbLevel.getSelectedItem().toString());
 
-                            if (!newClimbLevel.equals(Globals.CurrentClimbLevel)) {
+                            if (newClimbLevel != Globals.CurrentClimbLevel) {
                                 Globals.CurrentClimbLevel = newClimbLevel;
                             }
 
-                            Achievements.data_match_ClimbSuccessTele = Globals.CurrentClimbLevel;
+                            Achievements.data_match_ClimbSuccessTele = Globals.ClimbLevelList.getClimbLevelDescription(Globals.CurrentClimbLevel);
                         }
 
                         @Override
                         public void onNothingSelected(AdapterView<?> adapterView) {
-                            Globals.CurrentClimbLevel = "-1";
+                            Globals.CurrentClimbLevel = Constants.PostMatch.CLIMB_LEVEL_NOT_SELECTED;
                         }
                     });
         } else {
-            Globals.CurrentClimbLevel = "None";
+            Globals.CurrentClimbLevel = Constants.PostMatch.CLIMB_LEVEL_NOT_SELECTED;
             ArrayAdapter<String> adp_ClimbLevel = new ArrayAdapter<>(this, R.layout.cpr_spinner_empty, Constants.PostMatch.NO_CLIMB);
             postMatchBinding.spinnerClimbLevel.setAdapter(adp_ClimbLevel);
             postMatchBinding.spinnerClimbLevel.setBackgroundColor(getColor(R.color.light_grey));
@@ -265,20 +265,20 @@ public class PostMatch extends AppCompatActivity {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                    String newClimbPosition = Globals.ClimbPositionList.getClimbPositionValue(postMatchBinding.spinnerClimbPosition.getSelectedItem().toString());
+                    int newClimbPosition = Globals.ClimbPositionList.getClimbPositionId(postMatchBinding.spinnerClimbPosition.getSelectedItem().toString());
 
-                    if (!Objects.equals(newClimbPosition, Globals.CurrentClimbPosition)) {
+                    if (newClimbPosition != Globals.CurrentClimbPosition) {
                         Globals.CurrentClimbPosition = newClimbPosition;
                     }
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) {
-                    Globals.CurrentClimbPosition = "-1";
+                    Globals.CurrentClimbPosition = Constants.PostMatch.CLIMB_POSITION_NOT_SELECTED;
                 }
             });
         } else {
-            Globals.CurrentClimbPosition = "None";
+            Globals.CurrentClimbPosition = Constants.PostMatch.CLIMB_POSITION_NOT_SELECTED;
             ArrayAdapter<String> adp_ClimbPosition = new ArrayAdapter<>(this, R.layout.cpr_spinner_empty, Constants.PostMatch.NO_CLIMB);
             postMatchBinding.spinnerClimbPosition.setAdapter(adp_ClimbPosition);
             postMatchBinding.spinnerClimbPosition.setBackgroundColor(getColor(R.color.light_grey));
@@ -374,7 +374,7 @@ public class PostMatch extends AppCompatActivity {
                 Intent GoToPreMatch = new Intent(PostMatch.this, PreMatch.class);
                 startActivity(GoToPreMatch);
             } else {
-               // Log all of the data from this page
+               // Log all the data from this page
                 StringBuilder comment_sep_ID = new StringBuilder();
                 for (Integer comment_dropID : CommentList) {
                     String comment = CommentArray.get(comment_dropID);
@@ -384,9 +384,9 @@ public class PostMatch extends AppCompatActivity {
                 Globals.EventLogger.LogData(Constants.Logger.LOGKEY_COMMENTS, comment_sep_ID.toString());
 
                 // If any spinner data is left blank
-                if ((Constants.PostMatch.ACCURACY_NOT_SELECTED == Globals.CurrentAccuracy) ||
-                        Constants.PostMatch.CLIMB_LEVEL_NOT_SELECTED.equals(Globals.CurrentClimbLevel) ||
-                        Constants.PostMatch.CLIMB_POSITION_NOT_SELECTED.equals(Globals.CurrentClimbPosition)) {
+                if (Constants.PostMatch.ACCURACY_NOT_SELECTED == Globals.CurrentAccuracy ||
+                        Constants.PostMatch.CLIMB_LEVEL_NOT_SELECTED == Globals.CurrentClimbLevel ||
+                        Constants.PostMatch.CLIMB_POSITION_NOT_SELECTED == Globals.CurrentClimbPosition) {
 
                     Toast.makeText(this, R.string.post_missing_data, Toast.LENGTH_SHORT).show();
                     return;

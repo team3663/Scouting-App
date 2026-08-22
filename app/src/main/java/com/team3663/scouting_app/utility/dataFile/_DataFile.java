@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.team3663.scouting_app.R;
-import com.team3663.scouting_app.activities.AppLaunch;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 
@@ -35,9 +34,9 @@ public abstract class _DataFile {
     protected final int file_index;
     protected Context context;
 
-    public _DataFile(@NonNull Context in_context, @NonNull String in_filename, @NonNull String in_loading_message, @NonNull String in_error_message) {
+    public _DataFile(@NonNull Context in_context, @NonNull String in_filename, @NonNull String in_data_name) {
         // make sure we aren't being called without the required data
-        if (in_filename.trim().isEmpty() || in_loading_message.trim().isEmpty() || in_error_message.trim().isEmpty()) {
+        if (in_filename.trim().isEmpty() || in_data_name.trim().isEmpty()) {
             file_index = -1;
             return;
         }
@@ -46,8 +45,8 @@ public abstract class _DataFile {
         context = Objects.requireNonNull(in_context, "Context cannot be null");
         file_index = file_list.size() + 1;
         file_list.put(file_index, Objects.requireNonNull(in_filename, "Filename cannot be null"));
-        error_message_list.put(file_index, Objects.requireNonNull(in_error_message, "Error message cannot be null"));
-        loading_message_list.put(file_index, Objects.requireNonNull(in_loading_message, "Loading message cannot be null"));
+        error_message_list.put(file_index, Objects.requireNonNull(context.getString(R.string.applaunch_file_error_message, in_data_name), "Error message cannot be null"));
+        loading_message_list.put(file_index, Objects.requireNonNull(context.getString(R.string.applaunch_loading_detail, in_data_name), "Loading message cannot be null"));
         subclasses.add(this);
     }
 
@@ -179,8 +178,8 @@ public abstract class _DataFile {
                 is = context.getAssets().open(Constants.Data.PRIVATE_BASE_DIR + "/" + filename);
             }
 
-            // Sleep a tiny bit to help the UI not glitch (otherwise this block of code doesn't
-            // do what it's trying to do (things don't become visible, etc).
+            // Sleep a tiny bit to help the UI not glitch.  Otherwise, this block of code doesn't
+            // do what it's trying to do (things don't become visible, etc.).
             long finalFileSize = fileSize; // compiler complained if this wasn't done this way.
 
             ((Activity)context).runOnUiThread(() -> {

@@ -11,7 +11,7 @@ public class MatchTypesFile extends _DataFile {
     private final ArrayList<MatchTypeRow> matchType_list;
 
     public MatchTypesFile(Context in_context) {
-        super(in_context, in_context.getString(R.string.file_match_types), in_context.getString(R.string.applaunch_loading_match_types), in_context.getString(R.string.applaunch_file_error_match_types));
+        super(in_context, in_context.getString(R.string.file_match_types), in_context.getString(R.string.applaunch_loading_match_types));
 
         matchType_list = new ArrayList<>();
     }
