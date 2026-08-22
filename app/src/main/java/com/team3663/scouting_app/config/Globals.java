@@ -6,11 +6,10 @@ import android.net.Uri;
 
 import androidx.documentfile.provider.DocumentFile;
 
-import com.team3663.scouting_app.data.Accuracy;
 import com.team3663.scouting_app.utility.CPR_Network;
 import com.team3663.scouting_app.utility.Logger;
 import com.team3663.scouting_app.utility.achievements.Achievements;
-import com.team3663.scouting_app.utility.dataFile.*;
+import com.team3663.scouting_app.dataFile.*;
 
 import java.util.HashMap;
 
@@ -26,8 +25,7 @@ public class Globals {
     @SuppressLint("StaticFieldLeak") public static EventsFile EventList;
     @SuppressLint("StaticFieldLeak") public static ClimbPositionFile ClimbPositionList;
     @SuppressLint("StaticFieldLeak") public static ClimbLevelFile ClimbLevelList;
-
-    public static Accuracy AccuracyTypeList = new Accuracy();
+    @SuppressLint("StaticFieldLeak") public static AccuracyFile AccuracyList;
 
     public static int CurrentAccuracy = Constants.PostMatch.ACCURACY_NOT_SELECTED;
     public static int CurrentCompetitionId = 0;

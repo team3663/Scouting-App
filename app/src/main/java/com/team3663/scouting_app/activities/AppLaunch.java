@@ -31,7 +31,7 @@ import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.AppLaunchBinding;
 import com.team3663.scouting_app.utility.CPR_Network;
-import com.team3663.scouting_app.utility.dataFile.*;
+import com.team3663.scouting_app.dataFile.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -241,6 +241,7 @@ public class AppLaunch extends AppCompatActivity {
         }
 
         // Instantiate the Global variables or reset their context
+        if (Globals.AccuracyList == null) Globals.AccuracyList = new AccuracyFile(this); else Globals.AccuracyList.setContext(this);
         if (Globals.ClimbLevelList == null) Globals.ClimbLevelList = new ClimbLevelFile(this); else Globals.ClimbLevelList.setContext(this);
         if (Globals.ClimbPositionList == null) Globals.ClimbPositionList = new ClimbPositionFile(this); else Globals.ClimbPositionList.setContext(this);
         if (Globals.ColorList == null) Globals.ColorList = new ColorsFile(this); else Globals.ColorList.setContext(this);

@@ -1,4 +1,4 @@
-package com.team3663.scouting_app.utility.dataFile;
+package com.team3663.scouting_app.dataFile;
 
 import android.content.Context;
 
