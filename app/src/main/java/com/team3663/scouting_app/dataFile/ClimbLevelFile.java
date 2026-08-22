@@ -86,7 +86,6 @@ public class ClimbLevelFile extends _DataFile {
     // =============================================================================================
     // Class:       ClimbLevelRow
     // Description: Defines a structure/class to hold the information for each Climb Level
-
     // =============================================================================================
     protected static class ClimbLevelRow {
         private final int id;

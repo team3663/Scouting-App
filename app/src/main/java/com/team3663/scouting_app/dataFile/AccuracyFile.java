@@ -86,7 +86,6 @@ public class AccuracyFile extends _DataFile {
     // =============================================================================================
     // Class:       AccuracyRow
     // Description: Defines a structure/class to hold the information for each Accuracy
-
     // =============================================================================================
     protected static class AccuracyRow {
         private final int id;
