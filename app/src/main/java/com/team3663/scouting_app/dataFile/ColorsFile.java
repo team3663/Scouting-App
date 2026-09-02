@@ -1,4 +1,4 @@
-package com.team3663.scouting_app.utility.dataFile;
+package com.team3663.scouting_app.dataFile;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -11,7 +11,7 @@ public class ColorsFile extends _DataFile {
     private final ArrayList<ColorRow> color_list;
 
     public ColorsFile(Context in_context) {
-        super(in_context, in_context.getString(R.string.file_colors), in_context.getString(R.string.applaunch_loading_colors), in_context.getString(R.string.applaunch_file_error_colors));
+        super(in_context, in_context.getString(R.string.file_colors), in_context.getString(R.string.applaunch_loading_colors));
 
         color_list = new ArrayList<>();
     }
@@ -51,7 +51,7 @@ public class ColorsFile extends _DataFile {
         else return 0;
     }
 
-    // Member Function: Get back the Id for a given Color entry (needed for logging)
+    // Member Function: Get back the ID for a given Color entry (needed for logging)
     public String getColorDescription(int in_id) {
         String ret = "";
 
@@ -66,7 +66,7 @@ public class ColorsFile extends _DataFile {
         return ret;
     }
 
-    // Member Function: Get back the Id for a given Color entry (needed for logging)
+    // Member Function: Get back the ID for a given Color entry (needed for logging)
     public int getColorId(String in_description) {
         int ret = 0;
 

@@ -1,4 +1,4 @@
-package com.team3663.scouting_app.utility.dataFile;
+package com.team3663.scouting_app.dataFile;
 
 import android.content.Context;
 import com.team3663.scouting_app.R;
@@ -10,7 +10,7 @@ public class CompetitionsFile extends _DataFile {
     private final ArrayList<CompetitionRow> competition_list;
 
     public CompetitionsFile(Context in_context) {
-        super(in_context, in_context.getString(R.string.file_competitions), in_context.getString(R.string.applaunch_loading_competitions), in_context.getString(R.string.applaunch_file_error_competitions));
+        super(in_context, in_context.getString(R.string.file_competitions), in_context.getString(R.string.applaunch_loading_competitions));
 
         competition_list = new ArrayList<>();
     }
@@ -26,7 +26,7 @@ public class CompetitionsFile extends _DataFile {
     }
 
 
-    // Member Function: Add a row of competition info into the list giving all of the data individually
+    // Member Function: Add a row of competition info into the list giving all the data individually
     public void addCompetitionRow(String in_Id, String in_description, String in_attended) {
         competition_list.add(new CompetitionRow(in_Id, in_description, in_attended));
     }
