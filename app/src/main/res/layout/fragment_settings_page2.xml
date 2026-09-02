@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:orientation="horizontal">
+
         <TextView
             android:layout_width="320dp"
             android:layout_height="match_parent"
@@ -21,10 +22,12 @@
             android:textSize="24sp"
             android:text="@string/settings_color"
             tools:ignore="RtlSymmetry" />
+
         <RelativeLayout
             android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical">
+
             <Spinner
                 android:id="@+id/spinner_Color"
                 android:layout_width="match_parent"
@@ -32,78 +35,7 @@
                 android:background="@color/white"
                 android:paddingStart="10dp"
                 tools:ignore="RtlSymmetry" />
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:paddingEnd="10dp"
-                android:src="@drawable/cpr_drop_down_arrow"
-                tools:ignore="ContentDescription" />
-        </RelativeLayout>
-    </LinearLayout>
 
-    <!-- Orientation -->
-    <LinearLayout
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="320dp"
-            android:layout_height="match_parent"
-            android:gravity="end|center"
-            android:paddingEnd="20dp"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            android:text="@string/settings_orientation"
-            tools:ignore="RtlSymmetry" />
-        <RelativeLayout
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical">
-            <Spinner
-                android:id="@+id/spinner_Orientation"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:paddingStart="10dp"
-                tools:ignore="RtlSymmetry" />
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:paddingEnd="10dp"
-                android:src="@drawable/cpr_drop_down_arrow"
-                tools:ignore="ContentDescription" />
-        </RelativeLayout>
-    </LinearLayout>
-
-    <!-- Preferred Team Position -->
-    <LinearLayout
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="320dp"
-            android:layout_height="match_parent"
-            android:gravity="end|center"
-            android:paddingEnd="20dp"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            android:text="@string/settings_team_pref"
-            tools:ignore="RtlSymmetry" />
-        <RelativeLayout
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical">
-            <Spinner
-                android:id="@+id/spinner_PrefTeamPos"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:paddingStart="10dp"
-                tools:ignore="RtlSymmetry" />
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -120,6 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:orientation="horizontal">
+
         <TextView
             android:layout_width="320dp"
             android:layout_height="match_parent"
@@ -129,11 +62,42 @@
             android:textColor="@color/white"
             android:textSize="24sp"
             tools:ignore="RtlSymmetry" />
+
         <EditText
             android:id="@+id/edit_QRSize"
             android:layout_width="180dp"
             android:layout_height="match_parent"
             android:autofillHints="Enter size of QR code"
+            android:gravity="center"
+            android:inputType="number"
+            android:textColor="@color/cpr_bkgnd"
+            android:background="@color/white"
+            android:textSize="24sp"
+            tools:ignore="LabelFor" />
+    </LinearLayout>
+
+    <!-- Num Matches -->
+    <LinearLayout
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="320dp"
+            android:layout_height="match_parent"
+            android:gravity="end|center"
+            android:paddingEnd="20dp"
+            android:text="@string/settings_num_files"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            tools:ignore="RtlSymmetry" />
+
+        <EditText
+            android:id="@+id/edit_NumMatches"
+            android:layout_width="180dp"
+            android:layout_height="match_parent"
+            android:autofillHints="Enter number of matches to keep"
             android:gravity="center"
             android:inputType="number"
             android:textColor="@color/cpr_bkgnd"
@@ -148,9 +112,10 @@
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:orientation="horizontal">
+
         <CheckBox
             android:id="@+id/checkbox_ShadowMode"
-            android:layout_width="wrap_content"
+            android:layout_width="345dp"
             android:layout_height="match_parent"
             android:button="@null"
             android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
@@ -158,7 +123,6 @@
             android:gravity="end|center"
             android:textSize="24sp"
             android:text="@string/settings_shadowmode"
-            android:paddingEnd="20dp"
             tools:ignore="RtlSymmetry" />
     </LinearLayout>
 

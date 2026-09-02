@@ -57,7 +57,6 @@ public class SettingsPage3 extends Fragment {
     // Output:      void
     // =============================================================================================
     private void initFields() {
-        binding.editGoogleDrive.setText(Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE, "1DB3Dg9N-4zbOxV28Sor-YJrWuoK_OfY8"));
         binding.editServer.setText(Globals.sp.getString(Constants.Prefs.SQL_SERVER, "mssql01.cpr3663.io"));
         binding.editDatabase.setText(Globals.sp.getString(Constants.Prefs.SQL_DATABASE, "CPR_Scouting_2025"));
         binding.editUser.setText(Globals.sp.getString(Constants.Prefs.SQL_USER, "CPR_Tablet"));

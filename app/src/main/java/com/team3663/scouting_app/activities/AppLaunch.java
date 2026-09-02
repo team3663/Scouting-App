@@ -52,9 +52,7 @@ public class AppLaunch extends AppCompatActivity {
                     // There are no request codes
                     Intent data = result.getData();
                     if (Objects.requireNonNull(data).getIntExtra(Constants.Settings.RELOAD_DATA_KEY, 0) == 1) {
-                        Globals.MatchList.clearList();
-                        Globals.MatchList.LoadDataFile(appLaunchBinding.textStatusFile, appLaunchBinding.progressBarFile, appLaunchBinding.textPercentFile, appLaunchBinding.progressBarOverall, appLaunchBinding.textStatusOverall);
-                        appLaunchBinding.textStatusFile.setText("");
+                        loadDataFiles();
                     }
                 }
             });
@@ -259,6 +257,18 @@ public class AppLaunch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void loadDataFiles() {
+        // Ensure the loading file objects are visible
+        appLaunchBinding.progressBarOverall.setVisibility(View.VISIBLE);
+        appLaunchBinding.progressBarFile.setVisibility(View.VISIBLE);
+        appLaunchBinding.textStatusOverall.setVisibility(View.VISIBLE);
+        appLaunchBinding.textPercentOverall.setVisibility(View.VISIBLE);
+        appLaunchBinding.textStatusFile.setVisibility(View.VISIBLE);
+        appLaunchBinding.textPercentFile.setVisibility(View.VISIBLE);
+        appLaunchBinding.butStartScouting.setVisibility(View.INVISIBLE);
+        appLaunchBinding.imgButSettings.setVisibility(View.INVISIBLE);
+        appLaunchBinding.butStartScouting.setClickable(false);
+        appLaunchBinding.imgButSettings.setClickable(false);
+
         // Clear out the lists, just in case
         _DataFile.clearAllLists();
 
@@ -291,6 +301,7 @@ public class AppLaunch extends AppCompatActivity {
                         throw new RuntimeException(e);
                     }
 
+                    // Hide the loading file objects
                     appLaunchBinding.progressBarOverall.setVisibility(View.INVISIBLE);
                     appLaunchBinding.progressBarFile.setVisibility(View.INVISIBLE);
                     appLaunchBinding.textStatusOverall.setVisibility(View.INVISIBLE);
@@ -301,8 +312,6 @@ public class AppLaunch extends AppCompatActivity {
                     appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
                     appLaunchBinding.butStartScouting.setClickable(true);
                     appLaunchBinding.imgButSettings.setClickable(true);
-                    appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
-                    appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
 
                     // Erase the status text
                     appLaunchBinding.textStatusFile.setText("");

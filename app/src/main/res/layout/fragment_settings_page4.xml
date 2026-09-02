@@ -8,6 +8,7 @@
     android:padding="16dp"
     android:background="@color/cpr_bkgnd">
 
+    <!-- WIFI -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -64,6 +65,7 @@
             app:cornerRadius="16dp"/>
     </LinearLayout>
 
+    <!-- Google Upload Folder -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -72,16 +74,16 @@
 
         <TextView
             android:layout_width="320dp"
-            android:layout_height="match_parent"
+            android:layout_height="40dp"
             android:gravity="end|center"
             android:paddingEnd="20dp"
             android:textColor="@color/white"
             android:textSize="24sp"
-            android:text="@string/settings_network_database_server"
+            android:text="@string/settings_network_google_upload"
             tools:ignore="RtlSymmetry" />
 
         <EditText
-            android:id="@+id/edit_Server"
+            android:id="@+id/edit_GoogleUpload"
             android:layout_width="500dp"
             android:layout_height="match_parent"
             android:paddingStart="15dp"
@@ -92,6 +94,17 @@
             android:textSize="22sp" />
     </LinearLayout>
 
+    <CheckBox
+        android:id="@+id/but_DefaultUpload"
+        android:layout_width="500dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="320dp"
+        android:text="Default"
+        android:textColor="@color/white"
+        android:textSize="24sp"/>
+
+    <!-- Google Download Folder -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -100,16 +113,16 @@
 
         <TextView
             android:layout_width="320dp"
-            android:layout_height="match_parent"
+            android:layout_height="40dp"
             android:gravity="end|center"
             android:paddingEnd="20dp"
             android:textColor="@color/white"
             android:textSize="24sp"
-            android:text="@string/settings_network_database_db"
+            android:text="@string/settings_network_google_download"
             tools:ignore="RtlSymmetry" />
 
         <EditText
-            android:id="@+id/edit_Database"
+            android:id="@+id/edit_GoogleDownload"
             android:layout_width="500dp"
             android:layout_height="match_parent"
             android:paddingStart="15dp"
@@ -120,72 +133,37 @@
             android:textSize="22sp" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="320dp"
-            android:layout_height="match_parent"
-            android:gravity="end|center"
-            android:paddingEnd="20dp"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            android:text="@string/settings_network_database_user"
-            tools:ignore="RtlSymmetry" />
-
-        <EditText
-            android:id="@+id/edit_User"
-            android:layout_width="500dp"
-            android:layout_height="match_parent"
-            android:paddingStart="15dp"
-            android:background="@color/white"
-            android:gravity="center|start"
-            android:inputType="text"
-            android:textColor="@color/cpr_bkgnd"
-            android:textSize="22sp" />
-    </LinearLayout>
-
+    <!-- Google Download Default and button -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="320dp"
+        <CheckBox
+            android:id="@+id/but_DefaultDownload"
+            android:layout_width="280dp"
             android:layout_height="match_parent"
-            android:gravity="end|center"
-            android:paddingEnd="20dp"
+            android:layout_marginStart="320dp"
+            android:text="Default"
             android:textColor="@color/white"
-            android:textSize="24sp"
-            android:text="@string/settings_network_database_pwd"
-            app:endIconMode="password_toggle"
-            tools:ignore="RtlSymmetry" />
+            android:textSize="24sp"/>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/password_toggle"
-            android:layout_width="500dp"
+        <ImageView
+            android:id="@+id/image_GoogleResult"
+            android:layout_width="50dp"
+            android:layout_marginEnd="10dp"
+            android:layout_height="match_parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/but_Download"
+            android:layout_width="160dp"
             android:layout_height="match_parent"
-            app:boxBackgroundColor="@android:color/white"
-            app:boxCollapsedPaddingTop="0dp"
-            app:endIconMode="password_toggle">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_Password"
-                android:layout_width="500dp"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:includeFontPadding="false"
-                android:minHeight="0dp"
-                app:hintEnabled="false"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                android:inputType="textPassword"
-                android:textColor="@color/cpr_bkgnd"
-                android:textSize="22sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:text="@string/settings_network_google_download_button"
+            android:textSize="16sp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/cpr_bkgnd"
+            tools:ignore="HardcodedText,MissingConstraints"
+            app:cornerRadius="16dp"/>
     </LinearLayout>
 </LinearLayout>
