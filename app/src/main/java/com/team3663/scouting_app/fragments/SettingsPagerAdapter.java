@@ -9,6 +9,7 @@ public class SettingsPagerAdapter extends FragmentStateAdapter {
     private SettingsPage1 fragmentPage1;
     private SettingsPage2 fragmentPage2;
     private SettingsPage3 fragmentPage3;
+    private SettingsPage4 fragmentPage4;
 
     public SettingsPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
@@ -31,14 +32,17 @@ public class SettingsPagerAdapter extends FragmentStateAdapter {
                 fragmentPage3 = new SettingsPage3();
                 frag = fragmentPage3;
                 break;
-        }
+            case 3:
+                fragmentPage4 = new SettingsPage4();
+                frag = fragmentPage4;
+                break;        }
         
         return frag;
     }
 
     @Override
     public int getItemCount() {
-        return 3;
+        return 4;
     }
 
     public SettingsPage1 getFragmentPage1() {
@@ -49,5 +53,8 @@ public class SettingsPagerAdapter extends FragmentStateAdapter {
     }
     public SettingsPage3 getFragmentPage3() {
         return fragmentPage3;
+    }
+    public SettingsPage4 getFragmentPage4() {
+        return fragmentPage4;
     }
 }

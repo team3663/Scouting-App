@@ -18,17 +18,27 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Scope;
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.SubmitDataBinding;
+import com.team3663.scouting_app.utility.CPR_Network;
 import com.team3663.scouting_app.utility.Logger;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
@@ -48,6 +58,7 @@ public class SubmitData extends AppCompatActivity {
     private static MediaPlayer media;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
+    private ActivityResultLauncher<Intent> googleSignInLauncher;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -62,6 +73,9 @@ public class SubmitData extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Register the Google sign-in launcher before the activity is STARTED
+        initGoogleSignIn();
 
         // Initialize activity components that need the Logger
         initAchievements();
@@ -79,6 +93,8 @@ public class SubmitData extends AppCompatActivity {
         initMatch();
         initQR();
         initBluetooth();
+        initGoogle();
+        initDatabase();
         initQuit();
         initNext();
         initOverride();
@@ -255,9 +271,7 @@ public class SubmitData extends AppCompatActivity {
 
         @Override
         public void run() {
-            SubmitData.this.runOnUiThread(() -> {
-                animateAchievementEnd();
-            });
+            SubmitData.this.runOnUiThread(SubmitData.this::animateAchievementEnd);
 
             if (isLast) closeAchievements();
         }
@@ -414,13 +428,30 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initMatch() {
+        submitDataBinding.spinnerMatch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                // Save off what you selected to be used until changed again
+                Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
+                submitDataBinding.imageGoogleResult.setImageResource(0);
+                submitDataBinding.imageDatabaseResult.setImageResource(0);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+
         // Adds the items from the match log files array to the list
         ArrayAdapter<String> adp_Match = new ArrayAdapter<>(this,
                 R.layout.cpr_spinner, FindMatches());
         adp_Match.setDropDownViewResource(R.layout.cpr_spinner_item);
         submitDataBinding.spinnerMatch.setAdapter(adp_Match);
         // Set the selection (if there are any) to the latest match (largest value in the list)
-        if (adp_Match.getCount() > 0) submitDataBinding.spinnerMatch.setSelection(adp_Match.getCount() - 1, true);
+        if (adp_Match.getCount() > 0) {
+            submitDataBinding.spinnerMatch.setSelection(adp_Match.getCount() - 1, true);
+            Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
+        }
     }
 
     // =============================================================================================
@@ -505,11 +536,167 @@ public class SubmitData extends AppCompatActivity {
             Globals.isPractice = false;
             Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
 
-
 //            Intent GoToBluetooth = new Intent(SubmitData.this, Bluetooth.class);
 //            startActivity(GoToBluetooth);
 
             finish();
+        });
+    }
+
+    // =============================================================================================
+    // Function:    initGoogle
+    // Description: Initialize the Google field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initGoogle() {
+        if (!Globals.network.hasActiveInternet()) {
+            submitDataBinding.butSendGoogle.setEnabled(false);
+            return;
+        }
+
+        submitDataBinding.butSendGoogle.setOnClickListener(view -> {
+            Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
+            submitDataBinding.imageGoogleResult.setImageResource(0);
+            submitDataBinding.butSendGoogle.setEnabled(false);
+            submitDataBinding.butSendGoogle.setClickable(false);
+            submitDataBinding.butSendGoogle.setBackgroundColor(getColor(R.color.light_grey));
+
+
+            // If the Drive service is already built this session, upload straight away
+            if (Globals.network.isDriveServiceReady()) {
+                Globals.network.uploadToGoogle(this::handleGoogleUploadResult);
+                return;
+            }
+
+            // Reuse an existing sign-in if it already granted the Drive scope
+            Scope driveScope = new Scope(CPR_Network.GOOGLE_DRIVE_SCOPE);
+            GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(this);
+            if (GoogleSignIn.hasPermissions(last, driveScope)) {
+                onGoogleSignedIn(last);
+                return;
+            }
+
+            // Otherwise start the interactive sign-in / consent flow
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .requestScopes(driveScope)
+                    .build();
+            googleSignInLauncher.launch(GoogleSignIn.getClient(this, gso).getSignInIntent());
+        });
+    }
+
+    // =============================================================================================
+    // Function:    handleGoogleUploadResult
+    // Description: Handle the result of a Google Drive upload
+    // Parameters:  result  the result of the upload
+    // Output:      void
+    // =============================================================================================
+    private void handleGoogleUploadResult(CPR_Network.Result result) {
+        if (result == CPR_Network.Result.TRANSMISSION_SUCCESS) {
+            submitDataBinding.imageGoogleResult.setImageResource(R.drawable.checkmark);
+        } else {
+            submitDataBinding.imageGoogleResult.setImageResource(R.drawable.x);
+        }
+
+        submitDataBinding.butSendGoogle.setEnabled(true);
+        submitDataBinding.butSendGoogle.setClickable(true);
+        submitDataBinding.butSendGoogle.setBackgroundColor(getColor(R.color.white));
+    }
+
+    // =============================================================================================
+    // Function:    initGoogleSignIn
+    // Description: Register the launcher that receives the result of the Google sign-in flow.
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initGoogleSignIn() {
+        googleSignInLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    try {
+                        GoogleSignInAccount account = GoogleSignIn
+                                .getSignedInAccountFromIntent(result.getData())
+                                .getResult(ApiException.class);
+                        onGoogleSignedIn(account);
+                    } catch (ApiException e) {
+                        Toast.makeText(this, "Google sign-in failed", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageGoogleResult.setImageResource(R.drawable.x);
+                    }
+                });
+    }
+
+    // =============================================================================================
+    // Function:    onGoogleSignedIn
+    // Description: Build the Drive service from the signed-in account and start the upload.
+    // Parameters:  in_account  the account returned from Google sign-in
+    // Output:      void
+    // =============================================================================================
+    private void onGoogleSignedIn(GoogleSignInAccount in_account) {
+        if (in_account == null || in_account.getAccount() == null) {
+            Toast.makeText(this, "Google sign-in failed", Toast.LENGTH_SHORT).show();
+            submitDataBinding.imageGoogleResult.setImageResource(R.drawable.x);
+            return;
+        }
+
+        Globals.network.initDriveService(in_account.getAccount());
+        Globals.network.uploadToGoogle(this::handleGoogleUploadResult);
+    }
+
+    // =============================================================================================
+    // Function:    initDatabase
+    // Description: Initialize the Database field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initDatabase() {
+        if (!Globals.network.hasActiveInternet()) {
+            submitDataBinding.butSendDatabase.setEnabled(false);
+            submitDataBinding.butSendDatabase.setClickable(false);
+            submitDataBinding.butSendDatabase.setBackgroundColor(getColor(R.color.light_grey));
+            return;
+        }
+
+        submitDataBinding.butSendDatabase.setOnClickListener(view -> {
+            //Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
+            submitDataBinding.butSendDatabase.setEnabled(false);
+            submitDataBinding.butSendDatabase.setClickable(false);
+            submitDataBinding.butSendDatabase.setBackgroundColor(getColor(R.color.light_grey));
+            submitDataBinding.imageDatabaseResult.setImageResource(0);
+
+
+            Globals.network.sendFileToSQLServer(result -> {
+                submitDataBinding.butSendDatabase.setEnabled(true);
+                submitDataBinding.butSendDatabase.setClickable(true);
+                submitDataBinding.butSendDatabase.setBackgroundColor(getColor(R.color.white));
+                switch (result) {
+                    case TRANSMISSION_SUCCESS:
+                        Toast.makeText(this, "Successfully transmitted!", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.checkmark);
+                        break;
+                    case NO_NETWORK:
+                        Toast.makeText(this, "No network connection", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
+                        break;
+                    case HOST_UNREACHABLE:
+                        Toast.makeText(this, "SQL Server is unreachable", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
+                        break;
+                    case NO_DATA:
+                        Toast.makeText(this, "No data to send", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
+                        break;
+                    case SQL_EXCEPTION:
+                        Toast.makeText(this, "SQL Server Exception", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
+                        break;
+                    case TRANSMISSION_FAILURE:
+                    default:
+                        Toast.makeText(this, "Transmission failed", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
+                        break;
+                }
+            });
         });
     }
 
