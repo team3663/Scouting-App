@@ -1,4 +1,4 @@
-package com.team3663.scouting_app.utility.dataFile;
+package com.team3663.scouting_app.dataFile;
 
 import android.content.Context;
 
@@ -10,7 +10,7 @@ public class CommentsFile extends _DataFile {
     private final ArrayList<CommentRow> comment_list;
 
     public CommentsFile(Context in_context) {
-        super(in_context, in_context.getString(R.string.file_comments), in_context.getString(R.string.applaunch_loading_comments), in_context.getString(R.string.applaunch_file_error_comments));
+        super(in_context, in_context.getString(R.string.file_comments), in_context.getString(R.string.applaunch_loading_comments));
 
         comment_list = new ArrayList<>();
     }
@@ -36,7 +36,7 @@ public class CommentsFile extends _DataFile {
         return comment_list.size();
     }
 
-    // Member Function: Get back the Id for a given DNP entry (needed for logging)
+    // Member Function: Get back the ID for a given DNP entry (needed for logging)
     public int getCommentId(String in_description) {
         int ret = 0;
 
