@@ -57,10 +57,10 @@ public class SettingsPage3 extends Fragment {
     // Output:      void
     // =============================================================================================
     private void initFields() {
-        binding.editServer.setText(Globals.sp.getString(Constants.Prefs.SQL_SERVER, "mssql01.cpr3663.io"));
-        binding.editDatabase.setText(Globals.sp.getString(Constants.Prefs.SQL_DATABASE, "CPR_Scouting_2025"));
-        binding.editUser.setText(Globals.sp.getString(Constants.Prefs.SQL_USER, "CPR_Tablet"));
-        binding.editPassword.setText(Globals.sp.getString(Constants.Prefs.SQL_PASSWORD, "Aa98o1nTlHb4sg2u0YB2eNHxVfU4n17z"));
+        binding.editServer.setText(Globals.sp.getString(Constants.Prefs.SQL_SERVER, Constants.Settings.DEFAULT_SQL_SERVER));
+        binding.editDatabase.setText(Globals.sp.getString(Constants.Prefs.SQL_DATABASE, Constants.Settings.DEFAULT_SQL_DATABASE));
+        binding.editUser.setText(Globals.sp.getString(Constants.Prefs.SQL_USER, Constants.Settings.DEFAULT_SQL_USER));
+        binding.editPassword.setText(Globals.sp.getString(Constants.Prefs.SQL_PASSWORD, Constants.Settings.DEFAULT_SQL_PASSWORD));
     }
 
     // =============================================================================================

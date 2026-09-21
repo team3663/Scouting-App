@@ -32,8 +32,6 @@ import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.FragmentSettingsPage4Binding;
 import com.team3663.scouting_app.utility.CPR_Network;
 
-import java.util.Objects;
-
 public class SettingsPage4 extends Fragment {
     public FragmentSettingsPage4Binding binding;
     private ConnectivityManager connectivityManager;
@@ -133,7 +131,7 @@ public class SettingsPage4 extends Fragment {
             binding.butDefaultDownload.setChecked(true);
             binding.editGoogleDownload.setEnabled(false);
         } else {
-            binding.editGoogleDownload.setText(pref_Upload);
+            binding.editGoogleDownload.setText(pref_Download);
             binding.butDefaultDownload.setChecked(false);
             binding.editGoogleDownload.setEnabled(true);
         }

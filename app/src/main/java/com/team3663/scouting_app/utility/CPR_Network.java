@@ -60,7 +60,6 @@ public class CPR_Network {
     private final Context appContext;
     private final ExecutorService executor;
     private final Handler mainHandler;
-    private static final String GOOGLE_TAG = "DriveUploadHelper";
     // drive.file is a non-sensitive scope (no OAuth verification needed). It grants access only to
     // files this app creates, which is all we do here: create a file in the shared folder (any
     // signed-in account can write to it via the folder's "anyone with the link can edit" grant).
@@ -404,9 +403,16 @@ public class CPR_Network {
                     return;
                 }
 
-                com.google.api.services.drive.model.File fileMetadata = new com.google.api.services.drive.model.File();
+                File fileMetadata = new File();
                 fileMetadata.setName(filename);
-                fileMetadata.setParents(Collections.singletonList(Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_UPLOAD, "")));
+
+                String folderId = Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_UPLOAD, Constants.Settings.DEFAULT_GOOGLE_UPLOAD);
+                if (folderId.isEmpty()) {
+                    showToast(appContext, "Google Upload Failed: No folder ID configured");
+                    mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_FAILURE));
+                    return;
+                }
+                fileMetadata.setParents(Collections.singletonList(folderId));
 
                 InputStream inputStream = appContext.getContentResolver().openInputStream(sourceUri);
                 if (inputStream == null) {
@@ -422,7 +428,7 @@ public class CPR_Network {
 
                 // setSupportsAllDrives(true) is required when the parent folder lives in a Shared
                 // Drive (or was shared to us from another account).
-                com.google.api.services.drive.model.File uploadedFile = driveService.files()
+                File uploadedFile = driveService.files()
                         .create(fileMetadata, fileContent)
                         .setSupportsAllDrives(true)
                         .setFields("id, name, size, trashed")
@@ -435,7 +441,7 @@ public class CPR_Network {
                 }
 
                 // Validate upload
-                com.google.api.services.drive.model.File remoteFile = driveService.files()
+                File remoteFile = driveService.files()
                         .get(uploadedFile.getId())
                         .setSupportsAllDrives(true)
                         .setFields("id, size, trashed")
@@ -495,9 +501,6 @@ public class CPR_Network {
             in_callback.onResult(Result.LOCAL_DIR_DNE);
             return;
         }
-
-        final String filename = Globals.CurrentCompetitionId + "_" + Globals.TransmitMatchNum + "_" + Globals.CurrentDeviceId + "_" + Globals.TransmitMatchType + ".csv";
-        DocumentFile df = Globals.output_df.findFile(filename);
 
         executor.execute(() -> {
             try {
@@ -561,7 +564,7 @@ public class CPR_Network {
     //              in_df               local documentFile
     // Output:      List of Files
     // =============================================================================================
-    public boolean downloadOneFileFromGoogle(String in_remoteFileId, String in_localFileName) throws IOException {
+    public boolean downloadOneFileFromGoogle(String in_remoteFileId, String in_localFileName) {
         DocumentFile tmp = Globals.input_df.findFile(in_localFileName + ".part");
         DocumentFile dest = Globals.input_df.findFile(in_localFileName);
 
@@ -607,7 +610,13 @@ public class CPR_Network {
     public List<File> listGoogleFiles() throws IOException {
         List<File> files = new ArrayList<>();
         String pageToken = null;
-        String query = "'" + Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_DOWNLOAD, "") + "' in parents and trashed = false "
+
+        String folderId = Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_DOWNLOAD, Constants.Settings.DEFAULT_GOOGLE_DOWNLOAD);
+        if (folderId.isEmpty()) {
+            throw new IOException("Google folder ID is not configured");
+        }
+
+        String query = "'" + folderId + "' in parents and trashed = false "
                 + "and mimeType != 'application/vnd.google-apps.folder'";
         do {
             FileList page = driveService.files().list()
