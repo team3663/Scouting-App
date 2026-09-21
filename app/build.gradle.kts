@@ -6,9 +6,9 @@ plugins {
     id("base")
 }
 
-var versionMajor = 4
-var versionMinor = 0
-var versionPatch = 0
+var versionMajor = 3
+var versionMinor = 6
+var versionPatch = 1
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 val keystoreProperties = Properties().apply {
