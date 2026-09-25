@@ -10,6 +10,12 @@ import com.team3663.scouting_app.R;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.view.View;
+import android.widget.AdapterView;
+import java.util.List;
+
 public class ScoutersFile extends _DataFile {
     private static ArrayList<CommentRow> comment_list;
 
@@ -80,11 +86,34 @@ public class ScoutersFile extends _DataFile {
             description = in_description;
         }
     }
+    public static void autoComplete(AutoCompleteTextView autoView){
+        setupScouterNameAutocomplete(autoView, getDescriptionList());
+    }
+    public static void setupScouterNameAutocomplete(AutoCompleteTextView autoCompleteTextView, ArrayList<String> suggestionsList) {
+        // 1. Create an ArrayAdapter using a default Android layout
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                autoCompleteTextView.getContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                suggestionsList
+        );
 
-    public static  String[] get() {
+        // 2. Set the adapter and the minimum character threshold to trigger suggestions
+        autoCompleteTextView.setAdapter(adapter);
+        autoCompleteTextView.setThreshold(1); // Displays dropdown after typing 1 character
 
-        ArrayList<String> myScouters = getDescriptionList();
-        String[] ScoutersArray = myScouters.toArray(new String[0]);
-        return ScoutersArray;
+        // 3. Set a listener to handle when a user clicks a suggestion
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Get the selected name from the adapter
+                String selectedName = (String) parent.getItemAtPosition(position);
+
+                // Output the selection back into the text view
+                autoCompleteTextView.setText(selectedName);
+
+                // Move cursor to the end of the text
+                autoCompleteTextView.setSelection(selectedName.length());
+            }
+        });
     }
 }

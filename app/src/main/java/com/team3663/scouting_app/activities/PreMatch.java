@@ -280,6 +280,8 @@ public class PreMatch extends AppCompatActivity {
     private void initScouterName() {
         // Create a text box to input the scouters name
         preMatchBinding.editScouterName.setText(ScouterName);
+        ScoutersFile.autoComplete(preMatchBinding.editScouterName);
+
     }
 
     // =============================================================================================
@@ -684,19 +686,5 @@ public class PreMatch extends AppCompatActivity {
 
             Objects.requireNonNull(Globals.output_df.findFile(in_filename)).renameTo(backupFilename);
         }
-    }
-    public class scoutersActivity extends Activity {
-        protected void onCreate(Bundle icicle) {
-            super.onCreate(icicle);
-            setContentView(preMatchBinding.editScouterName);
-
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                    android.R.layout.simple_dropdown_item_1line, COUNTRIES);
-            AutoCompleteTextView textView = (AutoCompleteTextView)
-                    preMatchBinding.editScouterName;
-            textView.setAdapter(adapter);
-        }
-
-        private final String[] COUNTRIES = ScoutersFile.get();
     }
 }
