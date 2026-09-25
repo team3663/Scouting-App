@@ -1,11 +1,20 @@
 package com.team3663.scouting_app.utility.dataFile;
 
 import android.content.Context;
+<<<<<<< HEAD:app/src/main/java/com/team3663/scouting_app/utility/dataFile/ScoutersFile.java
 import android.icu.text.IDNA;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.team3663.scouting_app.R;
+=======
+import android.os.Bundle;
+import android.widget.AutoCompleteTextView;
+
+import com.team3663.scouting_app.R;
+import com.team3663.scouting_app.activities.PreMatch;
+import com.team3663.scouting_app.utility.dataFile._DataFile;
+>>>>>>> cdcb1f9bb088daac2aa2ae2cb8024670ea7452a2:app/src/main/java/input_data/ScoutersFile.java
 
 import java.util.ArrayList;
 import java.util.Arrays;
