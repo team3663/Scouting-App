@@ -22,4 +22,8 @@
     <string name="applaunch_start_scouting">Start Scouting</string>
     <string name="applaunch_not_configured">This device is not configured yet.  Go to Settings to set it up.</string>
     <string name="applaunch_malformed_file">The data file was NOT formatted properly.  The data was NOT loaded correctly!</string>
+
+    <string name="applaunch_vpn_not_installed">The VPN client TailScale is not installed on this device.</string>
+    <string name="applaunch_vpn_not_launched">The VPN client TailScale was NOT launched successfully.</string>
+    <string name="applaunch_vpn_not_checked">Unable to check status of the VPN client TailScale (ConnectivityManager issue).</string>
 </resources>

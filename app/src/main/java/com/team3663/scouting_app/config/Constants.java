@@ -140,6 +140,7 @@ public class Constants {
 
     public static class AppLaunch {
         public static final long SPLASH_SCREEN_DELAY = 20;
+        public static final String VPN_PACKAGE_NAME = "com.tailscale.ipn";
     }
 
     public static class QRCode{
