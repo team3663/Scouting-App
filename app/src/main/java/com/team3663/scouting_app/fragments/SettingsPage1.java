@@ -15,6 +15,8 @@ import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.FragmentSettingsPage1Binding;
 
+import java.util.Objects;
+
 public class SettingsPage1 extends Fragment {
     public FragmentSettingsPage1Binding binding;
     public int savedCompetitionId;
@@ -32,7 +34,8 @@ public class SettingsPage1 extends Fragment {
         initCompetition();
         initDevice();
         initScoutingTeam();
-        initNumMatches();
+        initFieldOrientation();
+        initPrefTeamPos();
     }
 
     // =============================================================================================
@@ -43,7 +46,7 @@ public class SettingsPage1 extends Fragment {
     // =============================================================================================
     private void initCompetition() {
         // Adds Competition information to spinner
-        ArrayAdapter<String> adp_Competition = new ArrayAdapter<>(requireContext(),
+        ArrayAdapter<String> adp_Competition = new ArrayAdapter<>(requireContext().getApplicationContext(),
                 R.layout.cpr_spinner, Globals.CompetitionList.getCompetitionList());
         adp_Competition.setDropDownViewResource(R.layout.cpr_spinner_item);
         binding.spinnerCompetition.setAdapter(adp_Competition);
@@ -74,7 +77,7 @@ public class SettingsPage1 extends Fragment {
     // =============================================================================================
     private void initDevice() {
         // Adds Device information to spinner
-        ArrayAdapter<String> adp_Device = new ArrayAdapter<>(requireContext(),
+        ArrayAdapter<String> adp_Device = new ArrayAdapter<>(requireContext().getApplicationContext(),
                 R.layout.cpr_spinner, Globals.DeviceList.getDeviceList());
         adp_Device.setDropDownViewResource(R.layout.cpr_spinner_item);
         binding.spinnerDevice.setAdapter(adp_Device);
@@ -129,14 +132,39 @@ public class SettingsPage1 extends Fragment {
     }
 
     // =============================================================================================
-    // Function:    initNumMatches
-    // Description: Initialize the Number of Matches to Keep field
+    // Function:    initFieldOrientation
+    // Description: Initialize the Preferred Field Orientation field
     // Parameters:  void
     // Output:      void
     // =============================================================================================
-    private void initNumMatches() {
-        // Restore number of files to keep from saved preferences
-        binding.editNumMatches.setText(String.valueOf(Globals.sp.getInt(Constants.Prefs.NUM_MATCHES, 50)));
+    private void initFieldOrientation() {
+        // Adds PreferredFieldOrientation information to spinner
+        ArrayAdapter<String> adp_PrefOrientation = new ArrayAdapter<>(requireContext(),
+                R.layout.cpr_spinner, Constants.Settings.PREF_FIELD_ORIENTATION);
+        adp_PrefOrientation.setDropDownViewResource(R.layout.cpr_spinner_item);
+        binding.spinnerOrientation.setAdapter(adp_PrefOrientation);
+
+        // Set the selection (if there is one) to the saved one
+        int savedPrefOrientation = Globals.sp.getInt(Constants.Prefs.PREF_ORIENTATION, 0);
+        binding.spinnerOrientation.setSelection(savedPrefOrientation, true);
+    }
+
+    // =============================================================================================
+    // Function:    initPrefTeamPos
+    // Description: Initialize the Preferred Team Position field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initPrefTeamPos() {
+        // Adds PreferredTeamPosition information to spinner
+        ArrayAdapter<String> adp_PrefTeamPos = new ArrayAdapter<>(requireContext().getApplicationContext(),
+                R.layout.cpr_spinner, Constants.Settings.PREF_TEAM_POS);
+        adp_PrefTeamPos.setDropDownViewResource(R.layout.cpr_spinner_item);
+        binding.spinnerPrefTeamPos.setAdapter(adp_PrefTeamPos);
+
+        // Set the selection (if there is one) to the saved one
+        int savedPrefTeamPos = Globals.sp.getInt(Constants.Prefs.PREF_TEAM_POS, 0);
+        binding.spinnerPrefTeamPos.setSelection(savedPrefTeamPos, true);
     }
 
     @Override

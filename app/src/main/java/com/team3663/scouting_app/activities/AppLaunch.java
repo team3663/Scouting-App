@@ -30,7 +30,8 @@ import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.AppLaunchBinding;
-import com.team3663.scouting_app.utility.dataFile.*;
+import com.team3663.scouting_app.utility.CPR_Network;
+import com.team3663.scouting_app.dataFile.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -51,9 +52,7 @@ public class AppLaunch extends AppCompatActivity {
                     // There are no request codes
                     Intent data = result.getData();
                     if (Objects.requireNonNull(data).getIntExtra(Constants.Settings.RELOAD_DATA_KEY, 0) == 1) {
-                        Globals.MatchList.clearList();
-                        Globals.MatchList.LoadDataFile(appLaunchBinding.textStatusFile, appLaunchBinding.progressBarFile, appLaunchBinding.textPercentFile, appLaunchBinding.progressBarOverall, appLaunchBinding.textStatusOverall);
-                        appLaunchBinding.textStatusFile.setText("");
+                        loadDataFiles();
                     }
                 }
             });
@@ -92,6 +91,10 @@ public class AppLaunch extends AppCompatActivity {
             return insets;
         });
 
+        // Default to NO internet
+        appLaunchBinding.imageInternet.setVisibility(View.INVISIBLE);
+        Globals.network = new CPR_Network(this);
+
         // Display app version
         PackageInfo pInfo;
         try {
@@ -118,7 +121,7 @@ public class AppLaunch extends AppCompatActivity {
         boolean havePerms = !perm_list.isEmpty();
 
         // If we have storage permissions go ahead and load the data.
-        // Otherwise, initiate getting permissions (which will then load the data afterwards)
+        // Otherwise, initiate getting permissions (which will then load the data afterward)
         if (havePerms) {
             Globals.baseStorageURI = Uri.parse(Globals.sp.getString(Constants.Prefs.STORAGE_URI, null));
             initDataFiles();
@@ -128,7 +131,13 @@ public class AppLaunch extends AppCompatActivity {
 
         // While loading Matches, we messed with Globals.CurrentMatchType, so reset it
         Globals.CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
-    }
+
+        // check if we have access to the internet
+        if (Globals.network.hasActiveInternet())
+            appLaunchBinding.imageInternet.setVisibility(View.VISIBLE);
+        else
+            appLaunchBinding.imageInternet.setVisibility(View.INVISIBLE);
+        }
 
     // =============================================================================================
     // Function:    initSettings
@@ -137,7 +146,7 @@ public class AppLaunch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initSettings() {
-        // Define a Image Button to open up the Settings
+        // Define an Image Button to open up the Settings
         appLaunchBinding.imgButSettings.setImageResource(R.drawable.settings_icon);
         appLaunchBinding.imgButSettings.setVisibility(View.INVISIBLE);
         appLaunchBinding.imgButSettings.setClickable(false);
@@ -220,7 +229,7 @@ public class AppLaunch extends AppCompatActivity {
                 Globals.output_df = Globals.base_df.createDirectory(Constants.Data.PUBLIC_OUTPUT_DIR);
             }
         } else {
-            // The base dir is there but we should check the two sub directories are there.
+            // The base dir is there, but we should check the two subdirectories are there.
             Globals.input_df = Globals.base_df.findFile(Constants.Data.PUBLIC_INPUT_DIR);
             if (Globals.input_df == null)
                 Globals.input_df = Globals.base_df.createDirectory(Constants.Data.PUBLIC_INPUT_DIR);
@@ -230,6 +239,9 @@ public class AppLaunch extends AppCompatActivity {
         }
 
         // Instantiate the Global variables or reset their context
+        if (Globals.AccuracyList == null) Globals.AccuracyList = new AccuracyFile(this); else Globals.AccuracyList.setContext(this);
+        if (Globals.ClimbLevelList == null) Globals.ClimbLevelList = new ClimbLevelFile(this); else Globals.ClimbLevelList.setContext(this);
+        if (Globals.ClimbPositionList == null) Globals.ClimbPositionList = new ClimbPositionFile(this); else Globals.ClimbPositionList.setContext(this);
         if (Globals.ColorList == null) Globals.ColorList = new ColorsFile(this); else Globals.ColorList.setContext(this);
         if (Globals.CommentList == null) Globals.CommentList = new CommentsFile(this); else Globals.CommentList.setContext(this);
         if (Globals.CompetitionList == null) Globals.CompetitionList = new CompetitionsFile(this); else Globals.CompetitionList.setContext(this);
@@ -248,6 +260,18 @@ public class AppLaunch extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void loadDataFiles() {
+        // Ensure the loading file objects are visible
+        appLaunchBinding.progressBarOverall.setVisibility(View.VISIBLE);
+        appLaunchBinding.progressBarFile.setVisibility(View.VISIBLE);
+        appLaunchBinding.textStatusOverall.setVisibility(View.VISIBLE);
+        appLaunchBinding.textPercentOverall.setVisibility(View.VISIBLE);
+        appLaunchBinding.textStatusFile.setVisibility(View.VISIBLE);
+        appLaunchBinding.textPercentFile.setVisibility(View.VISIBLE);
+        appLaunchBinding.butStartScouting.setVisibility(View.INVISIBLE);
+        appLaunchBinding.imgButSettings.setVisibility(View.INVISIBLE);
+        appLaunchBinding.butStartScouting.setClickable(false);
+        appLaunchBinding.imgButSettings.setClickable(false);
+
         // Clear out the lists, just in case
         _DataFile.clearAllLists();
 
@@ -258,21 +282,21 @@ public class AppLaunch extends AppCompatActivity {
             public void run() {
                 appLaunchBinding.progressBarOverall.setMax(Globals.CompetitionList.getNumberOfFiles());
                 appLaunchBinding.progressBarOverall.setProgress(0);
-                appLaunchBinding.textStatusOverall.setText(getString(R.string.applaunch_loading));
+                appLaunchBinding.textStatusOverall.setText(getString(R.string.applaunch_loading_prefix));
                 appLaunchBinding.textPercentOverall.setText(getString(R.string.applaunch_percent, 0));
 
-                // Load all of the data with a BRIEF delay between.  :)
+                // Load all the data with a BRIEF delay between.  :)
                 _DataFile.LoadAllDataFiles(appLaunchBinding.textStatusFile, appLaunchBinding.progressBarFile, appLaunchBinding.textPercentFile, appLaunchBinding.progressBarOverall, appLaunchBinding.textPercentOverall);
 
-                // After loading all of the data, we need to build the set of "next events"
+                // After loading all the data, we need to build the set of "next events"
                 Globals.EventList.buildNextEvents();
 
                 // Setting the Visibility attribute can't be set from a non-UI thread (like withing a TimerTask
-                // that runs on a separate thread.  So we need to make a Runner that will execute on the UI thread
+                // that runs on a separate thread).  So we need to make a Runner that will execute on the UI thread
                 // to set these.
                 AppLaunch.this.runOnUiThread(() -> {
-                    // Sleep a tiny bit to help the UI not glitch (otherwise this block of code doesn't
-                    // do what it's trying to do (things don't become visible, etc).
+                    // Sleep a tiny bit to help the UI not glitch. Otherwise, this block of code doesn't
+                    // do what it's trying to do (things don't become visible, etc.).
                     try {
                         Thread.sleep(Constants.AppLaunch.SPLASH_SCREEN_DELAY);
                     }
@@ -280,6 +304,7 @@ public class AppLaunch extends AppCompatActivity {
                         throw new RuntimeException(e);
                     }
 
+                    // Hide the loading file objects
                     appLaunchBinding.progressBarOverall.setVisibility(View.INVISIBLE);
                     appLaunchBinding.progressBarFile.setVisibility(View.INVISIBLE);
                     appLaunchBinding.textStatusOverall.setVisibility(View.INVISIBLE);
@@ -290,8 +315,6 @@ public class AppLaunch extends AppCompatActivity {
                     appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
                     appLaunchBinding.butStartScouting.setClickable(true);
                     appLaunchBinding.imgButSettings.setClickable(true);
-                    appLaunchBinding.butStartScouting.setVisibility(View.VISIBLE);
-                    appLaunchBinding.imgButSettings.setVisibility(View.VISIBLE);
 
                     // Erase the status text
                     appLaunchBinding.textStatusFile.setText("");

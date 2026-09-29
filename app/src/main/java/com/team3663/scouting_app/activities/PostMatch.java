@@ -36,7 +36,7 @@ public class PostMatch extends AppCompatActivity {
     //Creating an array list for the Comments
     ArrayList<Integer> CommentList = new ArrayList<>();
     ArrayList<String> CommentArray = Globals.CommentList.getDescriptionList();
-    ArrayList<String> Accuracy = Globals.AccuracyTypeList.getDescriptionList();
+    ArrayList<String> Accuracy = Globals.AccuracyList.getDescriptionList();
     ArrayList<String> ClimbLevel = Globals.ClimbLevelList.getDescriptionList();
     ArrayList<String> ClimbPosition = Globals.ClimbPositionList.getDescriptionList();
 
@@ -160,7 +160,7 @@ public class PostMatch extends AppCompatActivity {
         // Set starting selection
         int start_Pos = 0;
         for (int i = 0; i < Accuracy.size(); i++) {
-            if (Accuracy.get(i).equals(Globals.AccuracyTypeList.getAccuracyDescription(Globals.CurrentAccuracy))) {
+            if (Accuracy.get(i).equals(Globals.AccuracyList.getAccuracyDescription(Globals.CurrentAccuracy))) {
                 start_Pos = i;
                 break;
             }
@@ -173,7 +173,7 @@ public class PostMatch extends AppCompatActivity {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                        int newAccuracy = Globals.AccuracyTypeList.getAccuracyValue(postMatchBinding.spinnerAccuracy.getSelectedItem().toString());
+                        int newAccuracy = Globals.AccuracyList.getAccuracyId(postMatchBinding.spinnerAccuracy.getSelectedItem().toString());
 
                         if (!Objects.equals(newAccuracy, Globals.CurrentAccuracy)) {
                             Globals.CurrentAccuracy = newAccuracy;
@@ -215,22 +215,22 @@ public class PostMatch extends AppCompatActivity {
                     new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            String newClimbLevel = Globals.ClimbLevelList.getClimbLevelValue(postMatchBinding.spinnerClimbLevel.getSelectedItem().toString());
+                            int newClimbLevel = Globals.ClimbLevelList.getClimbLevelId(postMatchBinding.spinnerClimbLevel.getSelectedItem().toString());
 
-                            if (!newClimbLevel.equals(Globals.CurrentClimbLevel)) {
+                            if (newClimbLevel != Globals.CurrentClimbLevel) {
                                 Globals.CurrentClimbLevel = newClimbLevel;
                             }
 
-                            Achievements.data_match_ClimbSuccessTele = Globals.CurrentClimbLevel;
+                            Achievements.data_match_ClimbSuccessTele = Globals.ClimbLevelList.getClimbLevelDescription(Globals.CurrentClimbLevel);
                         }
 
                         @Override
                         public void onNothingSelected(AdapterView<?> adapterView) {
-                            Globals.CurrentClimbLevel = "-1";
+                            Globals.CurrentClimbLevel = Constants.PostMatch.CLIMB_LEVEL_NOT_SELECTED;
                         }
                     });
         } else {
-            Globals.CurrentClimbLevel = "None";
+            Globals.CurrentClimbLevel = Constants.PostMatch.CLIMB_LEVEL_NOT_SELECTED;
             ArrayAdapter<String> adp_ClimbLevel = new ArrayAdapter<>(this, R.layout.cpr_spinner_empty, Constants.PostMatch.NO_CLIMB);
             postMatchBinding.spinnerClimbLevel.setAdapter(adp_ClimbLevel);
             postMatchBinding.spinnerClimbLevel.setBackgroundColor(getColor(R.color.light_grey));
@@ -265,20 +265,20 @@ public class PostMatch extends AppCompatActivity {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                    String newClimbPosition = Globals.ClimbPositionList.getClimbPositionValue(postMatchBinding.spinnerClimbPosition.getSelectedItem().toString());
+                    int newClimbPosition = Globals.ClimbPositionList.getClimbPositionId(postMatchBinding.spinnerClimbPosition.getSelectedItem().toString());
 
-                    if (!Objects.equals(newClimbPosition, Globals.CurrentClimbPosition)) {
+                    if (newClimbPosition != Globals.CurrentClimbPosition) {
                         Globals.CurrentClimbPosition = newClimbPosition;
                     }
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) {
-                    Globals.CurrentClimbPosition = "-1";
+                    Globals.CurrentClimbPosition = Constants.PostMatch.CLIMB_POSITION_NOT_SELECTED;
                 }
             });
         } else {
-            Globals.CurrentClimbPosition = "None";
+            Globals.CurrentClimbPosition = Constants.PostMatch.CLIMB_POSITION_NOT_SELECTED;
             ArrayAdapter<String> adp_ClimbPosition = new ArrayAdapter<>(this, R.layout.cpr_spinner_empty, Constants.PostMatch.NO_CLIMB);
             postMatchBinding.spinnerClimbPosition.setAdapter(adp_ClimbPosition);
             postMatchBinding.spinnerClimbPosition.setBackgroundColor(getColor(R.color.light_grey));
@@ -374,7 +374,18 @@ public class PostMatch extends AppCompatActivity {
                 Intent GoToPreMatch = new Intent(PostMatch.this, PreMatch.class);
                 startActivity(GoToPreMatch);
             } else {
-               // Log all of the data from this page
+                // If any spinner data is left blank -> abort
+                if (Constants.PostMatch.ACCURACY_NOT_SELECTED == Globals.CurrentAccuracy ||
+                        (postMatchBinding.spinnerClimbLevel.isEnabled() && Constants.PostMatch.CLIMB_LEVEL_NOT_SELECTED == Globals.CurrentClimbLevel) ||
+                        (postMatchBinding.spinnerClimbPosition.isEnabled() && Constants.PostMatch.CLIMB_POSITION_NOT_SELECTED == Globals.CurrentClimbPosition) ||
+                        Objects.equals(Globals.stealFuelValue, "-1") ||
+                        Objects.equals(Globals.affectedByDefenseValue, "-1")) {
+
+                    Toast.makeText(this, R.string.post_missing_data, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+               // Log all the data from this page
                 StringBuilder comment_sep_ID = new StringBuilder();
                 for (Integer comment_dropID : CommentList) {
                     String comment = CommentArray.get(comment_dropID);
@@ -383,29 +394,14 @@ public class PostMatch extends AppCompatActivity {
                 if (comment_sep_ID.length() > 0) comment_sep_ID = new StringBuilder(comment_sep_ID.substring(1));
                 Globals.EventLogger.LogData(Constants.Logger.LOGKEY_COMMENTS, comment_sep_ID.toString());
 
-                // If any spinner data is left blank
-                if ((Constants.PostMatch.ACCURACY_NOT_SELECTED == Globals.CurrentAccuracy) ||
-                        Constants.PostMatch.CLIMB_LEVEL_NOT_SELECTED.equals(Globals.CurrentClimbLevel) ||
-                        Constants.PostMatch.CLIMB_POSITION_NOT_SELECTED.equals(Globals.CurrentClimbPosition)) {
+                // Log all the spinner data
+                Globals.EventLogger.LogData(Constants.Logger.LOGKEY_ACCURACY, String.valueOf(Globals.CurrentAccuracy));
+                Globals.EventLogger.LogData(Constants.Logger.LOGKEY_CLIMB_LEVEL, String.valueOf(Globals.CurrentClimbLevel));
+                Globals.EventLogger.LogData(Constants.Logger.LOGKEY_CLIMB_POSITION, String.valueOf(Globals.CurrentClimbPosition));
 
-                    Toast.makeText(this, R.string.post_missing_data, Toast.LENGTH_SHORT).show();
-                    return;
-                } else {
-                    // Log all the spinner data
-                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_ACCURACY, String.valueOf(Globals.CurrentAccuracy));
-                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_CLIMB_LEVEL, String.valueOf(Globals.CurrentClimbLevel));
-                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_CLIMB_POSITION, String.valueOf(Globals.CurrentClimbPosition));
-                }
-
-                // If any radio button is left blank
-                if (Objects.equals(Globals.stealFuelValue, "-1") || Objects.equals(Globals.affectedByDefenseValue, "-1")) {
-                    Toast.makeText(this, R.string.post_missing_data, Toast.LENGTH_SHORT).show();
-                    return;
-                } else {
-                    // Log all the spinner data
-                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_STEAL_FUEL,String.valueOf(Globals.stealFuelValue));
-                    Globals.EventLogger.LogData(Constants.Logger.LOGKEY_AFFECTED_BY_DEFENSE, String.valueOf(Globals.affectedByDefenseValue));
-                }
+                // Log all the spinner data
+                Globals.EventLogger.LogData(Constants.Logger.LOGKEY_STEAL_FUEL,String.valueOf(Globals.stealFuelValue));
+                Globals.EventLogger.LogData(Constants.Logger.LOGKEY_AFFECTED_BY_DEFENSE, String.valueOf(Globals.affectedByDefenseValue));
 
                 Intent GoToSubmitData = new Intent(PostMatch.this, SubmitData.class);
                 startActivity(GoToSubmitData);
@@ -421,7 +417,6 @@ public class PostMatch extends AppCompatActivity {
                     .startsWith(Constants.Achievements.EVENT_TYPE_FINAL)) Achievements.data_FinalType++;
 
             finish();
-
         });
     }
 

@@ -1,23 +1,44 @@
 package com.team3663.scouting_app.activities;
 
+import static com.team3663.scouting_app.config.Constants.Achievements.ANIMATION_SCALE_DURATION;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Scope;
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.SubmitDataBinding;
+import com.team3663.scouting_app.utility.CPR_Network;
 import com.team3663.scouting_app.utility.Logger;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
@@ -35,6 +56,9 @@ public class SubmitData extends AppCompatActivity {
     private SubmitDataBinding submitDataBinding;
     private static final Timer achievement_timer = new Timer();
     private static MediaPlayer media;
+    private ConnectivityManager connectivityManager;
+    private ConnectivityManager.NetworkCallback networkCallback;
+    private ActivityResultLauncher<Intent> googleSignInLauncher;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -50,6 +74,9 @@ public class SubmitData extends AppCompatActivity {
             return insets;
         });
 
+        // Register the Google sign-in launcher before the activity is STARTED
+        initGoogleSignIn();
+
         // Initialize activity components that need the Logger
         initAchievements();
 
@@ -61,13 +88,25 @@ public class SubmitData extends AppCompatActivity {
         }
 
         // Initialize activity components that don't log anything
+        initNetwork();
         initMatchType();
         initMatch();
         initQR();
         initBluetooth();
+        initGoogle();
+        initDatabase();
         initQuit();
         initNext();
         initOverride();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Important: Unregister to avoid memory leaks
+        if (connectivityManager != null && networkCallback != null) {
+            connectivityManager.unregisterNetworkCallback(networkCallback);
+        }
     }
 
     // =============================================================================================
@@ -185,8 +224,8 @@ public class SubmitData extends AppCompatActivity {
 
         @Override
         public void run() {
-            achievement_timer.schedule(new AchievementTimerTaskStart(myAchievement), 1);
-            achievement_timer.schedule(new AchievementTimerTaskEnd(isLast), Constants.Achievements.DISPLAY_TIME);
+            achievement_timer.schedule(new AchievementTimerTaskStart(myAchievement), 500);
+            achievement_timer.schedule(new AchievementTimerTaskEnd(isLast), Constants.Achievements.DISPLAY_TIME + 500);
         }
     }
 
@@ -207,11 +246,7 @@ public class SubmitData extends AppCompatActivity {
                 submitDataBinding.textAchievementTitle.setText(myAchievement.title);
                 submitDataBinding.textAchievementDesc.setText(myAchievement.description);
 
-                //Animation animation = AnimationUtils.loadAnimation(SubmitData.this, R.anim.blink);
-
-                submitDataBinding.imageAchievement.setVisibility(View.VISIBLE);
-                submitDataBinding.textAchievementTitle.setVisibility(View.VISIBLE);
-                submitDataBinding.textAchievementDesc.setVisibility(View.VISIBLE);
+                animateAchievementStart();
             });
 
 //                in_submitDataBinding.imageAchievement.startAnimation(animation);
@@ -236,11 +271,7 @@ public class SubmitData extends AppCompatActivity {
 
         @Override
         public void run() {
-            SubmitData.this.runOnUiThread(() -> {
-                submitDataBinding.imageAchievement.setVisibility(View.INVISIBLE);
-                submitDataBinding.textAchievementTitle.setVisibility(View.INVISIBLE);
-                submitDataBinding.textAchievementDesc.setVisibility(View.INVISIBLE);
-            });
+            SubmitData.this.runOnUiThread(SubmitData.this::animateAchievementEnd);
 
             if (isLast) closeAchievements();
         }
@@ -256,6 +287,35 @@ public class SubmitData extends AppCompatActivity {
         if (media.isPlaying()) media.stop();
         media.reset();
         media.release();
+    }
+
+    // =============================================================================================
+    // Function:    updateWifiIcon
+    // Description: Update the Wi-Fi signal icon with the correct signal strength level
+    // Parameters:  in_level    signal strength level
+    // Output:      void
+    // =============================================================================================
+    private void updateWifiIcon(int in_level) {
+        // You would typically swap icons here based on level
+        // 0: No signal, 1-4: Signal bars
+        switch (in_level) {
+            case 4: submitDataBinding.imageWifiSignal.setImageResource(R.drawable.wifi_bar_4); break;
+            case 3: submitDataBinding.imageWifiSignal.setImageResource(R.drawable.wifi_bar_3); break;
+            case 2: submitDataBinding.imageWifiSignal.setImageResource(R.drawable.wifi_bar_2); break;
+            case 1: submitDataBinding.imageWifiSignal.setImageResource(R.drawable.wifi_bar_1); break;
+            default: submitDataBinding.imageWifiSignal.setImageResource(R.drawable.wifi_bar_0); break;
+        }
+
+        // check if we have access to the internet
+        if (Globals.network.hasActiveInternet()) {
+            submitDataBinding.imageInternet.setVisibility(View.VISIBLE);
+            submitDataBinding.butSendGoogle.setEnabled(true);
+            submitDataBinding.butSendDatabase.setEnabled(true);
+        } else {
+            submitDataBinding.imageInternet.setVisibility(View.INVISIBLE);
+            submitDataBinding.butSendGoogle.setEnabled(false);
+            submitDataBinding.butSendDatabase.setEnabled(false);
+        }
     }
 
     // =============================================================================================
@@ -278,6 +338,7 @@ public class SubmitData extends AppCompatActivity {
         ArrayList<Achievements.PoppedAchievement> pop_list = Achievements.popAchievements();
 
         // Keep Achievements invisible
+        submitDataBinding.imageAchievementOpen.setVisibility(View.INVISIBLE);
         submitDataBinding.imageAchievement.setVisibility(View.INVISIBLE);
         submitDataBinding.textAchievementTitle.setVisibility(View.INVISIBLE);
         submitDataBinding.textAchievementDesc.setVisibility(View.INVISIBLE);
@@ -304,6 +365,62 @@ public class SubmitData extends AppCompatActivity {
         }
     }
 
+    public void animateAchievementStart() {
+        // Show the opening logo overlay
+        submitDataBinding.imageAchievementOpen.setVisibility(View.VISIBLE);
+
+        //scale opening image at beginning
+        submitDataBinding.imageAchievementOpen.animate().scaleX(Constants.Achievements.openingAnimationScaleValue).scaleY(Constants.Achievements.openingAnimationScaleValue).setDuration(ANIMATION_SCALE_DURATION)
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        submitDataBinding.imageAchievementOpen.animate().scaleX(1.0f).scaleY(1.0f).setDuration(ANIMATION_SCALE_DURATION);
+                    }
+                });
+
+        // set pivot to a little bit in from the left
+        submitDataBinding.imageAchievement.setPivotX(20f);
+
+        // Set the achievement image visibility and shrink it to 0 immediately
+        submitDataBinding.imageAchievement.setScaleX(0.0f);
+        submitDataBinding.imageAchievement.setVisibility(View.VISIBLE);
+
+        // Scale it up to full size
+        submitDataBinding.imageAchievement.animate()
+                .scaleX(1.0f)
+                .setDuration((long)(ANIMATION_SCALE_DURATION * 1.5))
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Reveal the text details after the scaling finishes
+                        submitDataBinding.imageAchievement.setVisibility(View.VISIBLE);
+                        submitDataBinding.textAchievementTitle.setVisibility(View.VISIBLE);
+                        submitDataBinding.textAchievementDesc.setVisibility(View.VISIBLE);
+                    }
+                })
+                .start();
+    }
+
+    // hiding achievements
+    public void animateAchievementEnd() {
+        // hide all acheivement eliments while keeping opener visible
+        submitDataBinding.imageAchievementOpen.setVisibility(View.VISIBLE);
+        submitDataBinding.imageAchievementOpen.animate().scaleX(Constants.Achievements.openingAnimationScaleValue).scaleY(Constants.Achievements.openingAnimationScaleValue).setDuration(ANIMATION_SCALE_DURATION / 2);
+        submitDataBinding.textAchievementDesc.setVisibility(View.INVISIBLE);
+        submitDataBinding.textAchievementTitle.setVisibility(View.INVISIBLE);
+        submitDataBinding.imageAchievement.animate()
+                .scaleX(0.18f)
+                .setDuration(ANIMATION_SCALE_DURATION + (ANIMATION_SCALE_DURATION / 2))
+                        .withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                submitDataBinding.imageAchievement.setVisibility(View.INVISIBLE);
+                                submitDataBinding.imageAchievementOpen.animate().scaleX(0.0f).scaleY(0.0f).setDuration(ANIMATION_SCALE_DURATION / 2).start();
+                            }
+                        });
+
+    }
+
     // =============================================================================================
     // Function:    initMatch
     // Description: Initialize the Match field
@@ -311,13 +428,76 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initMatch() {
+        submitDataBinding.spinnerMatch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                // Save off what you selected to be used until changed again
+                Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
+                submitDataBinding.imageGoogleResult.setImageResource(0);
+                submitDataBinding.imageDatabaseResult.setImageResource(0);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+
         // Adds the items from the match log files array to the list
         ArrayAdapter<String> adp_Match = new ArrayAdapter<>(this,
                 R.layout.cpr_spinner, FindMatches());
         adp_Match.setDropDownViewResource(R.layout.cpr_spinner_item);
         submitDataBinding.spinnerMatch.setAdapter(adp_Match);
         // Set the selection (if there are any) to the latest match (largest value in the list)
-        if (adp_Match.getCount() > 0) submitDataBinding.spinnerMatch.setSelection(adp_Match.getCount() - 1, true);
+        if (adp_Match.getCount() > 0) {
+            submitDataBinding.spinnerMatch.setSelection(adp_Match.getCount() - 1, true);
+            Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
+        }
+    }
+
+    // =============================================================================================
+    // Function:    initNetwork
+    // Description: Initialize the network related fields and process
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initNetwork() {
+        // setup Wi-Fi monitoring
+        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkRequest networkRequest = new NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .build();
+
+        networkCallback = new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onCapabilitiesChanged(@NonNull Network in_network, @NonNull NetworkCapabilities in_capabilities) {
+                int rssi = 0;
+
+                // On API 31+, WifiInfo is part of the capabilities (requires location permission)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    WifiInfo wifiInfo = (WifiInfo) in_capabilities.getTransportInfo();
+                    if (wifiInfo != null) rssi = wifiInfo.getRssi();
+                } else {
+                    // Fallback for API 30
+                    WifiManager wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                    rssi = wm.getConnectionInfo().getRssi();
+                }
+
+                // Convert RSSI to a signal level (0 to 4)
+                int level = WifiManager.calculateSignalLevel(rssi, 5);
+
+                // Update UI on the main thread
+                runOnUiThread(() -> updateWifiIcon(level));
+            }
+
+            @Override
+            public void onLost(@NonNull Network in_network) {
+                // Signal lost or Wi-Fi turned off
+                runOnUiThread(() -> updateWifiIcon(-1));
+            }
+        };
+
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
     }
 
     // =============================================================================================
@@ -347,17 +527,176 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void initBluetooth() {
+        // Until we have BT working...
+        submitDataBinding.butSendBT.setEnabled(false);
+
         submitDataBinding.butSendBT.setOnClickListener(view -> {
             // Reset pre-Match settings for next time
             Globals.numStartingGamePiece = Constants.PreMatch.STARTING_GAME_PIECES;
             Globals.isPractice = false;
             Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
 
-
 //            Intent GoToBluetooth = new Intent(SubmitData.this, Bluetooth.class);
 //            startActivity(GoToBluetooth);
 
             finish();
+        });
+    }
+
+    // =============================================================================================
+    // Function:    initGoogle
+    // Description: Initialize the Google field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initGoogle() {
+        if (!Globals.network.hasActiveInternet()) {
+            submitDataBinding.butSendGoogle.setEnabled(false);
+            return;
+        }
+
+        submitDataBinding.butSendGoogle.setOnClickListener(view -> {
+            Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
+            submitDataBinding.imageGoogleResult.setImageResource(0);
+            submitDataBinding.butSendGoogle.setEnabled(false);
+            submitDataBinding.butSendGoogle.setClickable(false);
+            submitDataBinding.butSendGoogle.setBackgroundColor(getColor(R.color.light_grey));
+
+
+            // If the Drive service is already built this session, upload straight away
+            if (Globals.network.isDriveServiceReady()) {
+                Globals.network.uploadToGoogle(this::handleGoogleUploadResult);
+                return;
+            }
+
+            // Reuse an existing sign-in if it already granted the Drive scope
+            Scope driveScope = new Scope(CPR_Network.GOOGLE_DRIVE_SCOPE);
+            GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(this);
+            if (GoogleSignIn.hasPermissions(last, driveScope)) {
+                onGoogleSignedIn(last);
+                return;
+            }
+
+            // Otherwise start the interactive sign-in / consent flow
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .requestScopes(driveScope)
+                    .build();
+            googleSignInLauncher.launch(GoogleSignIn.getClient(this, gso).getSignInIntent());
+        });
+    }
+
+    // =============================================================================================
+    // Function:    handleGoogleUploadResult
+    // Description: Handle the result of a Google Drive upload
+    // Parameters:  result  the result of the upload
+    // Output:      void
+    // =============================================================================================
+    private void handleGoogleUploadResult(CPR_Network.Result result) {
+        if (result == CPR_Network.Result.TRANSMISSION_SUCCESS) {
+            submitDataBinding.imageGoogleResult.setImageResource(R.drawable.checkmark);
+        } else {
+            submitDataBinding.imageGoogleResult.setImageResource(R.drawable.x);
+        }
+
+        submitDataBinding.butSendGoogle.setEnabled(true);
+        submitDataBinding.butSendGoogle.setClickable(true);
+        submitDataBinding.butSendGoogle.setBackgroundColor(getColor(R.color.white));
+    }
+
+    // =============================================================================================
+    // Function:    initGoogleSignIn
+    // Description: Register the launcher that receives the result of the Google sign-in flow.
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initGoogleSignIn() {
+        googleSignInLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    try {
+                        GoogleSignInAccount account = GoogleSignIn
+                                .getSignedInAccountFromIntent(result.getData())
+                                .getResult(ApiException.class);
+                        onGoogleSignedIn(account);
+                    } catch (ApiException e) {
+                        Toast.makeText(this, "Google sign-in failed", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageGoogleResult.setImageResource(R.drawable.x);
+                    }
+                });
+    }
+
+    // =============================================================================================
+    // Function:    onGoogleSignedIn
+    // Description: Build the Drive service from the signed-in account and start the upload.
+    // Parameters:  in_account  the account returned from Google sign-in
+    // Output:      void
+    // =============================================================================================
+    private void onGoogleSignedIn(GoogleSignInAccount in_account) {
+        if (in_account == null || in_account.getAccount() == null) {
+            Toast.makeText(this, "Google sign-in failed", Toast.LENGTH_SHORT).show();
+            submitDataBinding.imageGoogleResult.setImageResource(R.drawable.x);
+            return;
+        }
+
+        Globals.network.initDriveService(in_account.getAccount());
+        Globals.network.uploadToGoogle(this::handleGoogleUploadResult);
+    }
+
+    // =============================================================================================
+    // Function:    initDatabase
+    // Description: Initialize the Database field
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void initDatabase() {
+        if (!Globals.network.hasActiveInternet()) {
+            submitDataBinding.butSendDatabase.setEnabled(false);
+            submitDataBinding.butSendDatabase.setClickable(false);
+            submitDataBinding.butSendDatabase.setBackgroundColor(getColor(R.color.light_grey));
+            return;
+        }
+
+        submitDataBinding.butSendDatabase.setOnClickListener(view -> {
+            //Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
+            submitDataBinding.butSendDatabase.setEnabled(false);
+            submitDataBinding.butSendDatabase.setClickable(false);
+            submitDataBinding.butSendDatabase.setBackgroundColor(getColor(R.color.light_grey));
+            submitDataBinding.imageDatabaseResult.setImageResource(0);
+
+
+            Globals.network.sendFileToSQLServer(result -> {
+                submitDataBinding.butSendDatabase.setEnabled(true);
+                submitDataBinding.butSendDatabase.setClickable(true);
+                submitDataBinding.butSendDatabase.setBackgroundColor(getColor(R.color.white));
+                switch (result) {
+                    case TRANSMISSION_SUCCESS:
+                        Toast.makeText(this, "Successfully transmitted!", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.checkmark);
+                        break;
+                    case NO_NETWORK:
+                        Toast.makeText(this, "No network connection", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
+                        break;
+                    case HOST_UNREACHABLE:
+                        Toast.makeText(this, "SQL Server is unreachable", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
+                        break;
+                    case NO_DATA:
+                        Toast.makeText(this, "No data to send", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
+                        break;
+                    case SQL_EXCEPTION:
+                        Toast.makeText(this, "SQL Server Exception", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
+                        break;
+                    case TRANSMISSION_FAILURE:
+                    default:
+                        Toast.makeText(this, "Transmission failed", Toast.LENGTH_SHORT).show();
+                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
+                        break;
+                }
+            });
         });
     }
 
@@ -377,6 +716,7 @@ public class SubmitData extends AppCompatActivity {
             .setPositiveButton(getString(R.string.submit_alert_quit_positive), (dialog, which) -> {
                 SubmitData.this.finishAffinity();
                 stopLockTask();
+                Globals.network.shutdown();
                 System.exit(0);
             })
 
@@ -403,7 +743,7 @@ public class SubmitData extends AppCompatActivity {
             Globals.affectedByDefenseValue = Constants.PostMatch.AFFECTED_BY_DEFENSE_NOT_SELECTED;
             Globals.isPractice = false;
 
-            // Increases the team number so that it auto fills for the next match correctly
+            // Increases the team number so that it will autofill for the next match correctly
             Globals.CurrentMatchNumber++;
 
             Intent GoToPreMatch = new Intent(SubmitData.this, PreMatch.class);

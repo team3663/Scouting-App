@@ -4,9 +4,7 @@ import android.graphics.Color;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class Constants {
     public static class Logger {
@@ -82,10 +80,10 @@ public class Constants {
     }
 
     public static class PostMatch {
-        public static final String[] NO_CLIMB = new String[]{"No Climb"};
         public static final int ACCURACY_NOT_SELECTED = -1;
-        public static final String CLIMB_LEVEL_NOT_SELECTED = "-1";
-        public static final String CLIMB_POSITION_NOT_SELECTED = "-1";
+        public static final int CLIMB_POSITION_NOT_SELECTED = -1;
+        public static final int CLIMB_LEVEL_NOT_SELECTED = -1;
+        public static final String[] NO_CLIMB = new String[]{"No Climb"};
         public static final String STEAL_FUEL_NOT_SELECTED = "-1";
         public static final String AFFECTED_BY_DEFENSE_NOT_SELECTED = "-1";
     }
@@ -105,7 +103,6 @@ public class Constants {
         public static final int ID_NOT_MOVING_START = 64;
         public static final int ID_NOT_MOVING_END = 65;
         public static final int ID_AUTO_START_GAME_PIECE = 0;
-        public static final int ID_AUTO_CLIMB = 6;
         public static final int ID_TELE_CLIMB = 40;
         public static final int ID_NO_EVENT = 999;   // use to check if the eventID you're looking for doesn't exist
     }
@@ -121,12 +118,24 @@ public class Constants {
         public static final String STORAGE_URI = "StorageURI";
         public static final String PREF_ORIENTATION = "PreferredFieldOrientation";
         public static final String QR_SIZE = "PreferredQRSize";
+        public static final String GOOGLE_DRIVE_UPLOAD = "PreferredGoogleDriveUpload";
+        public static final String GOOGLE_DRIVE_DOWNLOAD = "PreferredGoogleDriveDownload";
+        public static final String SQL_SERVER = "PreferredSqlServer";
+        public static final String SQL_DATABASE = "PreferredSqlDatabase";
+        public static final String SQL_USER = "PreferredSqlUser";
+        public static final String SQL_PASSWORD = "PreferredSqlPassword";
     }
 
     public static class Settings {
         public static final String[] PREF_TEAM_POS = new String[]{"No Preference", "Blue 1", "Blue 2", "Blue 3", "Red 1", "Red 2", "Red 3"};
         public static final String[] PREF_FIELD_ORIENTATION = new String[]{"Automatic", "Blue On Left", "Red On Left"};
         public static final String RELOAD_DATA_KEY = "ReloadData";
+        public static final String DEFAULT_GOOGLE_UPLOAD = "1gPWc57rh9TWa0_Bd1ooUeKgqwT5yta39";
+        public static final String DEFAULT_GOOGLE_DOWNLOAD = "12up9moFxnuKezANiMV_ocmwmGz4ONA-v";
+        public static final String DEFAULT_SQL_SERVER = "mssql01.cpr3663.io";
+        public static final String DEFAULT_SQL_DATABASE = "CPR_Scouting_2026";
+        public static final String DEFAULT_SQL_USER = "CPR_Tablet";
+        public static final String DEFAULT_SQL_PASSWORD = "Aa98o1nTlHb4sg2u0YB2eNHxVfU4n17z";
     }
 
     public static class AppLaunch {
@@ -150,5 +159,7 @@ public class Constants {
         public static final ArrayList<Integer> COMPETITION_IDS_WORLDS = new ArrayList<>(Arrays.asList(11, 12, 13, 14, 15, 16, 17, 18));
         public static final ArrayList<Integer> COMPETITION_IDS_DCMP = new ArrayList<>(List.of(10));
         public static final ArrayList<Integer> COMPETITION_IDS_EINSTEIN = new ArrayList<>(List.of(19));
+        public static final float openingAnimationScaleValue = 1.2f;
+        public static final long ANIMATION_SCALE_DURATION = 500;
     }
 }
