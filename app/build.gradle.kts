@@ -88,6 +88,7 @@ dependencies {
     implementation(libs.google.drive.services)
     implementation(libs.play.services.auth)
     implementation(libs.mssql)
+    implementation(libs.swiperefreshlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
