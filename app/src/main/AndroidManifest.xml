@@ -86,5 +86,7 @@
             android:screenOrientation="sensorLandscape"
             tools:ignore="DiscouragedApi"/>
     </application>
-
+    <queries>
+        <package android:name="com.tailscale.ipn"/>
+    </queries>
 </manifest>

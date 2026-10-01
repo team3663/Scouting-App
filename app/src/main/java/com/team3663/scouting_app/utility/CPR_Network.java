@@ -3,6 +3,7 @@ package com.team3663.scouting_app.utility;
 import android.accounts.Account;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -17,6 +18,7 @@ import androidx.documentfile.provider.DocumentFile;
 
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
+import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 
@@ -164,6 +166,50 @@ public class CPR_Network {
         } catch (IOException e) {
             // unreachable, connection refused, or timed out
             return false;
+        }
+    }
+
+    // =============================================================================================
+    // Function:    ensureVPN
+    // Description: Checks if the dependent VPN client is installed and working.
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    public void ensureVPN() {
+        // Check if VPN client is installed
+        PackageManager pm = appContext.getPackageManager();
+        try {
+            pm.getPackageInfo(Constants.AppLaunch.VPN_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
+        } catch (PackageManager.NameNotFoundException e) {
+            Toast.makeText(appContext, R.string.applaunch_vpn_not_installed, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Check if VPN client is running by checking the VPN tunnel is actually up
+        ConnectivityManager cm = (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm == null) {
+            Toast.makeText(appContext, R.string.applaunch_vpn_not_checked, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Check every network, not just the active one
+        boolean vpn_working = false;
+        for (Network network : cm.getAllNetworks()) {
+            NetworkCapabilities caps = cm.getNetworkCapabilities(network);
+            if (caps != null && caps.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
+                vpn_working = true;
+                break;
+            }
+        }
+
+        // Launch if VPN is not working AND we have internet (otherwise it's moot)
+        if (!vpn_working && Globals.network.hasActiveInternet()) {
+            Intent launchIntent = pm.getLaunchIntentForPackage(Constants.AppLaunch.VPN_PACKAGE_NAME);
+            if (launchIntent != null) {
+                appContext.startActivity(launchIntent);
+            } else {
+                Toast.makeText(appContext, R.string.applaunch_vpn_not_launched, Toast.LENGTH_LONG).show();
+            }
         }
     }
 

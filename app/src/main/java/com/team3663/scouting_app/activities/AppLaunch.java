@@ -137,7 +137,10 @@ public class AppLaunch extends AppCompatActivity {
             appLaunchBinding.imageInternet.setVisibility(View.VISIBLE);
         else
             appLaunchBinding.imageInternet.setVisibility(View.INVISIBLE);
-        }
+
+        // Ensure we have VPN client running.
+        Globals.network.ensureVPN();
+    }
 
     // =============================================================================================
     // Function:    initSettings
