@@ -681,7 +681,7 @@ public class SubmitData extends AppCompatActivity {
 
         CircularProgressDrawable spinner = new CircularProgressDrawable(this);
         spinner.setStrokeWidth(4f);
-        spinner.setCenterRadius(20f);
+        spinner.setCenterRadius(18f);
         spinner.setColorSchemeColors(getColor(R.color.light_grey));
         label.setImageDrawable(spinner);
         spinner.start();
