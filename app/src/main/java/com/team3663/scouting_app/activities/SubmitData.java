@@ -687,12 +687,13 @@ public class SubmitData extends AppCompatActivity {
         spinner.start();
     }
 
-    // =============================================================================================
-    // Function:    showResult
-    // Description: Show the Check or X on the label for the button
-    // Parameters:  The label to be modified, The Toast Message, and if it was a success
-    // Output:      void
-    // =============================================================================================
+    /**
+     * Show the Check or X on the label for the button
+     * @param button The button to modify
+     * @param label The image label to modify
+     * @param message The text for the toast message
+     * @param success Whether it was a success or not
+     */
     private void showButtonResult(MaterialButton button, ImageView label, String message, boolean success) {
         if (message != null && !message.isBlank())
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
@@ -708,10 +709,20 @@ public class SubmitData extends AppCompatActivity {
         label.setImageResource(success ? R.drawable.checkmark : R.drawable.x);
     }
 
+    /**
+     * An Overload method for showButtonResult for when it is for Google
+     * @param success Whether it was a success or not
+     */
     private void showGoogleButtonResult(boolean success) {
         showButtonResult(submitDataBinding.butSendGoogle, submitDataBinding.imageGoogleResult, "", success);
     }
 
+
+    /**
+     * An Overload method for showButtonResult for when it is for the Database
+     * @param message The text for the toast message
+     * @param success Whether it was a success or not
+     */
     private void showDatabaseButtonResult(String message, boolean success) {
         showButtonResult(submitDataBinding.butSendDatabase, submitDataBinding.imageDatabaseResult, message, success);
     }
