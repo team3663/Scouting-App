@@ -70,7 +70,7 @@ public class SettingsPage2 extends Fragment {
     // Output:      void
     // =============================================================================================
     private void initQRSize() {
-        // MUST CONVERT TO STRING or it crashes with out warning
+        // MUST CONVERT TO STRING or it crashes without warning
         binding.editQRSize.setText(String.valueOf(Globals.sp.getInt(Constants.Prefs.QR_SIZE, Constants.QRCode.QR_SIZE_DEFAULT)));
     }
 

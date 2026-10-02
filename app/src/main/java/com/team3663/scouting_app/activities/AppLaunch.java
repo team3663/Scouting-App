@@ -236,8 +236,8 @@ public class AppLaunch extends AppCompatActivity {
                     if (in_apkUri != null) installApk(in_apkUri);
                     else Toast.makeText(AppLaunch.this, R.string.applaunch_update_download_failed, Toast.LENGTH_LONG).show();
 
-                    // Load the data regardless, so the app is usable if the user cancels the install.
-                    // If the install succeeds the app is replaced and restarted anyway.
+                    // Load the data regardless, so the app is usable if the user cancels the installation.
+                    // If the installation succeeds the app is replaced and restarted anyway.
                     proceedToDataLoad();
                 });
             }
