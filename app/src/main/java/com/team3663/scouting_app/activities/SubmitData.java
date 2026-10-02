@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -58,7 +60,7 @@ public class SubmitData extends AppCompatActivity {
     private static MediaPlayer media;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
-    private ActivityResultLauncher<Intent> googleSignInLauncher;
+    private ActivityResultLauncher<IntentSenderRequest> googleSignInLauncher;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -548,13 +550,25 @@ public class SubmitData extends AppCompatActivity {
             Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
             buttonClickUx(submitDataBinding.butSendGoogle, submitDataBinding.imageGoogleResult);
 
-            // Upload if the Drive service is ready (or can be made ready silently); otherwise
-            // launch the interactive sign-in (its result is handled by googleSignInLauncher).
-            if (Globals.network.ensureDriveService()) {
-                Globals.network.uploadToGoogle(this::handleGoogleUploadResult);
-            } else {
-                googleSignInLauncher.launch(Globals.network.getSignInIntent());
-            }
+            // Authorize for Drive (silently if the scope was already granted); upload once ready,
+            // or launch the consent flow whose result is handled by googleSignInLauncher.
+            Globals.network.authorizeDrive(new CPR_Network.AuthCallback() {
+                @Override
+                public void onAuthorized() {
+                    Globals.network.uploadToGoogle(SubmitData.this::handleGoogleUploadResult);
+                }
+
+                @Override
+                public void onNeedsConsent(@NonNull IntentSender in_intentSender) {
+                    googleSignInLauncher.launch(new IntentSenderRequest.Builder(in_intentSender).build());
+                }
+
+                @Override
+                public void onFailed(int in_statusCode) {
+                    Toast.makeText(SubmitData.this, "Google sign-in failed", Toast.LENGTH_SHORT).show();
+                    handleGoogleUploadResult(CPR_Network.Result.TRANSMISSION_FAILURE);
+                }
+            });
         });
     }
 
@@ -576,7 +590,7 @@ public class SubmitData extends AppCompatActivity {
     // =============================================================================================
     private void initGoogleSignIn() {
         googleSignInLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultContracts.StartIntentSenderForResult(),
                 result -> {
                     if (Globals.network.completeSignIn(result.getData()) == CPR_Network.SIGN_IN_OK) {
                         Globals.network.uploadToGoogle(this::handleGoogleUploadResult);

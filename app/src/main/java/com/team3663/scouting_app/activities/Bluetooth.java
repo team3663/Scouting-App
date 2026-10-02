@@ -19,8 +19,6 @@ import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.BluetoothBinding;
 
-import java.security.Permission;
-import java.security.Permissions;
 import java.util.UUID;
 
 public class Bluetooth extends AppCompatActivity {

@@ -1,10 +1,11 @@
 package com.team3663.scouting_app.utility;
 
-import android.accounts.Account;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -21,11 +22,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
+import com.google.android.gms.auth.api.identity.AuthorizationRequest;
+import com.google.android.gms.auth.api.identity.AuthorizationResult;
+import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Scope;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
@@ -33,7 +34,6 @@ import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
@@ -84,7 +84,7 @@ public class CPR_Network {
     private static final String LOG_TAG = "CPR_Network";
     // completeSignIn() returns this when the Drive service was built successfully.
     public static final int SIGN_IN_OK = 0;
-    // completeSignIn() returns this when sign-in produced no usable account (no ApiException status).
+    // completeSignIn() returns this when authorization produced no usable result (no ApiException status).
     public static final int SIGN_IN_NO_ACCOUNT = -1;
     private Drive driveService;
 
@@ -134,6 +134,22 @@ public class CPR_Network {
         void onDownloaded(Uri in_apkUri);
     }
 
+    // =============================================================================================
+    // Result of an asynchronous Drive authorization request (callbacks are invoked on the main
+    // thread).  Replaces the old synchronous ensureDriveService() boolean: because the Authorization
+    // API is async, the caller reacts to one of three outcomes instead of an if/else.
+    //   onAuthorized   - the Drive scope is already granted; driveService is built and ready to use.
+    //   onNeedsConsent - the user must grant consent; launch in_intentSender through an
+    //                    ActivityResultContracts.StartIntentSenderForResult launcher, then pass the
+    //                    returned Intent to completeSignIn().
+    //   onFailed       - authorization could not be completed (in_statusCode is the GMS status code).
+    // =============================================================================================
+    public interface AuthCallback {
+        void onAuthorized();
+        void onNeedsConsent(@NonNull IntentSender in_intentSender);
+        void onFailed(int in_statusCode);
+    }
+
     // Constructor: create the new Network object
     public CPR_Network(@NonNull Context in_context) {
         // Use the application context to avoid leaking an Activity.
@@ -141,9 +157,8 @@ public class CPR_Network {
         this.executor = Executors.newCachedThreadPool();
         this.mainHandler = new Handler(Looper.getMainLooper());
 
-        // Try to build the Drive service silently from an already-authorized account, so callers
-        // that only need Drive access (and never an interactive sign-in) are ready immediately.
-        ensureDriveService();
+        // The Drive service is built lazily the first time a caller invokes authorizeDrive(); the
+        // Authorization API is asynchronous, so there is nothing useful to do synchronously here.
     }
 
     // =============================================================================================
@@ -413,30 +428,32 @@ public class CPR_Network {
     }
 
     // =============================================================================================
-    // Function:    initDriveService
-    // Description: Build the Google Drive service from a signed-in Google account. Must be called
-    //              (with a Drive-scoped account) before uploadToGoogle(). Uploads run as this
-    //              user, so any Drive folder shared with them (including one they don't own) is
-    //              reachable by folder id.
-    // Parameters:  in_account  the signed-in Google account with GOOGLE_DRIVE_SCOPE granted
-    // Output:      void
+    // Function:    buildDriveService
+    // Description: Build the Google Drive service from the OAuth access token in an AuthorizationResult.
+    //              Uploads/downloads run as the authorized user, so any Drive folder shared with them
+    //              (including one they don't own) is reachable by folder id.  Access tokens are
+    //              short-lived (~1 hour); each caller re-runs authorizeDrive() before its Drive work,
+    //              which rebuilds the service with a fresh token (silently, if the scope is still
+    //              granted), so there is no long-lived token to refresh here.
+    // Parameters:  in_result  the AuthorizationResult holding a granted Drive-scope access token
+    // Output:      true if a usable Drive service was built, false if no access token was present
     // =============================================================================================
-    public void initDriveService(@NonNull Account in_account) {
-        GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(
-                appContext, Collections.singletonList(GOOGLE_DRIVE_SCOPE));
-        credential.setSelectedAccount(in_account);
+    private boolean buildDriveService(@NonNull AuthorizationResult in_result) {
+        String accessToken = in_result.getAccessToken();
+        if (accessToken == null) return false;
 
         driveService = new Drive.Builder(
                 new NetHttpTransport(),
                 GsonFactory.getDefaultInstance(),
-                credential)
+                request -> request.getHeaders().setAuthorization("Bearer " + accessToken))
                 .setApplicationName("CPR Scouting App")
                 .build();
+        return true;
     }
 
     // =============================================================================================
     // Function:    isDriveServiceReady
-    // Description: Has a Drive service been built from a signed-in account yet?
+    // Description: Has a Drive service been built from an authorized account yet?
     // Parameters:  void
     // Output:      boolean
     // =============================================================================================
@@ -445,68 +462,66 @@ public class CPR_Network {
     }
 
     // =============================================================================================
-    // Function:    ensureDriveService
-    // Description: Make the Drive service usable WITHOUT any interactive sign-in.  Returns true if
-    //              the service is already built, or if it can be built silently from an account that
-    //              previously granted the Drive scope.  Returns false if an interactive sign-in is
-    //              required (the caller should then launch getSignInIntent()).
-    // Parameters:  void
-    // Output:      boolean - true if the Drive service is ready to use
+    // Function:    authorizeDrive
+    // Description: Ensure the app is authorized for the Drive scope and the Drive service is built,
+    //              using the Google Identity Authorization API (the replacement for the deprecated
+    //              Google Sign-In API).  The request is asynchronous:
+    //                - if the scope was already granted, the service is built silently and
+    //                  in_callback.onAuthorized() runs (no UI);
+    //                - if the user must consent, in_callback.onNeedsConsent() runs with the
+    //                  IntentSender the caller launches through a StartIntentSenderForResult
+    //                  launcher (whose result goes to completeSignIn());
+    //                - on error, in_callback.onFailed() runs with the GMS status code.
+    //              All callbacks run on the main thread.
+    // Parameters:  in_callback  invoked on the main thread with the outcome
+    // Output:      void
     // =============================================================================================
-    public boolean ensureDriveService() {
-        if (driveService != null) return true;
-
-        GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(appContext);
-        if (GoogleSignIn.hasPermissions(last, DRIVE_SCOPE) && last.getAccount() != null) {
-            initDriveService(last.getAccount());
-            return true;
-        }
-        return false;
-    }
-
-    // =============================================================================================
-    // Function:    getSignInIntent
-    // Description: Build the Google sign-in / Drive-consent Intent.  The caller launches this through
-    //              its own ActivityResultLauncher (the launcher must be registered on an Activity /
-    //              Fragment, which is why it can't live here), then passes the result to
-    //              completeSignIn().
-    // Parameters:  void
-    // Output:      Intent to launch
-    // =============================================================================================
-    @NonNull
-    public Intent getSignInIntent() {
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .requestScopes(DRIVE_SCOPE)
+    public void authorizeDrive(@NonNull AuthCallback in_callback) {
+        AuthorizationRequest request = AuthorizationRequest.builder()
+                .setRequestedScopes(Collections.singletonList(DRIVE_SCOPE))
                 .build();
-        return GoogleSignIn.getClient(appContext, gso).getSignInIntent();
+
+        Identity.getAuthorizationClient(appContext)
+                .authorize(request)
+                .addOnSuccessListener(result -> {
+                    // A pending intent means the user still has to grant consent interactively.
+                    if (result.hasResolution()) {
+                        PendingIntent pending = result.getPendingIntent();
+                        if (pending != null) in_callback.onNeedsConsent(pending.getIntentSender());
+                        else in_callback.onFailed(CommonStatusCodes.INTERNAL_ERROR);
+                        return;
+                    }
+                    // Scope already granted: build the service and proceed without any UI.
+                    if (buildDriveService(result)) in_callback.onAuthorized();
+                    else in_callback.onFailed(CommonStatusCodes.SIGN_IN_REQUIRED);
+                })
+                .addOnFailureListener(e -> {
+                    int status = (e instanceof ApiException)
+                            ? ((ApiException) e).getStatusCode() : CommonStatusCodes.INTERNAL_ERROR;
+                    Log.w(LOG_TAG, "Drive authorization failed, status=" + status + " ("
+                            + CommonStatusCodes.getStatusCodeString(status) + ")", e);
+                    in_callback.onFailed(status);
+                });
     }
 
     // =============================================================================================
     // Function:    completeSignIn
-    // Description: Process the result of the sign-in Intent launched from getSignInIntent() and build
-    //              the Drive service.  The account picker can "succeed" while granting the Drive
-    //              scope fails/was declined, so getResult() may still throw; when it does, we fall
-    //              back to any account that actually ended up with the scope before giving up.
-    // Parameters:  in_data  the Intent returned to the caller's ActivityResultLauncher
-    // Output:      SIGN_IN_OK on success, SIGN_IN_NO_ACCOUNT if no usable account, otherwise the
-    //              ApiException status code (e.g. 10 = DEVELOPER_ERROR, 12501 = cancelled)
+    // Description: Process the result of the consent flow launched from authorizeDrive()'s
+    //              onNeedsConsent() and build the Drive service.  Extracts the AuthorizationResult
+    //              from the returned Intent; getAuthorizationResultFromIntent() throws when consent
+    //              was declined or cancelled, in which case we report the real status code.
+    // Parameters:  in_data  the Intent returned to the caller's StartIntentSenderForResult launcher
+    // Output:      SIGN_IN_OK on success, SIGN_IN_NO_ACCOUNT if no access token was granted, otherwise
+    //              the ApiException status code (e.g. 16 = CANCELLED)
     // =============================================================================================
     public int completeSignIn(Intent in_data) {
         try {
-            GoogleSignInAccount account = GoogleSignIn
-                    .getSignedInAccountFromIntent(in_data)
-                    .getResult(ApiException.class);
-            if (account != null && account.getAccount() != null) {
-                initDriveService(account.getAccount());
-                return SIGN_IN_OK;
-            }
+            AuthorizationResult result = Identity.getAuthorizationClient(appContext)
+                    .getAuthorizationResultFromIntent(in_data);
+            if (buildDriveService(result)) return SIGN_IN_OK;
         } catch (ApiException e) {
-            // Identity selection and scope consent are separate steps; if the scope was actually
-            // granted, use the account anyway.  Otherwise report the real status code.
-            if (ensureDriveService()) return SIGN_IN_OK;
-            Log.w(LOG_TAG, "Google sign-in failed, status=" + e.getStatusCode() + " ("
-                    + GoogleSignInStatusCodes.getStatusCodeString(e.getStatusCode()) + ")", e);
+            Log.w(LOG_TAG, "Drive authorization failed, status=" + e.getStatusCode() + " ("
+                    + CommonStatusCodes.getStatusCodeString(e.getStatusCode()) + ")", e);
             return e.getStatusCode();
         }
         return SIGN_IN_NO_ACCOUNT;
@@ -526,8 +541,8 @@ public class CPR_Network {
 
     // =============================================================================================
     // Function:    uploadToGoogle
-    // Description: Asynchronously copy the file to the shared Google Drive folder. initDriveService()
-    //              must have been called first. Feedback is shown via Toast on the main thread.
+    // Description: Asynchronously copy the file to the shared Google Drive folder. authorizeDrive()
+    //              must have succeeded first. Feedback is shown via Toast on the main thread.
     // Parameters:  in_callback invoked on the main thread with the result
     // Output:      void
     // =============================================================================================
@@ -636,8 +651,8 @@ public class CPR_Network {
 
     // =============================================================================================
     // Function:    downloadFromGoogle
-    // Description: Asynchronously copy the files from the shared Google Drive folder. initDriveService()
-    //              must have been called first. Feedback is shown via Toast on the main thread.
+    // Description: Asynchronously copy the files from the shared Google Drive folder. authorizeDrive()
+    //              must have succeeded first. Feedback is shown via Toast on the main thread.
     //              For each remote file:
     //                  - if no local copy exists, download it
     //                  - if a local copy exists and the MD5 checksum matches, skip it
@@ -851,7 +866,7 @@ public class CPR_Network {
     // =============================================================================================
     // Function:    checkForAppUpdate
     // Description: Asynchronously look in the Google Drive download folder for an APK newer than the
-    //              currently installed version.  initDriveService() must have been called first.
+    //              currently installed version.  authorizeDrive() must have succeeded first.
     //              The callback is invoked on the main thread with either the newest newer APK found
     //              or a "no update" result (which also covers no internet / not signed in / errors).
     // Parameters:  in_currentVersion  installed version as {major, minor, patch}
@@ -968,7 +983,7 @@ public class CPR_Network {
     // =============================================================================================
     // Function:    downloadApkToDownloads
     // Description: Asynchronously download an APK from Google Drive into the device's public
-    //              Downloads folder (via MediaStore).  initDriveService() must have been called
+    //              Downloads folder (via MediaStore).  authorizeDrive() must have succeeded
     //              first.  The callback is invoked on the main thread with the content Uri of the
     //              downloaded APK, or null on failure.
     // Parameters:  in_info      the APK to download

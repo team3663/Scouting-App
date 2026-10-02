@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.UriPermission;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -18,7 +19,9 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.core.graphics.Insets;
@@ -84,8 +87,8 @@ public class AppLaunch extends AppCompatActivity {
     // Receives the result of the interactive Google sign-in flow used by the update check.
     // The sign-in handling lives in CPR_Network; here we only react to success/failure: on success
     // run the update check, otherwise report the status code and continue loading data.
-    ActivityResultLauncher<Intent> googleSignInLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
+    ActivityResultLauncher<IntentSenderRequest> googleSignInLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartIntentSenderForResult(),
             result -> {
                 int status = Globals.network.completeSignIn(result.getData());
                 if (status == CPR_Network.SIGN_IN_OK) {
@@ -192,13 +195,25 @@ public class AppLaunch extends AppCompatActivity {
             return;
         }
 
-        // Use the Drive service if it can be made ready without prompting; otherwise launch the
-        // interactive sign-in (its result is handled by googleSignInLauncher above).
-        if (Globals.network.ensureDriveService()) {
-            runUpdateCheck();
-        } else {
-            googleSignInLauncher.launch(Globals.network.getSignInIntent());
-        }
+        // Authorize for Drive (silently if the scope was already granted); run the update check once
+        // ready, or launch the consent flow (its result is handled by googleSignInLauncher above).
+        Globals.network.authorizeDrive(new CPR_Network.AuthCallback() {
+            @Override
+            public void onAuthorized() {
+                runUpdateCheck();
+            }
+
+            @Override
+            public void onNeedsConsent(@NonNull IntentSender in_intentSender) {
+                googleSignInLauncher.launch(new IntentSenderRequest.Builder(in_intentSender).build());
+            }
+
+            @Override
+            public void onFailed(int in_statusCode) {
+                Toast.makeText(AppLaunch.this, getString(R.string.applaunch_update_signin_failed, in_statusCode), Toast.LENGTH_LONG).show();
+                proceedToDataLoad();
+            }
+        });
     }
 
     // =============================================================================================
@@ -213,7 +228,7 @@ public class AppLaunch extends AppCompatActivity {
 
         Globals.network.checkForAppUpdate(currentVersion, new CPR_Network.UpdateCheckCallback() {
             @Override
-            public void onUpdateAvailable(CPR_Network.AppUpdateInfo in_info) {
+            public void onUpdateAvailable(@NonNull CPR_Network.AppUpdateInfo in_info) {
                 String versionText = in_info.version[0] + "." + in_info.version[1] + "." + in_info.version[2];
                 Toast.makeText(AppLaunch.this, getString(R.string.applaunch_update_found, versionText), Toast.LENGTH_LONG).show();
 

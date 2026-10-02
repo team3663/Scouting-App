@@ -15,8 +15,6 @@ import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.FragmentSettingsPage1Binding;
 
-import java.util.Objects;
-
 public class SettingsPage1 extends Fragment {
     public FragmentSettingsPage1Binding binding;
     public int savedCompetitionId;
