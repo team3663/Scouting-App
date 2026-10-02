@@ -123,7 +123,7 @@ public class QRCode extends AppCompatActivity {
             Globals.stealFuelValue = Constants.PostMatch.STEAL_FUEL_NOT_SELECTED;
             Globals.affectedByDefenseValue = Constants.PostMatch.AFFECTED_BY_DEFENSE_NOT_SELECTED;
 
-            // Increases the team number so that it auto fills for the next match correctly
+            // Increases the team number so that it autofills for the next match correctly
             Globals.CurrentMatchNumber++;
 
             Intent GoToPreMatch = new Intent(QRCode.this, PreMatch.class);

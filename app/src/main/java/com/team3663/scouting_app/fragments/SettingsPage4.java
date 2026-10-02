@@ -1,7 +1,6 @@
 package com.team3663.scouting_app.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentSender;
 import android.net.ConnectivityManager;
 import android.net.Network;

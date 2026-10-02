@@ -398,7 +398,7 @@ public class MatchTally extends AppCompatActivity {
         String switch_text = in_switch.getText().toString();
 
         // Based on the switch, set the background to the proper transition and start it.
-        // Objects can't share a transition but we don't want to create a new one every time. (memory leak?)
+        // Objects can't share a transition, but we don't want to create a new one every time. (memory leak?)
         // Transition can only run once, it appears, so need to set the background to it each time.
         if (switch_text.equals(getString(R.string.switch_on_defense))) {
             in_switch.setBackground(switch_defense_transition);
@@ -609,7 +609,7 @@ public class MatchTally extends AppCompatActivity {
 
         // If clicked, undo the last event selected
         matchBinding.butUndo.setOnClickListener(view -> {
-            // If the most recent event was a climb and we're going to undo it, re-enable the climb button
+            // If the most recent event was a climb, and we're going to undo it, re-enable the climb button
             if (matchBinding.textStatus.getText().toString().equalsIgnoreCase("Climb")) {
                 climb_button_pressed = false;
                 if (in_alliance_zone) matchBinding.butClimb.setEnabled(true);
@@ -699,7 +699,7 @@ public class MatchTally extends AppCompatActivity {
 
         // This gets called if either the switch is clicked on, or the slide toggle is flipped (covers both)
         matchBinding.switchNotMoving.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // If the button is being turned ON make it RED otherwise LTGRAY
+            // If the button is being turned ON change the color to RED otherwise LTGRAY
             if (isChecked) {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_NOT_MOVING_START, game_Timer.getElapsedMilliSeconds());
                 matchBinding.switchNotMoving.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
@@ -736,7 +736,7 @@ public class MatchTally extends AppCompatActivity {
 
         // This gets called if either the switch is clicked on, or the slide toggle is flipped (covers both)
         matchBinding.switchDefense.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // If the button is being turned ON make it RED otherwise LTGRAY
+            // If the button is being turned ON change the color to RED otherwise LTGRAY
             if (isChecked) {
                 Globals.EventLogger.LogEvent(Constants.Events.ID_DEFENSE_START, game_Timer.getElapsedMilliSeconds());
                 matchBinding.switchDefense.setBackgroundColor(Constants.Match.BUTTON_COLOR_FLASH);
@@ -975,7 +975,7 @@ public class MatchTally extends AppCompatActivity {
             }
         });
 
-        // At the start of the match, we'll disabled the seekBar so it can't be changed.
+        // At the start of the match, we'll disable the seekBar so it can't be changed.
         // When the match starts, we'll enable it again.
         seekbar.setEnabled(false);
     }

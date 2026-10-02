@@ -110,7 +110,7 @@ public class SettingsPage1 extends Fragment {
     // Output:      void
     // =============================================================================================
     private void initScoutingTeam() {
-        // MUST CONVERT TO STRING or it crashes with out warning
+        // MUST CONVERT TO STRING or it crashes without warning
         binding.editScoutingTeam.setText(Globals.sp.getString(Constants.Prefs.SCOUTING_TEAM, ""));
 
         // Define a text box for the name of the Team to appear in when you enter the Number
