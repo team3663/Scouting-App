@@ -882,7 +882,7 @@ public class CPR_Network {
 
         // Matches "<prefix>-<major>.<minor>.<patch>.apk" (case-insensitive on the .apk extension)
         Pattern apk_pattern = Pattern.compile(
-                Pattern.quote(Constants.AppLaunch.APK_NAME_PREFIX) + "-(\\d+)\\.(\\d+)\\.(\\d+)\\.apk",
+                Pattern.quote(Constants.AppLaunch.APK_NAME_PREFIX) + "-(\\d+)\\.(\\d+)\\.(\\d+)-release\\.apk",
                 Pattern.CASE_INSENSITIVE);
 
         AppUpdateInfo best = null;
