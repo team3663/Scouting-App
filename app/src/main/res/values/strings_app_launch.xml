@@ -26,4 +26,10 @@
     <string name="applaunch_vpn_not_installed">The VPN client TailScale is not installed on this device.</string>
     <string name="applaunch_vpn_not_launched">The VPN client TailScale was NOT launched successfully.</string>
     <string name="applaunch_vpn_not_checked">Unable to check status of the VPN client TailScale (ConnectivityManager issue).</string>
+
+    <string name="applaunch_update_checking">Checking for a newer version…</string>
+    <string name="applaunch_update_found">A newer version (%1$s) was found.  Downloading…</string>
+    <string name="applaunch_update_download_failed">Failed to download the new version.</string>
+    <string name="applaunch_update_install_sources">Allow installing apps from this app, then relaunch to update.</string>
+    <string name="applaunch_update_signin_failed">Google sign-in failed (status %1$d); skipping update check.</string>
 </resources>

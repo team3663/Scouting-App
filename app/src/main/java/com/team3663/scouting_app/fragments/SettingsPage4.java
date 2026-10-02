@@ -21,11 +21,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.Scope;
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
@@ -92,12 +87,9 @@ public class SettingsPage4 extends Fragment {
         googleSignInLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    try {
-                        GoogleSignInAccount account = GoogleSignIn
-                                .getSignedInAccountFromIntent(result.getData())
-                                .getResult(ApiException.class);
-                        onGoogleSignedIn(account);
-                    } catch (ApiException e) {
+                    if (Globals.network.completeSignIn(result.getData()) == CPR_Network.SIGN_IN_OK) {
+                        Globals.network.downloadFromGoogle(this::handleGoogleDownloadResult);
+                    } else {
                         Toast.makeText(requireContext().getApplicationContext(), "Google sign-in failed", Toast.LENGTH_SHORT).show();
                         binding.imageGoogleResult.setImageResource(R.drawable.x);
                     }
@@ -162,45 +154,14 @@ public class SettingsPage4 extends Fragment {
             binding.butDownload.setClickable(false);
             binding.butDownload.setBackgroundColor(requireContext().getColor(R.color.light_grey));
 
-            // If the Drive service is already built this session, upload straight away
-            if (Globals.network.isDriveServiceReady()) {
+            // Download if the Drive service is ready (or can be made ready silently); otherwise
+            // launch the interactive sign-in (its result is handled by googleSignInLauncher).
+            if (Globals.network.ensureDriveService()) {
                 Globals.network.downloadFromGoogle(this::handleGoogleDownloadResult);
-                return;
+            } else {
+                googleSignInLauncher.launch(Globals.network.getSignInIntent());
             }
-
-            // Reuse an existing sign-in if it already granted the Drive scope
-            Scope driveScope = new Scope(CPR_Network.GOOGLE_DRIVE_SCOPE);
-            GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(requireContext().getApplicationContext());
-            if (GoogleSignIn.hasPermissions(last, driveScope)) {
-                onGoogleSignedIn(last);
-                return;
-            }
-
-            // Otherwise start the interactive sign-in / consent flow
-            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestEmail()
-                    .requestScopes(driveScope)
-                    .build();
-            googleSignInLauncher.launch(GoogleSignIn.getClient(requireContext().getApplicationContext(), gso).getSignInIntent());
-
         });
-    }
-
-    // =============================================================================================
-    // Function:    onGoogleSignedIn
-    // Description: Build the Drive service from the signed-in account and start the upload.
-    // Parameters:  in_account  the account returned from Google sign-in
-    // Output:      void
-    // =============================================================================================
-    private void onGoogleSignedIn(GoogleSignInAccount in_account) {
-        if (in_account == null || in_account.getAccount() == null) {
-            Toast.makeText(requireContext().getApplicationContext(), "Google sign-in failed", Toast.LENGTH_SHORT).show();
-            binding.imageGoogleResult.setImageResource(R.drawable.x);
-            return;
-        }
-
-        Globals.network.initDriveService(in_account.getAccount());
-        Globals.network.downloadFromGoogle(this::handleGoogleDownloadResult);
     }
 
     // =============================================================================================

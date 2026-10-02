@@ -1,6 +1,8 @@
 package com.team3663.scouting_app.utility;
 
 import android.accounts.Account;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,14 +10,23 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Scope;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.team3663.scouting_app.R;
@@ -48,6 +59,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // =============================================================================================
 // Class:       CPR_Network
@@ -67,6 +80,12 @@ public class CPR_Network {
     // signed-in account can write to it via the folder's "anyone with the link can edit" grant).
     // Note: this scope does NOT allow listing/reading other files in that folder.
     public static final String GOOGLE_DRIVE_SCOPE = DriveScopes.DRIVE;
+    private static final Scope DRIVE_SCOPE = new Scope(GOOGLE_DRIVE_SCOPE);
+    private static final String LOG_TAG = "CPR_Network";
+    // completeSignIn() returns this when the Drive service was built successfully.
+    public static final int SIGN_IN_OK = 0;
+    // completeSignIn() returns this when sign-in produced no usable account (no ApiException status).
+    public static final int SIGN_IN_NO_ACCOUNT = -1;
     private Drive driveService;
 
     // =============================================================================================
@@ -87,12 +106,44 @@ public class CPR_Network {
         void onResult(@NonNull Result result);
     }
 
+    // =============================================================================================
+    // Describes a newer app version (APK) found in the Google Drive download folder.
+    // version is a {major, minor, patch} triple parsed from the file name.
+    // =============================================================================================
+    public static class AppUpdateInfo {
+        public final String fileId;
+        public final String fileName;
+        public final int[] version;
+
+        public AppUpdateInfo(@NonNull String in_fileId, @NonNull String in_fileName, @NonNull int[] in_version) {
+            this.fileId = in_fileId;
+            this.fileName = in_fileName;
+            this.version = in_version;
+        }
+    }
+
+    // Result of an asynchronous app-update check (callback is invoked on the main thread).
+    public interface UpdateCheckCallback {
+        void onUpdateAvailable(@NonNull AppUpdateInfo in_info);
+        void onNoUpdate();
+    }
+
+    // Result of an asynchronous APK download (callback is invoked on the main thread).
+    // in_apkUri is the MediaStore content Uri of the downloaded APK, or null on failure.
+    public interface ApkDownloadCallback {
+        void onDownloaded(Uri in_apkUri);
+    }
+
     // Constructor: create the new Network object
     public CPR_Network(@NonNull Context in_context) {
         // Use the application context to avoid leaking an Activity.
         this.appContext = in_context.getApplicationContext();
         this.executor = Executors.newCachedThreadPool();
         this.mainHandler = new Handler(Looper.getMainLooper());
+
+        // Try to build the Drive service silently from an already-authorized account, so callers
+        // that only need Drive access (and never an interactive sign-in) are ready immediately.
+        ensureDriveService();
     }
 
     // =============================================================================================
@@ -391,6 +442,74 @@ public class CPR_Network {
     // =============================================================================================
     public boolean isDriveServiceReady() {
         return driveService != null;
+    }
+
+    // =============================================================================================
+    // Function:    ensureDriveService
+    // Description: Make the Drive service usable WITHOUT any interactive sign-in.  Returns true if
+    //              the service is already built, or if it can be built silently from an account that
+    //              previously granted the Drive scope.  Returns false if an interactive sign-in is
+    //              required (the caller should then launch getSignInIntent()).
+    // Parameters:  void
+    // Output:      boolean - true if the Drive service is ready to use
+    // =============================================================================================
+    public boolean ensureDriveService() {
+        if (driveService != null) return true;
+
+        GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(appContext);
+        if (GoogleSignIn.hasPermissions(last, DRIVE_SCOPE) && last.getAccount() != null) {
+            initDriveService(last.getAccount());
+            return true;
+        }
+        return false;
+    }
+
+    // =============================================================================================
+    // Function:    getSignInIntent
+    // Description: Build the Google sign-in / Drive-consent Intent.  The caller launches this through
+    //              its own ActivityResultLauncher (the launcher must be registered on an Activity /
+    //              Fragment, which is why it can't live here), then passes the result to
+    //              completeSignIn().
+    // Parameters:  void
+    // Output:      Intent to launch
+    // =============================================================================================
+    @NonNull
+    public Intent getSignInIntent() {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestScopes(DRIVE_SCOPE)
+                .build();
+        return GoogleSignIn.getClient(appContext, gso).getSignInIntent();
+    }
+
+    // =============================================================================================
+    // Function:    completeSignIn
+    // Description: Process the result of the sign-in Intent launched from getSignInIntent() and build
+    //              the Drive service.  The account picker can "succeed" while granting the Drive
+    //              scope fails/was declined, so getResult() may still throw; when it does, we fall
+    //              back to any account that actually ended up with the scope before giving up.
+    // Parameters:  in_data  the Intent returned to the caller's ActivityResultLauncher
+    // Output:      SIGN_IN_OK on success, SIGN_IN_NO_ACCOUNT if no usable account, otherwise the
+    //              ApiException status code (e.g. 10 = DEVELOPER_ERROR, 12501 = cancelled)
+    // =============================================================================================
+    public int completeSignIn(Intent in_data) {
+        try {
+            GoogleSignInAccount account = GoogleSignIn
+                    .getSignedInAccountFromIntent(in_data)
+                    .getResult(ApiException.class);
+            if (account != null && account.getAccount() != null) {
+                initDriveService(account.getAccount());
+                return SIGN_IN_OK;
+            }
+        } catch (ApiException e) {
+            // Identity selection and scope consent are separate steps; if the scope was actually
+            // granted, use the account anyway.  Otherwise report the real status code.
+            if (ensureDriveService()) return SIGN_IN_OK;
+            Log.w(LOG_TAG, "Google sign-in failed, status=" + e.getStatusCode() + " ("
+                    + GoogleSignInStatusCodes.getStatusCodeString(e.getStatusCode()) + ")", e);
+            return e.getStatusCode();
+        }
+        return SIGN_IN_NO_ACCOUNT;
     }
 
     // =============================================================================================
@@ -726,6 +845,208 @@ public class CPR_Network {
         catch (IOException e) {
             showToast(appContext, "Local Checksum (MD5) Failed: Unable to read file");
             return null;
+        }
+    }
+
+    // =============================================================================================
+    // Function:    checkForAppUpdate
+    // Description: Asynchronously look in the Google Drive download folder for an APK newer than the
+    //              currently installed version.  initDriveService() must have been called first.
+    //              The callback is invoked on the main thread with either the newest newer APK found
+    //              or a "no update" result (which also covers no internet / not signed in / errors).
+    // Parameters:  in_currentVersion  installed version as {major, minor, patch}
+    //              in_callback        invoked on the main thread with the result
+    // Output:      void
+    // =============================================================================================
+    public void checkForAppUpdate(@NonNull int[] in_currentVersion, @NonNull UpdateCheckCallback in_callback) {
+        executor.execute(() -> {
+            AppUpdateInfo info = findNewerApkBlocking(in_currentVersion);
+            mainHandler.post(() -> {
+                if (info != null) in_callback.onUpdateAvailable(info);
+                else in_callback.onNoUpdate();
+            });
+        });
+    }
+
+    // =============================================================================================
+    // Function:    findNewerApkBlocking
+    // Description: Synchronous scan of the Google Drive download folder for the newest APK whose
+    //              version is strictly greater than the installed version.  Must NOT be called on
+    //              the main thread.  Returns null when there is no newer APK, no internet, no Drive
+    //              service, or an error occurs.
+    // Parameters:  in_currentVersion  installed version as {major, minor, patch}
+    // Output:      AppUpdateInfo (or null)
+    // =============================================================================================
+    private AppUpdateInfo findNewerApkBlocking(@NonNull int[] in_currentVersion) {
+        if (!hasActiveInternet() || driveService == null) return null;
+
+        // Matches "<prefix>-<major>.<minor>.<patch>.apk" (case-insensitive on the .apk extension)
+        Pattern apk_pattern = Pattern.compile(
+                Pattern.quote(Constants.AppLaunch.APK_NAME_PREFIX) + "-(\\d+)\\.(\\d+)\\.(\\d+)-release\\.apk",
+                Pattern.CASE_INSENSITIVE);
+
+        AppUpdateInfo best = null;
+        try {
+            for (File remote : listDriveFilesInDownloadFolder()) {
+                String name = remote.getName();
+                if (name == null) continue;
+
+                Matcher m = apk_pattern.matcher(name);
+                if (!m.matches()) continue;
+
+                int[] version = {
+                        Integer.parseInt(Objects.requireNonNull(m.group(1))),
+                        Integer.parseInt(Objects.requireNonNull(m.group(2))),
+                        Integer.parseInt(Objects.requireNonNull(m.group(3)))
+                };
+
+                // Only keep APKs strictly newer than what's installed, and keep the newest of those
+                if (compareVersion(version, in_currentVersion) <= 0) continue;
+                if (best == null || compareVersion(version, best.version) > 0) {
+                    best = new AppUpdateInfo(remote.getId(), name, version);
+                }
+            }
+        } catch (IOException e) {
+            return null;
+        }
+
+        return best;
+    }
+
+    // =============================================================================================
+    // Function:    listDriveFilesInDownloadFolder
+    // Description: Lists all non-trashed, non-folder files directly inside the configured Google
+    //              Drive download folder.  Unlike listGoogleFiles(), this does NOT toast or throw
+    //              when the folder is empty - it just returns an empty list.
+    // Parameters:  void
+    // Output:      List of Files
+    // =============================================================================================
+    private List<File> listDriveFilesInDownloadFolder() throws IOException {
+        List<File> files = new ArrayList<>();
+
+        String folderId = Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_DOWNLOAD, Constants.Settings.DEFAULT_GOOGLE_DOWNLOAD);
+        if (folderId.isEmpty()) return files;
+
+        String query = "'" + folderId + "' in parents and trashed = false "
+                + "and mimeType != 'application/vnd.google-apps.folder'";
+        String pageToken = null;
+        do {
+            FileList page = driveService.files().list()
+                    .setQ(query)
+                    .setSpaces("drive")
+                    .setFields("nextPageToken, files(id, name)")
+                    .setSupportsAllDrives(true)
+                    .setIncludeItemsFromAllDrives(true)
+                    .setPageSize(1000)
+                    .setPageToken(pageToken)
+                    .execute();
+
+            if (page.getFiles() != null) {
+                files.addAll(page.getFiles());
+            }
+
+            pageToken = page.getNextPageToken();
+        } while (pageToken != null);
+
+        return files;
+    }
+
+    // =============================================================================================
+    // Function:    compareVersion
+    // Description: Compares two {major, minor, patch} version triples.
+    // Parameters:  in_a  first version
+    //              in_b  second version
+    // Output:      negative if a < b, zero if equal, positive if a > b
+    // =============================================================================================
+    private int compareVersion(@NonNull int[] in_a, @NonNull int[] in_b) {
+        for (int i = 0; i < 3; i++) {
+            if (in_a[i] != in_b[i]) return Integer.compare(in_a[i], in_b[i]);
+        }
+        return 0;
+    }
+
+    // =============================================================================================
+    // Function:    downloadApkToDownloads
+    // Description: Asynchronously download an APK from Google Drive into the device's public
+    //              Downloads folder (via MediaStore).  initDriveService() must have been called
+    //              first.  The callback is invoked on the main thread with the content Uri of the
+    //              downloaded APK, or null on failure.
+    // Parameters:  in_info      the APK to download
+    //              in_callback  invoked on the main thread with the result
+    // Output:      void
+    // =============================================================================================
+    public void downloadApkToDownloads(@NonNull AppUpdateInfo in_info, @NonNull ApkDownloadCallback in_callback) {
+        executor.execute(() -> {
+            Uri uri = downloadApkToDownloadsBlocking(in_info);
+            mainHandler.post(() -> in_callback.onDownloaded(uri));
+        });
+    }
+
+    // =============================================================================================
+    // Function:    downloadApkToDownloadsBlocking
+    // Description: Synchronous download of an APK from Google Drive into the public Downloads folder.
+    //              Must NOT be called on the main thread.  Writes atomically using MediaStore's
+    //              IS_PENDING flag and returns the content Uri on success (null on failure).
+    // Parameters:  in_info  the APK to download
+    // Output:      Uri (or null)
+    // =============================================================================================
+    private Uri downloadApkToDownloadsBlocking(@NonNull AppUpdateInfo in_info) {
+        if (!hasActiveInternet() || driveService == null) return null;
+
+        ContentResolver resolver = appContext.getContentResolver();
+        Uri collection = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+
+        // Best-effort removal of any copy we previously downloaded, so MediaStore doesn't pile up
+        // "name (1).apk" duplicates.  We can only delete items this app owns; ignore failures.
+        deleteExistingDownload(resolver, collection, in_info.fileName);
+
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Downloads.DISPLAY_NAME, in_info.fileName);
+        values.put(MediaStore.Downloads.MIME_TYPE, Constants.AppLaunch.APK_MIME_TYPE);
+        values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
+        values.put(MediaStore.Downloads.IS_PENDING, 1);
+
+        Uri itemUri = resolver.insert(collection, values);
+        if (itemUri == null) return null;
+
+        try (OutputStream out = resolver.openOutputStream(itemUri, "wt")) {
+            if (out == null) {
+                resolver.delete(itemUri, null, null);
+                return null;
+            }
+            driveService.files().get(in_info.fileId).executeMediaAndDownloadTo(out);
+            out.flush();
+        } catch (Exception e) {
+            resolver.delete(itemUri, null, null);
+            return null;
+        }
+
+        // Publish the finished file so other apps (the package installer) can read it
+        values.clear();
+        values.put(MediaStore.Downloads.IS_PENDING, 0);
+        resolver.update(itemUri, values, null, null);
+
+        return itemUri;
+    }
+
+    // =============================================================================================
+    // Function:    deleteExistingDownload
+    // Description: Best-effort delete of a previously downloaded file with the same display name in
+    //              the Downloads collection.  Only items this app owns can be deleted; failures are
+    //              ignored.
+    // Parameters:  in_resolver    the content resolver
+    //              in_collection  the Downloads collection Uri
+    //              in_fileName    the display name to remove
+    // Output:      void
+    // =============================================================================================
+    private void deleteExistingDownload(@NonNull ContentResolver in_resolver, @NonNull Uri in_collection, @NonNull String in_fileName) {
+        String selection = MediaStore.Downloads.DISPLAY_NAME + " = ? AND "
+                + MediaStore.Downloads.RELATIVE_PATH + " LIKE ?";
+        String[] args = {in_fileName, Environment.DIRECTORY_DOWNLOADS + "%"};
+        try {
+            in_resolver.delete(in_collection, selection, args);
+        } catch (Exception e) {
+            // ignore - not fatal, MediaStore will simply create a uniquely named copy
         }
     }
 }

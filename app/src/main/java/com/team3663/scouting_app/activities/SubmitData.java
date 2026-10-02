@@ -33,11 +33,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.Scope;
 import com.google.android.material.button.MaterialButton;
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
@@ -553,26 +548,13 @@ public class SubmitData extends AppCompatActivity {
             Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
             buttonClickUx(submitDataBinding.butSendGoogle, submitDataBinding.imageGoogleResult);
 
-            // If the Drive service is already built this session, upload straight away
-            if (Globals.network.isDriveServiceReady()) {
+            // Upload if the Drive service is ready (or can be made ready silently); otherwise
+            // launch the interactive sign-in (its result is handled by googleSignInLauncher).
+            if (Globals.network.ensureDriveService()) {
                 Globals.network.uploadToGoogle(this::handleGoogleUploadResult);
-                return;
+            } else {
+                googleSignInLauncher.launch(Globals.network.getSignInIntent());
             }
-
-            // Reuse an existing sign-in if it already granted the Drive scope
-            Scope driveScope = new Scope(CPR_Network.GOOGLE_DRIVE_SCOPE);
-            GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(this);
-            if (GoogleSignIn.hasPermissions(last, driveScope)) {
-                onGoogleSignedIn(last);
-                return;
-            }
-
-            // Otherwise start the interactive sign-in / consent flow
-            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestEmail()
-                    .requestScopes(driveScope)
-                    .build();
-            googleSignInLauncher.launch(GoogleSignIn.getClient(this, gso).getSignInIntent());
         });
     }
 
@@ -596,33 +578,13 @@ public class SubmitData extends AppCompatActivity {
         googleSignInLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    try {
-                        GoogleSignInAccount account = GoogleSignIn
-                                .getSignedInAccountFromIntent(result.getData())
-                                .getResult(ApiException.class);
-                        onGoogleSignedIn(account);
-                    } catch (ApiException e) {
+                    if (Globals.network.completeSignIn(result.getData()) == CPR_Network.SIGN_IN_OK) {
+                        Globals.network.uploadToGoogle(this::handleGoogleUploadResult);
+                    } else {
                         Toast.makeText(this, "Google sign-in failed", Toast.LENGTH_SHORT).show();
                         submitDataBinding.imageGoogleResult.setImageResource(R.drawable.x);
                     }
                 });
-    }
-
-    // =============================================================================================
-    // Function:    onGoogleSignedIn
-    // Description: Build the Drive service from the signed-in account and start the upload.
-    // Parameters:  in_account  the account returned from Google sign-in
-    // Output:      void
-    // =============================================================================================
-    private void onGoogleSignedIn(GoogleSignInAccount in_account) {
-        if (in_account == null || in_account.getAccount() == null) {
-            Toast.makeText(this, "Google sign-in failed", Toast.LENGTH_SHORT).show();
-            submitDataBinding.imageGoogleResult.setImageResource(R.drawable.x);
-            return;
-        }
-
-        Globals.network.initDriveService(in_account.getAccount());
-        Globals.network.uploadToGoogle(this::handleGoogleUploadResult);
     }
 
     // =============================================================================================
