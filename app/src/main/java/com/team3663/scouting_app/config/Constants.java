@@ -141,6 +141,10 @@ public class Constants {
     public static class AppLaunch {
         public static final long SPLASH_SCREEN_DELAY = 20;
         public static final String VPN_PACKAGE_NAME = "com.tailscale.ipn";
+        // Release APKs are named "<APK_NAME_PREFIX>-<major>.<minor>.<patch>.apk" (see base.archivesName
+        // in app/build.gradle.kts).  Used to detect newer versions in the Google Drive download folder.
+        public static final String APK_NAME_PREFIX = "CPR-Scout";
+        public static final String APK_MIME_TYPE = "application/vnd.android.package-archive";
     }
 
     public static class QRCode{

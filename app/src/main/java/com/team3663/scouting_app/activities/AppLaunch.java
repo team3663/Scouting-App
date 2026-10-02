@@ -45,6 +45,11 @@ public class AppLaunch extends AppCompatActivity {
     private AppLaunchBinding appLaunchBinding;
     public static Timer appLaunch_timer = new Timer();
 
+    // Installed app version as {major, minor, patch}, used to detect a newer APK on Google Drive
+    private int[] currentVersion = new int[]{0, 0, 0};
+    // Guards against kicking off the data-file load more than once across the async update flow
+    private boolean dataLoadStarted = false;
+
     ActivityResultLauncher<Intent> settingsActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -76,6 +81,21 @@ public class AppLaunch extends AppCompatActivity {
                 }
             });
 
+    // Receives the result of the interactive Google sign-in flow used by the update check.
+    // The sign-in handling lives in CPR_Network; here we only react to success/failure: on success
+    // run the update check, otherwise report the status code and continue loading data.
+    ActivityResultLauncher<Intent> googleSignInLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                int status = Globals.network.completeSignIn(result.getData());
+                if (status == CPR_Network.SIGN_IN_OK) {
+                    runUpdateCheck();
+                } else {
+                    Toast.makeText(this, getString(R.string.applaunch_update_signin_failed, status), Toast.LENGTH_LONG).show();
+                    proceedToDataLoad();
+                }
+            });
+
     @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
     @Override
     protected void onCreate(Bundle in_savedInstanceState) {
@@ -104,6 +124,9 @@ public class AppLaunch extends AppCompatActivity {
         }
         appLaunchBinding.textVersion.setText(getString(R.string.app_version) + " " + pInfo.versionName);
 
+        // Parse the installed version (e.g. "3.6.2") into {major, minor, patch} for update comparison
+        currentVersion = parseVersion(pInfo.versionName);
+
         // Get the Shared Preferences where we save off app settings to use next time
         if (Globals.sp == null)
             Globals.sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
@@ -115,6 +138,136 @@ public class AppLaunch extends AppCompatActivity {
 
         Animation fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         appLaunchBinding.textBanner.startAnimation(fadeIn);
+
+        // check if we have access to the internet
+        if (Globals.network.hasActiveInternet())
+            appLaunchBinding.imageInternet.setVisibility(View.VISIBLE);
+        else
+            appLaunchBinding.imageInternet.setVisibility(View.INVISIBLE);
+
+        // Before reading the data files, check Google Drive for a newer version of this app.
+        // When the check resolves (no update, can't check, or the download fails), the data files
+        // are loaded.  If a newer version is found it is downloaded and the installer is launched.
+        startUpdateCheckThenLoad();
+
+        // Ensure we have VPN client running.
+        Globals.network.ensureVPN();
+    }
+
+    // =============================================================================================
+    // Function:    parseVersion
+    // Description: Parse a "major.minor.patch" version string into an int[]{major, minor, patch}.
+    //              Any missing or non-numeric component defaults to 0.
+    // Parameters:  in_versionName  the version string (e.g. "3.6.2")
+    // Output:      int[] of length 3
+    // =============================================================================================
+    private int[] parseVersion(String in_versionName) {
+        int[] version = new int[]{0, 0, 0};
+        if (in_versionName == null) return version;
+
+        String[] parts = in_versionName.split("\\.");
+        for (int i = 0; i < 3 && i < parts.length; i++) {
+            try {
+                version[i] = Integer.parseInt(parts[i].trim());
+            } catch (NumberFormatException e) {
+                version[i] = 0;
+            }
+        }
+        return version;
+    }
+
+    // =============================================================================================
+    // Function:    startUpdateCheckThenLoad
+    // Description: Entry point for the "check for newer APK before loading data" flow.  Requires
+    //              internet and a Google account with the Drive scope.  Reuses an existing sign-in
+    //              when possible; otherwise launches the interactive sign-in.  If we can't check
+    //              (offline), we skip straight to loading the data files.
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void startUpdateCheckThenLoad() {
+        // No internet -> nothing to check, just load the data
+        if (!Globals.network.hasActiveInternet()) {
+            proceedToDataLoad();
+            return;
+        }
+
+        // Use the Drive service if it can be made ready without prompting; otherwise launch the
+        // interactive sign-in (its result is handled by googleSignInLauncher above).
+        if (Globals.network.ensureDriveService()) {
+            runUpdateCheck();
+        } else {
+            googleSignInLauncher.launch(Globals.network.getSignInIntent());
+        }
+    }
+
+    // =============================================================================================
+    // Function:    runUpdateCheck
+    // Description: Ask CPR_Network to scan the Google Drive download folder for a newer APK.  If one
+    //              is found, download it and launch the system installer; otherwise load the data.
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void runUpdateCheck() {
+        Toast.makeText(this, R.string.applaunch_update_checking, Toast.LENGTH_SHORT).show();
+
+        Globals.network.checkForAppUpdate(currentVersion, new CPR_Network.UpdateCheckCallback() {
+            @Override
+            public void onUpdateAvailable(CPR_Network.AppUpdateInfo in_info) {
+                String versionText = in_info.version[0] + "." + in_info.version[1] + "." + in_info.version[2];
+                Toast.makeText(AppLaunch.this, getString(R.string.applaunch_update_found, versionText), Toast.LENGTH_LONG).show();
+
+                Globals.network.downloadApkToDownloads(in_info, in_apkUri -> {
+                    if (in_apkUri != null) installApk(in_apkUri);
+                    else Toast.makeText(AppLaunch.this, R.string.applaunch_update_download_failed, Toast.LENGTH_LONG).show();
+
+                    // Load the data regardless, so the app is usable if the user cancels the install.
+                    // If the install succeeds the app is replaced and restarted anyway.
+                    proceedToDataLoad();
+                });
+            }
+
+            @Override
+            public void onNoUpdate() {
+                proceedToDataLoad();
+            }
+        });
+    }
+
+    // =============================================================================================
+    // Function:    installApk
+    // Description: Launch the system package installer for a downloaded APK.  The installer shows
+    //              its own confirmation prompt.  If this app isn't allowed to install unknown apps,
+    //              send the user to the system setting to grant it.
+    // Parameters:  in_apkUri  the content Uri of the downloaded APK
+    // Output:      void
+    // =============================================================================================
+    private void installApk(Uri in_apkUri) {
+        // On modern Android the user must grant this app permission to install unknown apps
+        if (!getPackageManager().canRequestPackageInstalls()) {
+            Toast.makeText(this, R.string.applaunch_update_install_sources, Toast.LENGTH_LONG).show();
+            Intent sources = new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + getPackageName()));
+            sources.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(sources);
+            return;
+        }
+
+        Intent install = new Intent(Intent.ACTION_VIEW);
+        install.setDataAndType(in_apkUri, Constants.AppLaunch.APK_MIME_TYPE);
+        install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(install);
+    }
+
+    // =============================================================================================
+    // Function:    proceedToDataLoad
+    // Description: Load the data files (or request storage permissions first).  Safe to call from
+    //              any of the async update-flow callbacks; it only runs once per launch.
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    private void proceedToDataLoad() {
+        if (dataLoadStarted) return;
+        dataLoadStarted = true;
 
         // Find out if we have permissions.  Since our app is only requesting one location, if it's not empty, we're good
         List<UriPermission> perm_list = getContentResolver().getPersistedUriPermissions();
@@ -131,15 +284,6 @@ public class AppLaunch extends AppCompatActivity {
 
         // While loading Matches, we messed with Globals.CurrentMatchType, so reset it
         Globals.CurrentMatchType = Constants.PreMatch.DEFAULT_MATCH_TYPE;
-
-        // check if we have access to the internet
-        if (Globals.network.hasActiveInternet())
-            appLaunchBinding.imageInternet.setVisibility(View.VISIBLE);
-        else
-            appLaunchBinding.imageInternet.setVisibility(View.INVISIBLE);
-
-        // Ensure we have VPN client running.
-        Globals.network.ensureVPN();
     }
 
     // =============================================================================================
