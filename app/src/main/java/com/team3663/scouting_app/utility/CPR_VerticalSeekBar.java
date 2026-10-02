@@ -225,8 +225,7 @@ public class CPR_VerticalSeekBar extends View {
 
     @Override
     public boolean performClick() {
-        super.performClick();
-        return true;
+        return super.performClick();
     }
 
     // Member function: Required override function to handle touch events
