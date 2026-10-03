@@ -12,16 +12,12 @@ import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.utility.achievements.Achievements;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Objects;
 
 // =============================================================================================
@@ -64,7 +60,7 @@ public class Logger {
         match_log_events.add(new LoggerEventRow(-1, 0, 0, 0, "", 0));
     }
 
-    // Member Function: Write out all of the match data to disk.
+    // Member Function: Write out all the match data to disk.
     public void WriteOutFiles() {
         // If this is a practice, there's nothing to do
         if (Globals.isPractice) return;
@@ -220,7 +216,7 @@ public class Logger {
             if (!repeatedRow) count = ler.Count;
             repeatedRow = false;
 
-            // Normalize the X, Y coordinates to be a %age of the image size
+            // Normalize the X, Y coordinates to be a percentage of the image size
             // Multiply the %age by 10,000 to get a whole number representing 2 digits of precision (ie: 0.3956 turns into 3956)
             // We do this to save 2 characters in the .csv file that we need to transmit.
             int normalized_x = 0;
@@ -295,7 +291,7 @@ public class Logger {
         // Update Achievement data
         Achievements.data_NumEvents++;
 
-        // Determine the EventGroup Id this event belongs to
+        // Determine the EventGroup ID this event belongs to
         int GroupId = Globals.EventList.getEventGroup(in_EventId);
 
         // If this is NOT a new sequence, we need to write out the previous event id that goes with this one
@@ -516,7 +512,7 @@ public class Logger {
         return rc;
     }
 
-    // Member Function: Search through the output directory for an event Id.
+    // Member Function: Search through the output directory for an event ID.
     public boolean findEvent(int in_eventId) {
         for (int i = match_log_events.size() - 1; i >=0; --i) {
             if (match_log_events.get(i).EventId == in_eventId) return true;
@@ -545,7 +541,7 @@ public class Logger {
             Count = in_Count;
 
             // Ensure we are always generating a positive (or zero) increment to the logged time to prevent negative sequence cycle times
-            // This can mostly happen only between AUTO and TELEOP in the 3 second gap, but good to have here to ensure the integrity of the data
+            // This can mostly happen only between AUTO and TELEOP in the 3-second gap, but good to have here to ensure the integrity of the data
             int prev_time = 0;
             if ((Globals.EventLogger != null) && (!Globals.EventLogger.match_log_events.isEmpty())) prev_time = Globals.EventLogger.match_log_events.get(Globals.EventLogger.match_log_events.size() - 1).LogTime;
             LogTime = Math.max(in_Time, prev_time);

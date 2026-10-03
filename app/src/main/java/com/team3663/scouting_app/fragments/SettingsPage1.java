@@ -15,8 +15,6 @@ import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.FragmentSettingsPage1Binding;
 
-import java.util.Objects;
-
 public class SettingsPage1 extends Fragment {
     public FragmentSettingsPage1Binding binding;
     public int savedCompetitionId;
@@ -112,7 +110,7 @@ public class SettingsPage1 extends Fragment {
     // Output:      void
     // =============================================================================================
     private void initScoutingTeam() {
-        // MUST CONVERT TO STRING or it crashes with out warning
+        // MUST CONVERT TO STRING or it crashes without warning
         binding.editScoutingTeam.setText(Globals.sp.getString(Constants.Prefs.SCOUTING_TEAM, ""));
 
         // Define a text box for the name of the Team to appear in when you enter the Number

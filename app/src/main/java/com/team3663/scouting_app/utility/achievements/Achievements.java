@@ -43,7 +43,7 @@ public class Achievements {
     public static int data_match_FuelPickUpDepot = 0;
     public static int data_match_FuelPickUpNeutral = 0;
 
-    // Constructor: Define all of the achievements and the rule(s) they are based on
+    // Constructor: Define all the achievements and the rule(s) they are based on
     public Achievements() {
         Achievement ach1 = new Achievement(1, "Getting the hang of it", "Scouted 2 matches in a row", 5);
         ach1.addRule(new RuleNumMatches(2));

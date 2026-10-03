@@ -8,7 +8,7 @@ plugins {
 
 var versionMajor = 3
 var versionMinor = 6
-var versionPatch = 4
+var versionPatch = 5
 
 var applicationName = "CPR-Scout"
 

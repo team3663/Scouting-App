@@ -1,7 +1,7 @@
 package com.team3663.scouting_app.fragments;
 
 import android.content.Context;
-import android.content.Intent;
+import android.content.IntentSender;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,7 +32,7 @@ public class SettingsPage4 extends Fragment {
     public FragmentSettingsPage4Binding binding;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
-    private ActivityResultLauncher<Intent> googleSignInLauncher;
+    private ActivityResultLauncher<IntentSenderRequest> googleSignInLauncher;
 
 
     @Override
@@ -85,7 +86,7 @@ public class SettingsPage4 extends Fragment {
     // =============================================================================================
     private void initGoogleSignIn() {
         googleSignInLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultContracts.StartIntentSenderForResult(),
                 result -> {
                     if (Globals.network.completeSignIn(result.getData()) == CPR_Network.SIGN_IN_OK) {
                         Globals.network.downloadFromGoogle(this::handleGoogleDownloadResult);
@@ -154,13 +155,25 @@ public class SettingsPage4 extends Fragment {
             binding.butDownload.setClickable(false);
             binding.butDownload.setBackgroundColor(requireContext().getColor(R.color.light_grey));
 
-            // Download if the Drive service is ready (or can be made ready silently); otherwise
-            // launch the interactive sign-in (its result is handled by googleSignInLauncher).
-            if (Globals.network.ensureDriveService()) {
-                Globals.network.downloadFromGoogle(this::handleGoogleDownloadResult);
-            } else {
-                googleSignInLauncher.launch(Globals.network.getSignInIntent());
-            }
+            // Authorize for Drive (silently if the scope was already granted); download once ready,
+            // or launch the consent flow whose result is handled by googleSignInLauncher.
+            Globals.network.authorizeDrive(new CPR_Network.AuthCallback() {
+                @Override
+                public void onAuthorized() {
+                    Globals.network.downloadFromGoogle(SettingsPage4.this::handleGoogleDownloadResult);
+                }
+
+                @Override
+                public void onNeedsConsent(@NonNull IntentSender in_intentSender) {
+                    googleSignInLauncher.launch(new IntentSenderRequest.Builder(in_intentSender).build());
+                }
+
+                @Override
+                public void onFailed(int in_statusCode) {
+                    Toast.makeText(requireContext().getApplicationContext(), "Google sign-in failed", Toast.LENGTH_SHORT).show();
+                    handleGoogleDownloadResult(CPR_Network.Result.TRANSMISSION_FAILURE);
+                }
+            });
         });
     }
 

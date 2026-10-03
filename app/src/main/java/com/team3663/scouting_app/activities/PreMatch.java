@@ -481,7 +481,7 @@ public class PreMatch extends AppCompatActivity {
         }
         Globals.EventLogger = new Logger(getApplicationContext());
 
-        // Log all of the data from this page
+        // Log all the data from this page
         Globals.CurrentTeamToScout = preMatchBinding.spinnerTeamToScout.getSelectedItem().toString();
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_TEAM_TO_SCOUT, Globals.CurrentTeamToScout);
         Globals.EventLogger.LogData(Constants.Logger.LOGKEY_SCOUTER, preMatchBinding.editScouterName.getText().toString().toUpperCase().replace(" ",""));
