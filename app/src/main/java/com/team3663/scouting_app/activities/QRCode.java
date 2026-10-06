@@ -1,7 +1,9 @@
 package com.team3663.scouting_app.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +18,7 @@ import androidx.documentfile.provider.DocumentFile;
 
 import com.google.zxing.BarcodeFormat;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
+import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.QrCodeBinding;
@@ -31,9 +34,10 @@ public class QRCode extends AppCompatActivity {
     // Global variables
     // =============================================================================================
     private QrCodeBinding qrCodeBinding;
-    static private QR_FileString qrFileString;
-    static private int currentImagePage;
-    static private final int CurrentQRSize = Globals.sp.getInt(Constants.Prefs.QR_SIZE, 0);
+    private QR_FileString qrFileString;
+    private int currentImagePage;
+    private final SharedPreferences sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+    private final int CurrentQRSize = sp.getInt(Constants.Prefs.QR_SIZE, 0);
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -268,7 +272,7 @@ public class QRCode extends AppCompatActivity {
     // Description: Defines a structure/class to hold the information for the file data we'll use
     //              to generate the QR codes
     // =============================================================================================
-    private static class QR_FileString {
+    private class QR_FileString {
         ArrayList<String> file_page = new ArrayList<>();
         int size;
 
