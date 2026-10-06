@@ -685,7 +685,7 @@ public class CPR_Network {
         executor.execute(() -> {
             try {
                 int files_downloaded = 0;
-                for (File remote : listGoogleFiles()) {
+                for (File remote : listGoogleFiles("text/csv")) {
                     // silently ignore any google native docs (they don't have a checksum)
                     if (remote.getMd5Checksum() == null) continue;
 
@@ -784,12 +784,13 @@ public class CPR_Network {
     // =============================================================================================
     // Function:    listGoogleFiles
     // Description: Lists all non-trashed files directly inside a GoogleDrive folder
-    // Parameters:  void
+    // Parameters:  in_mimeType    file type to filter on (e.g. "text/csv")
     // Output:      List of Files
     // =============================================================================================
-    public List<File> listGoogleFiles() throws IOException {
+    public List<File> listGoogleFiles(String in_mimeType) throws IOException {
         List<File> files = new ArrayList<>();
         String pageToken = null;
+        String mimeTypeFilter = in_mimeType == null ? "mimeType != 'application/vnd.google-apps.folder'" : "mimeType = '" + in_mimeType + "'";
 
         String folderId = Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_DOWNLOAD, Constants.Settings.DEFAULT_GOOGLE_DOWNLOAD);
         if (folderId.isEmpty()) {
@@ -797,7 +798,7 @@ public class CPR_Network {
         }
 
         String query = "'" + folderId + "' in parents and trashed = false "
-                + "and mimeType != 'application/vnd.google-apps.folder'";
+                + "and " + mimeTypeFilter;
         do {
             FileList page = driveService.files().list()
                     .setQ(query)
@@ -902,7 +903,7 @@ public class CPR_Network {
 
         AppUpdateInfo best = null;
         try {
-            for (File remote : listDriveFilesInDownloadFolder()) {
+            for (File remote : listGoogleFiles(null)) {
                 String name = remote.getName();
                 if (name == null) continue;
 
@@ -926,44 +927,6 @@ public class CPR_Network {
         }
 
         return best;
-    }
-
-    // =============================================================================================
-    // Function:    listDriveFilesInDownloadFolder
-    // Description: Lists all non-trashed, non-folder files directly inside the configured Google
-    //              Drive download folder.  Unlike listGoogleFiles(), this does NOT toast or throw
-    //              when the folder is empty - it just returns an empty list.
-    // Parameters:  void
-    // Output:      List of Files
-    // =============================================================================================
-    private List<File> listDriveFilesInDownloadFolder() throws IOException {
-        List<File> files = new ArrayList<>();
-
-        String folderId = Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_DOWNLOAD, Constants.Settings.DEFAULT_GOOGLE_DOWNLOAD);
-        if (folderId.isEmpty()) return files;
-
-        String query = "'" + folderId + "' in parents and trashed = false "
-                + "and mimeType != 'application/vnd.google-apps.folder'";
-        String pageToken = null;
-        do {
-            FileList page = driveService.files().list()
-                    .setQ(query)
-                    .setSpaces("drive")
-                    .setFields("nextPageToken, files(id, name)")
-                    .setSupportsAllDrives(true)
-                    .setIncludeItemsFromAllDrives(true)
-                    .setPageSize(1000)
-                    .setPageToken(pageToken)
-                    .execute();
-
-            if (page.getFiles() != null) {
-                files.addAll(page.getFiles());
-            }
-
-            pageToken = page.getNextPageToken();
-        } while (pageToken != null);
-
-        return files;
     }
 
     // =============================================================================================

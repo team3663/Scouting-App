@@ -21,6 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
@@ -154,6 +155,14 @@ public class SettingsPage4 extends Fragment {
             binding.butDownload.setEnabled(false);
             binding.butDownload.setClickable(false);
             binding.butDownload.setBackgroundColor(requireContext().getColor(R.color.light_grey));
+
+            // display a spinning animation while the download is in progress
+            CircularProgressDrawable spinner = new CircularProgressDrawable(requireContext());
+            spinner.setStrokeWidth(4f);
+            spinner.setCenterRadius(18f);
+            spinner.setColorSchemeColors(requireContext().getColor(R.color.light_grey));
+            binding.imageGoogleResult.setImageDrawable(spinner);
+            spinner.start();
 
             // Authorize for Drive (silently if the scope was already granted); download once ready,
             // or launch the consent flow whose result is handled by googleSignInLauncher.
