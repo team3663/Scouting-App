@@ -198,7 +198,12 @@ public class CPR_Network {
 
     // =============================================================================================
     // Function:    hasActiveInternet
-    // Description: is there an active, internet-capable network?
+    // Description: is there an active network with working (validated) internet access?
+    //              NET_CAPABILITY_INTERNET alone only means the network claims to route internet;
+    //              a Wi-Fi/VPN connection with no usable upstream still reports it.  We also require
+    //              NET_CAPABILITY_VALIDATED, which Android sets only after confirming the network can
+    //              actually reach the internet, so we don't launch network work (ie: Google sign-in)
+    //              on a dead connection.
     // Parameters:  void
     // Output:      void
     // =============================================================================================
@@ -214,7 +219,8 @@ public class CPR_Network {
         }
         NetworkCapabilities caps = cm.getNetworkCapabilities(network);
         return caps != null
-                && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+                && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
     }
 
     // =============================================================================================
