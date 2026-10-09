@@ -13,7 +13,7 @@ google-api-client = "2.9.1"
 google-drive-v3 = "v3-rev20260405-2.0.0"
 play-services-auth = "22.0.0"
 documentfile = "1.1.0"
-mssql-jdbc="13.5.1.jre11-preview"
+mssql-jdbc="13.6.0.jre11"
 swiperefreshlayout = "1.2.0"
 
 [libraries]
