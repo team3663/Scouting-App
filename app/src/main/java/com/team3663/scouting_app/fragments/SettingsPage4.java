@@ -23,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.team3663.scouting_app.R;
+import com.team3663.scouting_app.activities.Settings;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.FragmentSettingsPage4Binding;
@@ -58,6 +59,8 @@ public class SettingsPage4 extends Fragment {
         if (connectivityManager != null && networkCallback != null) {
             connectivityManager.unregisterNetworkCallback(networkCallback);
         }
+
+        binding = null;
     }
 
     // =============================================================================================
@@ -104,8 +107,8 @@ public class SettingsPage4 extends Fragment {
     // Output:      void
     // =============================================================================================
     private void initFields() {
-        String pref_Upload = Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_UPLOAD, "");
-        String pref_Download = Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_DOWNLOAD, "");
+        String pref_Upload = Settings.sp.getString(Constants.Prefs.GOOGLE_DRIVE_UPLOAD, "");
+        String pref_Download = Settings.sp.getString(Constants.Prefs.GOOGLE_DRIVE_DOWNLOAD, "");
 
         // Set up fields.  If the Google folders are either empty or happen to match the default, turn on the default checkbox,
         // otherwise allow them to be edited.

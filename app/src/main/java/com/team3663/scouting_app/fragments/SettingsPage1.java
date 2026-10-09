@@ -1,5 +1,7 @@
 package com.team3663.scouting_app.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.team3663.scouting_app.R;
+import com.team3663.scouting_app.activities.Settings;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.FragmentSettingsPage1Binding;
@@ -50,7 +53,7 @@ public class SettingsPage1 extends Fragment {
         binding.spinnerCompetition.setAdapter(adp_Competition);
 
         // Set the selection (if there is one) to the saved one
-        savedCompetitionId = Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1);
+        savedCompetitionId = Settings.sp.getInt(Constants.Prefs.COMPETITION_ID, -1);
         if ((savedCompetitionId > -1) && (adp_Competition.getCount() > 0)) {
             int pos = adp_Competition.getPosition(Globals.CompetitionList.getCompetitionDescription(savedCompetitionId));
             if (pos > -1) binding.spinnerCompetition.setSelection(pos, true);
@@ -81,7 +84,7 @@ public class SettingsPage1 extends Fragment {
         binding.spinnerDevice.setAdapter(adp_Device);
 
         // Set the selection (if there is one) to the saved one
-        int savedDeviceId = Globals.sp.getInt(Constants.Prefs.DEVICE_ID, -1);
+        int savedDeviceId = Settings.sp.getInt(Constants.Prefs.DEVICE_ID, -1);
         if ((savedDeviceId > -1) && (adp_Device.getCount() > 0)) {
             binding.spinnerDevice.setSelection(adp_Device.getPosition(Globals.DeviceList.getDeviceDescription(savedDeviceId)), true);
             binding.editScoutingTeam.setText(String.valueOf(Globals.DeviceList.getTeamNumberByDeviceId(savedDeviceId)));
@@ -111,7 +114,7 @@ public class SettingsPage1 extends Fragment {
     // =============================================================================================
     private void initScoutingTeam() {
         // MUST CONVERT TO STRING or it crashes without warning
-        binding.editScoutingTeam.setText(Globals.sp.getString(Constants.Prefs.SCOUTING_TEAM, ""));
+        binding.editScoutingTeam.setText(Settings.sp.getString(Constants.Prefs.SCOUTING_TEAM, ""));
 
         // Define a text box for the name of the Team to appear in when you enter the Number
         String ScoutingTeamNumStr = String.valueOf(binding.editScoutingTeam.getText());
@@ -143,7 +146,7 @@ public class SettingsPage1 extends Fragment {
         binding.spinnerOrientation.setAdapter(adp_PrefOrientation);
 
         // Set the selection (if there is one) to the saved one
-        int savedPrefOrientation = Globals.sp.getInt(Constants.Prefs.PREF_ORIENTATION, 0);
+        int savedPrefOrientation = Settings.sp.getInt(Constants.Prefs.PREF_ORIENTATION, 0);
         binding.spinnerOrientation.setSelection(savedPrefOrientation, true);
     }
 
@@ -161,7 +164,7 @@ public class SettingsPage1 extends Fragment {
         binding.spinnerPrefTeamPos.setAdapter(adp_PrefTeamPos);
 
         // Set the selection (if there is one) to the saved one
-        int savedPrefTeamPos = Globals.sp.getInt(Constants.Prefs.PREF_TEAM_POS, 0);
+        int savedPrefTeamPos = Settings.sp.getInt(Constants.Prefs.PREF_TEAM_POS, 0);
         binding.spinnerPrefTeamPos.setSelection(savedPrefTeamPos, true);
     }
 
