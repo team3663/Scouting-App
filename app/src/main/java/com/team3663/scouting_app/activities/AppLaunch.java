@@ -138,6 +138,9 @@ public class AppLaunch extends AppCompatActivity {
             sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
         if (spe == null) spe = sp.edit();
 
+        // Set default Globals
+        Globals.CurrentCompetitionId = sp.getInt(Constants.Prefs.COMPETITION_ID, -1);
+
         // Initialize activity components
         initSettings();
         initScouting();
