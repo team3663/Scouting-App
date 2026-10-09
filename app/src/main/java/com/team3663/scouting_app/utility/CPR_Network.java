@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -330,14 +331,16 @@ public class CPR_Network {
     // =============================================================================================
     @NonNull
     public Result sendFileToSQLServerBlocking() {
+        SharedPreferences sp = appContext.getSharedPreferences(appContext.getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+
         if (!hasActiveInternet()) {
             return Result.NO_NETWORK;
         }
 
-        String sql_server = Globals.sp.getString(Constants.Prefs.SQL_SERVER, "");
-        String sql_database = Globals.sp.getString(Constants.Prefs.SQL_DATABASE, "");
-        String sql_user = Globals.sp.getString(Constants.Prefs.SQL_USER, "");
-        String sql_password = Globals.sp.getString(Constants.Prefs.SQL_PASSWORD, "");
+        String sql_server = sp.getString(Constants.Prefs.SQL_SERVER, "");
+        String sql_database = sp.getString(Constants.Prefs.SQL_DATABASE, "");
+        String sql_user = sp.getString(Constants.Prefs.SQL_USER, "");
+        String sql_password = sp.getString(Constants.Prefs.SQL_PASSWORD, "");
 
         // Before proceeding, make sure we have settings and a valid connection to the SQL Server
         if (sql_server.isEmpty() || sql_database.isEmpty() || sql_user.isEmpty() || sql_password.isEmpty()) {
@@ -569,6 +572,8 @@ public class CPR_Network {
 
         executor.execute(() -> {
             try {
+                SharedPreferences sp = appContext.getSharedPreferences(appContext.getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+
                 // validate connectivity
                 if (!hasActiveInternet()) {
                     showToast(appContext, "Google Upload Failed: No Internet Connection");
@@ -586,7 +591,7 @@ public class CPR_Network {
                 File fileMetadata = new File();
                 fileMetadata.setName(filename);
 
-                String folderId = Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_UPLOAD, Constants.Settings.DEFAULT_GOOGLE_UPLOAD);
+                String folderId = sp.getString(Constants.Prefs.GOOGLE_DRIVE_UPLOAD, Constants.Settings.DEFAULT_GOOGLE_UPLOAD);
                 if (folderId.isEmpty()) {
                     showToast(appContext, "Google Upload Failed: No folder ID configured");
                     mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_FAILURE));
@@ -791,8 +796,9 @@ public class CPR_Network {
         List<File> files = new ArrayList<>();
         String pageToken = null;
         String mimeTypeFilter = in_mimeType == null ? "mimeType != 'application/vnd.google-apps.folder'" : "mimeType = '" + in_mimeType + "'";
+        SharedPreferences sp = appContext.getSharedPreferences(appContext.getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
 
-        String folderId = Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_DOWNLOAD, Constants.Settings.DEFAULT_GOOGLE_DOWNLOAD);
+        String folderId = sp.getString(Constants.Prefs.GOOGLE_DRIVE_DOWNLOAD, Constants.Settings.DEFAULT_GOOGLE_DOWNLOAD);
         if (folderId.isEmpty()) {
             throw new IOException("Google folder ID is not configured");
         }
@@ -927,6 +933,45 @@ public class CPR_Network {
         }
 
         return best;
+    }
+
+    // =============================================================================================
+    // Function:    listDriveFilesInDownloadFolder
+    // Description: Lists all non-trashed, non-folder files directly inside the configured Google
+    //              Drive download folder.  Unlike listGoogleFiles(), this does NOT toast or throw
+    //              when the folder is empty - it just returns an empty list.
+    // Parameters:  void
+    // Output:      List of Files
+    // =============================================================================================
+    private List<File> listDriveFilesInDownloadFolder() throws IOException {
+        List<File> files = new ArrayList<>();
+        SharedPreferences sp = appContext.getSharedPreferences(appContext.getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+
+        String folderId = sp.getString(Constants.Prefs.GOOGLE_DRIVE_DOWNLOAD, Constants.Settings.DEFAULT_GOOGLE_DOWNLOAD);
+        if (folderId.isEmpty()) return files;
+
+        String query = "'" + folderId + "' in parents and trashed = false "
+                + "and mimeType != 'application/vnd.google-apps.folder'";
+        String pageToken = null;
+        do {
+            FileList page = driveService.files().list()
+                    .setQ(query)
+                    .setSpaces("drive")
+                    .setFields("nextPageToken, files(id, name)")
+                    .setSupportsAllDrives(true)
+                    .setIncludeItemsFromAllDrives(true)
+                    .setPageSize(1000)
+                    .setPageToken(pageToken)
+                    .execute();
+
+            if (page.getFiles() != null) {
+                files.addAll(page.getFiles());
+            }
+
+            pageToken = page.getNextPageToken();
+        } while (pageToken != null);
+
+        return files;
     }
 
     // =============================================================================================

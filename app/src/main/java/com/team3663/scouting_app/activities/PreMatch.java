@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -62,13 +63,15 @@ public class PreMatch extends AppCompatActivity {
         });
 
         // Now that we are starting to scout data, set the Global values
-        if (Globals.sp == null) Globals.sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
-        Globals.CurrentScoutingTeam = Globals.sp.getString(Constants.Prefs.SCOUTING_TEAM, "");
-        Globals.CurrentCompetitionId = Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, 0);
-        Globals.CurrentDeviceId = Globals.sp.getInt(Constants.Prefs.DEVICE_ID, 0);
-        Globals.CurrentColorId = Globals.sp.getInt(Constants.Prefs.COLOR_CONTEXT_MENU, 1);
-        Globals.CurrentPrefTeamPos = Globals.sp.getInt(Constants.Prefs.PREF_TEAM_POS, 0);
-        Globals.CurrentFieldOrientationPos = Globals.sp.getInt(Constants.Prefs.PREF_ORIENTATION, 0);
+        SharedPreferences sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+
+        Globals.CurrentScoutingTeam = sp.getString(Constants.Prefs.SCOUTING_TEAM, "");
+        Globals.CurrentCompetitionId = sp.getInt(Constants.Prefs.COMPETITION_ID, 0);
+        Globals.CurrentDeviceId = sp.getInt(Constants.Prefs.DEVICE_ID, 0);
+        Globals.CurrentColorId = sp.getInt(Constants.Prefs.COLOR_CONTEXT_MENU, 1);
+        Globals.CurrentPrefTeamPos = sp.getInt(Constants.Prefs.PREF_TEAM_POS, 0);
+        Globals.CurrentFieldOrientationPos = sp.getInt(Constants.Prefs.PREF_ORIENTATION, 0);
+        Globals.NumberMatchFilesKept = sp.getInt(Constants.Prefs.NUM_MATCHES, 5);
 
         // Initialize activity components
         initCompetition();
@@ -470,7 +473,6 @@ public class PreMatch extends AppCompatActivity {
     // =============================================================================================
     private void processNextButton() {
         Globals.CurrentMatchNumber = Integer.parseInt(preMatchBinding.editMatch.getText().toString());
-        Globals.NumberMatchFilesKept = Globals.sp.getInt(Constants.Prefs.NUM_MATCHES, 5);
         CurrentTeamToScoutPosition = preMatchBinding.spinnerTeamToScout.getSelectedItemPosition();
 
         // Set up the Logger
@@ -614,7 +616,7 @@ public class PreMatch extends AppCompatActivity {
         preMatchBinding.spinnerTeamToScout.setAdapter(adapter);
 
         // Choose the right team in the list to select.
-        // If there's an override, we want that one and it'll be the last in the list
+        // If there's an override, we want that one, and it'll be the last in the list
         // If there's a preferred position, choose it
         // Lastly, if there is no previously chosen one, set it to the first one
         if (!Globals.CurrentOverrideTeamNum.isEmpty()) {
