@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.team3663.scouting_app.R;
+import com.team3663.scouting_app.activities.Settings;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.FragmentSettingsPage3Binding;
@@ -48,6 +49,8 @@ public class SettingsPage3 extends Fragment {
         if (connectivityManager != null && networkCallback != null) {
             connectivityManager.unregisterNetworkCallback(networkCallback);
         }
+
+        binding = null;
     }
 
     // =============================================================================================
@@ -57,10 +60,10 @@ public class SettingsPage3 extends Fragment {
     // Output:      void
     // =============================================================================================
     private void initFields() {
-        binding.editServer.setText(Globals.sp.getString(Constants.Prefs.SQL_SERVER, Constants.Settings.DEFAULT_SQL_SERVER));
-        binding.editDatabase.setText(Globals.sp.getString(Constants.Prefs.SQL_DATABASE, Constants.Settings.DEFAULT_SQL_DATABASE));
-        binding.editUser.setText(Globals.sp.getString(Constants.Prefs.SQL_USER, Constants.Settings.DEFAULT_SQL_USER));
-        binding.editPassword.setText(Globals.sp.getString(Constants.Prefs.SQL_PASSWORD, Constants.Settings.DEFAULT_SQL_PASSWORD));
+        binding.editServer.setText(Settings.sp.getString(Constants.Prefs.SQL_SERVER, Constants.Settings.DEFAULT_SQL_SERVER));
+        binding.editDatabase.setText(Settings.sp.getString(Constants.Prefs.SQL_DATABASE, Constants.Settings.DEFAULT_SQL_DATABASE));
+        binding.editUser.setText(Settings.sp.getString(Constants.Prefs.SQL_USER, Constants.Settings.DEFAULT_SQL_USER));
+        binding.editPassword.setText(Settings.sp.getString(Constants.Prefs.SQL_PASSWORD, Constants.Settings.DEFAULT_SQL_PASSWORD));
     }
 
     // =============================================================================================

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.team3663.scouting_app.R;
+import com.team3663.scouting_app.activities.Settings;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.FragmentSettingsPage2Binding;
@@ -48,7 +49,7 @@ public class SettingsPage2 extends Fragment {
         binding.spinnerColor.setAdapter(adp_Color);
 
         // Set the selection (if there is one) to the saved one
-        int savedColorId = Globals.sp.getInt(Constants.Prefs.COLOR_CONTEXT_MENU, -1);
+        int savedColorId = Settings.sp.getInt(Constants.Prefs.COLOR_CONTEXT_MENU, -1);
         if ((savedColorId > -1) && (adp_Color.getCount() > 0))
             binding.spinnerColor.setSelection(adp_Color.getPosition(Globals.ColorList.getColorDescription(savedColorId)), true);
 
@@ -71,7 +72,7 @@ public class SettingsPage2 extends Fragment {
     // =============================================================================================
     private void initQRSize() {
         // MUST CONVERT TO STRING or it crashes without warning
-        binding.editQRSize.setText(String.valueOf(Globals.sp.getInt(Constants.Prefs.QR_SIZE, Constants.QRCode.QR_SIZE_DEFAULT)));
+        binding.editQRSize.setText(String.valueOf(Settings.sp.getInt(Constants.Prefs.QR_SIZE, Constants.QRCode.QR_SIZE_DEFAULT)));
     }
 
     // =============================================================================================
@@ -99,7 +100,7 @@ public class SettingsPage2 extends Fragment {
     // =============================================================================================
     private void initNumMatches() {
         // Restore number of files to keep from saved preferences
-        binding.editNumMatches.setText(String.valueOf(Globals.sp.getInt(Constants.Prefs.NUM_MATCHES, 50)));
+        binding.editNumMatches.setText(String.valueOf(Settings.sp.getInt(Constants.Prefs.NUM_MATCHES, 50)));
     }
 
     @Override

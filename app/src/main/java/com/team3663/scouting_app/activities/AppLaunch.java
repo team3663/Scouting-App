@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.UriPermission;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -47,6 +48,8 @@ public class AppLaunch extends AppCompatActivity {
     // =============================================================================================
     private AppLaunchBinding appLaunchBinding;
     public static Timer appLaunch_timer = new Timer();
+    private static SharedPreferences sp;
+    private static SharedPreferences.Editor spe;
 
     // Installed app version as {major, minor, patch}, used to detect a newer APK on Google Drive
     private int[] currentVersion = new int[]{0, 0, 0};
@@ -74,8 +77,8 @@ public class AppLaunch extends AppCompatActivity {
                     Uri treeUri = Objects.requireNonNull(data).getData();
                     if (treeUri != null) {
                         getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                        Globals.spe.putString(Constants.Prefs.STORAGE_URI, treeUri.toString());
-                        Globals.spe.apply();
+                        spe.putString(Constants.Prefs.STORAGE_URI, treeUri.toString());
+                        spe.apply();
                         Globals.baseStorageURI = treeUri;
                         initDataFiles();
                     }
@@ -131,9 +134,9 @@ public class AppLaunch extends AppCompatActivity {
         currentVersion = parseVersion(pInfo.versionName);
 
         // Get the Shared Preferences where we save off app settings to use next time
-        if (Globals.sp == null)
-            Globals.sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
-        if (Globals.spe == null) Globals.spe = Globals.sp.edit();
+        if (sp == null)
+            sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+        if (spe == null) spe = sp.edit();
 
         // Initialize activity components
         initSettings();
@@ -291,7 +294,7 @@ public class AppLaunch extends AppCompatActivity {
         // If we have storage permissions go ahead and load the data.
         // Otherwise, initiate getting permissions (which will then load the data afterward)
         if (havePerms) {
-            Globals.baseStorageURI = Uri.parse(Globals.sp.getString(Constants.Prefs.STORAGE_URI, null));
+            Globals.baseStorageURI = Uri.parse(sp.getString(Constants.Prefs.STORAGE_URI, null));
             initDataFiles();
             loadDataFiles();
         } else
@@ -338,10 +341,10 @@ public class AppLaunch extends AppCompatActivity {
             // Default Globals
             Globals.CurrentOverrideTeamNum = "";
 
-            if ((Globals.sp == null) ||
-                    (Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1) == -1) ||
-                    (Globals.sp.getInt(Constants.Prefs.DEVICE_ID, -1) == -1) ||
-                    (Globals.sp.getInt(Constants.Prefs.QR_SIZE, -1) == -1)) {
+            if ((sp == null) ||
+                    (sp.getInt(Constants.Prefs.COMPETITION_ID, -1) == -1) ||
+                    (sp.getInt(Constants.Prefs.DEVICE_ID, -1) == -1) ||
+                    (sp.getInt(Constants.Prefs.QR_SIZE, -1) == -1)) {
                 Toast.makeText(AppLaunch.this, R.string.applaunch_not_configured, Toast.LENGTH_SHORT).show();
             } else {
                 // Pin the app to help prevent it from being closed mid-match
