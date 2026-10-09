@@ -65,8 +65,8 @@ public class PreMatch extends AppCompatActivity {
         // Now that we are starting to scout data, set the Global values
         SharedPreferences sp = this.getSharedPreferences(getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
 
+        // Set Global variables
         Globals.CurrentScoutingTeam = sp.getString(Constants.Prefs.SCOUTING_TEAM, "");
-        Globals.CurrentCompetitionId = sp.getInt(Constants.Prefs.COMPETITION_ID, 0);
         Globals.CurrentDeviceId = sp.getInt(Constants.Prefs.DEVICE_ID, 0);
         Globals.CurrentColorId = sp.getInt(Constants.Prefs.COLOR_CONTEXT_MENU, 1);
         Globals.CurrentPrefTeamPos = sp.getInt(Constants.Prefs.PREF_TEAM_POS, 0);

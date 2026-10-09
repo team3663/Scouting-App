@@ -113,6 +113,7 @@ public class Settings extends AppCompatActivity {
                 if (CompetitionId != fragmentPage1.savedCompetitionId)
                     intent.putExtra(Constants.Settings.RELOAD_DATA_KEY, 1);
                 spe.putInt(Constants.Prefs.COMPETITION_ID, CompetitionId);
+                Globals.CurrentCompetitionId = CompetitionId;
             }
 
             int DeviceId = 0;
