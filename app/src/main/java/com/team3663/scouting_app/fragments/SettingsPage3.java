@@ -40,6 +40,7 @@ public class SettingsPage3 extends Fragment {
         initChooseWifi();
         initRefresh();
         initFields();
+        binding.butRefresh.performClick();
     }
 
     @Override

@@ -51,6 +51,7 @@ public class SettingsPage4 extends Fragment {
         initGoogleSignIn();
         initRefresh();
         initFields();
+        binding.butRefresh.performClick();
     }
 
     @Override
