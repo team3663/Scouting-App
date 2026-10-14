@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.UriPermission;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -102,7 +103,7 @@ public class AppLaunch extends AppCompatActivity {
                 }
             });
 
-    @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility", "ResourceAsColor"})
+    @SuppressLint({"DiscouragedApi", "SetTextI18n", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle in_savedInstanceState) {
         super.onCreate(in_savedInstanceState);
@@ -117,8 +118,6 @@ public class AppLaunch extends AppCompatActivity {
             return insets;
         });
 
-        // Default to NO internet
-        appLaunchBinding.imageInternet.setVisibility(View.INVISIBLE);
         Globals.network = new CPR_Network(this);
 
         // Display app version
@@ -150,9 +149,9 @@ public class AppLaunch extends AppCompatActivity {
 
         // check if we have access to the internet
         if (Globals.network.hasActiveInternet())
-            appLaunchBinding.imageInternet.setVisibility(View.VISIBLE);
+            appLaunchBinding.imageInternet.setColorFilter(getColor(R.color.cpr_green), PorterDuff.Mode.SRC_IN);
         else
-            appLaunchBinding.imageInternet.setVisibility(View.INVISIBLE);
+            appLaunchBinding.imageInternet.setColorFilter(getColor(R.color.red_highlight), PorterDuff.Mode.SRC_IN);
 
         // Before reading the data files, check Google Drive for a newer version of this app.
         // When the check resolves (no update, can't check, or the download fails), the data files

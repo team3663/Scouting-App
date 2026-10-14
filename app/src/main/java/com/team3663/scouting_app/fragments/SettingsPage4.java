@@ -2,6 +2,7 @@ package com.team3663.scouting_app.fragments;
 
 import android.content.Context;
 import android.content.IntentSender;
+import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -198,11 +199,10 @@ public class SettingsPage4 extends Fragment {
     // =============================================================================================
     private void initRefresh() {
         binding.butRefresh.setOnClickListener(view -> {
-            if (Globals.network.hasActiveInternet()) {
-                binding.imageInternet.setVisibility(View.VISIBLE);
-            } else {
-                binding.imageInternet.setVisibility(View.INVISIBLE);
-            }
+            if (Globals.network.hasActiveInternet())
+                binding.imageInternet.setColorFilter(requireContext().getColor(R.color.cpr_green), PorterDuff.Mode.SRC_IN);
+            else
+                binding.imageInternet.setColorFilter(requireContext().getColor(R.color.red_highlight), PorterDuff.Mode.SRC_IN);
         });
     }
 
@@ -234,11 +234,10 @@ public class SettingsPage4 extends Fragment {
         }
 
         // check if we have access to the internet
-        if (Globals.network.hasActiveInternet()) {
-            binding.imageInternet.setVisibility(View.VISIBLE);
-        } else {
-            binding.imageInternet.setVisibility(View.INVISIBLE);
-        }
+        if (Globals.network.hasActiveInternet())
+            binding.imageInternet.setColorFilter(requireContext().getColor(R.color.cpr_green), PorterDuff.Mode.SRC_IN);
+        else
+            binding.imageInternet.setColorFilter(requireContext().getColor(R.color.red_highlight), PorterDuff.Mode.SRC_IN);
     }
 
     // =============================================================================================
