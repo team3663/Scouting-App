@@ -1,7 +1,8 @@
 package com.team3663.scouting_app.fragments;
 
 import android.content.Context;
-import android.content.Intent;
+import android.content.IntentSender;
+import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -16,17 +17,15 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.Scope;
 import com.team3663.scouting_app.R;
+import com.team3663.scouting_app.activities.Settings;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.FragmentSettingsPage4Binding;
@@ -36,7 +35,7 @@ public class SettingsPage4 extends Fragment {
     public FragmentSettingsPage4Binding binding;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
-    private ActivityResultLauncher<Intent> googleSignInLauncher;
+    private ActivityResultLauncher<IntentSenderRequest> googleSignInLauncher;
 
 
     @Override
@@ -53,6 +52,7 @@ public class SettingsPage4 extends Fragment {
         initGoogleSignIn();
         initRefresh();
         initFields();
+        binding.butRefresh.performClick();
     }
 
     @Override
@@ -62,6 +62,8 @@ public class SettingsPage4 extends Fragment {
         if (connectivityManager != null && networkCallback != null) {
             connectivityManager.unregisterNetworkCallback(networkCallback);
         }
+
+        binding = null;
     }
 
     // =============================================================================================
@@ -90,14 +92,11 @@ public class SettingsPage4 extends Fragment {
     // =============================================================================================
     private void initGoogleSignIn() {
         googleSignInLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultContracts.StartIntentSenderForResult(),
                 result -> {
-                    try {
-                        GoogleSignInAccount account = GoogleSignIn
-                                .getSignedInAccountFromIntent(result.getData())
-                                .getResult(ApiException.class);
-                        onGoogleSignedIn(account);
-                    } catch (ApiException e) {
+                    if (Globals.network.completeSignIn(result.getData()) == CPR_Network.SIGN_IN_OK) {
+                        Globals.network.downloadFromGoogle(this::handleGoogleDownloadResult);
+                    } else {
                         Toast.makeText(requireContext().getApplicationContext(), "Google sign-in failed", Toast.LENGTH_SHORT).show();
                         binding.imageGoogleResult.setImageResource(R.drawable.x);
                     }
@@ -111,8 +110,8 @@ public class SettingsPage4 extends Fragment {
     // Output:      void
     // =============================================================================================
     private void initFields() {
-        String pref_Upload = Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_UPLOAD, "");
-        String pref_Download = Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_DOWNLOAD, "");
+        String pref_Upload = Settings.sp.getString(Constants.Prefs.GOOGLE_DRIVE_UPLOAD, "");
+        String pref_Download = Settings.sp.getString(Constants.Prefs.GOOGLE_DRIVE_DOWNLOAD, "");
 
         // Set up fields.  If the Google folders are either empty or happen to match the default, turn on the default checkbox,
         // otherwise allow them to be edited.
@@ -162,45 +161,34 @@ public class SettingsPage4 extends Fragment {
             binding.butDownload.setClickable(false);
             binding.butDownload.setBackgroundColor(requireContext().getColor(R.color.light_grey));
 
-            // If the Drive service is already built this session, upload straight away
-            if (Globals.network.isDriveServiceReady()) {
-                Globals.network.downloadFromGoogle(this::handleGoogleDownloadResult);
-                return;
-            }
+            // display a spinning animation while the download is in progress
+            CircularProgressDrawable spinner = new CircularProgressDrawable(requireContext());
+            spinner.setStrokeWidth(4f);
+            spinner.setCenterRadius(18f);
+            spinner.setColorSchemeColors(requireContext().getColor(R.color.light_grey));
+            binding.imageGoogleResult.setImageDrawable(spinner);
+            spinner.start();
 
-            // Reuse an existing sign-in if it already granted the Drive scope
-            Scope driveScope = new Scope(CPR_Network.GOOGLE_DRIVE_SCOPE);
-            GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(requireContext().getApplicationContext());
-            if (GoogleSignIn.hasPermissions(last, driveScope)) {
-                onGoogleSignedIn(last);
-                return;
-            }
+            // Authorize for Drive (silently if the scope was already granted); download once ready,
+            // or launch the consent flow whose result is handled by googleSignInLauncher.
+            Globals.network.authorizeDrive(new CPR_Network.AuthCallback() {
+                @Override
+                public void onAuthorized() {
+                    Globals.network.downloadFromGoogle(SettingsPage4.this::handleGoogleDownloadResult);
+                }
 
-            // Otherwise start the interactive sign-in / consent flow
-            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestEmail()
-                    .requestScopes(driveScope)
-                    .build();
-            googleSignInLauncher.launch(GoogleSignIn.getClient(requireContext().getApplicationContext(), gso).getSignInIntent());
+                @Override
+                public void onNeedsConsent(@NonNull IntentSender in_intentSender) {
+                    googleSignInLauncher.launch(new IntentSenderRequest.Builder(in_intentSender).build());
+                }
 
+                @Override
+                public void onFailed(int in_statusCode) {
+                    Toast.makeText(requireContext().getApplicationContext(), "Google sign-in failed", Toast.LENGTH_SHORT).show();
+                    handleGoogleDownloadResult(CPR_Network.Result.TRANSMISSION_FAILURE);
+                }
+            });
         });
-    }
-
-    // =============================================================================================
-    // Function:    onGoogleSignedIn
-    // Description: Build the Drive service from the signed-in account and start the upload.
-    // Parameters:  in_account  the account returned from Google sign-in
-    // Output:      void
-    // =============================================================================================
-    private void onGoogleSignedIn(GoogleSignInAccount in_account) {
-        if (in_account == null || in_account.getAccount() == null) {
-            Toast.makeText(requireContext().getApplicationContext(), "Google sign-in failed", Toast.LENGTH_SHORT).show();
-            binding.imageGoogleResult.setImageResource(R.drawable.x);
-            return;
-        }
-
-        Globals.network.initDriveService(in_account.getAccount());
-        Globals.network.downloadFromGoogle(this::handleGoogleDownloadResult);
     }
 
     // =============================================================================================
@@ -211,11 +199,10 @@ public class SettingsPage4 extends Fragment {
     // =============================================================================================
     private void initRefresh() {
         binding.butRefresh.setOnClickListener(view -> {
-            if (Globals.network.hasActiveInternet()) {
-                binding.imageInternet.setVisibility(View.VISIBLE);
-            } else {
-                binding.imageInternet.setVisibility(View.INVISIBLE);
-            }
+            if (Globals.network.hasActiveInternet())
+                binding.imageInternet.setColorFilter(requireContext().getColor(R.color.cpr_green), PorterDuff.Mode.SRC_IN);
+            else
+                binding.imageInternet.setColorFilter(requireContext().getColor(R.color.red_highlight), PorterDuff.Mode.SRC_IN);
         });
     }
 
@@ -247,11 +234,10 @@ public class SettingsPage4 extends Fragment {
         }
 
         // check if we have access to the internet
-        if (Globals.network.hasActiveInternet()) {
-            binding.imageInternet.setVisibility(View.VISIBLE);
-        } else {
-            binding.imageInternet.setVisibility(View.INVISIBLE);
-        }
+        if (Globals.network.hasActiveInternet())
+            binding.imageInternet.setColorFilter(requireContext().getColor(R.color.cpr_green), PorterDuff.Mode.SRC_IN);
+        else
+            binding.imageInternet.setColorFilter(requireContext().getColor(R.color.red_highlight), PorterDuff.Mode.SRC_IN);
     }
 
     // =============================================================================================

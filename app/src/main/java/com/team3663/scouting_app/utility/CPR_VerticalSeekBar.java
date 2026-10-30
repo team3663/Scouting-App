@@ -223,6 +223,11 @@ public class CPR_VerticalSeekBar extends View {
             return barRect.top + barDrawableHeight * progressRatio;
     }
 
+    @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
     // Member function: Required override function to handle touch events
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -241,6 +246,8 @@ public class CPR_VerticalSeekBar extends View {
                     getParent().requestDisallowInterceptTouchEvent(true);
                     return true;
                 }
+
+                performClick();
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (isDragging) {

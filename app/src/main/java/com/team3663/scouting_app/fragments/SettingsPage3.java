@@ -1,6 +1,7 @@
 package com.team3663.scouting_app.fragments;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -17,9 +18,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.team3663.scouting_app.R;
+import com.team3663.scouting_app.activities.Settings;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 import com.team3663.scouting_app.databinding.FragmentSettingsPage3Binding;
+
+import java.util.Objects;
 
 public class SettingsPage3 extends Fragment {
     public FragmentSettingsPage3Binding binding;
@@ -39,6 +43,7 @@ public class SettingsPage3 extends Fragment {
         initChooseWifi();
         initRefresh();
         initFields();
+        binding.butRefresh.performClick();
     }
 
     @Override
@@ -48,6 +53,8 @@ public class SettingsPage3 extends Fragment {
         if (connectivityManager != null && networkCallback != null) {
             connectivityManager.unregisterNetworkCallback(networkCallback);
         }
+
+        binding = null;
     }
 
     // =============================================================================================
@@ -57,10 +64,10 @@ public class SettingsPage3 extends Fragment {
     // Output:      void
     // =============================================================================================
     private void initFields() {
-        binding.editServer.setText(Globals.sp.getString(Constants.Prefs.SQL_SERVER, Constants.Settings.DEFAULT_SQL_SERVER));
-        binding.editDatabase.setText(Globals.sp.getString(Constants.Prefs.SQL_DATABASE, Constants.Settings.DEFAULT_SQL_DATABASE));
-        binding.editUser.setText(Globals.sp.getString(Constants.Prefs.SQL_USER, Constants.Settings.DEFAULT_SQL_USER));
-        binding.editPassword.setText(Globals.sp.getString(Constants.Prefs.SQL_PASSWORD, Constants.Settings.DEFAULT_SQL_PASSWORD));
+        binding.editServer.setText(Settings.sp.getString(Constants.Prefs.SQL_SERVER, Constants.Settings.DEFAULT_SQL_SERVER));
+        binding.editDatabase.setText(Settings.sp.getString(Constants.Prefs.SQL_DATABASE, Constants.Settings.DEFAULT_SQL_DATABASE));
+        binding.editUser.setText(Settings.sp.getString(Constants.Prefs.SQL_USER, Constants.Settings.DEFAULT_SQL_USER));
+        binding.editPassword.setText(Settings.sp.getString(Constants.Prefs.SQL_PASSWORD, Constants.Settings.DEFAULT_SQL_PASSWORD));
     }
 
     // =============================================================================================
@@ -71,11 +78,10 @@ public class SettingsPage3 extends Fragment {
     // =============================================================================================
     private void initRefresh() {
         binding.butRefresh.setOnClickListener(view -> {
-            if (Globals.network.hasActiveInternet()) {
-                binding.imageInternet.setVisibility(View.VISIBLE);
-            } else {
-                binding.imageInternet.setVisibility(View.INVISIBLE);
-            }
+            if (Globals.network.hasActiveInternet())
+                binding.imageInternet.setColorFilter(requireContext().getColor(R.color.cpr_green), PorterDuff.Mode.SRC_IN);
+            else
+                binding.imageInternet.setColorFilter(requireContext().getColor(R.color.red_highlight), PorterDuff.Mode.SRC_IN);
         });
     }
 
@@ -107,11 +113,10 @@ public class SettingsPage3 extends Fragment {
         }
 
         // check if we have access to the internet
-        if (Globals.network.hasActiveInternet()) {
-            binding.imageInternet.setVisibility(View.VISIBLE);
-        } else {
-            binding.imageInternet.setVisibility(View.INVISIBLE);
-        }
+        if (Globals.network.hasActiveInternet())
+            binding.imageInternet.setColorFilter(requireContext().getColor(R.color.cpr_green), PorterDuff.Mode.SRC_IN);
+        else
+            binding.imageInternet.setColorFilter(requireContext().getColor(R.color.red_highlight), PorterDuff.Mode.SRC_IN);
     }
 
     // =============================================================================================

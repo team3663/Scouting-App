@@ -83,7 +83,7 @@
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_gravity="center"
                 android:max="100"
-                android:progress="50"
+                android:progress="0"
                 android:progressTint="@color/cpr_green">
             </ProgressBar>
         </LinearLayout>
@@ -120,7 +120,7 @@
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_gravity="center"
                 android:max="100"
-                android:progress="50"
+                android:progress="0"
                 android:progressTint="@color/cpr_green">
             </ProgressBar>
         </LinearLayout>

@@ -1,26 +1,40 @@
 package com.team3663.scouting_app.utility;
 
-import android.accounts.Account;
+import android.app.PendingIntent;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
+import com.google.android.gms.auth.api.identity.AuthorizationRequest;
+import com.google.android.gms.auth.api.identity.AuthorizationResult;
+import com.google.android.gms.auth.api.identity.Identity;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.common.api.Scope;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
+import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
 
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
@@ -46,6 +60,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // =============================================================================================
 // Class:       CPR_Network
@@ -65,6 +81,12 @@ public class CPR_Network {
     // signed-in account can write to it via the folder's "anyone with the link can edit" grant).
     // Note: this scope does NOT allow listing/reading other files in that folder.
     public static final String GOOGLE_DRIVE_SCOPE = DriveScopes.DRIVE;
+    private static final Scope DRIVE_SCOPE = new Scope(GOOGLE_DRIVE_SCOPE);
+    private static final String LOG_TAG = "CPR_Network";
+    // completeSignIn() returns this when the Drive service was built successfully.
+    public static final int SIGN_IN_OK = 0;
+    // completeSignIn() returns this when authorization produced no usable result (no ApiException status).
+    public static final int SIGN_IN_NO_ACCOUNT = -1;
     private Drive driveService;
 
     // =============================================================================================
@@ -85,12 +107,59 @@ public class CPR_Network {
         void onResult(@NonNull Result result);
     }
 
+    // =============================================================================================
+    // Describes a newer app version (APK) found in the Google Drive download folder.
+    // version is a {major, minor, patch} triple parsed from the file name.
+    // =============================================================================================
+    public static class AppUpdateInfo {
+        public final String fileId;
+        public final String fileName;
+        public final int[] version;
+
+        public AppUpdateInfo(@NonNull String in_fileId, @NonNull String in_fileName, @NonNull int[] in_version) {
+            this.fileId = in_fileId;
+            this.fileName = in_fileName;
+            this.version = in_version;
+        }
+    }
+
+    // Result of an asynchronous app-update check (callback is invoked on the main thread).
+    public interface UpdateCheckCallback {
+        void onUpdateAvailable(@NonNull AppUpdateInfo in_info);
+        void onNoUpdate();
+    }
+
+    // Result of an asynchronous APK download (callback is invoked on the main thread).
+    // in_apkUri is the MediaStore content Uri of the downloaded APK, or null on failure.
+    public interface ApkDownloadCallback {
+        void onDownloaded(Uri in_apkUri);
+    }
+
+    // =============================================================================================
+    // Result of an asynchronous Drive authorization request (callbacks are invoked on the main
+    // thread).  Replaces the old synchronous ensureDriveService() boolean: because the Authorization
+    // API is async, the caller reacts to one of three outcomes instead of an if/else.
+    //   onAuthorized   - the Drive scope is already granted; driveService is built and ready to use.
+    //   onNeedsConsent - the user must grant consent; launch in_intentSender through an
+    //                    ActivityResultContracts.StartIntentSenderForResult launcher, then pass the
+    //                    returned Intent to completeSignIn().
+    //   onFailed       - authorization could not be completed (in_statusCode is the GMS status code).
+    // =============================================================================================
+    public interface AuthCallback {
+        void onAuthorized();
+        void onNeedsConsent(@NonNull IntentSender in_intentSender);
+        void onFailed(int in_statusCode);
+    }
+
     // Constructor: create the new Network object
     public CPR_Network(@NonNull Context in_context) {
         // Use the application context to avoid leaking an Activity.
         this.appContext = in_context.getApplicationContext();
         this.executor = Executors.newCachedThreadPool();
         this.mainHandler = new Handler(Looper.getMainLooper());
+
+        // The Drive service is built lazily the first time a caller invokes authorizeDrive(); the
+        // Authorization API is asynchronous, so there is nothing useful to do synchronously here.
     }
 
     // =============================================================================================
@@ -130,7 +199,12 @@ public class CPR_Network {
 
     // =============================================================================================
     // Function:    hasActiveInternet
-    // Description: is there an active, internet-capable network?
+    // Description: is there an active network with working (validated) internet access?
+    //              NET_CAPABILITY_INTERNET alone only means the network claims to route internet;
+    //              a Wi-Fi/VPN connection with no usable upstream still reports it.  We also require
+    //              NET_CAPABILITY_VALIDATED, which Android sets only after confirming the network can
+    //              actually reach the internet, so we don't launch network work (ie: Google sign-in)
+    //              on a dead connection.
     // Parameters:  void
     // Output:      void
     // =============================================================================================
@@ -146,7 +220,8 @@ public class CPR_Network {
         }
         NetworkCapabilities caps = cm.getNetworkCapabilities(network);
         return caps != null
-                && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+                && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
     }
 
     // =============================================================================================
@@ -164,6 +239,50 @@ public class CPR_Network {
         } catch (IOException e) {
             // unreachable, connection refused, or timed out
             return false;
+        }
+    }
+
+    // =============================================================================================
+    // Function:    ensureVPN
+    // Description: Checks if the dependent VPN client is installed and working.
+    // Parameters:  void
+    // Output:      void
+    // =============================================================================================
+    public void ensureVPN() {
+        // Check if VPN client is installed
+        PackageManager pm = appContext.getPackageManager();
+        try {
+            pm.getPackageInfo(Constants.AppLaunch.VPN_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
+        } catch (PackageManager.NameNotFoundException e) {
+            Toast.makeText(appContext, R.string.applaunch_vpn_not_installed, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Check if VPN client is running by checking the VPN tunnel is actually up
+        ConnectivityManager cm = (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm == null) {
+            Toast.makeText(appContext, R.string.applaunch_vpn_not_checked, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Check every network, not just the active one
+        boolean vpn_working = false;
+        for (Network network : cm.getAllNetworks()) {
+            NetworkCapabilities caps = cm.getNetworkCapabilities(network);
+            if (caps != null && caps.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
+                vpn_working = true;
+                break;
+            }
+        }
+
+        // Launch if VPN is not working AND we have internet (otherwise it's moot)
+        if (!vpn_working && Globals.network.hasActiveInternet()) {
+            Intent launchIntent = pm.getLaunchIntentForPackage(Constants.AppLaunch.VPN_PACKAGE_NAME);
+            if (launchIntent != null) {
+                appContext.startActivity(launchIntent);
+            } else {
+                Toast.makeText(appContext, R.string.applaunch_vpn_not_launched, Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -218,14 +337,16 @@ public class CPR_Network {
     // =============================================================================================
     @NonNull
     public Result sendFileToSQLServerBlocking() {
+        SharedPreferences sp = appContext.getSharedPreferences(appContext.getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+
         if (!hasActiveInternet()) {
             return Result.NO_NETWORK;
         }
 
-        String sql_server = Globals.sp.getString(Constants.Prefs.SQL_SERVER, "");
-        String sql_database = Globals.sp.getString(Constants.Prefs.SQL_DATABASE, "");
-        String sql_user = Globals.sp.getString(Constants.Prefs.SQL_USER, "");
-        String sql_password = Globals.sp.getString(Constants.Prefs.SQL_PASSWORD, "");
+        String sql_server = sp.getString(Constants.Prefs.SQL_SERVER, "");
+        String sql_database = sp.getString(Constants.Prefs.SQL_DATABASE, "");
+        String sql_user = sp.getString(Constants.Prefs.SQL_USER, "");
+        String sql_password = sp.getString(Constants.Prefs.SQL_PASSWORD, "");
 
         // Before proceeding, make sure we have settings and a valid connection to the SQL Server
         if (sql_server.isEmpty() || sql_database.isEmpty() || sql_user.isEmpty() || sql_password.isEmpty()) {
@@ -316,35 +437,103 @@ public class CPR_Network {
     }
 
     // =============================================================================================
-    // Function:    initDriveService
-    // Description: Build the Google Drive service from a signed-in Google account. Must be called
-    //              (with a Drive-scoped account) before uploadToGoogle(). Uploads run as this
-    //              user, so any Drive folder shared with them (including one they don't own) is
-    //              reachable by folder id.
-    // Parameters:  in_account  the signed-in Google account with GOOGLE_DRIVE_SCOPE granted
-    // Output:      void
+    // Function:    buildDriveService
+    // Description: Build the Google Drive service from the OAuth access token in an AuthorizationResult.
+    //              Uploads/downloads run as the authorized user, so any Drive folder shared with them
+    //              (including one they don't own) is reachable by folder id.  Access tokens are
+    //              short-lived (~1 hour); each caller re-runs authorizeDrive() before its Drive work,
+    //              which rebuilds the service with a fresh token (silently, if the scope is still
+    //              granted), so there is no long-lived token to refresh here.
+    // Parameters:  in_result  the AuthorizationResult holding a granted Drive-scope access token
+    // Output:      true if a usable Drive service was built, false if no access token was present
     // =============================================================================================
-    public void initDriveService(@NonNull Account in_account) {
-        GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(
-                appContext, Collections.singletonList(GOOGLE_DRIVE_SCOPE));
-        credential.setSelectedAccount(in_account);
+    private boolean buildDriveService(@NonNull AuthorizationResult in_result) {
+        String accessToken = in_result.getAccessToken();
+        if (accessToken == null) return false;
 
         driveService = new Drive.Builder(
                 new NetHttpTransport(),
                 GsonFactory.getDefaultInstance(),
-                credential)
+                request -> request.getHeaders().setAuthorization("Bearer " + accessToken))
                 .setApplicationName("CPR Scouting App")
                 .build();
+        return true;
     }
 
     // =============================================================================================
     // Function:    isDriveServiceReady
-    // Description: Has a Drive service been built from a signed-in account yet?
+    // Description: Has a Drive service been built from an authorized account yet?
     // Parameters:  void
     // Output:      boolean
     // =============================================================================================
     public boolean isDriveServiceReady() {
         return driveService != null;
+    }
+
+    // =============================================================================================
+    // Function:    authorizeDrive
+    // Description: Ensure the app is authorized for the Drive scope and the Drive service is built,
+    //              using the Google Identity Authorization API (the replacement for the deprecated
+    //              Google Sign-In API).  The request is asynchronous:
+    //                - if the scope was already granted, the service is built silently and
+    //                  in_callback.onAuthorized() runs (no UI);
+    //                - if the user must consent, in_callback.onNeedsConsent() runs with the
+    //                  IntentSender the caller launches through a StartIntentSenderForResult
+    //                  launcher (whose result goes to completeSignIn());
+    //                - on error, in_callback.onFailed() runs with the GMS status code.
+    //              All callbacks run on the main thread.
+    // Parameters:  in_callback  invoked on the main thread with the outcome
+    // Output:      void
+    // =============================================================================================
+    public void authorizeDrive(@NonNull AuthCallback in_callback) {
+        AuthorizationRequest request = AuthorizationRequest.builder()
+                .setRequestedScopes(Collections.singletonList(DRIVE_SCOPE))
+                .build();
+
+        Identity.getAuthorizationClient(appContext)
+                .authorize(request)
+                .addOnSuccessListener(result -> {
+                    // A pending intent means the user still has to grant consent interactively.
+                    if (result.hasResolution()) {
+                        PendingIntent pending = result.getPendingIntent();
+                        if (pending != null) in_callback.onNeedsConsent(pending.getIntentSender());
+                        else in_callback.onFailed(CommonStatusCodes.INTERNAL_ERROR);
+                        return;
+                    }
+                    // Scope already granted: build the service and proceed without any UI.
+                    if (buildDriveService(result)) in_callback.onAuthorized();
+                    else in_callback.onFailed(CommonStatusCodes.SIGN_IN_REQUIRED);
+                })
+                .addOnFailureListener(e -> {
+                    int status = (e instanceof ApiException)
+                            ? ((ApiException) e).getStatusCode() : CommonStatusCodes.INTERNAL_ERROR;
+                    Log.w(LOG_TAG, "Drive authorization failed, status=" + status + " ("
+                            + CommonStatusCodes.getStatusCodeString(status) + ")", e);
+                    in_callback.onFailed(status);
+                });
+    }
+
+    // =============================================================================================
+    // Function:    completeSignIn
+    // Description: Process the result of the consent flow launched from authorizeDrive()'s
+    //              onNeedsConsent() and build the Drive service.  Extracts the AuthorizationResult
+    //              from the returned Intent; getAuthorizationResultFromIntent() throws when consent
+    //              was declined or cancelled, in which case we report the real status code.
+    // Parameters:  in_data  the Intent returned to the caller's StartIntentSenderForResult launcher
+    // Output:      SIGN_IN_OK on success, SIGN_IN_NO_ACCOUNT if no access token was granted, otherwise
+    //              the ApiException status code (e.g. 16 = CANCELLED)
+    // =============================================================================================
+    public int completeSignIn(Intent in_data) {
+        try {
+            AuthorizationResult result = Identity.getAuthorizationClient(appContext)
+                    .getAuthorizationResultFromIntent(in_data);
+            if (buildDriveService(result)) return SIGN_IN_OK;
+        } catch (ApiException e) {
+            Log.w(LOG_TAG, "Drive authorization failed, status=" + e.getStatusCode() + " ("
+                    + CommonStatusCodes.getStatusCodeString(e.getStatusCode()) + ")", e);
+            return e.getStatusCode();
+        }
+        return SIGN_IN_NO_ACCOUNT;
     }
 
     // =============================================================================================
@@ -361,8 +550,8 @@ public class CPR_Network {
 
     // =============================================================================================
     // Function:    uploadToGoogle
-    // Description: Asynchronously copy the file to the shared Google Drive folder. initDriveService()
-    //              must have been called first. Feedback is shown via Toast on the main thread.
+    // Description: Asynchronously copy the file to the shared Google Drive folder. authorizeDrive()
+    //              must have succeeded first. Feedback is shown via Toast on the main thread.
     // Parameters:  in_callback invoked on the main thread with the result
     // Output:      void
     // =============================================================================================
@@ -389,6 +578,8 @@ public class CPR_Network {
 
         executor.execute(() -> {
             try {
+                SharedPreferences sp = appContext.getSharedPreferences(appContext.getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+
                 // validate connectivity
                 if (!hasActiveInternet()) {
                     showToast(appContext, "Google Upload Failed: No Internet Connection");
@@ -406,7 +597,7 @@ public class CPR_Network {
                 File fileMetadata = new File();
                 fileMetadata.setName(filename);
 
-                String folderId = Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_UPLOAD, Constants.Settings.DEFAULT_GOOGLE_UPLOAD);
+                String folderId = sp.getString(Constants.Prefs.GOOGLE_DRIVE_UPLOAD, Constants.Settings.DEFAULT_GOOGLE_UPLOAD);
                 if (folderId.isEmpty()) {
                     showToast(appContext, "Google Upload Failed: No folder ID configured");
                     mainHandler.post(() -> in_callback.onResult(Result.TRANSMISSION_FAILURE));
@@ -471,8 +662,8 @@ public class CPR_Network {
 
     // =============================================================================================
     // Function:    downloadFromGoogle
-    // Description: Asynchronously copy the files from the shared Google Drive folder. initDriveService()
-    //              must have been called first. Feedback is shown via Toast on the main thread.
+    // Description: Asynchronously copy the files from the shared Google Drive folder. authorizeDrive()
+    //              must have succeeded first. Feedback is shown via Toast on the main thread.
     //              For each remote file:
     //                  - if no local copy exists, download it
     //                  - if a local copy exists and the MD5 checksum matches, skip it
@@ -505,7 +696,7 @@ public class CPR_Network {
         executor.execute(() -> {
             try {
                 int files_downloaded = 0;
-                for (File remote : listGoogleFiles()) {
+                for (File remote : listGoogleFiles("text/csv")) {
                     // silently ignore any google native docs (they don't have a checksum)
                     if (remote.getMd5Checksum() == null) continue;
 
@@ -604,20 +795,22 @@ public class CPR_Network {
     // =============================================================================================
     // Function:    listGoogleFiles
     // Description: Lists all non-trashed files directly inside a GoogleDrive folder
-    // Parameters:  void
+    // Parameters:  in_mimeType    file type to filter on (e.g. "text/csv")
     // Output:      List of Files
     // =============================================================================================
-    public List<File> listGoogleFiles() throws IOException {
+    public List<File> listGoogleFiles(String in_mimeType) throws IOException {
         List<File> files = new ArrayList<>();
         String pageToken = null;
+        String mimeTypeFilter = in_mimeType == null ? "mimeType != 'application/vnd.google-apps.folder'" : "mimeType = '" + in_mimeType + "'";
+        SharedPreferences sp = appContext.getSharedPreferences(appContext.getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
 
-        String folderId = Globals.sp.getString(Constants.Prefs.GOOGLE_DRIVE_DOWNLOAD, Constants.Settings.DEFAULT_GOOGLE_DOWNLOAD);
+        String folderId = sp.getString(Constants.Prefs.GOOGLE_DRIVE_DOWNLOAD, Constants.Settings.DEFAULT_GOOGLE_DOWNLOAD);
         if (folderId.isEmpty()) {
             throw new IOException("Google folder ID is not configured");
         }
 
         String query = "'" + folderId + "' in parents and trashed = false "
-                + "and mimeType != 'application/vnd.google-apps.folder'";
+                + "and " + mimeTypeFilter;
         do {
             FileList page = driveService.files().list()
                     .setQ(query)
@@ -680,6 +873,209 @@ public class CPR_Network {
         catch (IOException e) {
             showToast(appContext, "Local Checksum (MD5) Failed: Unable to read file");
             return null;
+        }
+    }
+
+    // =============================================================================================
+    // Function:    checkForAppUpdate
+    // Description: Asynchronously look in the Google Drive download folder for an APK newer than the
+    //              currently installed version.  authorizeDrive() must have succeeded first.
+    //              The callback is invoked on the main thread with either the newest newer APK found
+    //              or a "no update" result (which also covers no internet / not signed in / errors).
+    // Parameters:  in_currentVersion  installed version as {major, minor, patch}
+    //              in_callback        invoked on the main thread with the result
+    // Output:      void
+    // =============================================================================================
+    public void checkForAppUpdate(@NonNull int[] in_currentVersion, @NonNull UpdateCheckCallback in_callback) {
+        executor.execute(() -> {
+            AppUpdateInfo info = findNewerApkBlocking(in_currentVersion);
+            mainHandler.post(() -> {
+                if (info != null) in_callback.onUpdateAvailable(info);
+                else in_callback.onNoUpdate();
+            });
+        });
+    }
+
+    // =============================================================================================
+    // Function:    findNewerApkBlocking
+    // Description: Synchronous scan of the Google Drive download folder for the newest APK whose
+    //              version is strictly greater than the installed version.  Must NOT be called on
+    //              the main thread.  Returns null when there is no newer APK, no internet, no Drive
+    //              service, or an error occurs.
+    // Parameters:  in_currentVersion  installed version as {major, minor, patch}
+    // Output:      AppUpdateInfo (or null)
+    // =============================================================================================
+    private AppUpdateInfo findNewerApkBlocking(@NonNull int[] in_currentVersion) {
+        if (!hasActiveInternet() || driveService == null) return null;
+
+        // Matches "<prefix>-<major>.<minor>.<patch>.apk" (case-insensitive on the .apk extension)
+        Pattern apk_pattern = Pattern.compile(
+                Pattern.quote(Constants.AppLaunch.APK_NAME_PREFIX) + "-(\\d+)\\.(\\d+)\\.(\\d+)-release\\.apk",
+                Pattern.CASE_INSENSITIVE);
+
+        AppUpdateInfo best = null;
+        try {
+            for (File remote : listGoogleFiles(null)) {
+                String name = remote.getName();
+                if (name == null) continue;
+
+                Matcher m = apk_pattern.matcher(name);
+                if (!m.matches()) continue;
+
+                int[] version = {
+                        Integer.parseInt(Objects.requireNonNull(m.group(1))),
+                        Integer.parseInt(Objects.requireNonNull(m.group(2))),
+                        Integer.parseInt(Objects.requireNonNull(m.group(3)))
+                };
+
+                // Only keep APKs strictly newer than what's installed, and keep the newest of those
+                if (compareVersion(version, in_currentVersion) <= 0) continue;
+                if (best == null || compareVersion(version, best.version) > 0) {
+                    best = new AppUpdateInfo(remote.getId(), name, version);
+                }
+            }
+        } catch (IOException e) {
+            return null;
+        }
+
+        return best;
+    }
+
+    // =============================================================================================
+    // Function:    listDriveFilesInDownloadFolder
+    // Description: Lists all non-trashed, non-folder files directly inside the configured Google
+    //              Drive download folder.  Unlike listGoogleFiles(), this does NOT toast or throw
+    //              when the folder is empty - it just returns an empty list.
+    // Parameters:  void
+    // Output:      List of Files
+    // =============================================================================================
+    private List<File> listDriveFilesInDownloadFolder() throws IOException {
+        List<File> files = new ArrayList<>();
+        SharedPreferences sp = appContext.getSharedPreferences(appContext.getString(R.string.preference_setting_file_key), Context.MODE_PRIVATE);
+
+        String folderId = sp.getString(Constants.Prefs.GOOGLE_DRIVE_DOWNLOAD, Constants.Settings.DEFAULT_GOOGLE_DOWNLOAD);
+        if (folderId.isEmpty()) return files;
+
+        String query = "'" + folderId + "' in parents and trashed = false "
+                + "and mimeType != 'application/vnd.google-apps.folder'";
+        String pageToken = null;
+        do {
+            FileList page = driveService.files().list()
+                    .setQ(query)
+                    .setSpaces("drive")
+                    .setFields("nextPageToken, files(id, name)")
+                    .setSupportsAllDrives(true)
+                    .setIncludeItemsFromAllDrives(true)
+                    .setPageSize(1000)
+                    .setPageToken(pageToken)
+                    .execute();
+
+            if (page.getFiles() != null) {
+                files.addAll(page.getFiles());
+            }
+
+            pageToken = page.getNextPageToken();
+        } while (pageToken != null);
+
+        return files;
+    }
+
+    // =============================================================================================
+    // Function:    compareVersion
+    // Description: Compares two {major, minor, patch} version triples.
+    // Parameters:  in_a  first version
+    //              in_b  second version
+    // Output:      negative if a < b, zero if equal, positive if a > b
+    // =============================================================================================
+    private int compareVersion(@NonNull int[] in_a, @NonNull int[] in_b) {
+        for (int i = 0; i < 3; i++) {
+            if (in_a[i] != in_b[i]) return Integer.compare(in_a[i], in_b[i]);
+        }
+        return 0;
+    }
+
+    // =============================================================================================
+    // Function:    downloadApkToDownloads
+    // Description: Asynchronously download an APK from Google Drive into the device's public
+    //              Downloads folder (via MediaStore).  authorizeDrive() must have succeeded
+    //              first.  The callback is invoked on the main thread with the content Uri of the
+    //              downloaded APK, or null on failure.
+    // Parameters:  in_info      the APK to download
+    //              in_callback  invoked on the main thread with the result
+    // Output:      void
+    // =============================================================================================
+    public void downloadApkToDownloads(@NonNull AppUpdateInfo in_info, @NonNull ApkDownloadCallback in_callback) {
+        executor.execute(() -> {
+            Uri uri = downloadApkToDownloadsBlocking(in_info);
+            mainHandler.post(() -> in_callback.onDownloaded(uri));
+        });
+    }
+
+    // =============================================================================================
+    // Function:    downloadApkToDownloadsBlocking
+    // Description: Synchronous download of an APK from Google Drive into the public Downloads folder.
+    //              Must NOT be called on the main thread.  Writes atomically using MediaStore's
+    //              IS_PENDING flag and returns the content Uri on success (null on failure).
+    // Parameters:  in_info  the APK to download
+    // Output:      Uri (or null)
+    // =============================================================================================
+    private Uri downloadApkToDownloadsBlocking(@NonNull AppUpdateInfo in_info) {
+        if (!hasActiveInternet() || driveService == null) return null;
+
+        ContentResolver resolver = appContext.getContentResolver();
+        Uri collection = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+
+        // Best-effort removal of any copy we previously downloaded, so MediaStore doesn't pile up
+        // "name (1).apk" duplicates.  We can only delete items this app owns; ignore failures.
+        deleteExistingDownload(resolver, collection, in_info.fileName);
+
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Downloads.DISPLAY_NAME, in_info.fileName);
+        values.put(MediaStore.Downloads.MIME_TYPE, Constants.AppLaunch.APK_MIME_TYPE);
+        values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
+        values.put(MediaStore.Downloads.IS_PENDING, 1);
+
+        Uri itemUri = resolver.insert(collection, values);
+        if (itemUri == null) return null;
+
+        try (OutputStream out = resolver.openOutputStream(itemUri, "wt")) {
+            if (out == null) {
+                resolver.delete(itemUri, null, null);
+                return null;
+            }
+            driveService.files().get(in_info.fileId).executeMediaAndDownloadTo(out);
+            out.flush();
+        } catch (Exception e) {
+            resolver.delete(itemUri, null, null);
+            return null;
+        }
+
+        // Publish the finished file so other apps (the package installer) can read it
+        values.clear();
+        values.put(MediaStore.Downloads.IS_PENDING, 0);
+        resolver.update(itemUri, values, null, null);
+
+        return itemUri;
+    }
+
+    // =============================================================================================
+    // Function:    deleteExistingDownload
+    // Description: Best-effort delete of a previously downloaded file with the same display name in
+    //              the Downloads collection.  Only items this app owns can be deleted; failures are
+    //              ignored.
+    // Parameters:  in_resolver    the content resolver
+    //              in_collection  the Downloads collection Uri
+    //              in_fileName    the display name to remove
+    // Output:      void
+    // =============================================================================================
+    private void deleteExistingDownload(@NonNull ContentResolver in_resolver, @NonNull Uri in_collection, @NonNull String in_fileName) {
+        String selection = MediaStore.Downloads.DISPLAY_NAME + " = ? AND "
+                + MediaStore.Downloads.RELATIVE_PATH + " LIKE ?";
+        String[] args = {in_fileName, Environment.DIRECTORY_DOWNLOADS + "%"};
+        try {
+            in_resolver.delete(in_collection, selection, args);
+        } catch (Exception e) {
+            // ignore - not fatal, MediaStore will simply create a uniquely named copy
         }
     }
 }

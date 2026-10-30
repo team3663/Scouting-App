@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:allowBackup="true"
@@ -86,5 +87,7 @@
             android:screenOrientation="sensorLandscape"
             tools:ignore="DiscouragedApi"/>
     </application>
-
+    <queries>
+        <package android:name="com.tailscale.ipn"/>
+    </queries>
 </manifest>

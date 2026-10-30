@@ -1,6 +1,7 @@
 package com.team3663.scouting_app.dataFile;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
@@ -23,12 +24,12 @@ public class MatchesFile extends _DataFile {
         // Use only the match information that equals the competition we're in.
         boolean correct_competition = false;
 
-        // compare against the Global current competition id (if valid).  Otherwise, compare against the competition id in the preferences
+        // compare against the Global current competition id (if valid).  Otherwise, don't load it.
+        // we should always have Globals.CurrentCompetitionId set, but just in case...
         if (Globals.CurrentCompetitionId > 0) {
             if (Integer.parseInt(in_line[0]) == Globals.CurrentCompetitionId)
                 correct_competition = true;
         }
-        else if (Integer.parseInt(in_line[0]) == Globals.sp.getInt(Constants.Prefs.COMPETITION_ID, -1)) correct_competition = true;
 
         if (correct_competition) {
             Globals.CurrentMatchType = in_line[1];

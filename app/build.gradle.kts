@@ -8,7 +8,9 @@ plugins {
 
 var versionMajor = 3
 var versionMinor = 6
-var versionPatch = 1
+var versionPatch = 8
+
+var applicationName = "CPR-Scout"
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 val keystoreProperties = Properties().apply {
@@ -73,7 +75,7 @@ configure<com.android.build.api.dsl.ApplicationExtension> {
 }
 
 base {
-    archivesName = "CPR-Scout-${versionMajor}.${versionMinor}.${versionPatch}"
+    archivesName = "${applicationName}-${versionMajor}.${versionMinor}.${versionPatch}"
 }
 
 dependencies {
@@ -88,6 +90,7 @@ dependencies {
     implementation(libs.google.drive.services)
     implementation(libs.play.services.auth)
     implementation(libs.mssql)
+    implementation(libs.swiperefreshlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

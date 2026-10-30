@@ -59,8 +59,6 @@ public class Globals {
     public static String stealFuelValue = Constants.PostMatch.STEAL_FUEL_NOT_SELECTED;
     public static String affectedByDefenseValue = Constants.PostMatch.AFFECTED_BY_DEFENSE_NOT_SELECTED;
 
-    public static SharedPreferences sp;
-    public static SharedPreferences.Editor spe;
     public static Uri baseStorageURI = null;
 
     public static DocumentFile base_df = null;

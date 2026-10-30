@@ -6,6 +6,9 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -18,22 +21,21 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.Scope;
+import com.google.android.material.button.MaterialButton;
 import com.team3663.scouting_app.R;
 import com.team3663.scouting_app.config.Constants;
 import com.team3663.scouting_app.config.Globals;
@@ -58,7 +60,7 @@ public class SubmitData extends AppCompatActivity {
     private static MediaPlayer media;
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
-    private ActivityResultLauncher<Intent> googleSignInLauncher;
+    private ActivityResultLauncher<IntentSenderRequest> googleSignInLauncher;
 
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
@@ -187,7 +189,7 @@ public class SubmitData extends AppCompatActivity {
 
         // Parse out the match number from the filename.  If this is a "d" file from the right
         // competition (as defined in Settings) and matching device then add it to the list.
-        // Use a regular expression to ensure the file_part IS numeric.  Otherwise parseInt() will
+        // Use a regular expression to ensure the file_part IS numeric.  Otherwise, parseInt() will
         // throw an exception.
         for (String file_name : Globals.FileList.keySet()) {
             if (file_name.endsWith("_" + Globals.TransmitMatchType + ".csv")) {
@@ -371,12 +373,7 @@ public class SubmitData extends AppCompatActivity {
 
         //scale opening image at beginning
         submitDataBinding.imageAchievementOpen.animate().scaleX(Constants.Achievements.openingAnimationScaleValue).scaleY(Constants.Achievements.openingAnimationScaleValue).setDuration(ANIMATION_SCALE_DURATION)
-                .withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        submitDataBinding.imageAchievementOpen.animate().scaleX(1.0f).scaleY(1.0f).setDuration(ANIMATION_SCALE_DURATION);
-                    }
-                });
+                .withEndAction(() -> submitDataBinding.imageAchievementOpen.animate().scaleX(1.0f).scaleY(1.0f).setDuration(ANIMATION_SCALE_DURATION));
 
         // set pivot to a little bit in from the left
         submitDataBinding.imageAchievement.setPivotX(20f);
@@ -389,21 +386,18 @@ public class SubmitData extends AppCompatActivity {
         submitDataBinding.imageAchievement.animate()
                 .scaleX(1.0f)
                 .setDuration((long)(ANIMATION_SCALE_DURATION * 1.5))
-                .withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Reveal the text details after the scaling finishes
-                        submitDataBinding.imageAchievement.setVisibility(View.VISIBLE);
-                        submitDataBinding.textAchievementTitle.setVisibility(View.VISIBLE);
-                        submitDataBinding.textAchievementDesc.setVisibility(View.VISIBLE);
-                    }
+                .withEndAction(() -> {
+                    // Reveal the text details after the scaling finishes
+                    submitDataBinding.imageAchievement.setVisibility(View.VISIBLE);
+                    submitDataBinding.textAchievementTitle.setVisibility(View.VISIBLE);
+                    submitDataBinding.textAchievementDesc.setVisibility(View.VISIBLE);
                 })
                 .start();
     }
 
     // hiding achievements
     public void animateAchievementEnd() {
-        // hide all acheivement eliments while keeping opener visible
+        // hide all achievement elements while keeping opener visible
         submitDataBinding.imageAchievementOpen.setVisibility(View.VISIBLE);
         submitDataBinding.imageAchievementOpen.animate().scaleX(Constants.Achievements.openingAnimationScaleValue).scaleY(Constants.Achievements.openingAnimationScaleValue).setDuration(ANIMATION_SCALE_DURATION / 2);
         submitDataBinding.textAchievementDesc.setVisibility(View.INVISIBLE);
@@ -411,12 +405,9 @@ public class SubmitData extends AppCompatActivity {
         submitDataBinding.imageAchievement.animate()
                 .scaleX(0.18f)
                 .setDuration(ANIMATION_SCALE_DURATION + (ANIMATION_SCALE_DURATION / 2))
-                        .withEndAction(new Runnable() {
-                            @Override
-                            public void run() {
-                                submitDataBinding.imageAchievement.setVisibility(View.INVISIBLE);
-                                submitDataBinding.imageAchievementOpen.animate().scaleX(0.0f).scaleY(0.0f).setDuration(ANIMATION_SCALE_DURATION / 2).start();
-                            }
+                        .withEndAction(() -> {
+                            submitDataBinding.imageAchievement.setVisibility(View.INVISIBLE);
+                            submitDataBinding.imageAchievementOpen.animate().scaleX(0.0f).scaleY(0.0f).setDuration(ANIMATION_SCALE_DURATION / 2).start();
                         });
 
     }
@@ -557,32 +548,27 @@ public class SubmitData extends AppCompatActivity {
 
         submitDataBinding.butSendGoogle.setOnClickListener(view -> {
             Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
-            submitDataBinding.imageGoogleResult.setImageResource(0);
-            submitDataBinding.butSendGoogle.setEnabled(false);
-            submitDataBinding.butSendGoogle.setClickable(false);
-            submitDataBinding.butSendGoogle.setBackgroundColor(getColor(R.color.light_grey));
+            buttonClickUx(submitDataBinding.butSendGoogle, submitDataBinding.imageGoogleResult);
 
+            // Authorize for Drive (silently if the scope was already granted); upload once ready,
+            // or launch the consent flow whose result is handled by googleSignInLauncher.
+            Globals.network.authorizeDrive(new CPR_Network.AuthCallback() {
+                @Override
+                public void onAuthorized() {
+                    Globals.network.uploadToGoogle(SubmitData.this::handleGoogleUploadResult);
+                }
 
-            // If the Drive service is already built this session, upload straight away
-            if (Globals.network.isDriveServiceReady()) {
-                Globals.network.uploadToGoogle(this::handleGoogleUploadResult);
-                return;
-            }
+                @Override
+                public void onNeedsConsent(@NonNull IntentSender in_intentSender) {
+                    googleSignInLauncher.launch(new IntentSenderRequest.Builder(in_intentSender).build());
+                }
 
-            // Reuse an existing sign-in if it already granted the Drive scope
-            Scope driveScope = new Scope(CPR_Network.GOOGLE_DRIVE_SCOPE);
-            GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(this);
-            if (GoogleSignIn.hasPermissions(last, driveScope)) {
-                onGoogleSignedIn(last);
-                return;
-            }
-
-            // Otherwise start the interactive sign-in / consent flow
-            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestEmail()
-                    .requestScopes(driveScope)
-                    .build();
-            googleSignInLauncher.launch(GoogleSignIn.getClient(this, gso).getSignInIntent());
+                @Override
+                public void onFailed(int in_statusCode) {
+                    Toast.makeText(SubmitData.this, "Google sign-in failed", Toast.LENGTH_SHORT).show();
+                    handleGoogleUploadResult(CPR_Network.Result.TRANSMISSION_FAILURE);
+                }
+            });
         });
     }
 
@@ -593,15 +579,7 @@ public class SubmitData extends AppCompatActivity {
     // Output:      void
     // =============================================================================================
     private void handleGoogleUploadResult(CPR_Network.Result result) {
-        if (result == CPR_Network.Result.TRANSMISSION_SUCCESS) {
-            submitDataBinding.imageGoogleResult.setImageResource(R.drawable.checkmark);
-        } else {
-            submitDataBinding.imageGoogleResult.setImageResource(R.drawable.x);
-        }
-
-        submitDataBinding.butSendGoogle.setEnabled(true);
-        submitDataBinding.butSendGoogle.setClickable(true);
-        submitDataBinding.butSendGoogle.setBackgroundColor(getColor(R.color.white));
+        showGoogleButtonResult(result == CPR_Network.Result.TRANSMISSION_SUCCESS);
     }
 
     // =============================================================================================
@@ -612,35 +590,15 @@ public class SubmitData extends AppCompatActivity {
     // =============================================================================================
     private void initGoogleSignIn() {
         googleSignInLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultContracts.StartIntentSenderForResult(),
                 result -> {
-                    try {
-                        GoogleSignInAccount account = GoogleSignIn
-                                .getSignedInAccountFromIntent(result.getData())
-                                .getResult(ApiException.class);
-                        onGoogleSignedIn(account);
-                    } catch (ApiException e) {
+                    if (Globals.network.completeSignIn(result.getData()) == CPR_Network.SIGN_IN_OK) {
+                        Globals.network.uploadToGoogle(this::handleGoogleUploadResult);
+                    } else {
                         Toast.makeText(this, "Google sign-in failed", Toast.LENGTH_SHORT).show();
                         submitDataBinding.imageGoogleResult.setImageResource(R.drawable.x);
                     }
                 });
-    }
-
-    // =============================================================================================
-    // Function:    onGoogleSignedIn
-    // Description: Build the Drive service from the signed-in account and start the upload.
-    // Parameters:  in_account  the account returned from Google sign-in
-    // Output:      void
-    // =============================================================================================
-    private void onGoogleSignedIn(GoogleSignInAccount in_account) {
-        if (in_account == null || in_account.getAccount() == null) {
-            Toast.makeText(this, "Google sign-in failed", Toast.LENGTH_SHORT).show();
-            submitDataBinding.imageGoogleResult.setImageResource(R.drawable.x);
-            return;
-        }
-
-        Globals.network.initDriveService(in_account.getAccount());
-        Globals.network.uploadToGoogle(this::handleGoogleUploadResult);
     }
 
     // =============================================================================================
@@ -658,46 +616,91 @@ public class SubmitData extends AppCompatActivity {
         }
 
         submitDataBinding.butSendDatabase.setOnClickListener(view -> {
-            //Globals.TransmitMatchNum = Integer.parseInt(submitDataBinding.spinnerMatch.getSelectedItem().toString());
-            submitDataBinding.butSendDatabase.setEnabled(false);
-            submitDataBinding.butSendDatabase.setClickable(false);
-            submitDataBinding.butSendDatabase.setBackgroundColor(getColor(R.color.light_grey));
-            submitDataBinding.imageDatabaseResult.setImageResource(0);
-
+            buttonClickUx(submitDataBinding.butSendDatabase, submitDataBinding.imageDatabaseResult);
 
             Globals.network.sendFileToSQLServer(result -> {
-                submitDataBinding.butSendDatabase.setEnabled(true);
-                submitDataBinding.butSendDatabase.setClickable(true);
-                submitDataBinding.butSendDatabase.setBackgroundColor(getColor(R.color.white));
                 switch (result) {
                     case TRANSMISSION_SUCCESS:
-                        Toast.makeText(this, "Successfully transmitted!", Toast.LENGTH_SHORT).show();
-                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.checkmark);
+                        showDatabaseButtonResult("Successfully transmitted!", true);
                         break;
                     case NO_NETWORK:
-                        Toast.makeText(this, "No network connection", Toast.LENGTH_SHORT).show();
-                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
+                        showDatabaseButtonResult("No network connection", false);
                         break;
                     case HOST_UNREACHABLE:
-                        Toast.makeText(this, "SQL Server is unreachable", Toast.LENGTH_SHORT).show();
-                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
+                        showDatabaseButtonResult("SQL Server is unreachable", false);
                         break;
                     case NO_DATA:
-                        Toast.makeText(this, "No data to send", Toast.LENGTH_SHORT).show();
-                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
+                        showDatabaseButtonResult("No data to send", false);
                         break;
                     case SQL_EXCEPTION:
-                        Toast.makeText(this, "SQL Server Exception", Toast.LENGTH_SHORT).show();
-                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
+                        showDatabaseButtonResult("SQL Server Exception", false);
                         break;
                     case TRANSMISSION_FAILURE:
                     default:
-                        Toast.makeText(this, "Transmission failed", Toast.LENGTH_SHORT).show();
-                        submitDataBinding.imageDatabaseResult.setImageResource(R.drawable.x);
+                        showDatabaseButtonResult("Transmission failed", false);
                         break;
                 }
             });
         });
+    }
+
+    // =============================================================================================
+    // Function:    buttonClickUx
+    // Description: Setup the UX when a button is clicked
+    // Parameters:  The button, The label for the button
+    // Output:      void
+    // =============================================================================================
+    private void buttonClickUx(MaterialButton button, ImageView label) {
+        button.setEnabled(false);
+        button.setClickable(false);
+        button.setBackgroundColor(getColor(R.color.light_grey));
+
+        CircularProgressDrawable spinner = new CircularProgressDrawable(this);
+        spinner.setStrokeWidth(4f);
+        spinner.setCenterRadius(18f);
+        spinner.setColorSchemeColors(getColor(R.color.light_grey));
+        label.setImageDrawable(spinner);
+        spinner.start();
+    }
+
+    /**
+     * Show the Check or X on the label for the button
+     * @param button The button to modify
+     * @param label The image label to modify
+     * @param message The text for the toast message
+     * @param success Whether it was a success or not
+     */
+    private void showButtonResult(MaterialButton button, ImageView label, String message, boolean success) {
+        if (message != null && !message.isBlank())
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        
+        button.setEnabled(true);
+        button.setClickable(true);
+        button.setBackgroundColor(getColor(R.color.white));
+
+        Drawable current = label.getDrawable();
+        if (current instanceof Animatable) {
+            ((Animatable) current).stop();
+        }
+        label.setImageResource(success ? R.drawable.checkmark : R.drawable.x);
+    }
+
+    /**
+     * An Overload method for showButtonResult for when it is for Google
+     * @param success Whether it was a success or not
+     */
+    private void showGoogleButtonResult(boolean success) {
+        showButtonResult(submitDataBinding.butSendGoogle, submitDataBinding.imageGoogleResult, "", success);
+    }
+
+
+    /**
+     * An Overload method for showButtonResult for when it is for the Database
+     * @param message The text for the toast message
+     * @param success Whether it was a success or not
+     */
+    private void showDatabaseButtonResult(String message, boolean success) {
+        showButtonResult(submitDataBinding.butSendDatabase, submitDataBinding.imageDatabaseResult, message, success);
     }
 
     // =============================================================================================
