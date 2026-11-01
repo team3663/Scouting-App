@@ -2,6 +2,7 @@ package com.team3663.scouting_app.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -48,9 +49,9 @@ public class AppLaunch extends AppCompatActivity {
     // Global variables
     // =============================================================================================
     private AppLaunchBinding appLaunchBinding;
-    public static Timer appLaunch_timer = new Timer();
-    private static SharedPreferences sp;
-    private static SharedPreferences.Editor spe;
+    public Timer appLaunch_timer = new Timer();
+    private SharedPreferences sp;
+    private SharedPreferences.Editor spe;
 
     // Installed app version as {major, minor, patch}, used to detect a newer APK on Google Drive
     private int[] currentVersion = new int[]{0, 0, 0};
@@ -349,8 +350,10 @@ public class AppLaunch extends AppCompatActivity {
                     (sp.getInt(Constants.Prefs.QR_SIZE, -1) == -1)) {
                 Toast.makeText(AppLaunch.this, R.string.applaunch_not_configured, Toast.LENGTH_SHORT).show();
             } else {
-                // Pin the app to help prevent it from being closed mid-match
-                startLockTask();
+                // Pin the app to help prevent it from being closed mid-match if not already pinned
+                ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+                if ((activityManager == null) || (activityManager.getLockTaskModeState() == ActivityManager.LOCK_TASK_MODE_NONE))
+                    startLockTask();
 
                 // Go to the first page
                 Intent GoToPreMatch = new Intent(AppLaunch.this, PreMatch.class);

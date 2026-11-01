@@ -3,9 +3,10 @@
     <string name="submit_heading">Submit Scouting Data</string>
     <string name="submit_match_error">Incomplete data files found!</string>
     <string name="submit_alert_cancel">Cancel</string>
-    <string name="submit_alert_quit_title">Quit app</string>
-    <string name="submit_alert_quit_message">Are you sure you want to Quit the app?</string>
+    <string name="submit_alert_quit_title">Do you want to Quit the app?</string>
+    <string name="submit_alert_quit_message">Choose whether you want to quit the app or re-launch the app.</string>
     <string name="submit_alert_quit_positive">Quit</string>
+    <string name="submit_alert_quit_neutral">Re-Launch</string>
     <string name="submit_wifi_signal_content_desc">Wi-Fi signal strength</string>
     <string name="submit_internet_content_desc">Internet access</string>
     <string name="submit_match_type">Match Type:</string>

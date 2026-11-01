@@ -723,6 +723,13 @@ public class SubmitData extends AppCompatActivity {
                 System.exit(0);
             })
 
+            // Specifying a listener allows you to take an action before dismissing the dialog.
+            // The dialog is automatically dismissed when a dialog button is clicked.
+            .setNeutralButton(getString(R.string.submit_alert_quit_neutral), (dialog, which) -> {
+                Intent GoToAppLaunch = new Intent(SubmitData.this, AppLaunch.class);
+                startActivity(GoToAppLaunch);
+            })
+
             // A null listener allows the button to dismiss the dialog and take no further action.
             .setNegativeButton(getString(R.string.submit_alert_cancel), null)
             .show()
