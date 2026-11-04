@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
+
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -279,6 +279,9 @@ public class PreMatch extends AppCompatActivity {
     // =============================================================================================
     private void initScouterName() {
         // Create a text box to input the scouters name
+        ArrayList<String> list_of_scouters = Globals.ScouterList.getScouterList();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list_of_scouters);
+        preMatchBinding.editScouterName.setAdapter(adapter);
         preMatchBinding.editScouterName.setText(ScouterName);
     }
 
@@ -504,6 +507,12 @@ public class PreMatch extends AppCompatActivity {
 
         ScouterName = String.valueOf(preMatchBinding.editScouterName.getText());
 
+        // If the scouter name isn't in our list (it's new), add it for next time, but we won't
+        // persist this if the app/tablet is rebooted.  We'll rely on someone updating the master
+        // scouter list, and we can download the update.
+        if (!Globals.ScouterList.isScouterInList(ScouterName))
+            Globals.ScouterList.addScouterRow(Globals.ScouterList.size() + 1, ScouterName.toUpperCase());
+
         // If they didn't play skip everything else
         if (preMatchBinding.checkboxDidPlay.isChecked()) {
             Intent GoToMatch = new Intent(PreMatch.this, MatchTally.class);
@@ -524,8 +533,7 @@ public class PreMatch extends AppCompatActivity {
     // =============================================================================================
     private void initNext() {
         // Create a button for when you are done inputting info
-        Button but_Next = preMatchBinding.butNext;
-        but_Next.setOnClickListener(view -> {
+        preMatchBinding.butNext.setOnClickListener(view -> {
             // If we should re-submit data, go to the submit page immediately
             if (preMatchBinding.checkboxResubmit.isChecked()) {
                 // Decrement the team number since we're only going to resubmit data.  When we return,

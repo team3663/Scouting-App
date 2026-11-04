@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="file_scouters">Scouters.csv</string>
     <string name="file_teams">Teams.csv</string>
     <string name="file_competitions">Competitions.csv</string>
     <string name="file_match_types">MatchTypes.csv</string>

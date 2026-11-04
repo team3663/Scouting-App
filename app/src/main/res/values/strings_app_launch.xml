@@ -3,6 +3,7 @@
     <string name="applaunch_loading_prefix">Loading…</string>
     <string name="applaunch_loading_detail">%1$s Data</string>
     <string name="applaunch_loading_suffix"> Data</string>
+    <string name="applaunch_loading_scouters">Scouter</string>
     <string name="applaunch_loading_teams">Team</string>
     <string name="applaunch_loading_match_types">Match Types</string>
     <string name="applaunch_loading_matches">Match</string>

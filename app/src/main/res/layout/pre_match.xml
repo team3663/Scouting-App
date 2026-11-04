@@ -203,14 +203,17 @@
                 android:textSize="24sp"
                 tools:ignore="RtlSymmetry" />
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/edit_ScouterName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/white"
-                android:gravity="center"
-                android:inputType="text"
+                android:gravity="start"
+                android:paddingStart="15dp"
+                android:paddingEnd="5dp"
+                android:inputType="textAutoComplete"
+                android:completionThreshold="1"
                 android:textColor="@color/cpr_bkgnd"
                 android:textSize="24sp" />
 
@@ -230,7 +233,7 @@
 
             <CheckBox
                 android:id="@+id/checkbox_DidPlay"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:button="@null"
