@@ -420,6 +420,7 @@ public class AppLaunch extends AppCompatActivity {
         if (Globals.EventList == null) Globals.EventList = new EventsFile(this); else Globals.EventList.setContext(this);
         if (Globals.MatchTypeList == null) Globals.MatchTypeList = new MatchTypesFile(this); else Globals.MatchTypeList.setContext(this);
         if (Globals.MatchList == null) Globals.MatchList = new MatchesFile(this); else Globals.MatchList.setContext(this);
+        if (Globals.ScouterList == null) Globals.ScouterList = new ScoutersFile(this); else Globals.ScouterList.setContext(this);
         if (Globals.TeamList == null) Globals.TeamList = new TeamsFile(this); else Globals.TeamList.setContext(this);
     }
 

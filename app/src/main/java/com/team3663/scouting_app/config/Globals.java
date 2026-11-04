@@ -14,6 +14,7 @@ import com.team3663.scouting_app.dataFile.*;
 import java.util.HashMap;
 
 public class Globals {
+    @SuppressLint("StaticFieldLeak") public static ScoutersFile ScouterList;
     @SuppressLint("StaticFieldLeak") public static TeamsFile TeamList;
     @SuppressLint("StaticFieldLeak") public static CompetitionsFile CompetitionList;
     @SuppressLint("StaticFieldLeak") public static ColorsFile ColorList;
