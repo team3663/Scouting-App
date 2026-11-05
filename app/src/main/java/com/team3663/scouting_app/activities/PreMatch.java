@@ -511,7 +511,7 @@ public class PreMatch extends AppCompatActivity {
         // persist this if the app/tablet is rebooted.  We'll rely on someone updating the master
         // scouter list, and we can download the update.
         if (!Globals.ScouterList.isScouterInList(ScouterName))
-            Globals.ScouterList.addScouterRow(Globals.ScouterList.size() + 1, ScouterName.toUpperCase());
+            Globals.ScouterList.addScouterRow(Globals.ScouterList.size() + 1, ScouterName);
 
         // If they didn't play skip everything else
         if (preMatchBinding.checkboxDidPlay.isChecked()) {

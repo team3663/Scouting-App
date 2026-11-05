@@ -43,7 +43,7 @@ public class ScoutersFile extends _DataFile {
     // Member Function: return the size of the list
     public boolean isScouterInList(String in_Scouter_Name) {
         for (ScouterRow sr : scouter_list) {
-            if (sr.name.equals(in_Scouter_Name)) return true;
+            if (sr.name.equals(in_Scouter_Name.toUpperCase())) return true;
         }
         return false;
     }
@@ -70,13 +70,13 @@ public class ScoutersFile extends _DataFile {
         // Constructor with individual data
         public ScouterRow(String in_id, String in_Scouter_Name) {
             id = Integer.parseInt(in_id);
-            name = in_Scouter_Name;
+            name = in_Scouter_Name.toUpperCase();
         }
 
         // Constructor with individual data
         public ScouterRow(int in_id, String in_Scouter_Name) {
             id = in_id;
-            name = in_Scouter_Name;
+            name = in_Scouter_Name.toUpperCase();
         }
     }
 }
